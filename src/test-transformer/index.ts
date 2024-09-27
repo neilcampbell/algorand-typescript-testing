@@ -1,5 +1,5 @@
 import type ts from 'typescript'
-import { registerPTypes, typeRegistry } from '@algorandfoundation/puya-ts/internal'
+import { registerPTypes, typeRegistry } from '@algorandfoundation/puya-ts'
 import type { DeliberateAny } from '../typescript-helpers'
 import { SourceFileVisitor } from './visitors'
 

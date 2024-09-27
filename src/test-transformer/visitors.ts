@@ -1,13 +1,5 @@
 import ts from 'typescript'
-import {
-  ContractClassPType,
-  FunctionPType,
-  PType,
-  SourceLocation,
-  TypeResolver,
-  anyPType,
-  typeRegistry,
-} from '@algorandfoundation/puya-ts/internal'
+import { ContractClassPType, FunctionPType, PType, SourceLocation, TypeResolver, anyPType, typeRegistry } from '@algorandfoundation/puya-ts'
 import { nodeFactory } from './node-factory'
 import { supportedBinaryOpString, supportedPrefixUnaryOpString } from './supported-binary-op-string'
 

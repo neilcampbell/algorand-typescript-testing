@@ -1,6 +1,6 @@
 import ts from 'typescript'
 
-import { FunctionPType } from '@algorandfoundation/puya-ts/internal'
+import { FunctionPType } from '@algorandfoundation/puya-ts'
 import type { DeliberateAny } from '../typescript-helpers'
 import { getPropertyNameAsString } from './helpers'
 
