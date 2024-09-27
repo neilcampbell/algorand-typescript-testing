@@ -11,7 +11,7 @@ const resolveAppIndex = (appIdOrIndex: internal.primitives.StubUint64Compat): ui
   return txn.apps(input).id
 }
 
-const getApp = (app: Application | internal.primitives.StubUint64Compat): Application | undefined => {
+export const getApp = (app: Application | internal.primitives.StubUint64Compat): Application | undefined => {
   try {
     const appId = asMaybeUint64Cls(app)
     if (appId !== undefined) {

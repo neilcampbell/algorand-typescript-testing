@@ -1,5 +1,16 @@
-import { Account, Application, Asset, bytes, Bytes, gtxn, internal, TransactionType, uint64, Uint64 } from '@algorandfoundation/algo-ts'
-import { OnCompleteActionStr } from '@algorandfoundation/algo-ts/arc4'
+import {
+  Account,
+  Application,
+  arc4,
+  Asset,
+  bytes,
+  Bytes,
+  gtxn,
+  internal,
+  TransactionType,
+  uint64,
+  Uint64,
+} from '@algorandfoundation/algo-ts'
 import { MAX_ITEMS_IN_LOG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable, ObjectKeys } from '../typescript-helpers'
@@ -56,7 +67,7 @@ export class PaymentTransaction extends TransactionBase implements gtxn.PaymentT
     return new PaymentTransaction(fields)
   }
 
-  private constructor(fields: TxnFields<gtxn.PaymentTxn>) {
+  protected constructor(fields: TxnFields<gtxn.PaymentTxn>) {
     super(fields)
     this.receiver = fields.receiver ?? Account()
     this.amount = fields.amount ?? Uint64(0)
@@ -75,7 +86,7 @@ export class KeyRegistrationTransaction extends TransactionBase implements gtxn.
     return new KeyRegistrationTransaction(fields)
   }
 
-  private constructor(fields: TxnFields<gtxn.KeyRegistrationTxn>) {
+  protected constructor(fields: TxnFields<gtxn.KeyRegistrationTxn>) {
     super(fields)
     this.voteKey = fields.voteKey ?? Bytes()
     this.selectionKey = fields.selectionKey ?? Bytes()
@@ -102,7 +113,7 @@ export class AssetConfigTransaction extends TransactionBase implements gtxn.Asse
     return new AssetConfigTransaction(fields)
   }
 
-  private constructor(fields: TxnFields<gtxn.AssetConfigTxn>) {
+  protected constructor(fields: TxnFields<gtxn.AssetConfigTxn>) {
     super(fields)
     this.configAsset = fields.configAsset ?? Asset()
     this.total = fields.total ?? Uint64(0)
@@ -141,7 +152,7 @@ export class AssetTransferTransaction extends TransactionBase implements gtxn.As
     return new AssetTransferTransaction(fields)
   }
 
-  private constructor(fields: TxnFields<gtxn.AssetTransferTxn>) {
+  protected constructor(fields: TxnFields<gtxn.AssetTransferTxn>) {
     super(fields)
     this.xferAsset = fields.xferAsset ?? Asset()
     this.assetAmount = fields.assetAmount ?? Uint64(0)
@@ -165,7 +176,7 @@ export class AssetFreezeTransaction extends TransactionBase implements gtxn.Asse
     return new AssetFreezeTransaction(fields)
   }
 
-  private constructor(fields: TxnFields<gtxn.AssetFreezeTxn>) {
+  protected constructor(fields: TxnFields<gtxn.AssetFreezeTxn>) {
     super(fields)
     this.freezeAsset = fields.freezeAsset ?? Asset()
     this.freezeAccount = fields.freezeAccount ?? Account()
@@ -203,7 +214,7 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
   #clearStateProgramPages: Array<bytes>
   #appLogs: Array<bytes>
 
-  private constructor(fields: ApplicationTransactionFields) {
+  protected constructor(fields: ApplicationTransactionFields) {
     super(fields)
     this.appId = fields.appId ?? Application()
     this.onCompletion = fields.onCompletion ?? 'NoOp'
@@ -223,7 +234,7 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
   }
 
   readonly appId: Application
-  readonly onCompletion: OnCompleteActionStr
+  readonly onCompletion: arc4.OnCompleteActionStr
   readonly globalNumUint: uint64
   readonly globalNumBytes: uint64
   readonly localNumUint: uint64

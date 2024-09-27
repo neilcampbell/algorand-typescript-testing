@@ -5,6 +5,8 @@ import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
 import { testInvariant } from '../errors'
 import { AllTransactionFields, Transaction } from '../impl/transactions'
 import { asBigInt, asUint64 } from '../util'
+import { InnerTxn, InnerTxnFields } from '../impl/itxn'
+import { createInnerTxn } from '../impl/inner-transactions'
 
 function ScopeGenerator(dispose: () => void) {
   function* internal() {
@@ -109,6 +111,8 @@ export class TransactionGroup {
   activeTransactionIndex: number
   latestTimestamp: number
   transactions: Transaction[]
+  itxnGroups: InnerTxn[][] = []
+  constructingItxnGroup: InnerTxnFields[] = []
 
   constructor(transactions: Transaction[], activeTransactionIndex?: number) {
     this.latestTimestamp = Date.now()
@@ -134,9 +138,47 @@ export class TransactionGroup {
     return this.activeTransaction.appId.id
   }
 
+  get constructingItxn() {
+    if (!this.constructingItxnGroup.length) {
+      internal.errors.internalError('itxn field without itxn begin')
+    }
+    return this.constructingItxnGroup.at(-1)!
+  }
+
   patchActiveTransactionFields(fields: AllTransactionFields) {
     const activeTransaction = this.activeTransaction as unknown as AllTransactionFields
     const filteredFields = Object.fromEntries(Object.entries(fields).filter(([_, value]) => value !== undefined))
     Object.assign(activeTransaction, filteredFields)
+  }
+
+  beginInnerTransactionGroup() {
+    if (this.constructingItxnGroup.length) {
+      internal.errors.internalError('itxn begin without itxn submit')
+    }
+    testInvariant(this.activeTransaction.type === TransactionType.ApplicationCall, 'No active application call transaction')
+    if (this.activeTransaction.onCompletion === 'ClearState') {
+      internal.errors.internalError('Cannot begin inner transaction group in a clear state call')
+    }
+    this.constructingItxnGroup.push({} as InnerTxnFields)
+  }
+
+  appendInnterTransactionGroup() {
+    if (!this.constructingItxnGroup.length) {
+      internal.errors.internalError('itxn next without itxn begin')
+    }
+    this.constructingItxnGroup.push({} as InnerTxnFields)
+  }
+
+  submitInnerTransactionGroup() {
+    if (!this.constructingItxnGroup.length) {
+      internal.errors.internalError('itxn submit without itxn begin')
+    }
+    if (this.constructingItxnGroup.length > algosdk.AtomicTransactionComposer.MAX_GROUP_SIZE) {
+      internal.errors.internalError('Cannot submit more than 16 inner transactions at once')
+    }
+    const itxns = this.constructingItxnGroup.map((t) => createInnerTxn(t))
+    itxns.forEach((itxn, index) => Object.assign(itxn, { groupIndex: asUint64(index) }))
+    this.itxnGroups.push(itxns)
+    this.constructingItxnGroup = []
   }
 }

@@ -1,4 +1,4 @@
-import { internal } from '@algorandfoundation/algo-ts'
+import { internal, bytes } from '@algorandfoundation/algo-ts'
 import { randomBytes } from 'crypto'
 import { BITS_IN_BYTE, MAX_UINT512, MAX_UINT8, UINT512_SIZE } from './constants'
 import { DeliberateAny } from './typescript-helpers'
@@ -42,6 +42,23 @@ export const asBigUint = (val: internal.primitives.StubBigUintCompat) => asBigUi
 
 export const asBytes = (val: internal.primitives.StubBytesCompat) => asBytesCls(val).asAlgoTs()
 
+//TODO: handle arc4 types, bytes backed types
+export const toBytes = (val: unknown): bytes => {
+  const uint64Val = asMaybeUint64Cls(val)
+  if (uint64Val !== undefined) {
+    return uint64Val.toBytes().asAlgoTs()
+  }
+  const bigUintVal = asMaybeBigUintCls(val)
+  if (bigUintVal !== undefined) {
+    return bigUintVal.toBytes().asAlgoTs()
+  }
+  const bytesVal = asMaybeBytesCls(val)
+  if (bytesVal !== undefined) {
+    return bytesVal.toBytes().asAlgoTs()
+  }
+  internal.errors.internalError(`Invalid type for bytes: ${nameOfType(val)}`)
+}
+
 export const asMaybeUint64Cls = (val: DeliberateAny) => {
   try {
     return internal.primitives.Uint64Cls.fromCompat(val)
@@ -55,6 +72,18 @@ export const asMaybeUint64Cls = (val: DeliberateAny) => {
   return undefined
 }
 
+export const asMaybeBigUintCls = (val: DeliberateAny) => {
+  try {
+    return internal.primitives.BigUintCls.fromCompat(val)
+  } catch (e) {
+    if (e instanceof internal.errors.InternalError) {
+      // swallow error and return undefined
+    } else {
+      throw e
+    }
+  }
+  return undefined
+}
 export const asMaybeBytesCls = (val: DeliberateAny) => {
   try {
     return internal.primitives.BytesCls.fromCompat(val)
