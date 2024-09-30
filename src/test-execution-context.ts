@@ -10,6 +10,15 @@ import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
 import { ValueGenerator } from './value-generators'
+import {
+  getApplicationTransaction,
+  getAssetConfigTransaction,
+  getAssetFreezeTransaction,
+  getAssetTransferTransaction,
+  getKeyRegistrationTransaction,
+  getPaymentTransaction,
+  getTransaction,
+} from './impl/gtxn'
 
 export class TestExecutionContext implements internal.ExecutionContext {
   #applicationLogs: Map<bigint, bytes[]>
@@ -75,6 +84,18 @@ export class TestExecutionContext implements internal.ExecutionContext {
   get abiMetadata() {
     return {
       captureMethodConfig,
+    }
+  }
+
+  get gtxn() {
+    return {
+      Transaction: (index: uint64) => getTransaction(index),
+      PaymentTxn: (index: uint64) => getPaymentTransaction(index),
+      KeyRegistrationTxn: (index: uint64) => getKeyRegistrationTransaction(index),
+      AssetConfigTxn: (index: uint64) => getAssetConfigTransaction(index),
+      AssetTransferTxn: (index: uint64) => getAssetTransferTransaction(index),
+      AssetFreezeTxn: (index: uint64) => getAssetFreezeTransaction(index),
+      ApplicationTxn: (index: uint64) => getApplicationTransaction(index),
     }
   }
 

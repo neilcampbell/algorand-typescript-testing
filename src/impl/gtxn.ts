@@ -1,15 +1,67 @@
-import { Account, Application, arc4, Asset, bytes, gtxn, internal, uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Application, arc4, Asset, bytes, internal, TransactionType, uint64 } from '@algorandfoundation/algo-ts'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asNumber, asUint64, asUint64Cls } from '../util'
+import {
+  ApplicationTransaction,
+  AssetConfigTransaction,
+  AssetFreezeTransaction,
+  AssetTransferTransaction,
+  KeyRegistrationTransaction,
+  PaymentTransaction,
+  Transaction,
+} from './transactions'
 
-const getTransaction = <T extends gtxn.Transaction>(t: internal.primitives.StubUint64Compat): T => {
-  const transactions = lazyContext.activeGroup.transactions
-  const index = asNumber(t)
-  if (index >= transactions.length) {
-    throw new internal.errors.InternalError('invalid group index')
-  }
-  return transactions[index] as T
+export const getApplicationTransaction = (index?: internal.primitives.StubUint64Compat): ApplicationTransaction => {
+  return getTransactionImpl({ type: TransactionType.ApplicationCall, index }) as ApplicationTransaction
 }
+export const getAssetConfigTransaction = (index?: internal.primitives.StubUint64Compat): AssetConfigTransaction => {
+  return getTransactionImpl({ type: TransactionType.AssetConfig, index }) as AssetConfigTransaction
+}
+export const getAssetTransferTransaction = (index?: internal.primitives.StubUint64Compat): AssetTransferTransaction => {
+  return getTransactionImpl({ type: TransactionType.AssetTransfer, index }) as AssetTransferTransaction
+}
+export const getAssetFreezeTransaction = (index?: internal.primitives.StubUint64Compat): AssetFreezeTransaction => {
+  return getTransactionImpl({ type: TransactionType.AssetFreeze, index }) as AssetFreezeTransaction
+}
+export const getKeyRegistrationTransaction = (index?: internal.primitives.StubUint64Compat): KeyRegistrationTransaction => {
+  return getTransactionImpl({ type: TransactionType.KeyRegistration, index }) as KeyRegistrationTransaction
+}
+export const getPaymentTransaction = (index?: internal.primitives.StubUint64Compat): PaymentTransaction => {
+  return getTransactionImpl({ type: TransactionType.Payment, index }) as PaymentTransaction
+}
+export const getTransaction = (index?: internal.primitives.StubUint64Compat): Transaction => {
+  return getTransactionImpl({ index })
+}
+const getTransactionImpl = ({ type, index }: { type?: TransactionType; index?: internal.primitives.StubUint64Compat }) => {
+  const i = index !== undefined ? asNumber(index) : undefined
+  if (i !== undefined && i >= lazyContext.activeGroup.transactions.length) {
+    throw new internal.errors.InternalError('Invalid group index')
+  }
+  const transaction = i !== undefined ? lazyContext.activeGroup.transactions[i] : lazyContext.activeGroup.activeTransaction
+  if (type === undefined) {
+    return transaction
+  }
+  if (transaction.type !== type) {
+    throw new internal.errors.InternalError(`Invalid transaction type: ${transaction.type}`)
+  }
+  switch (type) {
+    case TransactionType.ApplicationCall:
+      return transaction as ApplicationTransaction
+    case TransactionType.Payment:
+      return transaction as PaymentTransaction
+    case TransactionType.AssetConfig:
+      return transaction as AssetConfigTransaction
+    case TransactionType.AssetTransfer:
+      return transaction as AssetTransferTransaction
+    case TransactionType.AssetFreeze:
+      return transaction as AssetFreezeTransaction
+    case TransactionType.KeyRegistration:
+      return transaction as KeyRegistrationTransaction
+    default:
+      throw new internal.errors.InternalError(`Invalid transaction type: ${type}`)
+  }
+}
+
 export const GTxn: internal.opTypes.GTxnType = {
   sender(t: internal.primitives.StubUint64Compat): Account {
     return getTransaction(t).sender
@@ -33,28 +85,28 @@ export const GTxn: internal.opTypes.GTxnType = {
     return getTransaction(t).lease
   },
   receiver(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.PaymentTxn>(t).receiver
+    return getPaymentTransaction(t).receiver
   },
   amount(t: uint64): uint64 {
-    return getTransaction<gtxn.PaymentTxn>(t).amount
+    return getPaymentTransaction(t).amount
   },
   closeRemainderTo(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.PaymentTxn>(t).closeRemainderTo
+    return getPaymentTransaction(t).closeRemainderTo
   },
   votePk(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.KeyRegistrationTxn>(t).voteKey
+    return getKeyRegistrationTransaction(t).voteKey
   },
   selectionPk(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.KeyRegistrationTxn>(t).selectionKey
+    return getKeyRegistrationTransaction(t).selectionKey
   },
   voteFirst(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.KeyRegistrationTxn>(t).voteFirst
+    return getKeyRegistrationTransaction(t).voteFirst
   },
   voteLast(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.KeyRegistrationTxn>(t).voteLast
+    return getKeyRegistrationTransaction(t).voteLast
   },
   voteKeyDilution(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.KeyRegistrationTxn>(t).voteKeyDilution
+    return getKeyRegistrationTransaction(t).voteKeyDilution
   },
   type(t: internal.primitives.StubUint64Compat): bytes {
     return asUint64Cls(getTransaction(t).type).toBytes().asAlgoTs()
@@ -63,19 +115,19 @@ export const GTxn: internal.opTypes.GTxnType = {
     return asUint64(getTransaction(t).type)
   },
   xferAsset(t: internal.primitives.StubUint64Compat): Asset {
-    return getTransaction<gtxn.AssetTransferTxn>(t).xferAsset
+    return getAssetTransferTransaction(t).xferAsset
   },
   assetAmount(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.AssetTransferTxn>(t).assetAmount
+    return getAssetTransferTransaction(t).assetAmount
   },
   assetSender(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.AssetTransferTxn>(t).assetSender
+    return getAssetTransferTransaction(t).assetSender
   },
   assetReceiver(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.AssetTransferTxn>(t).assetReceiver
+    return getAssetTransferTransaction(t).assetReceiver
   },
   assetCloseTo(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.AssetTransferTxn>(t).assetCloseTo
+    return getAssetTransferTransaction(t).assetCloseTo
   },
   groupIndex(t: internal.primitives.StubUint64Compat): uint64 {
     return getTransaction(t).groupIndex
@@ -84,136 +136,136 @@ export const GTxn: internal.opTypes.GTxnType = {
     return getTransaction(t).txnId
   },
   applicationId(t: internal.primitives.StubUint64Compat): Application {
-    return getTransaction<gtxn.ApplicationTxn>(t).appId
+    return getApplicationTransaction(t).appId
   },
   onCompletion(t: internal.primitives.StubUint64Compat): uint64 {
-    const onCompletionStr = getTransaction<gtxn.ApplicationTxn>(t).onCompletion
+    const onCompletionStr = getApplicationTransaction(t).onCompletion
     return asUint64(arc4.OnCompleteAction[onCompletionStr])
   },
   applicationArgs(a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.ApplicationTxn>(a).appArgs(asUint64(b))
+    return getApplicationTransaction(a).appArgs(asUint64(b))
   },
   numAppArgs(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).numAppArgs
+    return getApplicationTransaction(t).numAppArgs
   },
   accounts(a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.ApplicationTxn>(a).accounts(asUint64(b))
+    return getApplicationTransaction(a).accounts(asUint64(b))
   },
   numAccounts(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).numAccounts
+    return getApplicationTransaction(t).numAccounts
   },
   approvalProgram(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.ApplicationTxn>(t).approvalProgram
+    return getApplicationTransaction(t).approvalProgram
   },
   clearStateProgram(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.ApplicationTxn>(t).clearStateProgram
+    return getApplicationTransaction(t).clearStateProgram
   },
   rekeyTo(t: internal.primitives.StubUint64Compat): Account {
     return getTransaction(t).rekeyTo
   },
   configAsset(t: internal.primitives.StubUint64Compat): Asset {
-    return getTransaction<gtxn.AssetConfigTxn>(t).configAsset
+    return getAssetConfigTransaction(t).configAsset
   },
   configAssetTotal(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.AssetConfigTxn>(t).total
+    return getAssetConfigTransaction(t).total
   },
   configAssetDecimals(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.AssetConfigTxn>(t).decimals
+    return getAssetConfigTransaction(t).decimals
   },
   configAssetDefaultFrozen(t: internal.primitives.StubUint64Compat): boolean {
-    return getTransaction<gtxn.AssetConfigTxn>(t).defaultFrozen
+    return getAssetConfigTransaction(t).defaultFrozen
   },
   configAssetUnitName(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.AssetConfigTxn>(t).unitName
+    return getAssetConfigTransaction(t).unitName
   },
   configAssetName(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.AssetConfigTxn>(t).assetName
+    return getAssetConfigTransaction(t).assetName
   },
   configAssetUrl(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.AssetConfigTxn>(t).url
+    return getAssetConfigTransaction(t).url
   },
   configAssetMetadataHash(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.AssetConfigTxn>(t).metadataHash
+    return getAssetConfigTransaction(t).metadataHash
   },
   configAssetManager(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.AssetConfigTxn>(t).manager
+    return getAssetConfigTransaction(t).manager
   },
   configAssetReserve(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.AssetConfigTxn>(t).reserve
+    return getAssetConfigTransaction(t).reserve
   },
   configAssetFreeze(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.AssetConfigTxn>(t).freeze
+    return getAssetConfigTransaction(t).freeze
   },
   configAssetClawback(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.AssetConfigTxn>(t).clawback
+    return getAssetConfigTransaction(t).clawback
   },
   freezeAsset(t: internal.primitives.StubUint64Compat): Asset {
-    return getTransaction<gtxn.AssetFreezeTxn>(t).freezeAsset
+    return getAssetFreezeTransaction(t).freezeAsset
   },
   freezeAssetAccount(t: internal.primitives.StubUint64Compat): Account {
-    return getTransaction<gtxn.AssetFreezeTxn>(t).freezeAccount
+    return getAssetFreezeTransaction(t).freezeAccount
   },
   freezeAssetFrozen(t: internal.primitives.StubUint64Compat): boolean {
-    return getTransaction<gtxn.AssetFreezeTxn>(t).frozen
+    return getAssetFreezeTransaction(t).frozen
   },
   assets(a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): Asset {
-    return getTransaction<gtxn.ApplicationTxn>(a).assets(asUint64(b))
+    return getApplicationTransaction(a).assets(asUint64(b))
   },
   numAssets(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).numAssets
+    return getApplicationTransaction(t).numAssets
   },
   applications(a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): Application {
-    return getTransaction<gtxn.ApplicationTxn>(a).apps(asUint64(b))
+    return getApplicationTransaction(a).apps(asUint64(b))
   },
   numApplications(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).numApps
+    return getApplicationTransaction(t).numApps
   },
   globalNumUint(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).globalNumUint
+    return getApplicationTransaction(t).globalNumUint
   },
   globalNumByteSlice(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).globalNumBytes
+    return getApplicationTransaction(t).globalNumBytes
   },
   localNumUint(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).localNumUint
+    return getApplicationTransaction(t).localNumUint
   },
   localNumByteSlice(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).localNumBytes
+    return getApplicationTransaction(t).localNumBytes
   },
   extraProgramPages(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).extraProgramPages
+    return getApplicationTransaction(t).extraProgramPages
   },
   nonparticipation(t: internal.primitives.StubUint64Compat): boolean {
-    return getTransaction<gtxn.KeyRegistrationTxn>(t).nonparticipation
+    return getKeyRegistrationTransaction(t).nonparticipation
   },
   logs(a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.ApplicationTxn>(a).logs(asUint64(b))
+    return getApplicationTransaction(a).logs(asUint64(b))
   },
   numLogs(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).numLogs
+    return getApplicationTransaction(t).numLogs
   },
   createdAssetId(t: internal.primitives.StubUint64Compat): Asset {
-    return getTransaction<gtxn.AssetConfigTxn>(t).createdAsset
+    return getAssetConfigTransaction(t).createdAsset
   },
   createdApplicationId(t: internal.primitives.StubUint64Compat): Application {
-    return getTransaction<gtxn.ApplicationTxn>(t).createdApp
+    return getApplicationTransaction(t).createdApp
   },
   lastLog(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.ApplicationTxn>(t).lastLog
+    return getApplicationTransaction(t).lastLog
   },
   stateProofPk(t: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.KeyRegistrationTxn>(t).stateProofKey
+    return getKeyRegistrationTransaction(t).stateProofKey
   },
   approvalProgramPages(a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.ApplicationTxn>(a).approvalProgramPages(asUint64(b))
+    return getApplicationTransaction(a).approvalProgramPages(asUint64(b))
   },
   numApprovalProgramPages(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).numApprovalProgramPages
+    return getApplicationTransaction(t).numApprovalProgramPages
   },
   clearStateProgramPages(a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): bytes {
-    return getTransaction<gtxn.ApplicationTxn>(a).clearStateProgramPages(asUint64(b))
+    return getApplicationTransaction(a).clearStateProgramPages(asUint64(b))
   },
   numClearStateProgramPages(t: internal.primitives.StubUint64Compat): uint64 {
-    return getTransaction<gtxn.ApplicationTxn>(t).numClearStateProgramPages
+    return getApplicationTransaction(t).numClearStateProgramPages
   },
 }
