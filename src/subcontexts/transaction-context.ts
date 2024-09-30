@@ -3,10 +3,27 @@ import algosdk from 'algosdk'
 import { lazyContext } from '../context-helpers/internal-context'
 import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
 import { testInvariant } from '../errors'
-import { AllTransactionFields, Transaction } from '../impl/transactions'
-import { asBigInt, asUint64 } from '../util'
+import {
+  AllTransactionFields,
+  ApplicationTransaction,
+  AssetConfigTransaction,
+  AssetFreezeTransaction,
+  AssetTransferTransaction,
+  KeyRegistrationTransaction,
+  PaymentTransaction,
+  Transaction,
+} from '../impl/transactions'
+import { asBigInt, asNumber, asUint64 } from '../util'
 import { InnerTxn, InnerTxnFields } from '../impl/itxn'
-import { createInnerTxn } from '../impl/inner-transactions'
+import {
+  ApplicationInnerTxn,
+  AssetConfigInnerTxn,
+  AssetFreezeInnerTxn,
+  AssetTransferInnerTxn,
+  createInnerTxn,
+  KeyRegistrationInnerTxn,
+  PaymentInnerTxn,
+} from '../impl/inner-transactions'
 
 function ScopeGenerator(dispose: () => void) {
   function* internal() {
@@ -111,7 +128,7 @@ export class TransactionGroup {
   activeTransactionIndex: number
   latestTimestamp: number
   transactions: Transaction[]
-  itxnGroups: InnerTxn[][] = []
+  itxnGroups: ItxnGroup[] = []
   constructingItxnGroup: InnerTxnFields[] = []
 
   constructor(transactions: Transaction[], activeTransactionIndex?: number) {
@@ -162,7 +179,7 @@ export class TransactionGroup {
     this.constructingItxnGroup.push({} as InnerTxnFields)
   }
 
-  appendInnterTransactionGroup() {
+  appendInnerTransactionGroup() {
     if (!this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn next without itxn begin')
     }
@@ -178,7 +195,130 @@ export class TransactionGroup {
     }
     const itxns = this.constructingItxnGroup.map((t) => createInnerTxn(t))
     itxns.forEach((itxn, index) => Object.assign(itxn, { groupIndex: asUint64(index) }))
-    this.itxnGroups.push(itxns)
+    this.itxnGroups.push(new ItxnGroup(itxns))
     this.constructingItxnGroup = []
+  }
+
+  getItxnGroup(index?: internal.primitives.StubUint64Compat): ItxnGroup {
+    const i = index !== undefined ? asNumber(index) : undefined
+
+    testInvariant(this.itxnGroups.length > 0, 'no previous inner transactions')
+    if (i !== undefined && i >= this.itxnGroups.length) {
+      throw new internal.errors.InternalError('Invalid group index')
+    }
+    const group = i !== undefined ? this.itxnGroups[i] : this.itxnGroups.at(-1)!
+    testInvariant(group.itxns.length > 0, 'no previous inner transactions')
+
+    return group
+  }
+  getApplicationTransaction(index?: internal.primitives.StubUint64Compat): ApplicationTransaction {
+    return this.getTransactionImpl({ type: TransactionType.ApplicationCall, index }) as ApplicationTransaction
+  }
+  getAssetConfigTransaction(index?: internal.primitives.StubUint64Compat): AssetConfigTransaction {
+    return this.getTransactionImpl({ type: TransactionType.AssetConfig, index }) as AssetConfigTransaction
+  }
+  getAssetTransferTransaction(index?: internal.primitives.StubUint64Compat): AssetTransferTransaction {
+    return this.getTransactionImpl({ type: TransactionType.AssetTransfer, index }) as AssetTransferTransaction
+  }
+  getAssetFreezeTransaction(index?: internal.primitives.StubUint64Compat): AssetFreezeTransaction {
+    return this.getTransactionImpl({ type: TransactionType.AssetFreeze, index }) as AssetFreezeTransaction
+  }
+  getKeyRegistrationTransaction(index?: internal.primitives.StubUint64Compat): KeyRegistrationTransaction {
+    return this.getTransactionImpl({ type: TransactionType.KeyRegistration, index }) as KeyRegistrationTransaction
+  }
+  getPaymentTransaction(index?: internal.primitives.StubUint64Compat): PaymentTransaction {
+    return this.getTransactionImpl({ type: TransactionType.Payment, index }) as PaymentTransaction
+  }
+  getTransaction(index?: internal.primitives.StubUint64Compat): Transaction {
+    return this.getTransactionImpl({ index })
+  }
+  private getTransactionImpl({ type, index }: { type?: TransactionType; index?: internal.primitives.StubUint64Compat }) {
+    const i = index !== undefined ? asNumber(index) : undefined
+    if (i !== undefined && i >= lazyContext.activeGroup.transactions.length) {
+      throw new internal.errors.InternalError('Invalid group index')
+    }
+    const transaction = i !== undefined ? lazyContext.activeGroup.transactions[i] : lazyContext.activeGroup.activeTransaction
+    if (type === undefined) {
+      return transaction
+    }
+    if (transaction.type !== type) {
+      throw new internal.errors.InternalError(`Invalid transaction type: ${transaction.type}`)
+    }
+    switch (type) {
+      case TransactionType.ApplicationCall:
+        return transaction as ApplicationTransaction
+      case TransactionType.Payment:
+        return transaction as PaymentTransaction
+      case TransactionType.AssetConfig:
+        return transaction as AssetConfigTransaction
+      case TransactionType.AssetTransfer:
+        return transaction as AssetTransferTransaction
+      case TransactionType.AssetFreeze:
+        return transaction as AssetFreezeTransaction
+      case TransactionType.KeyRegistration:
+        return transaction as KeyRegistrationTransaction
+      default:
+        throw new internal.errors.InternalError(`Invalid transaction type: ${type}`)
+    }
+  }
+}
+
+export class ItxnGroup {
+  itxns: InnerTxn[] = []
+  constructor(itxns: InnerTxn[]) {
+    this.itxns = itxns
+  }
+
+  getApplicationInnerTxn(index?: internal.primitives.StubUint64Compat): ApplicationInnerTxn {
+    return this.getInnerTxnImpl({ type: TransactionType.ApplicationCall, index }) as ApplicationInnerTxn
+  }
+  getAssetConfigInnerTxn(index?: internal.primitives.StubUint64Compat): AssetConfigInnerTxn {
+    return this.getInnerTxnImpl({ type: TransactionType.AssetConfig, index }) as AssetConfigInnerTxn
+  }
+  getAssetTransferInnerTxn(index?: internal.primitives.StubUint64Compat): AssetTransferInnerTxn {
+    return this.getInnerTxnImpl({ type: TransactionType.AssetTransfer, index }) as AssetTransferInnerTxn
+  }
+  getAssetFreezeInnerTxn(index?: internal.primitives.StubUint64Compat): AssetFreezeInnerTxn {
+    return this.getInnerTxnImpl({ type: TransactionType.AssetFreeze, index }) as AssetFreezeInnerTxn
+  }
+  getKeyRegistrationInnerTxn(index?: internal.primitives.StubUint64Compat): KeyRegistrationInnerTxn {
+    return this.getInnerTxnImpl({ type: TransactionType.KeyRegistration, index }) as KeyRegistrationInnerTxn
+  }
+  getPaymentInnerTxn(index?: internal.primitives.StubUint64Compat): PaymentInnerTxn {
+    return this.getInnerTxnImpl({ type: TransactionType.Payment, index }) as PaymentInnerTxn
+  }
+  getInnerTxn(index?: internal.primitives.StubUint64Compat): InnerTxn {
+    return this.getInnerTxnImpl({ index })
+  }
+
+  private getInnerTxnImpl({ type, index }: { type?: TransactionType; index?: internal.primitives.StubUint64Compat }) {
+    testInvariant(this.itxns.length > 0, 'no previous inner transactions')
+    const i = index !== undefined ? asNumber(index) : undefined
+    if (i !== undefined && i >= this.itxns.length) {
+      throw new internal.errors.InternalError('Invalid group index')
+    }
+    const transaction = i !== undefined ? this.itxns[i] : this.itxns.at(-1)!
+    if (type === undefined) {
+      return transaction
+    }
+    if (transaction.type !== type) {
+      throw new internal.errors.InternalError(`Invalid transaction type: ${transaction.type}`)
+    }
+    switch (type) {
+      case TransactionType.ApplicationCall:
+        return transaction as ApplicationInnerTxn
+      case TransactionType.Payment:
+        return transaction as PaymentInnerTxn
+      case TransactionType.AssetConfig:
+        return transaction as AssetConfigInnerTxn
+      case TransactionType.AssetTransfer:
+        return transaction as AssetTransferInnerTxn
+      case TransactionType.AssetFreeze:
+        return transaction as AssetFreezeInnerTxn
+      case TransactionType.KeyRegistration:
+        return transaction as KeyRegistrationInnerTxn
+      default:
+        throw new internal.errors.InternalError(`Invalid transaction type: ${type}`)
+    }
   }
 }

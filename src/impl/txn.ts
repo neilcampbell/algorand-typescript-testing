@@ -1,10 +1,15 @@
-import { Account, Application, arc4, Asset, bytes, gtxn, internal, TransactionType, uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Application, arc4, Asset, bytes, internal, TransactionType, uint64 } from '@algorandfoundation/algo-ts'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asNumber, asUint64, asUint64Cls } from '../util'
-
-const getActiveTransaction = <T extends gtxn.Transaction>(): T => {
-  return lazyContext.activeGroup.activeTransaction as T
-}
+// import {
+//   getApplicationTransaction,
+//   getAssetConfigTransaction,
+//   getAssetFreezeTransaction,
+//   getAssetTransferTransaction,
+//   getKeyRegistrationTransaction,
+//   getPaymentTransaction,
+//   getTransaction,
+// } from './gtxn'
 
 export const gaid = (a: internal.primitives.StubUint64Compat): uint64 => {
   const group = lazyContext.activeGroup
@@ -20,182 +25,182 @@ export const gaid = (a: internal.primitives.StubUint64Compat): uint64 => {
 
 export const Txn: internal.opTypes.TxnType = {
   get sender(): Account {
-    return getActiveTransaction().sender
+    return lazyContext.activeGroup.getTransaction().sender
   },
 
   /**
    * microalgos
    */
   get fee(): uint64 {
-    return getActiveTransaction().fee
+    return lazyContext.activeGroup.getTransaction().fee
   },
 
   /**
    * round number
    */
   get firstValid(): uint64 {
-    return getActiveTransaction().firstValid
+    return lazyContext.activeGroup.getTransaction().firstValid
   },
 
   /**
    * UNIX timestamp of block before txn.FirstValid. Fails if negative
    */
   get firstValidTime(): uint64 {
-    return getActiveTransaction().firstValidTime
+    return lazyContext.activeGroup.getTransaction().firstValidTime
   },
 
   /**
    * round number
    */
   get lastValid(): uint64 {
-    return getActiveTransaction().lastValid
+    return lazyContext.activeGroup.getTransaction().lastValid
   },
 
   /**
    * Any data up to 1024 bytes
    */
   get note(): bytes {
-    return getActiveTransaction().note
+    return lazyContext.activeGroup.getTransaction().note
   },
 
   /**
    * 32 byte lease value
    */
   get lease(): bytes {
-    return getActiveTransaction().lease
+    return lazyContext.activeGroup.getTransaction().lease
   },
 
   /**
    * 32 byte address
    */
   get receiver(): Account {
-    return getActiveTransaction<gtxn.PaymentTxn>().receiver
+    return lazyContext.activeGroup.getPaymentTransaction().receiver
   },
 
   /**
    * microalgos
    */
   get amount(): uint64 {
-    return getActiveTransaction<gtxn.PaymentTxn>().amount
+    return lazyContext.activeGroup.getPaymentTransaction().amount
   },
 
   /**
    * 32 byte address
    */
   get closeRemainderTo(): Account {
-    return getActiveTransaction<gtxn.PaymentTxn>().closeRemainderTo
+    return lazyContext.activeGroup.getPaymentTransaction().closeRemainderTo
   },
 
   /**
    * 32 byte address
    */
   get votePk(): bytes {
-    return getActiveTransaction<gtxn.KeyRegistrationTxn>().voteKey
+    return lazyContext.activeGroup.getKeyRegistrationTransaction().voteKey
   },
 
   /**
    * 32 byte address
    */
   get selectionPk(): bytes {
-    return getActiveTransaction<gtxn.KeyRegistrationTxn>().selectionKey
+    return lazyContext.activeGroup.getKeyRegistrationTransaction().selectionKey
   },
 
   /**
    * The first round that the participation key is valid.
    */
   get voteFirst(): uint64 {
-    return getActiveTransaction<gtxn.KeyRegistrationTxn>().voteFirst
+    return lazyContext.activeGroup.getKeyRegistrationTransaction().voteFirst
   },
 
   /**
    * The last round that the participation key is valid.
    */
   get voteLast(): uint64 {
-    return getActiveTransaction<gtxn.KeyRegistrationTxn>().voteLast
+    return lazyContext.activeGroup.getKeyRegistrationTransaction().voteLast
   },
 
   /**
    * Dilution for the 2-level participation key
    */
   get voteKeyDilution(): uint64 {
-    return getActiveTransaction<gtxn.KeyRegistrationTxn>().voteKeyDilution
+    return lazyContext.activeGroup.getKeyRegistrationTransaction().voteKeyDilution
   },
 
   /**
    * Transaction type as bytes
    */
   get type(): bytes {
-    return asUint64Cls(getActiveTransaction().type).toBytes().asAlgoTs()
+    return asUint64Cls(lazyContext.activeGroup.getTransaction().type).toBytes().asAlgoTs()
   },
 
   /**
    * Transaction type as integer
    */
   get typeEnum(): uint64 {
-    return asUint64(getActiveTransaction().type)
+    return asUint64(lazyContext.activeGroup.getTransaction().type)
   },
 
   /**
    * Asset ID
    */
   get xferAsset(): Asset {
-    return getActiveTransaction<gtxn.AssetTransferTxn>().xferAsset
+    return lazyContext.activeGroup.getAssetTransferTransaction().xferAsset
   },
 
   /**
    * value in Asset's units
    */
   get assetAmount(): uint64 {
-    return getActiveTransaction<gtxn.AssetTransferTxn>().assetAmount
+    return lazyContext.activeGroup.getAssetTransferTransaction().assetAmount
   },
 
   /**
    * 32 byte address. Source of assets if Sender is the Asset's Clawback address.
    */
   get assetSender(): Account {
-    return getActiveTransaction<gtxn.AssetTransferTxn>().assetSender
+    return lazyContext.activeGroup.getAssetTransferTransaction().assetSender
   },
 
   /**
    * 32 byte address
    */
   get assetReceiver(): Account {
-    return getActiveTransaction<gtxn.AssetTransferTxn>().assetReceiver
+    return lazyContext.activeGroup.getAssetTransferTransaction().assetReceiver
   },
 
   /**
    * 32 byte address
    */
   get assetCloseTo(): Account {
-    return getActiveTransaction<gtxn.AssetTransferTxn>().assetCloseTo
+    return lazyContext.activeGroup.getAssetTransferTransaction().assetCloseTo
   },
 
   /**
    * Position of this transaction within an atomic transaction group. A stand-alone transaction is implicitly element 0 in a group of 1
    */
   get groupIndex(): uint64 {
-    return getActiveTransaction().groupIndex
+    return lazyContext.activeGroup.getTransaction().groupIndex
   },
 
   /**
    * The computed ID for this transaction. 32 bytes.
    */
   get txId(): bytes {
-    return getActiveTransaction().txnId
+    return lazyContext.activeGroup.getTransaction().txnId
   },
 
   /**
    * ApplicationID from ApplicationCall transaction
    */
   get applicationId(): Application {
-    return getActiveTransaction<gtxn.ApplicationTxn>().appId
+    return lazyContext.activeGroup.getApplicationTransaction().appId
   },
 
   /**
    * ApplicationCall transaction on completion action
    */
   get onCompletion(): uint64 {
-    const onCompletionStr = getActiveTransaction<gtxn.ApplicationTxn>().onCompletion
+    const onCompletionStr = lazyContext.activeGroup.getApplicationTransaction().onCompletion
     return asUint64(arc4.OnCompleteAction[onCompletionStr])
   },
 
@@ -203,293 +208,293 @@ export const Txn: internal.opTypes.TxnType = {
    * Arguments passed to the application in the ApplicationCall transaction
    */
   applicationArgs(a: internal.primitives.StubUint64Compat): bytes {
-    return getActiveTransaction<gtxn.ApplicationTxn>().appArgs(asUint64(a))
+    return lazyContext.activeGroup.getApplicationTransaction().appArgs(asUint64(a))
   },
 
   /**
    * Number of ApplicationArgs
    */
   get numAppArgs(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().numAppArgs
+    return lazyContext.activeGroup.getApplicationTransaction().numAppArgs
   },
 
   /**
    * Accounts listed in the ApplicationCall transaction
    */
   accounts(a: internal.primitives.StubUint64Compat): Account {
-    return getActiveTransaction<gtxn.ApplicationTxn>().accounts(asUint64(a))
+    return lazyContext.activeGroup.getApplicationTransaction().accounts(asUint64(a))
   },
 
   /**
    * Number of Accounts
    */
   get numAccounts(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().numAccounts
+    return lazyContext.activeGroup.getApplicationTransaction().numAccounts
   },
 
   /**
    * Approval program
    */
   get approvalProgram(): bytes {
-    return getActiveTransaction<gtxn.ApplicationTxn>().approvalProgram
+    return lazyContext.activeGroup.getApplicationTransaction().approvalProgram
   },
 
   /**
    * Clear state program
    */
   get clearStateProgram(): bytes {
-    return getActiveTransaction<gtxn.ApplicationTxn>().clearStateProgram
+    return lazyContext.activeGroup.getApplicationTransaction().clearStateProgram
   },
 
   /**
    * 32 byte Sender's new AuthAddr
    */
   get rekeyTo(): Account {
-    return getActiveTransaction().rekeyTo
+    return lazyContext.activeGroup.getTransaction().rekeyTo
   },
 
   /**
    * Asset ID in asset config transaction
    */
   get configAsset(): Asset {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().configAsset
+    return lazyContext.activeGroup.getAssetConfigTransaction().configAsset
   },
 
   /**
    * Total number of units of this asset created
    */
   get configAssetTotal(): uint64 {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().total
+    return lazyContext.activeGroup.getAssetConfigTransaction().total
   },
 
   /**
    * Number of digits to display after the decimal place when displaying the asset
    */
   get configAssetDecimals(): uint64 {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().decimals
+    return lazyContext.activeGroup.getAssetConfigTransaction().decimals
   },
 
   /**
    * Whether the asset's slots are frozen by default or not, 0 or 1
    */
   get configAssetDefaultFrozen(): boolean {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().defaultFrozen
+    return lazyContext.activeGroup.getAssetConfigTransaction().defaultFrozen
   },
 
   /**
    * Unit name of the asset
    */
   get configAssetUnitName(): bytes {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().unitName
+    return lazyContext.activeGroup.getAssetConfigTransaction().unitName
   },
 
   /**
    * The asset name
    */
   get configAssetName(): bytes {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().assetName
+    return lazyContext.activeGroup.getAssetConfigTransaction().assetName
   },
 
   /**
    * URL
    */
   get configAssetUrl(): bytes {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().url
+    return lazyContext.activeGroup.getAssetConfigTransaction().url
   },
 
   /**
    * 32 byte commitment to unspecified asset metadata
    */
   get configAssetMetadataHash(): bytes {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().metadataHash
+    return lazyContext.activeGroup.getAssetConfigTransaction().metadataHash
   },
 
   /**
    * 32 byte address
    */
   get configAssetManager(): Account {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().manager
+    return lazyContext.activeGroup.getAssetConfigTransaction().manager
   },
 
   /**
    * 32 byte address
    */
   get configAssetReserve(): Account {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().reserve
+    return lazyContext.activeGroup.getAssetConfigTransaction().reserve
   },
 
   /**
    * 32 byte address
    */
   get configAssetFreeze(): Account {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().freeze
+    return lazyContext.activeGroup.getAssetConfigTransaction().freeze
   },
 
   /**
    * 32 byte address
    */
   get configAssetClawback(): Account {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().clawback
+    return lazyContext.activeGroup.getAssetConfigTransaction().clawback
   },
 
   /**
    * Asset ID being frozen or un-frozen
    */
   get freezeAsset(): Asset {
-    return getActiveTransaction<gtxn.AssetFreezeTxn>().freezeAsset
+    return lazyContext.activeGroup.getAssetFreezeTransaction().freezeAsset
   },
 
   /**
    * 32 byte address of the account whose asset slot is being frozen or un-frozen
    */
   get freezeAssetAccount(): Account {
-    return getActiveTransaction<gtxn.AssetFreezeTxn>().freezeAccount
+    return lazyContext.activeGroup.getAssetFreezeTransaction().freezeAccount
   },
 
   /**
    * The new frozen value, 0 or 1
    */
   get freezeAssetFrozen(): boolean {
-    return getActiveTransaction<gtxn.AssetFreezeTxn>().frozen
+    return lazyContext.activeGroup.getAssetFreezeTransaction().frozen
   },
 
   /**
    * Foreign Assets listed in the ApplicationCall transaction
    */
   assets(a: internal.primitives.StubUint64Compat): Asset {
-    return getActiveTransaction<gtxn.ApplicationTxn>().assets(asUint64(a))
+    return lazyContext.activeGroup.getApplicationTransaction().assets(asUint64(a))
   },
 
   /**
    * Number of Assets
    */
   get numAssets(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().numAssets
+    return lazyContext.activeGroup.getApplicationTransaction().numAssets
   },
 
   /**
    * Foreign Apps listed in the ApplicationCall transaction
    */
   applications(a: internal.primitives.StubUint64Compat): Application {
-    return getActiveTransaction<gtxn.ApplicationTxn>().apps(asUint64(a))
+    return lazyContext.activeGroup.getApplicationTransaction().apps(asUint64(a))
   },
 
   /**
    * Number of Applications
    */
   get numApplications(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().numApps
+    return lazyContext.activeGroup.getApplicationTransaction().numApps
   },
 
   /**
    * Number of global state integers in ApplicationCall
    */
   get globalNumUint(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().globalNumUint
+    return lazyContext.activeGroup.getApplicationTransaction().globalNumUint
   },
 
   /**
    * Number of global state byteslices in ApplicationCall
    */
   get globalNumByteSlice(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().globalNumBytes
+    return lazyContext.activeGroup.getApplicationTransaction().globalNumBytes
   },
 
   /**
    * Number of local state integers in ApplicationCall
    */
   get localNumUint(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().localNumUint
+    return lazyContext.activeGroup.getApplicationTransaction().localNumUint
   },
 
   /**
    * Number of local state byteslices in ApplicationCall
    */
   get localNumByteSlice(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().localNumBytes
+    return lazyContext.activeGroup.getApplicationTransaction().localNumBytes
   },
 
   /**
    * Number of additional pages for each of the application's approval and clear state programs. An ExtraProgramPages of 1 means 2048 more total bytes, or 1024 for each program.
    */
   get extraProgramPages(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().extraProgramPages
+    return lazyContext.activeGroup.getApplicationTransaction().extraProgramPages
   },
 
   /**
    * Marks an account nonparticipating for rewards
    */
   get nonparticipation(): boolean {
-    return getActiveTransaction<gtxn.KeyRegistrationTxn>().nonparticipation
+    return lazyContext.activeGroup.getKeyRegistrationTransaction().nonparticipation
   },
 
   /**
    * Log messages emitted by an application call (only with `itxn` in v5). Application mode only
    */
   logs(a: internal.primitives.StubUint64Compat): bytes {
-    return getActiveTransaction<gtxn.ApplicationTxn>().logs(asUint64(a))
+    return lazyContext.activeGroup.getApplicationTransaction().logs(asUint64(a))
   },
 
   /**
    * Number of Logs (only with `itxn` in v5). Application mode only
    */
   get numLogs(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().numLogs
+    return lazyContext.activeGroup.getApplicationTransaction().numLogs
   },
 
   /**
    * Asset ID allocated by the creation of an ASA (only with `itxn` in v5). Application mode only
    */
   get createdAssetId(): Asset {
-    return getActiveTransaction<gtxn.AssetConfigTxn>().createdAsset
+    return lazyContext.activeGroup.getAssetConfigTransaction().createdAsset
   },
 
   /**
    * ApplicationID allocated by the creation of an application (only with `itxn` in v5). Application mode only
    */
   get createdApplicationId(): Application {
-    return getActiveTransaction<gtxn.ApplicationTxn>().createdApp
+    return lazyContext.activeGroup.getApplicationTransaction().createdApp
   },
 
   /**
    * The last message emitted. Empty bytes if none were emitted. Application mode only
    */
   get lastLog(): bytes {
-    return getActiveTransaction<gtxn.ApplicationTxn>().lastLog
+    return lazyContext.activeGroup.getApplicationTransaction().lastLog
   },
 
   /**
    * 64 byte state proof public key
    */
   get stateProofPk(): bytes {
-    return getActiveTransaction<gtxn.KeyRegistrationTxn>().stateProofKey
+    return lazyContext.activeGroup.getKeyRegistrationTransaction().stateProofKey
   },
 
   /**
    * Approval Program as an array of pages
    */
   approvalProgramPages(a: internal.primitives.StubUint64Compat): bytes {
-    return getActiveTransaction<gtxn.ApplicationTxn>().approvalProgramPages(asUint64(a))
+    return lazyContext.activeGroup.getApplicationTransaction().approvalProgramPages(asUint64(a))
   },
 
   /**
    * Number of Approval Program pages
    */
   get numApprovalProgramPages(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().numApprovalProgramPages
+    return lazyContext.activeGroup.getApplicationTransaction().numApprovalProgramPages
   },
 
   /**
    * ClearState Program as an array of pages
    */
   clearStateProgramPages(a: internal.primitives.StubUint64Compat): bytes {
-    return getActiveTransaction<gtxn.ApplicationTxn>().clearStateProgramPages(asUint64(a))
+    return lazyContext.activeGroup.getApplicationTransaction().clearStateProgramPages(asUint64(a))
   },
 
   /**
    * Number of ClearState Program pages
    */
   get numClearStateProgramPages(): uint64 {
-    return getActiveTransaction<gtxn.ApplicationTxn>().numClearStateProgramPages
+    return lazyContext.activeGroup.getApplicationTransaction().numClearStateProgramPages
   },
 }

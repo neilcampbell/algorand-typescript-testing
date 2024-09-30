@@ -1,6 +1,6 @@
 import { internal, bytes } from '@algorandfoundation/algo-ts'
 import { randomBytes } from 'crypto'
-import { BITS_IN_BYTE, MAX_UINT512, MAX_UINT8, UINT512_SIZE } from './constants'
+import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT512, MAX_UINT8, UINT512_SIZE } from './constants'
 import { DeliberateAny } from './typescript-helpers'
 
 export const nameOfType = (x: unknown) => {
@@ -147,4 +147,17 @@ export const getObjectReference = (obj: DeliberateAny): bigint => {
   })
 
   return ref
+}
+
+export const combineIntoMaxBytePages = (pages: bytes[]): bytes[] => {
+  const combined = pages.reduce((acc, x) => acc.concat(x), asBytesCls(''))
+  const totalPages = (asNumber(combined.length) + MAX_BYTES_SIZE - 1) / MAX_BYTES_SIZE
+  const result = [] as bytes[]
+  for (let i = 0; i < totalPages; i++) {
+    const start = i * MAX_BYTES_SIZE
+    const end = Math.min((i + 1) * MAX_BYTES_SIZE, asNumber(combined.length))
+    const page = combined.slice(start, end)
+    result.push(page.asAlgoTs())
+  }
+  return result
 }

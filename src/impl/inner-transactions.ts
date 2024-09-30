@@ -18,8 +18,10 @@ const mapCommonFields = <T extends InnerTxnFields>(
   fields: T,
 ): Omit<T, 'sender' | 'note' | 'rekeyTo'> & { sender?: Account; note?: bytes; rekeyTo?: Account } => {
   const { sender, note, rekeyTo, ...rest } = fields
+
   return {
-    sender: sender instanceof Account ? sender : typeof sender === 'string' ? Account(asBytes(sender)) : undefined,
+    sender:
+      sender instanceof Account ? sender : typeof sender === 'string' ? Account(asBytes(sender)) : lazyContext.activeApplication.address,
     note: note !== undefined ? asBytes(note) : undefined,
     rekeyTo: rekeyTo instanceof Account ? rekeyTo : typeof rekeyTo === 'string' ? Account(asBytes(rekeyTo)) : undefined,
     ...rest,

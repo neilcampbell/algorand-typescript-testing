@@ -1,4 +1,17 @@
-import { Account, Application, arc4, assert, Asset, bytes, op, Txn, uint64 } from '@algorandfoundation/algo-ts'
+import {
+  Account,
+  Application,
+  arc4,
+  assert,
+  Asset,
+  Bytes,
+  bytes,
+  op,
+  TransactionType,
+  Txn,
+  Uint64,
+  uint64,
+} from '@algorandfoundation/algo-ts'
 
 function get_1st_ref_index(): uint64 {
   return op.btoi(Txn.applicationArgs(1))
@@ -333,5 +346,32 @@ export class StateAppParamsContract extends arc4.Contract {
     assert(exists == exists_index, 'expected exists by index to match')
     // TODO: return arc4.Address(value)
     return value
+  }
+}
+
+export class ITxnOpsContract extends arc4.Contract {
+  @arc4.abimethod()
+  public verify_itxn_ops() {
+    op.ITxnCreate.begin()
+    op.ITxnCreate.setTypeEnum(TransactionType.ApplicationCall)
+    op.ITxnCreate.setOnCompletion(arc4.OnCompleteAction.DeleteApplication)
+    op.ITxnCreate.setApprovalProgram(Bytes.fromHex('068101'))
+
+    // pages essentially appends
+    op.ITxnCreate.setApprovalProgramPages(Bytes.fromHex('068101'))
+    op.ITxnCreate.setClearStateProgram(Bytes.fromHex('068101'))
+    op.ITxnCreate.setFee(op.Global.minTxnFee)
+    op.ITxnCreate.next()
+    op.ITxnCreate.setTypeEnum(TransactionType.Payment)
+    op.ITxnCreate.setReceiver(op.Global.creatorAddress)
+    op.ITxnCreate.setAmount(Uint64(1000))
+    op.ITxnCreate.submit()
+
+    assert(op.ITxn.receiver === op.Global.creatorAddress)
+    assert(op.ITxn.amount === Uint64(1000))
+    assert(op.ITxn.typeEnum === TransactionType.Payment)
+
+    assert(op.GITxn.typeEnum(0) == TransactionType.ApplicationCall)
+    assert(op.GITxn.typeEnum(1) == TransactionType.Payment)
   }
 }

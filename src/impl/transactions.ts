@@ -14,7 +14,7 @@ import {
 import { MAX_ITEMS_IN_LOG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable, ObjectKeys } from '../typescript-helpers'
-import { asBytes, asNumber, getRandomBytes } from '../util'
+import { asBytes, asNumber, asUint64Cls, combineIntoMaxBytePages, getRandomBytes } from '../util'
 
 const baseDefaultFields = () => ({
   sender: lazyContext.defaultSender,
@@ -24,7 +24,6 @@ const baseDefaultFields = () => ({
   lastValid: Uint64(0),
   note: Bytes(),
   lease: Bytes(),
-  typeBytes: Bytes(),
   groupIndex: Uint64(0),
   txnId: getRandomBytes(32).asAlgoTs(),
   rekeyTo: Account(),
@@ -42,7 +41,6 @@ abstract class TransactionBase {
     this.lastValid = fields.lastValid ?? baseDefaults.lastValid
     this.note = fields.note ?? baseDefaults.note
     this.lease = fields.lease ?? baseDefaults.lease
-    this.typeBytes = fields.typeBytes ?? baseDefaults.typeBytes
     this.groupIndex = fields.groupIndex ?? baseDefaults.groupIndex
     this.txnId = fields.txnId ?? baseDefaults.txnId
     this.rekeyTo = fields.rekeyTo ?? baseDefaults.rekeyTo
@@ -55,7 +53,6 @@ abstract class TransactionBase {
   readonly lastValid: uint64
   readonly note: bytes
   readonly lease: bytes
-  readonly typeBytes: bytes
   readonly groupIndex: uint64
   readonly txnId: bytes
   readonly rekeyTo: Account
@@ -78,6 +75,7 @@ export class PaymentTransaction extends TransactionBase implements gtxn.PaymentT
   readonly amount: uint64
   readonly closeRemainderTo: Account
   readonly type: TransactionType.Payment = TransactionType.Payment
+  readonly typeBytes: bytes = asUint64Cls(TransactionType.Payment).toBytes().asAlgoTs()
 }
 
 export class KeyRegistrationTransaction extends TransactionBase implements gtxn.KeyRegistrationTxn {
@@ -105,6 +103,7 @@ export class KeyRegistrationTransaction extends TransactionBase implements gtxn.
   readonly nonparticipation: boolean
   readonly stateProofKey: bytes
   readonly type: TransactionType.KeyRegistration = TransactionType.KeyRegistration
+  readonly typeBytes: bytes = asUint64Cls(TransactionType.KeyRegistration).toBytes().asAlgoTs()
 }
 
 export class AssetConfigTransaction extends TransactionBase implements gtxn.AssetConfigTxn {
@@ -144,6 +143,7 @@ export class AssetConfigTransaction extends TransactionBase implements gtxn.Asse
   readonly clawback: Account
   readonly createdAsset: Asset
   readonly type: TransactionType.AssetConfig = TransactionType.AssetConfig
+  readonly typeBytes: bytes = asUint64Cls(TransactionType.AssetConfig).toBytes().asAlgoTs()
 }
 
 export class AssetTransferTransaction extends TransactionBase implements gtxn.AssetTransferTxn {
@@ -168,6 +168,7 @@ export class AssetTransferTransaction extends TransactionBase implements gtxn.As
   readonly assetCloseTo: Account
 
   readonly type: TransactionType.AssetTransfer = TransactionType.AssetTransfer
+  readonly typeBytes: bytes = asUint64Cls(TransactionType.AssetTransfer).toBytes().asAlgoTs()
 }
 
 export class AssetFreezeTransaction extends TransactionBase implements gtxn.AssetFreezeTxn {
@@ -188,6 +189,7 @@ export class AssetFreezeTransaction extends TransactionBase implements gtxn.Asse
   readonly frozen: boolean
 
   readonly type: TransactionType.AssetFreeze = TransactionType.AssetFreeze
+  readonly typeBytes: bytes = asUint64Cls(TransactionType.AssetFreeze).toBytes().asAlgoTs()
 }
 
 export type ApplicationTransactionFields = TxnFields<gtxn.ApplicationTxn> &
@@ -260,10 +262,10 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     return Uint64(this.#apps.length)
   }
   get numApprovalProgramPages() {
-    return Uint64(this.#approvalProgramPages.length)
+    return Uint64(this.approvalProgramPages.length)
   }
   get numClearStateProgramPages() {
-    return Uint64(this.#clearStateProgramPages.length)
+    return Uint64(this.clearStateProgramPages.length)
   }
   get numLogs() {
     return Uint64(this.#appLogs.length || lazyContext.getApplicationData(this.appId.id).appLogs.length)
@@ -284,16 +286,17 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     return this.#apps[asNumber(index)]
   }
   approvalProgramPages(index: internal.primitives.StubUint64Compat): bytes {
-    return this.#approvalProgramPages[asNumber(index)]
+    return combineIntoMaxBytePages(this.#approvalProgramPages)[asNumber(index)]
   }
   clearStateProgramPages(index: internal.primitives.StubUint64Compat): bytes {
-    return this.#clearStateProgramPages[asNumber(index)]
+    return combineIntoMaxBytePages(this.#clearStateProgramPages)[asNumber(index)]
   }
   logs(index: internal.primitives.StubUint64Compat): bytes {
     const i = asNumber(index)
     return this.#appLogs[i] ?? lazyContext.getApplicationData(this.appId.id).appLogs ?? Bytes()
   }
   readonly type: TransactionType.ApplicationCall = TransactionType.ApplicationCall
+  readonly typeBytes: bytes = asUint64Cls(TransactionType.ApplicationCall).toBytes().asAlgoTs()
 
   /* @internal */
   get appLogs() {

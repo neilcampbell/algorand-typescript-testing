@@ -1,4 +1,4 @@
-import { Account, bytes, Bytes, internal, op, uint64, Uint64 } from '@algorandfoundation/algo-ts'
+import { Account, arc4, bytes, Bytes, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algo-ts'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
@@ -13,11 +13,12 @@ import {
 } from './avm-invoker'
 
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
-import { ZERO_ADDRESS } from '../src/constants'
+import { MIN_TXN_FEE, ZERO_ADDRESS } from '../src/constants'
 import { AccountCls } from '../src/impl/account'
-import { asBigInt, asNumber } from '../src/util'
+import { asBigInt, asNumber, asUint64Cls } from '../src/util'
 import { AppExpectingEffects } from './artifacts/created-app-asset/contract.algo'
 import {
+  ITxnOpsContract,
   StateAcctParamsGetContract,
   StateAppParamsContract,
   StateAssetHoldingContract,
@@ -28,6 +29,8 @@ import appParamsAppSpecJson from './artifacts/state-ops/data/StateAppParamsContr
 import assetHoldingAppSpecJson from './artifacts/state-ops/data/StateAssetHoldingContract.arc32.json'
 import assetParamsAppSpecJson from './artifacts/state-ops/data/StateAssetParamsContract.arc32.json'
 import { asUint8Array } from './util'
+import { InnerTxn } from '../src/impl/itxn'
+import { ApplicationTransaction } from '../src/impl/transactions'
 
 describe('State op codes', async () => {
   const ctx = new TestExecutionContext()
@@ -258,7 +261,7 @@ describe('State op codes', async () => {
         expect(op.Global.callerApplicationId.valueOf()).toEqual(caller.id.valueOf())
         expect(op.Global.callerApplicationAddress).toEqual(caller.address)
       })
-      expect(asUint8Array(firstGroupId)).not.toEqual(asUint8Array(secondGroupId))
+      expect([...asUint8Array(firstGroupId)]).not.toEqual([...asUint8Array(secondGroupId)])
       expect(firstTimestamp.valueOf()).not.toEqual(secondTimestamp.valueOf())
     })
   })
@@ -295,5 +298,62 @@ describe('State op codes', async () => {
     //   const contract = ctx.contract.create(AppExpectingEffects)
     //   contract.log_group(appCallTxn)
     // })
+  })
+
+  describe('itxn', async () => {
+    it('should return the correct field value of the transaction', async () => {
+      // arrange
+      const contract = ctx.contract.create(ITxnOpsContract)
+
+      // act
+      contract.verify_itxn_ops()
+
+      // assert
+      const itxnGroup = ctx.txn.lastGroup.getItxnGroup(0)
+      const appItxn = itxnGroup.getApplicationInnerTxn(0)
+      const paymentItxn = itxnGroup.getPaymentInnerTxn(1)
+
+      // Test application call transaction fields
+      expect([...asUint8Array(appItxn.approvalProgram)]).toEqual([...asUint8Array(Bytes.fromHex('068101068101'))])
+      expect([...asUint8Array(appItxn.clearStateProgram)]).toEqual([...asUint8Array(Bytes.fromHex('068101'))])
+      const approvalPages = Array(asNumber(appItxn.numApprovalProgramPages))
+        .fill(0)
+        .map((_, i) => [...asUint8Array(appItxn.approvalProgramPages(i))])
+      expect(approvalPages).toEqual([[...asUint8Array(appItxn.approvalProgram)]])
+      expect(appItxn.onCompletion).toEqual(arc4.OnCompleteAction[arc4.OnCompleteAction['DeleteApplication']])
+      expect(asNumber(appItxn.fee)).toEqual(MIN_TXN_FEE)
+      expect(appItxn.sender).toEqual(ctx.ledger.getApplicationForContract(contract).address)
+      // NOTE: would implementing emulation for this behavior be useful
+      // in unit testing context (vs integration tests)?
+      // considering we don't emulate balance (transfer, accounting for fees and etc)
+      expect(asNumber(appItxn.appId.id)).toEqual(0)
+      expect(appItxn.type).toEqual(TransactionType.ApplicationCall)
+      expect(appItxn.typeBytes).toEqual(asUint64Cls(TransactionType.ApplicationCall).toBytes())
+
+      // Test payment transaction fields
+      expect(paymentItxn.receiver).toEqual(ctx.defaultSender)
+      expect(asNumber(paymentItxn.amount)).toEqual(1000)
+      expect(paymentItxn.sender).toEqual(ctx.ledger.getApplicationForContract(contract).address)
+      expect(paymentItxn.type).toEqual(TransactionType.Payment)
+      expect(appItxn.typeBytes).toEqual(asUint64Cls(TransactionType.Payment).toBytes())
+
+      // Test common fields for both transactions
+      ;[appItxn, paymentItxn].forEach((t: InnerTxn) => {
+        expect(t.sender instanceof AccountCls)
+        expect((t.fee as unknown) instanceof internal.primitives.Uint64Cls)
+        expect((t.firstValid as unknown) instanceof internal.primitives.Uint64Cls)
+        expect((t.lastValid as unknown) instanceof internal.primitives.Uint64Cls)
+        expect(t.note instanceof internal.primitives.BytesCls)
+        expect(t.lease instanceof internal.primitives.BytesCls)
+        expect(t.txnId instanceof internal.primitives.BytesCls)
+      })
+
+      // Test logs (should be empty for newly created transactions as its a void method)
+      expect(asNumber((ctx.txn.lastActive as ApplicationTransaction).numLogs)).toEqual(0)
+      expect((ctx.txn.lastActive as ApplicationTransaction).lastLog).toEqual(Bytes(''))
+
+      // Test created_app and created_asset (should be created for these transactions)
+      expect(appItxn.createdApp).toBeTruthy()
+    })
   })
 })
