@@ -367,4 +367,23 @@ describe('State op codes', async () => {
       })
     })
   })
+
+  describe('Scratch', async () => {
+    test.each([
+      [0, Bytes('test_bytes')],
+      [1, Uint64(42)],
+      [2, Bytes('test_bytes')],
+      [3, Uint64(42)],
+      [255, Bytes('max_index')],
+    ])('should return the correct field value of the scratch slot', async (index: number, value: bytes | uint64) => {
+      const newScratchSpace = Array(256).fill(Uint64(0))
+      newScratchSpace[index] = value
+
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: newScratchSpace })]).execute(() => {})
+
+      expect(ctx.txn.lastGroup.getScratchSlot(index)).toEqual(value)
+
+      expect(() => ctx.txn.lastGroup.getScratchSlot(256)).toThrow('invalid scratch slot')
+    })
+  })
 })

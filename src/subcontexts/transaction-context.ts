@@ -1,4 +1,4 @@
-import { internal, TransactionType, uint64 } from '@algorandfoundation/algo-ts'
+import { bytes, internal, TransactionType, uint64 } from '@algorandfoundation/algo-ts'
 import algosdk from 'algosdk'
 import { lazyContext } from '../context-helpers/internal-context'
 import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
@@ -160,6 +160,10 @@ export class TransactionGroup {
       internal.errors.internalError('itxn field without itxn begin')
     }
     return this.constructingItxnGroup.at(-1)!
+  }
+
+  getScratchSlot(index: internal.primitives.StubUint64Compat): bytes | uint64 {
+    return this.activeTransaction.getScratchSlot(index)
   }
 
   patchActiveTransactionFields(fields: AllTransactionFields) {

@@ -14,7 +14,7 @@ import {
 import { MAX_ITEMS_IN_LOG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable, ObjectKeys } from '../typescript-helpers'
-import { asBytes, asNumber, asUint64Cls, combineIntoMaxBytePages, getRandomBytes } from '../util'
+import { asBytes, asMaybeBytesCls, asMaybeUint64Cls, asNumber, asUint64Cls, combineIntoMaxBytePages, getRandomBytes } from '../util'
 
 const baseDefaultFields = () => ({
   sender: lazyContext.defaultSender,
@@ -44,6 +44,7 @@ abstract class TransactionBase {
     this.groupIndex = fields.groupIndex ?? baseDefaults.groupIndex
     this.txnId = fields.txnId ?? baseDefaults.txnId
     this.rekeyTo = fields.rekeyTo ?? baseDefaults.rekeyTo
+    this.scratchSpace = Array(256).fill(Uint64(0))
   }
 
   readonly sender: Account
@@ -56,6 +57,28 @@ abstract class TransactionBase {
   readonly groupIndex: uint64
   readonly txnId: bytes
   readonly rekeyTo: Account
+  readonly scratchSpace: Array<bytes | uint64>
+
+  setScratchSlot(
+    index: internal.primitives.StubUint64Compat,
+    value: internal.primitives.StubBytesCompat | internal.primitives.StubUint64Compat,
+  ): void {
+    const i = asNumber(index)
+    if (i >= this.scratchSpace.length) {
+      throw internal.errors.internalError('invalid scratch slot')
+    }
+    const bytesValue = asMaybeBytesCls(value)
+    const uint64Value = asMaybeUint64Cls(value)
+    this.scratchSpace[i] = bytesValue?.asAlgoTs() ?? uint64Value?.asAlgoTs() ?? Uint64(0)
+  }
+
+  getScratchSlot(index: internal.primitives.StubUint64Compat): bytes | uint64 {
+    const i = asNumber(index)
+    if (i >= this.scratchSpace.length) {
+      throw internal.errors.internalError('invalid scratch slot')
+    }
+    return this.scratchSpace[i]
+  }
 }
 
 export class PaymentTransaction extends TransactionBase implements gtxn.PaymentTxn {
@@ -201,6 +224,7 @@ export type ApplicationTransactionFields = TxnFields<gtxn.ApplicationTxn> &
     approvalProgramPages: Array<bytes>
     clearStateProgramPages: Array<bytes>
     appLogs: Array<bytes>
+    scratchSpace: Array<bytes | uint64>
   }>
 
 export class ApplicationTransaction extends TransactionBase implements gtxn.ApplicationTxn {
@@ -233,6 +257,7 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     this.#apps = fields.apps ?? []
     this.#approvalProgramPages = fields.approvalProgramPages ?? (fields.approvalProgram ? [fields.approvalProgram] : [])
     this.#clearStateProgramPages = fields.clearStateProgramPages ?? (fields.clearStateProgram ? [fields.clearStateProgram] : [])
+    fields.scratchSpace?.forEach((v, i) => this.setScratchSlot(i, v))
   }
 
   readonly appId: Application

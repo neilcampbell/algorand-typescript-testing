@@ -158,20 +158,20 @@ export class ApplicationInnerTxn extends ApplicationTransaction implements itxn.
   }
 }
 
-export const createInnerTxn = <TFields extends InnerTxnFields, T extends InnerTxn>(fields: TFields): T => {
+export const createInnerTxn = <TFields extends InnerTxnFields>(fields: TFields) => {
   switch (fields.type) {
     case TransactionType.Payment:
-      return new PaymentInnerTxn(fields) as T
+      return new PaymentInnerTxn(fields)
     case TransactionType.AssetConfig:
-      return new AssetConfigInnerTxn(fields) as T
+      return new AssetConfigInnerTxn(fields)
     case TransactionType.AssetTransfer:
-      return new AssetTransferInnerTxn(fields as itxn.AssetTransferFields) as T
+      return new AssetTransferInnerTxn(fields as itxn.AssetTransferFields)
     case TransactionType.AssetFreeze:
-      return new AssetFreezeInnerTxn(fields as itxn.AssetFreezeFields) as T
+      return new AssetFreezeInnerTxn(fields as itxn.AssetFreezeFields)
     case TransactionType.ApplicationCall:
-      return new ApplicationInnerTxn(fields) as unknown as T
+      return new ApplicationInnerTxn(fields)
     case TransactionType.KeyRegistration:
-      return new KeyRegistrationInnerTxn(fields) as T
+      return new KeyRegistrationInnerTxn(fields)
     default:
       throw new internal.errors.InternalError(`Invalid inner transaction type: ${fields.type}`)
   }
@@ -211,7 +211,7 @@ export class ItxnParams<TFields extends InnerTxnFields, TTransaction extends Inn
     this.#fields = { ...fields, type }
   }
   submit(): TTransaction {
-    return createInnerTxn<InnerTxnFields, TTransaction>(this.#fields)
+    return createInnerTxn<InnerTxnFields>(this.#fields) as unknown as TTransaction
   }
 
   set(p: Partial<TFields>) {
