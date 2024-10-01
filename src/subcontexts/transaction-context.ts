@@ -183,7 +183,7 @@ export class TransactionGroup {
     if (!this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn next without itxn begin')
     }
-    this.constructingItxnGroup.push({} as InnerTxnFields)
+    this.constructingItxnGroup.push({ type: TransactionType.Payment } as InnerTxnFields)
   }
 
   submitInnerTransactionGroup() {

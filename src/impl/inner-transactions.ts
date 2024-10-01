@@ -158,21 +158,73 @@ export class ApplicationInnerTxn extends ApplicationTransaction implements itxn.
   }
 }
 
-export const createInnerTxn = (fields: InnerTxnFields): InnerTxn => {
+export const createInnerTxn = <TFields extends InnerTxnFields, T extends InnerTxn>(fields: TFields): T => {
   switch (fields.type) {
     case TransactionType.Payment:
-      return new PaymentInnerTxn(fields)
+      return new PaymentInnerTxn(fields) as T
     case TransactionType.AssetConfig:
-      return new AssetConfigInnerTxn(fields)
+      return new AssetConfigInnerTxn(fields) as T
     case TransactionType.AssetTransfer:
-      return new AssetTransferInnerTxn(fields as itxn.AssetTransferFields)
+      return new AssetTransferInnerTxn(fields as itxn.AssetTransferFields) as T
     case TransactionType.AssetFreeze:
-      return new AssetFreezeInnerTxn(fields as itxn.AssetFreezeFields)
+      return new AssetFreezeInnerTxn(fields as itxn.AssetFreezeFields) as T
     case TransactionType.ApplicationCall:
-      return new ApplicationInnerTxn(fields)
+      return new ApplicationInnerTxn(fields) as unknown as T
     case TransactionType.KeyRegistration:
-      return new KeyRegistrationInnerTxn(fields)
+      return new KeyRegistrationInnerTxn(fields) as T
     default:
-      internal.errors.internalError(`Invalid inner transaction type: ${fields.type}`)
+      throw new internal.errors.InternalError(`Invalid inner transaction type: ${fields.type}`)
+  }
+}
+
+export function submitGroup<TFields extends itxn.InnerTxnList>(...transactionFields: TFields): itxn.TxnFor<TFields> {
+  return transactionFields.map((f: (typeof transactionFields)[number]) => f.submit()) as itxn.TxnFor<TFields>
+}
+export function payment(fields: itxn.PaymentFields): itxn.PaymentItxnParams {
+  ensureItxnGroupBegin()
+  return new ItxnParams<itxn.PaymentFields, itxn.PaymentInnerTxn>(fields, TransactionType.Payment)
+}
+export function keyRegistration(fields: itxn.KeyRegistrationFields): itxn.KeyRegistrationItxnParams {
+  ensureItxnGroupBegin()
+  return new ItxnParams<itxn.KeyRegistrationFields, itxn.KeyRegistrationInnerTxn>(fields, TransactionType.KeyRegistration)
+}
+export function assetConfig(fields: itxn.AssetConfigFields): itxn.AssetConfigItxnParams {
+  ensureItxnGroupBegin()
+  return new ItxnParams<itxn.AssetConfigFields, itxn.AssetConfigInnerTxn>(fields, TransactionType.AssetConfig)
+}
+export function assetTransfer(fields: itxn.AssetTransferFields): itxn.AssetTransferItxnParams {
+  ensureItxnGroupBegin()
+  return new ItxnParams<itxn.AssetTransferFields, itxn.AssetTransferInnerTxn>(fields, TransactionType.AssetTransfer)
+}
+export function assetFreeze(fields: itxn.AssetFreezeFields): itxn.AssetFreezeItxnParams {
+  ensureItxnGroupBegin()
+  return new ItxnParams<itxn.AssetFreezeFields, itxn.AssetFreezeInnerTxn>(fields, TransactionType.AssetFreeze)
+}
+export function applicationCall(fields: itxn.ApplicationCallFields): itxn.ApplicationCallItxnParams {
+  ensureItxnGroupBegin()
+  return new ItxnParams<itxn.ApplicationCallFields, itxn.ApplicationInnerTxn>(fields, TransactionType.ApplicationCall)
+}
+
+export class ItxnParams<TFields extends InnerTxnFields, TTransaction extends InnerTxn> {
+  #fields: TFields & { type: TransactionType }
+  constructor(fields: TFields, type: TransactionType) {
+    this.#fields = { ...fields, type }
+  }
+  submit(): TTransaction {
+    return createInnerTxn<InnerTxnFields, TTransaction>(this.#fields)
+  }
+
+  set(p: Partial<TFields>) {
+    Object.assign(this.#fields, p)
+  }
+
+  copy() {
+    return new ItxnParams<TFields, TTransaction>(this.#fields, this.#fields.type)
+  }
+}
+
+const ensureItxnGroupBegin = () => {
+  if (!lazyContext.activeGroup.constructingItxnGroup.length) {
+    lazyContext.activeGroup.beginInnerTransactionGroup()
   }
 }

@@ -10,6 +10,15 @@ import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
 import { ValueGenerator } from './value-generators'
+import {
+  submitGroup as itxnSubmitGroup,
+  payment as itxnPayment,
+  keyRegistration as itxnKeyRegistration,
+  assetConfig as itxnAssetConfig,
+  assetTransfer as itxnAssetTransfer,
+  assetFreeze as itxnAssetFreeze,
+  applicationCall as itxnApplicationCall,
+} from './impl/inner-transactions'
 
 export class TestExecutionContext implements internal.ExecutionContext {
   #applicationLogs: Map<bigint, bytes[]>
@@ -87,6 +96,18 @@ export class TestExecutionContext implements internal.ExecutionContext {
       AssetTransferTxn: (index: uint64) => this.txn.activeGroup.getAssetTransferTransaction(index),
       AssetFreezeTxn: (index: uint64) => this.txn.activeGroup.getAssetFreezeTransaction(index),
       ApplicationTxn: (index: uint64) => this.txn.activeGroup.getApplicationTransaction(index),
+    }
+  }
+
+  get itxn() {
+    return {
+      submitGroup: itxnSubmitGroup,
+      payment: itxnPayment,
+      keyRegistration: itxnKeyRegistration,
+      assetConfig: itxnAssetConfig,
+      assetTransfer: itxnAssetTransfer,
+      assetFreeze: itxnAssetFreeze,
+      applicationCall: itxnApplicationCall,
     }
   }
 

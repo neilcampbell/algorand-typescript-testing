@@ -18,6 +18,7 @@ import { AccountCls } from '../src/impl/account'
 import { asBigInt, asNumber, asUint64Cls } from '../src/util'
 import { AppExpectingEffects } from './artifacts/created-app-asset/contract.algo'
 import {
+  ItxnDemoContract,
   ITxnOpsContract,
   StateAcctParamsGetContract,
   StateAppParamsContract,
@@ -352,8 +353,18 @@ describe('State op codes', async () => {
       expect(asNumber((ctx.txn.lastActive as ApplicationTransaction).numLogs)).toEqual(0)
       expect((ctx.txn.lastActive as ApplicationTransaction).lastLog).toEqual(Bytes(''))
 
-      // Test created_app and created_asset (should be created for these transactions)
+      // Test created_app (should be created for these transactions)
       expect(appItxn.createdApp).toBeTruthy()
+    })
+
+    it('should be able to invoke demo contract', async () => {
+      const contract = ctx.contract.create(ItxnDemoContract)
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ appArgs: [Bytes('test1')] })]).execute(() => {
+        contract.approvalProgram()
+      })
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ appArgs: [Bytes('test2')] })]).execute(() => {
+        contract.approvalProgram()
+      })
     })
   })
 })
