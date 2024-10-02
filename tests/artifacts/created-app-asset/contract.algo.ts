@@ -1,4 +1,4 @@
-import { arc4, assert, Bytes, gtxn, op, uint64 } from '@algorandfoundation/algo-ts'
+import { arc4, assert, Bytes, gtxn, op, uint64 } from '@algorandfoundation/algorand-typescript'
 
 export class AppExpectingEffects extends arc4.Contract {
   @arc4.abimethod()

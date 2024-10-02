@@ -1,4 +1,4 @@
-import { Account, Application, arc4, Asset, bytes, internal, itxn, TransactionType, uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Application, arc4, Asset, bytes, internal, itxn, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import {
   ApplicationTransaction,
   AssetConfigTransaction,

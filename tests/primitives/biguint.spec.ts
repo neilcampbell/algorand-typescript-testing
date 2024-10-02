@@ -1,5 +1,5 @@
-import type { biguint } from '@algorandfoundation/algo-ts'
-import { BigUint, Bytes, internal, Uint64 } from '@algorandfoundation/algo-ts'
+import type { biguint } from '@algorandfoundation/algorand-typescript'
+import { BigUint, Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { describe, expect, it } from 'vitest'
 import appSpecJson from '../artifacts/primitives/data/PrimitiveOpsContract.arc32.json'

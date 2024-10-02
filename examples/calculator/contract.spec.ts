@@ -1,7 +1,6 @@
-import { internal, op, Uint64 } from '@algorandfoundation/algo-ts'
+import { internal, op, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { afterEach, describe, expect, it } from 'vitest'
-
-import { TestExecutionContext } from '@algorandfoundation/algo-ts-testing'
 import MyContract from './contract.algo'
 
 describe('Calculator', () => {

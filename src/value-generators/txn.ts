@@ -1,4 +1,4 @@
-import { gtxn, internal } from '@algorandfoundation/algo-ts'
+import { gtxn, internal } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import {
   ApplicationTransaction,

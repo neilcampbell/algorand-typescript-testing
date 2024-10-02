@@ -1,4 +1,4 @@
-import { Account, Asset, internal, Uint64, uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Asset, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asBigInt } from '../util'
 import { AssetHolding as AssetHoldingData } from './account'

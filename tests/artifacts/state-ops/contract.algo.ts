@@ -15,7 +15,7 @@ import {
   Txn,
   Uint64,
   uint64,
-} from '@algorandfoundation/algo-ts'
+} from '@algorandfoundation/algorand-typescript'
 
 function get_1st_ref_index(): uint64 {
   return op.btoi(Txn.applicationArgs(1))

@@ -1,4 +1,4 @@
-import { Bytes, bytes, internal } from '@algorandfoundation/algo-ts'
+import { Bytes, bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { createHash } from 'crypto'
 
 export const padUint8Array = (arr: Uint8Array, padSize: number): Uint8Array => {

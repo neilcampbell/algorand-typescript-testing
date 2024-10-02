@@ -1,4 +1,4 @@
-import { bytes, internal, uint64 } from '@algorandfoundation/algo-ts'
+import { bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 
 export const Scratch: internal.opTypes.ScratchType = {

@@ -9,12 +9,7 @@ export default defineConfig({
   esbuild: {},
   plugins: [
     typescript({
-      target: 'ES2022',
-      tsconfig: false,
-      exclude: ['node_modules'],
-      compilerOptions: {
-        lib: ['es2023'],
-      },
+      tsconfig: './tsconfig.json',
       transformers: {
         before: [puyaTsTransformer],
       },

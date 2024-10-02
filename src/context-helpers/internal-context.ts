@@ -1,4 +1,4 @@
-import { internal } from '@algorandfoundation/algo-ts'
+import { internal } from '@algorandfoundation/algorand-typescript'
 import { AccountData } from '../impl/account'
 import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'

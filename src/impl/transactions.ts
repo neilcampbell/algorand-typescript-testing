@@ -10,7 +10,7 @@ import {
   TransactionType,
   uint64,
   Uint64,
-} from '@algorandfoundation/algo-ts'
+} from '@algorandfoundation/algorand-typescript'
 import { MAX_ITEMS_IN_LOG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable, ObjectKeys } from '../typescript-helpers'

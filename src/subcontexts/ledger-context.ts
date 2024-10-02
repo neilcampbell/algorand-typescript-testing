@@ -1,4 +1,4 @@
-import { Account, Application, Asset, BaseContract, internal } from '@algorandfoundation/algo-ts'
+import { Account, Application, Asset, BaseContract, internal } from '@algorandfoundation/algorand-typescript'
 import { MAX_UINT64 } from '../constants'
 import { AccountData, AssetHolding } from '../impl/account'
 import { ApplicationData } from '../impl/application'

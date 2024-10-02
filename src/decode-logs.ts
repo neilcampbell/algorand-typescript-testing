@@ -1,4 +1,4 @@
-import { internal } from '@algorandfoundation/algo-ts'
+import { internal } from '@algorandfoundation/algorand-typescript'
 
 export type LogDecoding = 'i' | 's' | 'b'
 

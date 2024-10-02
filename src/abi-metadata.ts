@@ -1,5 +1,5 @@
-import { Contract } from '@algorandfoundation/algo-ts'
-import { AbiMethodConfig, BareMethodConfig, CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algo-ts/arc4'
+import { Contract } from '@algorandfoundation/algorand-typescript'
+import { AbiMethodConfig, BareMethodConfig, CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
 import { DeliberateAny } from './typescript-helpers'
 
 export interface AbiMetadata {

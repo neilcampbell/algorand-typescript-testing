@@ -1,5 +1,6 @@
+import { anyPType, ContractClassPType, FunctionPType, PType, SourceLocation, typeRegistry, TypeResolver } from '@algorandfoundation/puya-ts'
 import ts from 'typescript'
-import { ContractClassPType, FunctionPType, PType, SourceLocation, TypeResolver, anyPType, typeRegistry } from '@algorandfoundation/puya-ts'
+import { TransformerConfig } from './index'
 import { nodeFactory } from './node-factory'
 import { supportedBinaryOpString, supportedPrefixUnaryOpString } from './supported-binary-op-string'
 
@@ -17,6 +18,7 @@ export class SourceFileVisitor {
     private context: ts.TransformationContext,
     private sourceFile: ts.SourceFile,
     program: ts.Program,
+    private config: TransformerConfig,
   ) {
     const typeResolver = new TypeResolver(program.getTypeChecker(), program.getCurrentDirectory())
 
@@ -39,7 +41,7 @@ export class SourceFileVisitor {
     const updatedSourceFile = ts.visitNode(this.sourceFile, this.visit) as ts.SourceFile
 
     return factory.updateSourceFile(updatedSourceFile, [
-      nodeFactory.importHelpers(),
+      nodeFactory.importHelpers(this.config.testingPackageName),
       ...updatedSourceFile.statements,
       ...this.helper.additionalStatements,
     ])

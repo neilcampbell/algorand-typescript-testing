@@ -1,4 +1,4 @@
-import { Account, Application, Bytes, bytes, uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Application, Bytes, bytes, uint64 } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
 import { ALWAYS_APPROVE_TEAL_PROGRAM } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'

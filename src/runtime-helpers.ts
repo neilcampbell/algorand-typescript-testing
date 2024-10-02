@@ -1,7 +1,8 @@
-import { internal } from '@algorandfoundation/algo-ts'
+import { internal } from '@algorandfoundation/algorand-typescript'
 import { MAX_UINT64 } from './constants'
 import { DeliberateAny } from './typescript-helpers'
 import { nameOfType } from './util'
+
 export { attachAbiMetadata } from './abi-metadata'
 
 export function switchableValue(x: unknown): bigint | string | boolean {

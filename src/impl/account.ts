@@ -1,4 +1,4 @@
-import { Account, Application, Asset, bytes, internal, uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Application, Asset, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import { DEFAULT_ACCOUNT_MIN_BALANCE, ZERO_ADDRESS } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable } from '../typescript-helpers'

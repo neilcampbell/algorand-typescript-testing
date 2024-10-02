@@ -1,4 +1,4 @@
-import { Account, Application, Asset, Bytes, bytes, internal, uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Application, Asset, Bytes, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
 import { captureMethodConfig } from './abi-metadata'
 import { DecodedLogs, LogDecoding } from './decode-logs'

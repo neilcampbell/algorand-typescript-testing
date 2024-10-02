@@ -1,4 +1,4 @@
-import { Account, Bytes, Uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Bytes, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../../src'
 import { AssetCls } from '../../src/impl/asset'

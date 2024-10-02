@@ -1,4 +1,4 @@
-import { internal, uint64, Uint64 } from '@algorandfoundation/algo-ts'
+import { internal, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { describe, expect, it } from 'vitest'
 import appSpecJson from '../artifacts/primitives/data/PrimitiveOpsContract.arc32.json'

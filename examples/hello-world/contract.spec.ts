@@ -1,5 +1,5 @@
-import { Bytes } from '@algorandfoundation/algo-ts'
-import { TestExecutionContext } from '@algorandfoundation/algo-ts-testing'
+import { Bytes } from '@algorandfoundation/algorand-typescript'
+import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { afterEach, describe, expect, it } from 'vitest'
 import HelloWorldContract from './contract.algo'
 

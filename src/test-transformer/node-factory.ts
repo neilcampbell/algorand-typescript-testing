@@ -1,16 +1,15 @@
-import ts from 'typescript'
-
 import { FunctionPType } from '@algorandfoundation/puya-ts'
+import ts from 'typescript'
 import type { DeliberateAny } from '../typescript-helpers'
 import { getPropertyNameAsString } from './helpers'
 
 const factory = ts.factory
 export const nodeFactory = {
-  importHelpers() {
+  importHelpers(testingPackageName: string) {
     return factory.createImportDeclaration(
       undefined,
       factory.createImportClause(false, undefined, factory.createNamespaceImport(factory.createIdentifier('runtimeHelpers'))),
-      factory.createStringLiteral('@algorandfoundation/algo-ts-testing/runtime-helpers'),
+      factory.createStringLiteral(`${testingPackageName}/runtime-helpers`),
       undefined,
     )
   },

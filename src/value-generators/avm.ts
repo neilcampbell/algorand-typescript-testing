@@ -1,4 +1,4 @@
-import { Account, Application, Asset, bytes, Bytes, internal, Uint64, uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Application, Asset, bytes, Bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
 import { randomBytes } from 'crypto'
 import { MAX_BYTES_SIZE, MAX_UINT64, ZERO_ADDRESS } from '../constants'

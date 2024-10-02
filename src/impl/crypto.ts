@@ -1,4 +1,4 @@
-import { Bytes, bytes, internal, gtxn, arc4 } from '@algorandfoundation/algo-ts'
+import { Bytes, bytes, internal, gtxn, arc4 } from '@algorandfoundation/algorand-typescript'
 import { ec } from 'elliptic'
 import { sha256 as js_sha256 } from 'js-sha256'
 import { keccak256 as js_keccak256, sha3_256 as js_sha3_256 } from 'js-sha3'

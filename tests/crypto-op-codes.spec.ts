@@ -1,4 +1,4 @@
-import { Bytes, internal, op as publicOps, uint64 } from '@algorandfoundation/algo-ts'
+import { Bytes, internal, op as publicOps, uint64 } from '@algorandfoundation/algorand-typescript'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import algosdk from 'algosdk'

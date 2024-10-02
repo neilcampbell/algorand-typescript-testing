@@ -1,4 +1,4 @@
-import { internal, uint64 } from '@algorandfoundation/algo-ts'
+import { internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { ABIAppCallArg, ABIReturn } from '@algorandfoundation/algokit-utils/types/app'

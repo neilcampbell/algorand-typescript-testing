@@ -1,4 +1,4 @@
-import { bytes, internal, TransactionType, uint64 } from '@algorandfoundation/algo-ts'
+import { bytes, internal, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
 import { lazyContext } from '../context-helpers/internal-context'
 import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'

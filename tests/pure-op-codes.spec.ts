@@ -1,4 +1,4 @@
-import { BigUint, bytes, Bytes, internal, Uint64, uint64 } from '@algorandfoundation/algo-ts'
+import { BigUint, bytes, Bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'

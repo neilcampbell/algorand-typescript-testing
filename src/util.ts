@@ -1,4 +1,4 @@
-import { internal, bytes } from '@algorandfoundation/algo-ts'
+import { internal, bytes } from '@algorandfoundation/algorand-typescript'
 import { randomBytes } from 'crypto'
 import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT512, MAX_UINT8, UINT512_SIZE } from './constants'
 import { DeliberateAny } from './typescript-helpers'

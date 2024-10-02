@@ -1,4 +1,4 @@
-import { Account, Asset, bytes, internal, uint64 } from '@algorandfoundation/algo-ts'
+import { Account, Asset, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asBigInt, asUint64 } from '../util'
 import { Mutable } from '../typescript-helpers'

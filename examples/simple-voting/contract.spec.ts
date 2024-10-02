@@ -1,6 +1,6 @@
-import type { Account, uint64 } from '@algorandfoundation/algo-ts'
-import { Bytes, Uint64 } from '@algorandfoundation/algo-ts'
-import { TestExecutionContext } from '@algorandfoundation/algo-ts-testing'
+import type { Account, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Bytes, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { afterEach, describe, expect, it } from 'vitest'
 import SimpleVotingContract from './contract.algo'
 
