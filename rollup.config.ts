@@ -8,7 +8,7 @@ const config: RollupOptions = {
   input: {
     index: 'src/index.ts',
     'runtime-helpers': 'src/runtime-helpers.ts',
-    'test-transformer': 'src/test-transformer/index.ts',
+    'test-transformer/index': 'src/test-transformer/index.ts',
   },
   output: [
     {
