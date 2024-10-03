@@ -4,6 +4,16 @@ import { lazyContext } from '../context-helpers/internal-context'
 import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
 import { testInvariant } from '../errors'
 import {
+  ApplicationInnerTxn,
+  AssetConfigInnerTxn,
+  AssetFreezeInnerTxn,
+  AssetTransferInnerTxn,
+  createInnerTxn,
+  KeyRegistrationInnerTxn,
+  PaymentInnerTxn,
+} from '../impl/inner-transactions'
+import { InnerTxn, InnerTxnFields } from '../impl/itxn'
+import {
   AllTransactionFields,
   ApplicationTransaction,
   AssetConfigTransaction,
@@ -14,16 +24,6 @@ import {
   Transaction,
 } from '../impl/transactions'
 import { asBigInt, asNumber, asUint64 } from '../util'
-import { InnerTxn, InnerTxnFields } from '../impl/itxn'
-import {
-  ApplicationInnerTxn,
-  AssetConfigInnerTxn,
-  AssetFreezeInnerTxn,
-  AssetTransferInnerTxn,
-  createInnerTxn,
-  KeyRegistrationInnerTxn,
-  PaymentInnerTxn,
-} from '../impl/inner-transactions'
 
 function ScopeGenerator(dispose: () => void) {
   function* internal() {
@@ -119,8 +119,8 @@ export class TransactionContext {
     } else {
       logs = lazyContext.getApplicationData(appId).appLogs
     }
-    const rawLogs = logs.map((l) => internal.primitives.toExternalValue(l))
-    return decodeLogs(rawLogs, decoding)
+
+    return decodeLogs(logs, decoding)
   }
 }
 

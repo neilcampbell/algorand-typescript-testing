@@ -1,4 +1,4 @@
-import { Contract } from '@algorandfoundation/algorand-typescript'
+import { BaseContract, Contract } from '@algorandfoundation/algorand-typescript'
 import { AbiMethodConfig, BareMethodConfig, CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
 import { DeliberateAny } from './typescript-helpers'
 
@@ -50,7 +50,7 @@ export const hasAbiMetadata = <T extends Contract>(contract: T): boolean => {
   )
 }
 
-export const getAbiMetadata = <T extends Contract>(contract: T, methodName: string): AbiMetadata => {
+export const getAbiMetadata = <T extends BaseContract>(contract: T, methodName: string): AbiMetadata => {
   const contractClass = contract.constructor as { new (): T }
   const s = Object.getOwnPropertySymbols(contractClass).find((s) => s.toString() === AbiMetaSymbol.toString())
   const metadatas: Record<string, AbiMetadata> = (

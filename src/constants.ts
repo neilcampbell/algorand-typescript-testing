@@ -35,3 +35,5 @@ export const LOGIC_DATA_PREFIX = Bytes('ProgData')
 
 //number: minimum transaction fee
 export const MIN_TXN_FEE = 1000
+
+export const ABI_RETURN_VALUE_LOG_PREFIX = Bytes.fromHex('151F7C75')
