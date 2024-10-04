@@ -38,8 +38,8 @@ describe('Calculator', () => {
 
       const [left, right, outcome] = ctx.exportLogs(application.id, 'i', 'i', 's')
 
-      expect(left).toBe(2n)
-      expect(right).toBe(3n)
+      expect(left).toEqual(Uint64(2))
+      expect(right).toEqual(3n)
       expect(outcome).toBe('2 + 3 = 5')
       expect(result).toBe(true)
     })

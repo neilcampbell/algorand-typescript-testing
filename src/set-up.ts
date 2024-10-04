@@ -38,6 +38,5 @@ function addEqualityTesters(expectObj: ExpectObj) {
 }
 
 export function setUpTests({ expect }: { expect: ExpectObj }) {
-  console.log('setting up stuff')
   addEqualityTesters(expect)
 }
