@@ -14,7 +14,16 @@ import {
 import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_ITEMS_IN_LOG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable, ObjectKeys } from '../typescript-helpers'
-import { asBytes, asMaybeBytesCls, asMaybeUint64Cls, asNumber, asUint64Cls, combineIntoMaxBytePages, getRandomBytes } from '../util'
+import {
+  asBytes,
+  asMaybeBytesCls,
+  asMaybeUint64Cls,
+  asNumber,
+  asUint64Cls,
+  combineIntoMaxBytePages,
+  getRandomBytes,
+  toBytes,
+} from '../util'
 
 const baseDefaultFields = () => ({
   sender: lazyContext.defaultSender,
@@ -335,8 +344,8 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     this.#appLogs.push(asBytes(value))
   }
   /* @internal */
-  logArc4ReturnValue(value: internal.primitives.StubBytesCompat): void {
-    this.appendLog(ABI_RETURN_VALUE_LOG_PREFIX.concat(asBytes(value)))
+  logArc4ReturnValue(value: unknown): void {
+    this.appendLog(ABI_RETURN_VALUE_LOG_PREFIX.concat(toBytes(value)))
   }
 }
 

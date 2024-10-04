@@ -142,7 +142,7 @@ export class ContractContext {
                 const txns = [...(transactions ?? []), appTxn]
                 return lazyContext.txn.ensureScope(txns).execute(() => {
                   const returnValue = (orig as DeliberateAny).apply(target, args)
-                  if (isArc4) {
+                  if (isArc4 && returnValue !== undefined) {
                     appTxn.logArc4ReturnValue(returnValue)
                   }
                   return returnValue
