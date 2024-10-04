@@ -1,6 +1,6 @@
-import { expect } from 'vitest'
+import { beforeAll, expect } from 'vitest'
 import { setUpTests } from './src/set-up'
 
-export function setup() {
+beforeAll(() => {
   setUpTests({ expect })
-}
+})

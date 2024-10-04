@@ -3,10 +3,10 @@ import { defineConfig } from 'vitest/config'
 import { puyaTsTransformer } from './src/test-transformer'
 
 export default defineConfig({
-  resolve: {
-    conditions: ['dev'],
-  },
   esbuild: {},
+  test: {
+    setupFiles: 'vitest.setup.ts',
+  },
   plugins: [
     typescript({
       tsconfig: './tsconfig.json',
@@ -15,7 +15,4 @@ export default defineConfig({
       },
     }),
   ],
-  test: {
-    globals: true,
-  },
 })
