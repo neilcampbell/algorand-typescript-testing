@@ -1,5 +1,5 @@
 import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract, internal } from '@algorandfoundation/algorand-typescript'
-import { getAbiMetadata, hasAbiMetadata } from '../abi-metadata'
+import { getAbiMetadata } from '../abi-metadata'
 import { lazyContext } from '../context-helpers/internal-context'
 import { AccountCls } from '../impl/account'
 import { ApplicationCls } from '../impl/application'
@@ -96,11 +96,24 @@ function isTransaction(obj: unknown): obj is Transaction {
 
 export class ContractContext {
   create<T extends BaseContract>(type: IConstructor<T>, ...args: DeliberateAny[]): T {
-    const proxy = new Proxy(type, this.getContractProxyHandler<T>())
+    Object.getPrototypeOf(type)
+    const proxy = new Proxy(type, this.getContractProxyHandler<T>(this.isArc4(type)))
     return new proxy(...args)
   }
 
-  private getContractProxyHandler<T extends BaseContract>(): ProxyHandler<IConstructor<T>> {
+  private isArc4<T extends BaseContract>(type: IConstructor<T>): boolean {
+    const proto = Object.getPrototypeOf(type)
+    if (proto === BaseContract) {
+      return false
+    } else if (proto === Contract) {
+      return true
+    } else if (proto === Object) {
+      throw new Error('Cannot create a contract for class as it does not extend Contract or BaseContract')
+    }
+    return this.isArc4(proto)
+  }
+
+  private getContractProxyHandler<T extends BaseContract>(isArc4: boolean): ProxyHandler<IConstructor<T>> {
     const onConstructed = (instance: BaseContract) => {
       const states = extractStates(instance)
 
@@ -111,31 +124,35 @@ export class ContractContext {
     }
     return {
       construct(target, args) {
-        let isArc4 = false
         const instance = new Proxy(new target(...args), {
           get(target, prop, receiver) {
             const orig = Reflect.get(target, prop, receiver)
-            if (isArc4 || prop === 'approvalProgram' || prop === 'clearStateProgram') {
+            const isProgramMethod = prop === 'approvalProgram' || prop === 'clearStateProgram'
+            if (isArc4 || isProgramMethod) {
               return (...args: DeliberateAny[]): DeliberateAny => {
                 const app = lazyContext.ledger.getApplicationForContract(receiver)
                 const { transactions, ...appCallArgs } = extractArraysFromArgs(args)
-                const abiMetadata = getAbiMetadata(receiver, prop as string)
-                const txns = [
-                  ...(transactions ?? []),
-                  lazyContext.any.txn.applicationCall({
-                    appId: app,
-                    ...appCallArgs,
-                    onCompletion: (abiMetadata?.allowActions ?? [])[0],
-                  }),
-                ]
-                return lazyContext.txn.ensureScope(txns).execute(() => (orig as DeliberateAny).apply(target, args))
+                const abiMetadata = getAbiMetadata(target, prop as string)
+                const appTxn = lazyContext.any.txn.applicationCall({
+                  appId: app,
+                  ...appCallArgs,
+                  // TODO: This needs to be specifiable by the test code
+                  onCompletion: (abiMetadata?.allowActions ?? [])[0],
+                })
+                const txns = [...(transactions ?? []), appTxn]
+                return lazyContext.txn.ensureScope(txns).execute(() => {
+                  const returnValue = (orig as DeliberateAny).apply(target, args)
+                  if (!isProgramMethod && isArc4 && returnValue !== undefined) {
+                    appTxn.logArc4ReturnValue(returnValue)
+                  }
+                  return returnValue
+                })
               }
             }
             return orig
           },
         })
         onConstructed(instance)
-        isArc4 = hasAbiMetadata(instance as Contract)
 
         return instance
       },

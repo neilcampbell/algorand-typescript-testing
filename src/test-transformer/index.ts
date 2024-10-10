@@ -12,18 +12,6 @@ const defaultTransformerConfig: TransformerConfig = {
   testingPackageName: '@algorandfoundation/algorand-typescript-testing',
 }
 
-// const programTransformer = {
-//   type: 'program',
-//   factory(program: ts.Program): ts.TransformerFactory<ts.SourceFile> {
-//     registerPTypes(typeRegistry)
-//     return (context) => {
-//       return (sourceFile) => {
-//         if (!includes.some((i) => sourceFile.fileName.endsWith(i))) return sourceFile
-//         return new SourceFileVisitor(context, sourceFile, program).result()
-//       }
-//     }
-//   },
-// }
 const createProgramFactory = (config: TransformerConfig) => {
   function programFactory(program: ts.Program): ts.TransformerFactory<ts.SourceFile> {
     registerPTypes(typeRegistry)

@@ -22,7 +22,8 @@ export const DEFAULT_GLOBAL_GENESIS_HASH = Bytes(
 )
 
 // algorand encoded address of 32 zero bytes
-export const ZERO_ADDRESS = Bytes('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5HFKQ')
+export const ZERO_ADDRESS_B32 = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5HFKQ'
+export const ZERO_ADDRESS = Bytes.fromBase32(ZERO_ADDRESS_B32)
 
 /**
 "\x09"  # pragma version 9
@@ -35,3 +36,8 @@ export const LOGIC_DATA_PREFIX = Bytes('ProgData')
 
 //number: minimum transaction fee
 export const MIN_TXN_FEE = 1000
+
+export const ABI_RETURN_VALUE_LOG_PREFIX = Bytes.fromHex('151F7C75')
+
+export const UINT64_OVERFLOW_UNDERFLOW_MESSAGE = 'Uint64 overflow or underflow'
+export const BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE = 'BigUint overflow or underflow'

@@ -1,6 +1,6 @@
-import { Bytes, internal, op as publicOps, uint64 } from '@algorandfoundation/algorand-typescript'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import { Bytes, internal, op as publicOps, uint64 } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
 import { ec } from 'elliptic'
 import { keccak256 as js_keccak256 } from 'js-sha3'
@@ -10,8 +10,8 @@ import { TestExecutionContext } from '../src'
 import { MAX_BYTES_SIZE } from '../src/constants'
 import * as op from '../src/impl/crypto'
 import appSpecJson from './artifacts/crypto-ops/data/CryptoOpsContract.arc32.json'
-import { getAlgorandAppClientWithApp, getAvmResult, getAvmResultRaw } from './avm-invoker'
-import { asUint8Array, getPaddedUint8Array } from './util'
+import { getAlgorandAppClientWithApp, getAvmResult } from './avm-invoker'
+import { asUint8Array, getPaddedBytes } from './util'
 
 const MAX_ARG_LEN = 2048
 const curveMap = {
@@ -41,10 +41,10 @@ describe('crypto op codes', async () => {
       ['abc', 0],
       ['abc', MAX_BYTES_SIZE - 3],
     ])('should return the correct sha256 hash', async (a, padSize) => {
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_sha256', asUint8Array(a), padSize))!
-      const paddedA = getPaddedUint8Array(padSize, a)
+      const avmResult = (await getAvmResult({ appClient }, 'verify_sha256', asUint8Array(a), padSize))!
+      const paddedA = getPaddedBytes(padSize, a)
       const result = op.sha256(paddedA)
-      expect(asUint8Array(result)).toEqual(avmResult)
+      expect(result).toEqual(avmResult)
     })
   })
 
@@ -55,10 +55,10 @@ describe('crypto op codes', async () => {
       ['abc', 0],
       ['abc', MAX_BYTES_SIZE - 3],
     ])('should return the correct sha3_256 hash', async (a, padSize) => {
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_sha3_256', asUint8Array(a), padSize))!
-      const paddedA = getPaddedUint8Array(padSize, a)
+      const avmResult = (await getAvmResult({ appClient }, 'verify_sha3_256', asUint8Array(a), padSize))!
+      const paddedA = getPaddedBytes(padSize, a)
       const result = op.sha3_256(paddedA)
-      expect(asUint8Array(result)).toEqual(avmResult)
+      expect(result).toEqual(avmResult)
     })
   })
 
@@ -69,10 +69,10 @@ describe('crypto op codes', async () => {
       ['abc', 0],
       ['abc', MAX_BYTES_SIZE - 3],
     ])('should return the correct keccak256 hash', async (a, padSize) => {
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_keccak_256', asUint8Array(a), padSize))!
-      const paddedA = getPaddedUint8Array(padSize, a)
+      const avmResult = (await getAvmResult({ appClient }, 'verify_keccak_256', asUint8Array(a), padSize))!
+      const paddedA = getPaddedBytes(padSize, a)
       const result = op.keccak256(paddedA)
-      expect(asUint8Array(result)).toEqual(avmResult)
+      expect(result).toEqual(avmResult)
       expect(result.length.valueOf()).toBe(32n)
     })
   })
@@ -84,10 +84,10 @@ describe('crypto op codes', async () => {
       ['abc', 0],
       ['abc', MAX_BYTES_SIZE - 3],
     ])('should return the correct sha512_256 hash', async (a, padSize) => {
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_sha512_256', asUint8Array(a), padSize))!
-      const paddedA = getPaddedUint8Array(padSize, a)
+      const avmResult = (await getAvmResult({ appClient }, 'verify_sha512_256', asUint8Array(a), padSize))!
+      const paddedA = getPaddedBytes(padSize, a)
       const result = op.sha512_256(paddedA)
-      expect(asUint8Array(result)).toEqual(avmResult)
+      expect(result).toEqual(avmResult)
       expect(result.length.valueOf()).toBe(32n)
     })
   })
@@ -105,7 +105,7 @@ describe('crypto op codes', async () => {
         signature,
         keyPair.publicKey,
       )
-      const result = op.ed25519verifyBare(message, signature, keyPair.publicKey)
+      const result = op.ed25519verifyBare(message, Bytes(signature), Bytes(keyPair.publicKey))
       expect(result).toEqual(avmResult)
     })
   })
@@ -131,7 +131,7 @@ describe('crypto op codes', async () => {
       )
 
       ctx.txn.createScope([appCallTxn]).execute(() => {
-        const result = op.ed25519verify(message, signature, publicKey)
+        const result = op.ed25519verify(message, Bytes(signature), Bytes(publicKey))
         expect(result).toEqual(avmResult)
       })
     })
@@ -200,8 +200,8 @@ describe('crypto op codes', async () => {
       )
       const result = op.ecdsaPkRecover(internal.opTypes.Ecdsa.Secp256k1, a, b, c, d)
 
-      expect(asUint8Array(result[0])).toEqual(new Uint8Array(avmResult[0]))
-      expect(asUint8Array(result[1])).toEqual(new Uint8Array(avmResult[1]))
+      expect(result[0]).toEqual(avmResult[0])
+      expect(result[1]).toEqual(avmResult[1])
     })
 
     it('should throw unsupported error when trying to recover r1 public key', async () => {
@@ -237,7 +237,7 @@ describe('crypto op codes', async () => {
         'verify_ecdsa_decompress_k1',
         pubKeyArray,
       )
-      const result = op.ecdsaPkDecompress(v, pubKeyArray)
+      const result = op.ecdsaPkDecompress(v, Bytes(pubKeyArray))
 
       expect(asUint8Array(result[0])).toEqual(new Uint8Array(avmResult[0]))
       expect(asUint8Array(result[1])).toEqual(new Uint8Array(avmResult[1]))

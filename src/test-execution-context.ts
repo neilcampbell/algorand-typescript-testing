@@ -6,19 +6,19 @@ import * as ops from './impl'
 import { AccountCls } from './impl/account'
 import { ApplicationCls } from './impl/application'
 import { AssetCls } from './impl/asset'
+import {
+  applicationCall as itxnApplicationCall,
+  assetConfig as itxnAssetConfig,
+  assetFreeze as itxnAssetFreeze,
+  assetTransfer as itxnAssetTransfer,
+  keyRegistration as itxnKeyRegistration,
+  payment as itxnPayment,
+  submitGroup as itxnSubmitGroup,
+} from './impl/inner-transactions'
 import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
 import { ValueGenerator } from './value-generators'
-import {
-  submitGroup as itxnSubmitGroup,
-  payment as itxnPayment,
-  keyRegistration as itxnKeyRegistration,
-  assetConfig as itxnAssetConfig,
-  assetTransfer as itxnAssetTransfer,
-  assetFreeze as itxnAssetFreeze,
-  applicationCall as itxnApplicationCall,
-} from './impl/inner-transactions'
 
 export class TestExecutionContext implements internal.ExecutionContext {
   #applicationLogs: Map<bigint, bytes[]>
@@ -35,7 +35,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
     this.#ledgerContext = new LedgerContext()
     this.#txnContext = new TransactionContext()
     this.#valueGenerator = new ValueGenerator()
-    this.#defaultSender = Account(Bytes(algosdk.generateAccount().addr))
+    this.#defaultSender = Account(Bytes.fromBase32(algosdk.generateAccount().addr))
   }
 
   account(address?: bytes): Account {

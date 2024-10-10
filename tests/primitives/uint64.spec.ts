@@ -1,6 +1,7 @@
-import { internal, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import { internal, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { describe, expect, it } from 'vitest'
+import { UINT64_OVERFLOW_UNDERFLOW_MESSAGE } from '../../src/constants'
 import appSpecJson from '../artifacts/primitives/data/PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult } from '../avm-invoker'
 
@@ -110,14 +111,14 @@ describe('Unit64', async () => {
     it(`${a} + ${b}`, async () => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_add', a, b)).rejects.toThrow('+ overflowed')
 
-      expect(() => asUint64(a) + asUint64(b)).toThrow('Uint64 over or underflow')
+      expect(() => asUint64(a) + asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
 
       if (typeof a === 'number') {
-        expect(() => a + asUint64(b)).toThrow('Uint64 over or underflow')
+        expect(() => a + asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
       }
 
       if (typeof b === 'number') {
-        expect(() => asUint64(a) + b).toThrow('Uint64 over or underflow')
+        expect(() => asUint64(a) + b).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
       }
     })
   })
@@ -158,14 +159,14 @@ describe('Unit64', async () => {
     it(`${a} - ${b}`, async () => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_sub', a, b)).rejects.toThrow('- would result negative')
 
-      expect(() => asUint64(a) - asUint64(b)).toThrow('Uint64 over or underflow')
+      expect(() => asUint64(a) - asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
 
       if (typeof a === 'number') {
-        expect(() => a - asUint64(b)).toThrow('Uint64 over or underflow')
+        expect(() => a - asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
       }
 
       if (typeof b === 'number') {
-        expect(() => asUint64(a) - b).toThrow('Uint64 over or underflow')
+        expect(() => asUint64(a) - b).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
       }
     })
   })
@@ -202,14 +203,14 @@ describe('Unit64', async () => {
     it(`${a} * ${b}`, async () => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_mul', a, b)).rejects.toThrow('* overflowed')
 
-      expect(() => asUint64(a) * asUint64(b)).toThrow('Uint64 over or underflow')
+      expect(() => asUint64(a) * asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
 
       if (typeof a === 'number') {
-        expect(() => a * asUint64(b)).toThrow('Uint64 over or underflow')
+        expect(() => a * asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
       }
 
       if (typeof b === 'number') {
-        expect(() => asUint64(a) * b).toThrow('Uint64 over or underflow')
+        expect(() => asUint64(a) * b).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
       }
     })
   })
@@ -344,14 +345,14 @@ describe('Unit64', async () => {
     it(`${a} ** ${b}`, async () => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_pow', a, b)).rejects.toThrow(/\d+\^\d+ overflow/)
 
-      expect(() => asUint64(a) ** asUint64(b)).toThrow('Uint64 over or underflow')
+      expect(() => asUint64(a) ** asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
 
       if (typeof a === 'number') {
-        expect(() => a ** asUint64(b)).toThrow('Uint64 over or underflow')
+        expect(() => a ** asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
       }
 
       if (typeof b === 'number') {
-        expect(() => asUint64(a) ** b).toThrow('Uint64 over or underflow')
+        expect(() => asUint64(a) ** b).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
       }
     })
   })
@@ -472,7 +473,7 @@ describe('Unit64', async () => {
       expect(() => uintA << uintB).toThrow('expected shift <= 63')
       expect(() => a << uintB).toThrow('expected shift <= 63')
       expect(() => uintA << b).toThrow('expected shift <= 63')
-      expect(() => Uint64(MAX_UINT64 + 1n) << Uint64(1n)).toThrow('Uint64 over or underflow')
+      expect(() => Uint64(MAX_UINT64 + 1n) << Uint64(1n)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
     })
 
     it('0 >> 64', async () => {
@@ -480,19 +481,19 @@ describe('Unit64', async () => {
       expect(() => uintA >> uintB).toThrow('expected shift <= 63')
       expect(() => a >> uintB).toThrow('expected shift <= 63')
       expect(() => uintA >> b).toThrow('expected shift <= 63')
-      expect(() => Uint64(MAX_UINT64 + 1n) >> Uint64(1n)).toThrow('Uint64 over or underflow')
+      expect(() => Uint64(MAX_UINT64 + 1n) >> Uint64(1n)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
     })
   })
 
   describe.each([MAX_UINT64 + 1n, MAX_UINT64 * 2n])('value too big', (a) => {
     it(`${a}`, () => {
-      expect(() => Uint64(a)).toThrow('Uint64 over or underflow')
+      expect(() => Uint64(a)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
     })
   })
 
   describe.each([-1, -MAX_UINT64, -MAX_UINT64 * 2n])('value too small', (a) => {
     it(`${a}`, () => {
-      expect(() => asUint64(a)).toThrow('Uint64 over or underflow')
+      expect(() => asUint64(a)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
     })
   })
 

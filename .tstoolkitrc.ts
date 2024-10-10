@@ -10,7 +10,7 @@ const config: TsToolkitConfig = {
     exports: {
       '.': 'index.ts',
       './runtime-helpers': 'runtime-helpers.ts',
-      './test-transformer/index': 'test-transformer.ts',
+      './test-transformer': 'test-transformer/index.ts',
     },
   },
 }

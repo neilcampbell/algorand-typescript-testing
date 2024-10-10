@@ -1,6 +1,6 @@
 import { biguint, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT64, MAX_UINT8, UINT64_SIZE } from '../constants'
-import { notImplementedError } from '../errors'
+import { notImplementedError, testInvariant } from '../errors'
 import { asBigUint, asBytes, asMaybeBytesCls, asMaybeUint64Cls, asUint64Cls, binaryStringToBytes } from '../util'
 
 export const addw = (a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): readonly [uint64, uint64] => {
@@ -21,7 +21,7 @@ export const base64Decode = (e: internal.opTypes.Base64, a: internal.primitives.
   }
 
   const uint8ArrayResult = new Uint8Array(bufferResult)
-  return asBytes(uint8ArrayResult)
+  return Bytes(uint8ArrayResult)
 }
 
 export const bitLength = (a: internal.primitives.StubUint64Compat | internal.primitives.StubBytesCompat): uint64 => {
@@ -150,7 +150,7 @@ export const getBit = (
   a: internal.primitives.StubUint64Compat | internal.primitives.StubBytesCompat,
   b: internal.primitives.StubUint64Compat,
 ): uint64 => {
-  const binaryString = toBinaryString(a)
+  const binaryString = toBinaryString(internal.primitives.isUint64(a) ? asUint64Cls(a).toBytes().asAlgoTs() : asBytes(a))
   const index = internal.primitives.Uint64Cls.fromCompat(b).asNumber()
   const adjustedIndex = asMaybeUint64Cls(a) ? binaryString.length - index - 1 : index
   if (adjustedIndex < 0 || adjustedIndex >= binaryString.length) {
@@ -238,16 +238,20 @@ export const setBit = ((
   c: internal.primitives.StubUint64Compat,
 ) => {
   const uint64Cls = asMaybeUint64Cls(a)
-  const bytesCls = asMaybeBytesCls(a)
-  const binaryString = toBinaryString((uint64Cls ?? bytesCls)!)
-
-  const isUint64 = !!uint64Cls
-  const indexFromLeft = internal.primitives.Uint64Cls.fromCompat(b).asNumber()
-  const indexFromRight = binaryString.length - indexFromLeft - 1
+  const indexParam = internal.primitives.Uint64Cls.fromCompat(b).asNumber()
   const bit = internal.primitives.Uint64Cls.fromCompat(c).asNumber()
-
-  const newBytes = doSetBit(binaryString, isUint64 ? indexFromRight : indexFromLeft, bit)
-  return isUint64 ? newBytes.toUint64().asAlgoTs() : newBytes.asAlgoTs()
+  if (uint64Cls) {
+    const binaryString = toBinaryString(uint64Cls?.toBytes().asAlgoTs())
+    const index = binaryString.length - indexParam - 1
+    const newBytes = doSetBit(binaryString, index, bit)
+    return newBytes.toUint64().asAlgoTs()
+  } else {
+    const bytesCls = asMaybeBytesCls(a)
+    testInvariant(bytesCls, 'a must be uint64 or bytes')
+    const binaryString = toBinaryString(bytesCls.asAlgoTs())
+    const newBytes = doSetBit(binaryString, indexParam, bit)
+    return newBytes.asAlgoTs()
+  }
 }) as SetBitType
 
 export const setByte = (
@@ -255,19 +259,19 @@ export const setByte = (
   b: internal.primitives.StubUint64Compat,
   c: internal.primitives.StubUint64Compat,
 ): bytes => {
-  const binaryString = toBinaryString(a)
+  const binaryString = toBinaryString(internal.primitives.BytesCls.fromCompat(a).asAlgoTs())
 
   const byteIndex = internal.primitives.Uint64Cls.fromCompat(b).asNumber()
   const bitIndex = byteIndex * BITS_IN_BYTE
 
-  const replacementNumber = internal.primitives.Uint64Cls.fromCompat(c).asBigInt()
-  const replacement = replacementNumber === 0n ? '0'.repeat(BITS_IN_BYTE) : toBinaryString(c, true)
+  const replacementNumber = internal.primitives.Uint64Cls.fromCompat(c)
+  const replacement = toBinaryString(replacementNumber.toBytes().at(-1).asAlgoTs())
 
   if (bitIndex >= binaryString.length) {
     internal.errors.codeError(`setByte index ${byteIndex} is beyond length`)
   }
-  if (replacementNumber > MAX_UINT8) {
-    internal.errors.codeError(`setByte value ${replacementNumber} > ${MAX_UINT8}`)
+  if (replacementNumber.valueOf() > MAX_UINT8) {
+    internal.errors.codeError(`setByte value ${replacementNumber.asNumber()} > ${MAX_UINT8}`)
   }
   const updatedString = binaryString.slice(0, bitIndex) + replacement + binaryString.slice(bitIndex + replacement.length)
   const updatedBytes = binaryStringToBytes(updatedString)
@@ -350,18 +354,8 @@ const uint128ToBigInt = (a: internal.primitives.StubUint64Compat, b: internal.pr
   return (bigIntA << 64n) + bigIntB
 }
 
-const toBinaryString = (a: internal.primitives.StubUint64Compat | internal.primitives.StubBytesCompat, isDynamic = false): string => {
-  const uint64Cls = asMaybeUint64Cls(a)
-  const bytesCls = asMaybeBytesCls(a)
-  let binaryString: string = ''
-  if (uint64Cls) {
-    binaryString = [...uint64Cls.toBytes(isDynamic).asUint8Array()].map((x) => x.toString(2).padStart(BITS_IN_BYTE, '0')).join('')
-  } else if (bytesCls) {
-    binaryString = [...bytesCls.asUint8Array()].map((x) => x.toString(2).padStart(BITS_IN_BYTE, '0')).join('')
-  } else {
-    internal.errors.codeError('unknown type for argument a')
-  }
-  return binaryString
+const toBinaryString = (a: bytes): string => {
+  return [...internal.primitives.BytesCls.fromCompat(a).asUint8Array()].map((x) => x.toString(2).padStart(BITS_IN_BYTE, '0')).join('')
 }
 
 const doSetBit = (binaryString: string, index: number, bit: number): internal.primitives.BytesCls => {

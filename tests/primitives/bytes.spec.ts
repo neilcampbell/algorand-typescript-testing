@@ -1,10 +1,11 @@
-import { bytes, Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import { bytes, Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { describe, expect, it } from 'vitest'
+import { MAX_BYTES_SIZE } from '../../src/constants'
+import { sha256 } from '../../src/impl'
 import appSpecJson from '../artifacts/primitives/data/PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult, getAvmResultRaw } from '../avm-invoker'
 import { asUint8Array, getSha256Hash, padUint8Array } from '../util'
-import { MAX_BYTES_SIZE } from '../../src/constants'
 
 describe('Bytes', async () => {
   const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)
@@ -22,13 +23,12 @@ describe('Bytes', async () => {
     it(`${a} concat ${b}`, async () => {
       const uint8ArrayA = internal.encodingUtil.utf8ToUint8Array(a)
       const uint8ArrayB = internal.encodingUtil.utf8ToUint8Array(b)
-      const avmResult = (await getAvmResultRaw({ appClient }, `verify_bytes_add`, uint8ArrayA, uint8ArrayB, padASize, padBSize))!
+      const avmResult = (await getAvmResult({ appClient }, `verify_bytes_add`, uint8ArrayA, uint8ArrayB, padASize, padBSize))!
 
       const bytesA = Bytes(padUint8Array(uint8ArrayA, padASize))
       const bytesB = Bytes(padUint8Array(uint8ArrayB, padBSize))
       const result = bytesA.concat(bytesB)
-      const resultUint8Array = asUint8Array(result)
-      const resultHash = getSha256Hash(resultUint8Array)
+      const resultHash = Bytes(getSha256Hash(asUint8Array(result)))
       expect(resultHash, `for values: ${a}, ${b}`).toEqual(avmResult)
     })
   })
@@ -79,10 +79,9 @@ describe('Bytes', async () => {
 
         const uint8ArrayA = internal.encodingUtil.utf8ToUint8Array(a)
         const uint8ArrayB = internal.encodingUtil.utf8ToUint8Array(b)
-        const avmResult = (await getAvmResultRaw({ appClient }, `verify_bytes_${op}`, uint8ArrayA, uint8ArrayB))!
+        const avmResult = (await getAvmResult({ appClient }, `verify_bytes_${op}`, uint8ArrayA, uint8ArrayB))!
         const result = getStubResult(bytesA, bytesB)
-        const resultUint8Array = asUint8Array(result)
-        expect(resultUint8Array, `for values: ${a}, ${b}`).toEqual(avmResult)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       })
     })
   })
@@ -96,12 +95,11 @@ describe('Bytes', async () => {
   ])('bitwise invert', async (a, padSize) => {
     it(`~${a}`, async () => {
       const uint8ArrayA = internal.encodingUtil.utf8ToUint8Array(a)
-      const avmResult = (await getAvmResultRaw({ appClient }, `verify_bytes_not`, uint8ArrayA, padSize))!
+      const avmResult = (await getAvmResult({ appClient }, `verify_bytes_not`, uint8ArrayA, padSize))!
 
       const bytesA = Bytes(padUint8Array(uint8ArrayA, padSize))
       const result = bytesA.bitwiseInvert()
-      const resultUint8Array = asUint8Array(result)
-      const resultHash = getSha256Hash(resultUint8Array)
+      const resultHash = sha256(result)
 
       expect(resultHash, `for value: ${a}`).toEqual(avmResult)
     })

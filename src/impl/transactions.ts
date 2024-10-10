@@ -11,10 +11,19 @@ import {
   uint64,
   Uint64,
 } from '@algorandfoundation/algorand-typescript'
-import { MAX_ITEMS_IN_LOG } from '../constants'
+import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_ITEMS_IN_LOG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable, ObjectKeys } from '../typescript-helpers'
-import { asBytes, asMaybeBytesCls, asMaybeUint64Cls, asNumber, asUint64Cls, combineIntoMaxBytePages, getRandomBytes } from '../util'
+import {
+  asBytes,
+  asMaybeBytesCls,
+  asMaybeUint64Cls,
+  asNumber,
+  asUint64Cls,
+  combineIntoMaxBytePages,
+  getRandomBytes,
+  toBytes,
+} from '../util'
 
 const baseDefaultFields = () => ({
   sender: lazyContext.defaultSender,
@@ -333,6 +342,10 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
       throw internal.errors.internalError(`Too many log calls in program, up to ${MAX_ITEMS_IN_LOG} is allowed`)
     }
     this.#appLogs.push(asBytes(value))
+  }
+  /* @internal */
+  logArc4ReturnValue(value: unknown): void {
+    this.appendLog(ABI_RETURN_VALUE_LOG_PREFIX.concat(toBytes(value)))
   }
 }
 

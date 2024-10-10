@@ -1,20 +1,13 @@
-import { Account, arc4, bytes, Bytes, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import { Account, arc4, bytes, Bytes, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
-import {
-  generateTestAccount,
-  generateTestAsset,
-  getAlgorandAppClient,
-  getAlgorandAppClientWithApp,
-  getAvmResult,
-  getLocalNetDefaultAccount,
-  INITIAL_BALANCE_MICRO_ALGOS,
-} from './avm-invoker'
-
-import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { MIN_TXN_FEE, ZERO_ADDRESS } from '../src/constants'
+import { testInvariant } from '../src/errors'
 import { AccountCls } from '../src/impl/account'
+import { InnerTxn } from '../src/impl/itxn'
+import { ApplicationTransaction } from '../src/impl/transactions'
 import { asBigInt, asNumber, asUint64Cls } from '../src/util'
 import { AppExpectingEffects } from './artifacts/created-app-asset/contract.algo'
 import {
@@ -29,9 +22,16 @@ import acctParamsAppSpecJson from './artifacts/state-ops/data/StateAcctParamsGet
 import appParamsAppSpecJson from './artifacts/state-ops/data/StateAppParamsContract.arc32.json'
 import assetHoldingAppSpecJson from './artifacts/state-ops/data/StateAssetHoldingContract.arc32.json'
 import assetParamsAppSpecJson from './artifacts/state-ops/data/StateAssetParamsContract.arc32.json'
+import {
+  generateTestAccount,
+  generateTestAsset,
+  getAlgorandAppClient,
+  getAlgorandAppClientWithApp,
+  getAvmResult,
+  getLocalNetDefaultAccount,
+  INITIAL_BALANCE_MICRO_ALGOS,
+} from './avm-invoker'
 import { asUint8Array } from './util'
-import { InnerTxn } from '../src/impl/itxn'
-import { ApplicationTransaction } from '../src/impl/transactions'
 
 describe('State op codes', async () => {
   const ctx = new TestExecutionContext()
@@ -57,9 +57,9 @@ describe('State op codes', async () => {
       ['verify_acct_total_assets', 0],
       ['verify_acct_total_boxes', 0],
       ['verify_acct_total_box_bytes', 0],
-    ])('should return the correct field value of the account', async (methodName, expectedValue) => {
+    ])('%s should return %s', async (methodName, expectedValue) => {
       const mockAccount = ctx.any.account({
-        address: dummyAccount.addr,
+        address: dummyAccount,
         balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
         minBalance: Uint64(100000),
         authAddress: Account(ZERO_ADDRESS),
@@ -74,17 +74,17 @@ describe('State op codes', async () => {
         totalBoxBytes: Uint64(0),
       })
 
-      const avmResult = await getAvmResult({ appClient, sendParams: { fee: AlgoAmount.Algos(1000) } }, methodName, dummyAccount.addr)
-
+      const avmResult = await getAvmResult(
+        { appClient, sendParams: { fee: AlgoAmount.Algos(1000) } },
+        methodName,
+        asUint8Array(dummyAccount.bytes),
+      )
+      testInvariant(avmResult !== undefined, 'There must be an AVM result')
       const mockContract = ctx.contract.create(StateAcctParamsGetContract)
       const mockResult = mockContract[methodName as keyof StateAcctParamsGetContract](mockAccount)
-      if (mockResult instanceof AccountCls) {
-        expect(mockResult.bytes.valueOf()).toEqual(avmResult)
-        expect(mockResult.bytes.valueOf()).toEqual((expectedValue as bytes).valueOf())
-      } else {
-        expect(mockResult.valueOf()).toEqual(avmResult)
-        expect(asNumber(mockResult as uint64)).toEqual(expectedValue)
-      }
+
+      expect(mockResult).toEqual(avmResult)
+      expect(mockResult).toEqual(expectedValue)
     })
   })
 
@@ -101,7 +101,7 @@ describe('State op codes', async () => {
       ['verify_app_params_get_extra_program_pages', 0],
       ['verify_app_params_get_creator', 'app.creator'],
       ['verify_app_params_get_address', 'app.address'],
-    ])('should return the correct field value of the application', async (methodName, expectedValue) => {
+    ])('%s should return %s', async (methodName, expectedValue) => {
       const application = ctx.any.application({
         applicationId: app.appId,
         approvalProgram: Bytes(app.compiledApproval.compiledBase64ToBytes),
@@ -111,25 +111,21 @@ describe('State op codes', async () => {
         localNumUint: Uint64(0),
         localNumBytes: Uint64(0),
         extraProgramPages: Uint64(0),
-        creator: Account(Bytes(dummyAccount.addr)),
+        creator: Account(Bytes.fromBase32(dummyAccount.addr)),
       })
       const avmResult = await getAvmResult({ appClient, sendParams: { fee: AlgoAmount.Algos(1000) } }, methodName, app.appId)
 
       const mockContract = ctx.contract.create(StateAppParamsContract)
       const mockResult = mockContract[methodName as keyof StateAppParamsContract](application)
 
-      if (mockResult instanceof internal.primitives.BytesCls) {
-        expect([...asUint8Array(mockResult)]).toEqual(avmResult)
-      } else if (mockResult instanceof AccountCls) {
-        expect(mockResult.bytes.valueOf()).toEqual(avmResult)
-        const expected =
-          expectedValue === 'app.creator' ? application.creator : expectedValue === 'app.address' ? application.address : undefined
-        if (expected) {
-          expect(mockResult.bytes.valueOf()).toEqual(expected.bytes.valueOf())
-        }
-      } else {
-        expect(mockResult.valueOf()).toEqual(avmResult)
-        expect(asNumber(mockResult as uint64)).toEqual(expectedValue)
+      expect(mockResult).toEqual(avmResult)
+
+      if (expectedValue === 'app.creator') {
+        expect(mockResult).toEqual(application.creator)
+      } else if (expectedValue === 'app.address') {
+        expect(mockResult).toEqual(application.address)
+      } else if (expectedValue !== undefined) {
+        expect(mockResult).toEqual(expectedValue)
       }
     })
   })
@@ -184,7 +180,7 @@ describe('State op codes', async () => {
       ['verify_asset_params_get_clawback', ZERO_ADDRESS],
       ['verify_asset_params_get_creator', 'creator'],
     ])('should return the correct field value of the asset', async (methodName, expectedValue) => {
-      const creator = dummyAccount.addr
+      const creator = Account(Bytes.fromBase32(dummyAccount.addr))
       const metadataHash = Bytes(`test${' '.repeat(28)}`)
       const mockAsset = ctx.any.asset({
         total: Uint64(100),
@@ -193,7 +189,7 @@ describe('State op codes', async () => {
         unitName: Bytes('UNIT'),
         url: Bytes('https://algorand.co'),
         metadataHash: metadataHash,
-        creator: Account(Bytes(creator)),
+        creator,
       })
 
       const dummyAsset = await generateTestAsset({
@@ -212,17 +208,11 @@ describe('State op codes', async () => {
       const mockContract = ctx.contract.create(StateAssetParamsContract)
       const mockResult = mockContract[methodName as keyof StateAssetParamsContract](mockAsset)
 
-      if (mockResult instanceof internal.primitives.BytesCls) {
-        expect([...asUint8Array(mockResult)]).toEqual(avmResult)
-        expect(asUint8Array(mockResult)).toEqual(asUint8Array(expectedValue as bytes))
-      } else if (mockResult instanceof AccountCls) {
-        expect(mockResult.bytes.valueOf()).toEqual(avmResult)
-
-        const expectedString = expectedValue === 'creator' ? creator : (expectedValue as bytes).valueOf()
-        expect(mockResult.bytes.valueOf()).toEqual(expectedString)
+      expect(mockResult).toEqual(avmResult)
+      if (expectedValue === 'creator') {
+        expect(mockResult).toEqual(creator)
       } else {
-        expect(mockResult.valueOf()).toEqual(avmResult)
-        expect(mockResult.valueOf()).toEqual(expectedValue)
+        expect(mockResult).toEqual(expectedValue)
       }
     })
   })
@@ -336,7 +326,7 @@ describe('State op codes', async () => {
       expect(asNumber(paymentItxn.amount)).toEqual(1000)
       expect(paymentItxn.sender).toEqual(ctx.ledger.getApplicationForContract(contract).address)
       expect(paymentItxn.type).toEqual(TransactionType.Payment)
-      expect(appItxn.typeBytes).toEqual(asUint64Cls(TransactionType.Payment).toBytes())
+      expect(paymentItxn.typeBytes).toEqual(asUint64Cls(TransactionType.Payment).toBytes())
 
       // Test common fields for both transactions
       ;[appItxn, paymentItxn].forEach((t: InnerTxn) => {
