@@ -1,10 +1,13 @@
+// noinspection SuspiciousTypeOfGuard
+
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import type { biguint } from '@algorandfoundation/algorand-typescript'
 import { BigUint, Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
-import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { describe, expect, it } from 'vitest'
+import { BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE, MAX_UINT512, MAX_UINT64 } from '../../src/constants'
 import appSpecJson from '../artifacts/primitives/data/PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult, getAvmResultRaw } from '../avm-invoker'
-import { MAX_UINT512, MAX_UINT64 } from '../../src/constants'
+import { abiAsBytes } from '../util'
 
 const asBigUint = (val: bigint | number) => (typeof val === 'bigint' ? BigUint(val) : BigUint(val))
 
@@ -146,74 +149,66 @@ describe('BigUint', async () => {
         await expect(getAvmResult<boolean>({ appClient }, `verify_biguint_${op}`, bytesA, bytesB)).rejects.toThrow(
           'math attempted on large byte-array',
         )
-        expect(() => getStubResult(bigUintA, bigUintB)).toThrow('BigUint over or underflow')
+        expect(() => getStubResult(bigUintA, bigUintB)).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
 
-        expect(() => getStubResult(a, bigUintB)).toThrow('BigUint over or underflow')
+        expect(() => getStubResult(a, bigUintB)).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
 
-        expect(() => getStubResult(bigUintA, b)).toThrow('BigUint over or underflow')
+        expect(() => getStubResult(bigUintA, b)).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
       })
     })
   })
 
   describe.each([
-    [0, 0],
-    [0, MAX_UINT512],
-    [MAX_UINT512, 0],
-    [1, 0],
-    [0, 1],
-    [1, 1],
+    [0n, 0n],
+    [0n, MAX_UINT512],
+    [MAX_UINT512, 0n],
+    [1n, 0n],
+    [0n, 1n],
+    [1n, 1n],
     [MAX_UINT64, MAX_UINT64],
-    [1, MAX_UINT512 - 1n],
-    [MAX_UINT512 - 1n, 1],
+    [1n, MAX_UINT512 - 1n],
+    [MAX_UINT512 - 1n, 1n],
   ])('addition', async (a, b) => {
     it(`${a} + ${b}`, async () => {
-      const bigUintA = asBigUint(a)
-      const bigUintB = asBigUint(b)
+      const bigUintA = BigUint(a)
+      const bigUintB = BigUint(b)
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_biguint_add', bytesA, bytesB))!
-      const avmResultValue = internal.encodingUtil.uint8ArrayToBigInt(avmResult)
+      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_add', bytesA, bytesB)))
+
       let result = bigUintA + bigUintB
-      expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
-      if (typeof a === 'bigint') {
-        result = a + bigUintB
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
-      }
+      result = a + bigUintB
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
-      if (typeof b === 'bigint') {
-        result = bigUintA + b
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
-      }
+      result = bigUintA + b
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
     })
   })
 
   describe.each([
-    [MAX_UINT512, 1],
-    [1, MAX_UINT512],
+    [MAX_UINT512, 1n],
+    [1n, MAX_UINT512],
     [MAX_UINT512, MAX_UINT512],
   ])('addition result overflow', async (a, b) => {
     it(`${a} + ${b}`, async () => {
-      const bigUintA = asBigUint(a)
-      const bigUintB = asBigUint(b)
+      const bigUintA = BigUint(a)
+      const bigUintB = BigUint(b)
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_biguint_add', bytesA, bytesB))!
-      const avmResultValue = internal.encodingUtil.uint8ArrayToBigInt(avmResult)
+      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_add', bytesA, bytesB)))
+
       let result = bigUintA + bigUintB
-      expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
-      if (typeof a === 'bigint') {
-        result = a + bigUintB
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
-      }
+      result = a + bigUintB
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
-      if (typeof b === 'bigint') {
-        result = bigUintA + b
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
-      }
+      result = bigUintA + b
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
     })
   })
 
@@ -231,56 +226,52 @@ describe('BigUint', async () => {
       await expect(getAvmResultRaw({ appClient }, 'verify_biguint_add', bytesA, bytesB)).rejects.toThrow(
         'math attempted on large byte-array',
       )
-      expect(() => bigUintA + bigUintB).toThrow('BigUint over or underflow')
+      expect(() => bigUintA + bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
 
       if (typeof a === 'bigint') {
-        expect(() => a + bigUintB).toThrow('BigUint over or underflow')
+        expect(() => a + bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
       }
 
       if (typeof b === 'bigint') {
-        expect(() => bigUintA + b).toThrow('BigUint over or underflow')
+        expect(() => bigUintA + b).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
       }
     })
   })
 
   describe.each([
-    [0, 0],
-    [1, 0],
-    [1, 1],
+    [0n, 0n],
+    [1n, 0n],
+    [1n, 1n],
     [MAX_UINT64, MAX_UINT64],
-    [MAX_UINT512, 0],
-    [MAX_UINT512, 1],
+    [MAX_UINT512, 0n],
+    [MAX_UINT512, 1n],
     [MAX_UINT512, MAX_UINT512],
   ])('subtraction', async (a, b) => {
     it(`${a} - ${b}`, async () => {
-      const bigUintA = asBigUint(a)
-      const bigUintB = asBigUint(b)
+      const bigUintA = BigUint(a)
+      const bigUintB = BigUint(b)
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_biguint_sub', bytesA, bytesB))!
-      const avmResultValue = internal.encodingUtil.uint8ArrayToBigInt(avmResult)
+      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_sub', bytesA, bytesB)))
+
       let result = bigUintA - bigUintB
-      expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
-      if (typeof a === 'bigint') {
-        result = a - bigUintB
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
-      }
+      result = a - bigUintB
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
-      if (typeof b === 'bigint') {
-        result = bigUintA - b
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
-      }
+      result = bigUintA - b
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
     })
   })
 
   describe.each([
-    [0, 1],
-    [1, 2],
+    [0n, 1n],
+    [1n, 2n],
     [MAX_UINT64, MAX_UINT512],
-    [0, MAX_UINT512],
-    [1, MAX_UINT512],
+    [0n, MAX_UINT512],
+    [1n, MAX_UINT512],
   ])(`subtraction result underflow`, async (a, b) => {
     it(`${a} - ${b}`, async () => {
       const bigUintA = asBigUint(a)
@@ -291,23 +282,19 @@ describe('BigUint', async () => {
       await expect(getAvmResultRaw({ appClient }, 'verify_biguint_sub', bytesA, bytesB)).rejects.toThrow('math would have negative result')
       expect(() => bigUintA - bigUintB).toThrow('BigUint underflow')
 
-      if (typeof a === 'bigint') {
-        expect(() => a - bigUintB).toThrow('BigUint underflow')
-      }
+      expect(() => a - bigUintB).toThrow('BigUint underflow')
 
-      if (typeof b === 'bigint') {
-        expect(() => bigUintA - b).toThrow('BigUint underflow')
-      }
+      expect(() => bigUintA - b).toThrow('BigUint underflow')
     })
   })
 
   describe.each([
-    [MAX_UINT512 + 1n, 1],
-    [1, MAX_UINT512 + 1n],
+    [MAX_UINT512 + 1n, 1n],
+    [1n, MAX_UINT512 + 1n],
     [MAX_UINT512 + 1n, MAX_UINT512 + 1n],
   ])(`subtraction with overflowing input`, async (a, b) => {
-    const bytesA = internal.encodingUtil.bigIntToUint8Array(BigInt(a))
-    const bytesB = internal.encodingUtil.bigIntToUint8Array(BigInt(b))
+    const bytesA = internal.encodingUtil.bigIntToUint8Array(a)
+    const bytesB = internal.encodingUtil.bigIntToUint8Array(b)
     const bigUintA = BigUint(Bytes(bytesA))
     const bigUintB = BigUint(Bytes(bytesB))
 
@@ -315,15 +302,11 @@ describe('BigUint', async () => {
       await expect(getAvmResultRaw({ appClient }, 'verify_biguint_sub', bytesA, bytesB)).rejects.toThrow(
         'math attempted on large byte-array',
       )
-      expect(() => bigUintA - bigUintB).toThrow('BigUint over or underflow')
+      expect(() => bigUintA - bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
 
-      if (typeof a === 'bigint') {
-        expect(() => a - bigUintB).toThrow('BigUint over or underflow')
-      }
+      expect(() => a - bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
 
-      if (typeof b === 'bigint') {
-        expect(() => bigUintA - b).toThrow('BigUint over or underflow')
-      }
+      expect(() => bigUintA - b).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
     })
   })
 
@@ -341,19 +324,19 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_biguint_mul', bytesA, bytesB))!
-      const avmResultValue = internal.encodingUtil.uint8ArrayToBigInt(avmResult)
+      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_mul', bytesA, bytesB)))
+
       let result = bigUintA * bigUintB
-      expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
       if (typeof a === 'bigint') {
         result = a * bigUintB
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       }
 
       if (typeof b === 'bigint') {
         result = bigUintA * b
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       }
     })
   })
@@ -369,19 +352,19 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_biguint_mul', bytesA, bytesB))!
-      const avmResultValue = internal.encodingUtil.uint8ArrayToBigInt(avmResult)
+      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_mul', bytesA, bytesB)))
+
       let result = bigUintA * bigUintB
-      expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
       if (typeof a === 'bigint') {
         result = a * bigUintB
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       }
 
       if (typeof b === 'bigint') {
         result = bigUintA * b
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       }
     })
   })
@@ -400,14 +383,14 @@ describe('BigUint', async () => {
       await expect(getAvmResultRaw({ appClient }, 'verify_biguint_mul', bytesA, bytesB)).rejects.toThrow(
         'math attempted on large byte-array',
       )
-      expect(() => bigUintA * bigUintB).toThrow('BigUint over or underflow')
+      expect(() => bigUintA * bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
 
       if (typeof a === 'bigint') {
-        expect(() => a * bigUintB).toThrow('BigUint over or underflow')
+        expect(() => a * bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
       }
 
       if (typeof b === 'bigint') {
-        expect(() => bigUintA * b).toThrow('BigUint over or underflow')
+        expect(() => bigUintA * b).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
       }
     })
   })
@@ -426,19 +409,19 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_biguint_div', bytesA, bytesB))!
-      const avmResultValue = internal.encodingUtil.uint8ArrayToBigInt(avmResult)
+      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_div', bytesA, bytesB)))
+
       let result = bigUintA / bigUintB
-      expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
       if (typeof a === 'bigint') {
         result = a / bigUintB
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       }
 
       if (typeof b === 'bigint') {
         result = bigUintA / b
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       }
     })
   })
@@ -474,14 +457,14 @@ describe('BigUint', async () => {
       await expect(getAvmResultRaw({ appClient }, 'verify_biguint_div', bytesA, bytesB)).rejects.toThrow(
         'math attempted on large byte-array',
       )
-      expect(() => bigUintA / bigUintB).toThrow('BigUint over or underflow')
+      expect(() => bigUintA / bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
 
       if (typeof a === 'bigint') {
-        expect(() => a / bigUintB).toThrow('BigUint over or underflow')
+        expect(() => a / bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
       }
 
       if (typeof b === 'bigint') {
-        expect(() => bigUintA / b).toThrow('BigUint over or underflow')
+        expect(() => bigUintA / b).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
       }
     })
   })
@@ -500,19 +483,18 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = (await getAvmResultRaw({ appClient }, 'verify_biguint_mod', bytesA, bytesB))!
-      const avmResultValue = internal.encodingUtil.uint8ArrayToBigInt(avmResult)
+      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_mod', bytesA, bytesB)))
       let result = bigUintA % bigUintB
-      expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+      expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
       if (typeof a === 'bigint') {
         result = a % bigUintB
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       }
 
       if (typeof b === 'bigint') {
         result = bigUintA % b
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       }
     })
   })
@@ -548,14 +530,14 @@ describe('BigUint', async () => {
       await expect(getAvmResultRaw({ appClient }, 'verify_biguint_mod', bytesA, bytesB)).rejects.toThrow(
         'math attempted on large byte-array',
       )
-      expect(() => bigUintA % bigUintB).toThrow('BigUint over or underflow')
+      expect(() => bigUintA % bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
 
       if (typeof a === 'bigint') {
-        expect(() => a % bigUintB).toThrow('BigUint over or underflow')
+        expect(() => a % bigUintB).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
       }
 
       if (typeof b === 'bigint') {
-        expect(() => bigUintA % b).toThrow('BigUint over or underflow')
+        expect(() => bigUintA % b).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
       }
     })
   })
@@ -599,19 +581,18 @@ describe('BigUint', async () => {
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
       it(`${a} ${operator} ${b}`, async () => {
-        const avmResult = (await getAvmResultRaw({ appClient }, `verify_biguint_${op}`, bytesA, bytesB))!
-        const avmResultValue = internal.encodingUtil.uint8ArrayToBigInt(avmResult)
+        const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, `verify_biguint_${op}`, bytesA, bytesB)))
         let result = getStubResult(bigUintA, bigUintB)
-        expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+        expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
         if (typeof a === 'bigint') {
           result = getStubResult(a, bigUintB)
-          expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+          expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
         }
 
         if (typeof b === 'bigint') {
           result = getStubResult(bigUintA, b)
-          expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResultValue)
+          expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
         }
       })
     })
@@ -620,14 +601,14 @@ describe('BigUint', async () => {
   describe.each([MAX_UINT512 + 1n, MAX_UINT512 * 2n])('value too big', (a) => {
     it(`${a}`, () => {
       const bigUintA = asBigUint(a)
-      expect(() => bigUintA === a).toThrow('BigUint over or underflow')
+      expect(() => bigUintA === a).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
     })
   })
 
   describe.each([-1, -MAX_UINT512, -MAX_UINT512 * 2n])('value too small', (a) => {
     it(`${a}`, () => {
       const bigUintA = asBigUint(a)
-      expect(() => bigUintA === asBigUint(a)).toThrow('BigUint over or underflow')
+      expect(() => bigUintA === asBigUint(a)).toThrow(BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE)
     })
   })
 
@@ -646,7 +627,7 @@ describe('BigUint', async () => {
   ])('fromCompat', async (a, b) => {
     it(`${a}`, async () => {
       const result = internal.primitives.BigUintCls.fromCompat(a)
-      expect(result.valueOf(), `for value: ${a}`).toBe(b)
+      expect(result, `for value: ${a}`).toEqual(b)
     })
   })
 })

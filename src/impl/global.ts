@@ -1,5 +1,5 @@
 import { Account, Application, Bytes, bytes, internal, op, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
-import { lazyContext } from '../context-helpers/internal-context'
+import algosdk from 'algosdk'
 import {
   DEFAULT_ACCOUNT_MIN_BALANCE,
   DEFAULT_ASSET_CREATE_MIN_BALANCE,
@@ -9,8 +9,8 @@ import {
   MIN_TXN_FEE,
   ZERO_ADDRESS,
 } from '../constants'
+import { lazyContext } from '../context-helpers/internal-context'
 import { asBigInt, getObjectReference } from '../util'
-import algosdk from 'algosdk'
 
 export class GlobalData {
   minTxnFee: uint64
@@ -129,7 +129,7 @@ export const Global: internal.opTypes.GlobalType = {
    */
   get currentApplicationAddress(): Account {
     const appAddress = algosdk.getApplicationAddress(asBigInt(this.currentApplicationId.id))
-    return Account(Bytes(appAddress))
+    return Account(Bytes.fromBase32(appAddress))
   },
 
   /**
@@ -164,7 +164,7 @@ export const Global: internal.opTypes.GlobalType = {
    */
   get callerApplicationAddress(): Account {
     const appAddress = algosdk.getApplicationAddress(asBigInt(this.callerApplicationId))
-    return Account(Bytes(appAddress))
+    return Account(Bytes.fromBase32(appAddress))
   },
 
   /**

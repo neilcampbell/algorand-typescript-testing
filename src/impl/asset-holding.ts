@@ -15,7 +15,7 @@ const getAssetHolding = (
     return undefined
   }
 
-  const accountData = lazyContext.getAccountData(account.bytes)
+  const accountData = lazyContext.getAccountData(account)
   const holding = accountData.optedAssets.get(asBigInt(asset.id))
   if (holding === undefined) {
     return undefined

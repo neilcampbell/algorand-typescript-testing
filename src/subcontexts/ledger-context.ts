@@ -1,17 +1,18 @@
 import { Account, Application, Asset, BaseContract, internal } from '@algorandfoundation/algorand-typescript'
+import { AccountMap } from '../collections/custom-key-map'
 import { MAX_UINT64 } from '../constants'
 import { AccountData, AssetHolding } from '../impl/account'
 import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'
-import { asBigInt, asBytesCls, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
 import { GlobalData } from '../impl/global'
+import { asBigInt, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
 
 export class LedgerContext {
   appIdIter = iterBigInt(1001n, MAX_UINT64)
   assetIdIter = iterBigInt(1001n, MAX_UINT64)
   applicationDataMap = new Map<bigint, ApplicationData>()
   appIdContractMap = new Map<bigint, BaseContract>()
-  accountDataMap = new Map<string, AccountData>()
+  accountDataMap = new AccountMap<AccountData>()
   assetDataMap = new Map<bigint, AssetData>()
   globalData = new GlobalData()
 
@@ -49,20 +50,19 @@ export class LedgerContext {
   /**
    * Update asset holdings for account, only specified values will be updated.
    * Account will also be opted-in to asset
-   * @param accountAddress
+   * @param account
    * @param assetId
    * @param balance
    * @param frozen
    */
   updateAssetHolding(
-    accountAddress: internal.primitives.StubBytesCompat | Account,
+    account: Account,
     assetId: internal.primitives.StubUint64Compat | Asset,
     balance?: internal.primitives.StubUint64Compat,
     frozen?: boolean,
   ): void {
-    const addr = (asMaybeBytesCls(accountAddress) ?? asBytesCls((accountAddress as Account).bytes)).toString()
     const id = (asMaybeUint64Cls(assetId) ?? asUint64Cls((assetId as Asset).id)).asBigInt()
-    const accountData = this.accountDataMap.get(addr)!
+    const accountData = this.accountDataMap.get(account)!
     const asset = this.assetDataMap.get(id)!
     const holding = accountData.optedAssets.get(id) ?? new AssetHolding(0n, asset.defaultFrozen)
     if (balance !== undefined) holding.balance = asUint64(balance)

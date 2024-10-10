@@ -1,4 +1,6 @@
 import { internal } from '@algorandfoundation/algorand-typescript'
+import { encodingUtil } from '@algorandfoundation/puya-ts'
+import { AccountCls } from './impl/account'
 
 type Tester = (this: TesterContext, a: unknown, b: unknown, customTesters: Array<Tester>) => boolean | undefined
 interface TesterContext {
@@ -26,9 +28,50 @@ function addEqualityTesters(expectObj: ExpectObj) {
         const testValue = typeof test === 'bigint' ? test : typeof test === 'number' ? BigInt(test) : undefined
         if (testValue !== undefined) return this.equals(subject.valueOf(), testValue, customTesters)
         return undefined
-      } else if (test instanceof internal.primitives.Uint64Cls || test instanceof internal.primitives.BigUintCls) {
-        const subjectValue = typeof subject === 'bigint' ? subject : typeof subject === 'number' ? BigInt(subject) : undefined
-        if (subjectValue !== undefined) return this.equals(subjectValue, test.valueOf(), customTesters)
+      }
+      // Defer to other testers
+      return undefined
+    },
+    function BytesPrimitiveIsUint8Array(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (subject instanceof internal.primitives.BytesCls) {
+        const testValue = test instanceof Uint8Array ? test : undefined
+        if (testValue !== undefined) return this.equals(subject.asUint8Array(), testValue, customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
+    function BytesPrimitiveIsArray(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (subject instanceof internal.primitives.BytesCls) {
+        const testValue = Array.isArray(test) && test.every((i) => typeof i === 'number') ? new Uint8Array(test) : undefined
+        if (testValue !== undefined) return this.equals(subject.asUint8Array(), testValue, customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
+    function BytesPrimitiveIsString(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (subject instanceof internal.primitives.BytesCls) {
+        const testValue = typeof test === 'string' ? encodingUtil.utf8ToUint8Array(test) : undefined
+        if (testValue !== undefined) return this.equals(subject.asUint8Array(), testValue, customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
+    function AccountIsAddressStr(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (subject instanceof AccountCls) {
+        const testValue = typeof test === 'string' ? encodingUtil.base32ToUint8Array(test).slice(0, 32) : undefined
+        if (testValue !== undefined) return this.equals(subject.bytes, testValue, customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
+    function AccountIsAddressBytes(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (subject instanceof AccountCls) {
+        const testValue = test instanceof internal.primitives.BytesCls ? test.asUint8Array().slice(0, 32) : undefined
+        if (testValue !== undefined) return this.equals(subject.bytes, testValue, customTesters)
         return undefined
       }
       // Defer to other testers

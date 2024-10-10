@@ -4,6 +4,7 @@ import { ALWAYS_APPROVE_TEAL_PROGRAM } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable } from '../typescript-helpers'
 import { asBigInt, asUint64 } from '../util'
+import { Uint64BackedCls } from './base'
 
 export class ApplicationData {
   application: Mutable<Omit<Application, 'id' | 'address'>> & { appLogs: bytes[] }
@@ -28,11 +29,13 @@ export class ApplicationData {
   }
 }
 
-export class ApplicationCls implements Application {
-  readonly id: uint64
+export class ApplicationCls extends Uint64BackedCls implements Application {
+  get id() {
+    return this.uint64
+  }
 
   constructor(id?: uint64) {
-    this.id = asUint64(id ?? 0)
+    super(asUint64(id ?? 0))
   }
 
   private get data(): ApplicationData {
@@ -64,6 +67,6 @@ export class ApplicationCls implements Application {
   }
   get address(): Account {
     const addr = algosdk.getApplicationAddress(asBigInt(this.id))
-    return Account(Bytes(addr))
+    return Account(Bytes.fromBase32(addr))
   }
 }

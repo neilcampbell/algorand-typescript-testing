@@ -1,14 +1,14 @@
-import { Bytes, bytes, internal, gtxn, arc4 } from '@algorandfoundation/algorand-typescript'
+import { arc4, bytes, Bytes, gtxn, internal } from '@algorandfoundation/algorand-typescript'
+import algosdk from 'algosdk'
 import { ec } from 'elliptic'
 import { sha256 as js_sha256 } from 'js-sha256'
 import { keccak256 as js_keccak256, sha3_256 as js_sha3_256 } from 'js-sha3'
 import { sha512_256 as js_sha512_256 } from 'js-sha512'
 import nacl from 'tweetnacl'
-import { notImplementedError } from '../errors'
-import { lazyContext } from '../context-helpers/internal-context'
-import algosdk from 'algosdk'
-import { asBytes, asBytesCls } from '../util'
 import { LOGIC_DATA_PREFIX } from '../constants'
+import { lazyContext } from '../context-helpers/internal-context'
+import { notImplementedError } from '../errors'
+import { asBytes, asBytesCls } from '../util'
 
 export const sha256 = (a: internal.primitives.StubBytesCompat): bytes => {
   const bytesA = internal.primitives.BytesCls.fromCompat(a)
@@ -62,7 +62,7 @@ export const ed25519verify = (
   const logicSig = new algosdk.LogicSig(programBytes.asUint8Array())
   const decodedAddress = algosdk.decodeAddress(logicSig.address())
 
-  const addressBytes = asBytes(decodedAddress.publicKey)
+  const addressBytes = Bytes(decodedAddress.publicKey)
   const data = LOGIC_DATA_PREFIX.concat(addressBytes).concat(asBytes(a))
   return ed25519verifyBare(data, b, c)
 }
@@ -114,7 +114,7 @@ export const ecdsaPkRecover = (
 
   const x = pubKey.getX().toArray('be')
   const y = pubKey.getY().toArray('be')
-  return [Bytes(new Uint8Array(x)), Bytes(new Uint8Array(y))]
+  return [Bytes(x), Bytes(y)]
 }
 
 export const ecdsaPkDecompress = (v: internal.opTypes.Ecdsa, a: internal.primitives.StubBytesCompat): readonly [bytes, bytes] => {

@@ -1,4 +1,4 @@
-import { internal } from '@algorandfoundation/algorand-typescript'
+import { Account, internal } from '@algorandfoundation/algorand-typescript'
 import { AccountData } from '../impl/account'
 import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'
@@ -43,9 +43,8 @@ class InternalContext {
     return this.value.txn.activeGroup
   }
 
-  getAccountData(accountPublicKey: internal.primitives.StubBytesCompat): AccountData {
-    const key = internal.primitives.BytesCls.fromCompat(accountPublicKey)
-    const data = this.ledger.accountDataMap.get(key.toString())
+  getAccountData(account: Account): AccountData {
+    const data = this.ledger.accountDataMap.get(account)
     if (!data) {
       throw internal.errors.internalError('Unknown account, check correct testing context is active')
     }

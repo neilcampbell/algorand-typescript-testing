@@ -3,13 +3,13 @@ import algosdk from 'algosdk'
 import { randomBytes } from 'crypto'
 import { MAX_BYTES_SIZE, MAX_UINT64, ZERO_ADDRESS } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { AccountCls, AccountData } from '../impl/account'
+import { AccountData } from '../impl/account'
 import { ApplicationCls, ApplicationData } from '../impl/application'
 import { AssetCls, AssetData } from '../impl/asset'
-import { asBigInt, asBytesCls, asUint64Cls, getRandomBigInt } from '../util'
+import { asBigInt, asUint64Cls, getRandomBigInt } from '../util'
 
 type AccountContextData = Partial<AccountData['account']> & {
-  address?: internal.primitives.StubBytesCompat
+  address?: Account
   optedAssetBalances?: Map<internal.primitives.StubUint64Compat, internal.primitives.StubUint64Compat>
   optedApplications?: Application[]
 }
@@ -37,25 +37,25 @@ export class AvmValueGenerator {
   }
 
   account(input?: AccountContextData): Account {
-    const addr = input?.address ? asBytesCls(input.address).toString() : undefined
-    if (addr && lazyContext.ledger.accountDataMap.has(addr)) {
+    const account = input?.address ?? Account(Bytes.fromBase32(algosdk.generateAccount().addr))
+
+    if (input?.address && lazyContext.ledger.accountDataMap.has(account)) {
       internal.errors.internalError(
         'Account with such address already exists in testing context. Use `context.ledger.getAccount(address)` to retrieve the existing account.',
       )
     }
 
-    const accountAddress = addr ?? algosdk.generateAccount().addr
     const data = new AccountData()
-    const { address, optedAssetBalances, optedApplications, ...account } = input ?? {}
+    const { address, optedAssetBalances, optedApplications, ...accountData } = input ?? {}
     data.account = {
       ...data.account,
-      ...account,
+      ...accountData,
     }
-    lazyContext.ledger.accountDataMap.set(accountAddress, data)
+    lazyContext.ledger.accountDataMap.set(account, data)
 
     if (input?.optedAssetBalances) {
       for (const [assetId, balance] of input.optedAssetBalances) {
-        lazyContext.ledger.updateAssetHolding(accountAddress, assetId, balance)
+        lazyContext.ledger.updateAssetHolding(account, assetId, balance)
       }
     }
     if (input?.optedApplications) {
@@ -63,7 +63,7 @@ export class AvmValueGenerator {
         data.optedApplications.set(asBigInt(app.id), app)
       }
     }
-    return new AccountCls(Bytes(accountAddress))
+    return account
   }
 
   asset(input?: AssetContextData): Asset {

@@ -1,6 +1,7 @@
-import { internal, bytes } from '@algorandfoundation/algorand-typescript'
+import { Bytes, bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { randomBytes } from 'crypto'
 import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT512, MAX_UINT8, UINT512_SIZE } from './constants'
+import { BytesBackedCls, Uint64BackedCls } from './impl/base'
 import { DeliberateAny } from './typescript-helpers'
 
 export const nameOfType = (x: unknown) => {
@@ -54,7 +55,23 @@ export const toBytes = (val: unknown): bytes => {
   }
   const bytesVal = asMaybeBytesCls(val)
   if (bytesVal !== undefined) {
-    return bytesVal.toBytes().asAlgoTs()
+    return bytesVal.asAlgoTs()
+  }
+  if (val instanceof BytesBackedCls) {
+    return val.bytes
+  }
+  if (val instanceof Uint64BackedCls) {
+    return asUint64Cls(val.uint64).toBytes().asAlgoTs()
+  }
+  if (Array.isArray(val)) {
+    // This hack handles tuples/arrays of uint64 only
+    return val.reduce((acc: bytes, cur: unknown) => {
+      const uint64Val = asMaybeUint64Cls(cur)
+      if (!uint64Val) {
+        internal.errors.internalError(`ABI tuple encoding not supported: ${nameOfType(val)}`)
+      }
+      return acc.concat(toBytes(cur))
+    }, Bytes())
   }
   internal.errors.internalError(`Invalid type for bytes: ${nameOfType(val)}`)
 }
@@ -113,7 +130,7 @@ export const getRandomBigInt = (min: number | bigint, max: number | bigint): big
   return (randomValue % (bigIntMax - bigIntMin)) + bigIntMin
 }
 
-export const getRandomBytes = (length: number): internal.primitives.BytesCls => asBytesCls(new Uint8Array(randomBytes(length)))
+export const getRandomBytes = (length: number): internal.primitives.BytesCls => asBytesCls(Bytes(randomBytes(length)))
 
 const NoValue = Symbol('no-value')
 type LazyInstance<T> = () => T

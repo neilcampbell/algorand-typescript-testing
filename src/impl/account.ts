@@ -2,9 +2,10 @@ import { Account, Application, Asset, bytes, internal, uint64 } from '@algorandf
 import { DEFAULT_ACCOUNT_MIN_BALANCE, ZERO_ADDRESS } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable } from '../typescript-helpers'
-import { asBytes, asUint64, asUint64Cls } from '../util'
+import { asUint64, asUint64Cls } from '../util'
 import { ApplicationCls } from './application'
 import { AssetCls } from './asset'
+import { BytesBackedCls } from './base'
 
 export class AssetHolding {
   balance: uint64
@@ -38,15 +39,17 @@ export class AccountData {
   }
 }
 
-export class AccountCls implements Account {
-  readonly bytes: bytes
-
-  constructor(address?: internal.primitives.StubBytesCompat) {
-    this.bytes = asBytes(address ?? ZERO_ADDRESS)
+export class AccountCls extends BytesBackedCls implements Account {
+  constructor(address?: bytes) {
+    const addressBytes = address ?? ZERO_ADDRESS
+    if (![32n, 36n].includes(asUint64Cls(addressBytes.length).valueOf())) {
+      throw new internal.errors.AvmError('Address must be 32 bytes long, or 36 bytes including checksum')
+    }
+    super(addressBytes.slice(0, 32))
   }
 
   private get data(): AccountData {
-    return lazyContext.getAccountData(this.bytes)
+    return lazyContext.getAccountData(this)
   }
 
   get balance(): uint64 {

@@ -1,4 +1,3 @@
-import { internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { ABIAppCallArg, ABIReturn } from '@algorandfoundation/algokit-utils/types/app'
@@ -7,7 +6,8 @@ import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { KmdAccountManager } from '@algorandfoundation/algokit-utils/types/kmd-account-manager'
 import { nullLogger } from '@algorandfoundation/algokit-utils/types/logging'
 import { SendTransactionFrom, SendTransactionParams } from '@algorandfoundation/algokit-utils/types/transaction'
-import { ABIValue, Account as algoSdkAccount, generateAccount } from 'algosdk'
+import { Account, Bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import { ABIValue, generateAccount } from 'algosdk'
 import { randomUUID } from 'crypto'
 import { asUint64, getRandomNumber, Lazy } from '../src/util'
 
@@ -30,7 +30,7 @@ export const getAlgorandAppClientWithApp = async (appSpec: AppSpec) => {
   return [appClient, app] as const
 }
 
-const inovkeMethod = async (
+const invokeMethod = async (
   appClient: ApplicationClient,
   method: string,
   sendParams?: SendTransactionParams,
@@ -51,7 +51,7 @@ export const getAvmResult = async <TResult extends ABIValue>(
   method: string,
   ...methodArgs: ABIAppCallArg[]
 ): Promise<TResult> => {
-  const result = await inovkeMethod(appClient, method, sendParams, ...methodArgs)
+  const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
   return result.returnValue as TResult
 }
 
@@ -60,8 +60,8 @@ export const getAvmResultRaw = async (
   method: string,
   ...methodArgs: ABIAppCallArg[]
 ): Promise<Uint8Array | undefined> => {
-  const result = await inovkeMethod(appClient, method, sendParams, ...methodArgs)
-  return result.rawReturnValue?.slice(ARC4_PREFIX_LENGTH)
+  const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
+  return result.rawReturnValue
 }
 
 export const getLocalNetDefaultAccount = () => {
@@ -70,7 +70,7 @@ export const getLocalNetDefaultAccount = () => {
   return kmdAccountManager.getLocalNetDispenserAccount()
 }
 
-export const generateTestAccount = async (): Promise<algoSdkAccount> => {
+export const generateTestAccount = async (): Promise<Account> => {
   const account = generateAccount()
 
   await algokit.ensureFunded(
@@ -80,7 +80,7 @@ export const generateTestAccount = async (): Promise<algoSdkAccount> => {
     },
     algorandClient().client.algod,
   )
-  return account
+  return Account(Bytes.fromBase32(account.addr))
 }
 
 export const generateTestAsset = async (fields: {

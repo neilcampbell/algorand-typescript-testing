@@ -25,8 +25,8 @@ type UnaryOps = '~'
 function tryGetBigInt(value: unknown): bigint | undefined {
   if (typeof value == 'bigint') return value
   if (typeof value == 'number') return BigInt(value)
-  if (value instanceof internal.primitives.Uint64Cls) return value.value
-  if (value instanceof internal.primitives.BigUintCls) return value.value
+  if (value instanceof internal.primitives.Uint64Cls) return value.valueOf()
+  if (value instanceof internal.primitives.BigUintCls) return value.valueOf()
   return undefined
 }
 
@@ -66,8 +66,8 @@ export function unaryOp(operand: unknown, op: UnaryOps) {
 }
 
 function uint64BinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps): DeliberateAny {
-  const lbi = internal.primitives.Uint64Cls.fromCompat(left).value
-  const rbi = internal.primitives.Uint64Cls.fromCompat(right).value
+  const lbi = internal.primitives.Uint64Cls.fromCompat(left).valueOf()
+  const rbi = internal.primitives.Uint64Cls.fromCompat(right).valueOf()
   const result = (function () {
     switch (op) {
       case '+':
@@ -121,8 +121,8 @@ function uint64BinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps
 }
 
 function bigUintBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps): DeliberateAny {
-  const lbi = internal.primitives.checkBigUint(internal.primitives.BigUintCls.fromCompat(left).value)
-  const rbi = internal.primitives.checkBigUint(internal.primitives.BigUintCls.fromCompat(right).value)
+  const lbi = internal.primitives.checkBigUint(internal.primitives.BigUintCls.fromCompat(left).valueOf())
+  const rbi = internal.primitives.checkBigUint(internal.primitives.BigUintCls.fromCompat(right).valueOf())
   const result = (function () {
     switch (op) {
       case '+':
@@ -260,7 +260,7 @@ function defaultBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOp
 }
 
 function uint64UnaryOp(operand: DeliberateAny, op: UnaryOps): DeliberateAny {
-  const obi = internal.primitives.Uint64Cls.fromCompat(operand).value
+  const obi = internal.primitives.Uint64Cls.fromCompat(operand).valueOf()
   switch (op) {
     case '~':
       return ~obi & MAX_UINT64
