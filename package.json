@@ -71,8 +71,5 @@
     "js-sha3": "^0.9.3",
     "js-sha512": "^0.9.0",
     "tweetnacl": "^1.0.3"
-  },
-  "bundleDependencies": [
-    "typescript"
-  ]
+  }
 }
