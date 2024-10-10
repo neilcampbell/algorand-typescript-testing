@@ -12,7 +12,7 @@ import { randomUUID } from 'crypto'
 import { asUint64, getRandomNumber, Lazy } from '../src/util'
 
 algokit.Config.configure({ logger: nullLogger })
-const ARC4_PREFIX_LENGTH = 2
+
 const algorandClient = Lazy(() => algokit.AlgorandClient.defaultLocalNet())
 
 export const INITIAL_BALANCE_MICRO_ALGOS = Number(20e6)
