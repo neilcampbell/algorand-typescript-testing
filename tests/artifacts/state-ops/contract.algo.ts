@@ -353,6 +353,58 @@ export class StateAppParamsContract extends arc4.Contract {
   }
 }
 
+export class StateAppGlobalExContract extends arc4.Contract {
+  globalUint64 = GlobalState({ key: Bytes('global_uint64'), initialValue: Uint64(2) })
+  globalBytes = GlobalState({ key: Bytes('global_bytes'), initialValue: Bytes('dummy_bytes') })
+  global_uint64_explicit = GlobalState({ initialValue: Uint64(2) })
+  global_bytes_explicit = GlobalState({ initialValue: Bytes('dummy_bytes') })
+  // TODO: uncomment when arc4 types are ready
+  // globalArc4Bytes = GlobalState({ key: Bytes('global_arc4_bytes'), initialValue: arc4.DynamicBytes('dummy_arc4_bytes') })
+  // global_arc4_bytes_explicit = GlobalState({ initialValue: arc4.DynamicBytes('dummy_arc4_bytes') })
+}
+
+export class StateAppGlobalContract extends arc4.Contract {
+  globalUint64 = GlobalState<uint64>({ key: Bytes('global_uint64') })
+  globalBytes = GlobalState<bytes>({ key: Bytes('global_bytes') })
+
+  @arc4.abimethod()
+  verify_get_bytes(a: bytes): bytes {
+    const value = op.AppGlobal.getBytes(a)
+    return value
+  }
+
+  @arc4.abimethod()
+  verify_get_uint64(a: bytes): uint64 {
+    const value = op.AppGlobal.getUint64(a)
+    return value
+  }
+
+  @arc4.abimethod()
+  verify_get_ex_bytes(a: Application, b: bytes): readonly [bytes, boolean] {
+    return op.AppGlobal.getExBytes(a, b)
+  }
+
+  @arc4.abimethod()
+  verify_get_ex_uint64(a: Application, b: bytes): readonly [uint64, boolean] {
+    return op.AppGlobal.getExUint64(a, b)
+  }
+
+  @arc4.abimethod()
+  verify_put_uint64(a: bytes, b: uint64): void {
+    op.AppGlobal.put(a, b)
+  }
+
+  @arc4.abimethod()
+  verify_put_bytes(a: bytes, b: bytes): void {
+    op.AppGlobal.put(a, b)
+  }
+
+  @arc4.abimethod()
+  verify_delete(a: bytes): void {
+    op.AppGlobal.delete(a)
+  }
+}
+
 export class ITxnOpsContract extends arc4.Contract {
   @arc4.abimethod()
   public verify_itxn_ops() {

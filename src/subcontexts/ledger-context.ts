@@ -5,7 +5,7 @@ import { AccountData, AssetHolding } from '../impl/account'
 import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'
 import { GlobalData } from '../impl/global'
-import { asBigInt, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
+import { asBigInt, asBytes, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
 
 interface BlockData {
   seed: bigint
@@ -101,5 +101,37 @@ export class LedgerContext {
       return this.blocks.get(i)!
     }
     throw internal.errors.internalError(`Block ${i} not set`)
+  }
+
+  getGlobalState(
+    app: Application,
+    key: internal.primitives.StubBytesCompat,
+  ): [internal.state.GlobalStateCls<unknown> | undefined, boolean] {
+    const appId = asBigInt(app.id)
+    const keyBytes = asBytes(key)
+    if (!this.applicationDataMap.has(appId)) {
+      return [undefined, false]
+    }
+    const appData = this.applicationDataMap.get(appId)!
+    if (!appData.application.globalStates.has(keyBytes)) {
+      return [undefined, false]
+    }
+    return [appData.application.globalStates.get(keyBytes), true]
+  }
+
+  setGlobalState(
+    app: Application,
+    key: internal.primitives.StubBytesCompat,
+    value: internal.primitives.StubUint64Compat | internal.primitives.StubBytesCompat | undefined,
+  ): void {
+    const appId = asBigInt(app.id)
+    const keyBytes = asBytes(key)
+    const appData = this.applicationDataMap.get(appId)!
+    const globalState = appData.application.globalStates.get(keyBytes)!
+    if (value === undefined) {
+      globalState.delete()
+    } else {
+      globalState.value = asMaybeUint64Cls(value) ?? asMaybeBytesCls(value)
+    }
   }
 }

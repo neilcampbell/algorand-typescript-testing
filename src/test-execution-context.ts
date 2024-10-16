@@ -21,7 +21,6 @@ import { TransactionContext } from './subcontexts/transaction-context'
 import { ValueGenerator } from './value-generators'
 
 export class TestExecutionContext implements internal.ExecutionContext {
-  #applicationLogs: Map<bigint, bytes[]>
   #contractContext: ContractContext
   #ledgerContext: LedgerContext
   #txnContext: TransactionContext
@@ -30,7 +29,6 @@ export class TestExecutionContext implements internal.ExecutionContext {
 
   constructor() {
     internal.ctxMgr.instance = this
-    this.#applicationLogs = new Map()
     this.#contractContext = new ContractContext()
     this.#ledgerContext = new LedgerContext()
     this.#txnContext = new TransactionContext()
@@ -112,7 +110,6 @@ export class TestExecutionContext implements internal.ExecutionContext {
   }
 
   reset() {
-    this.#applicationLogs.clear()
     this.#contractContext = new ContractContext()
     this.#ledgerContext = new LedgerContext()
     this.#txnContext = new TransactionContext()

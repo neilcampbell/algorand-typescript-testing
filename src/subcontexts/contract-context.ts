@@ -1,5 +1,6 @@
 import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract, internal } from '@algorandfoundation/algorand-typescript'
 import { getAbiMetadata } from '../abi-metadata'
+import { BytesMap } from '../collections/custom-key-map'
 import { lazyContext } from '../context-helpers/internal-context'
 import { AccountCls } from '../impl/account'
 import { ApplicationCls } from '../impl/application'
@@ -15,7 +16,7 @@ import {
 } from '../impl/transactions'
 import { getGenericTypeInfo } from '../runtime-helpers'
 import { DeliberateAny } from '../typescript-helpers'
-import { extractGenericTypeArgs } from '../util'
+import { asUint64Cls, extractGenericTypeArgs } from '../util'
 
 interface IConstructor<T> {
   new (...args: DeliberateAny[]): T
@@ -24,8 +25,8 @@ interface IConstructor<T> {
 type StateTotals = Pick<Application, 'globalNumBytes' | 'globalNumUint' | 'localNumBytes' | 'localNumUint'>
 
 interface States {
-  globalStates: Map<bytes, internal.state.GlobalStateCls<unknown>>
-  localStates: Map<bytes, internal.state.LocalStateMapCls<unknown>>
+  globalStates: BytesMap<internal.state.GlobalStateCls<unknown>>
+  localStates: BytesMap<internal.state.LocalStateMapCls<unknown>>
   totals: StateTotals
 }
 
@@ -38,8 +39,8 @@ const isUint64GenericType = (typeName: string | undefined) => {
 const extractStates = (contract: BaseContract): States => {
   const stateTotals = { globalNumBytes: 0, globalNumUint: 0, localNumBytes: 0, localNumUint: 0 }
   const states = {
-    globalStates: new Map<bytes, internal.state.GlobalStateCls<unknown>>(),
-    localStates: new Map<bytes, internal.state.LocalStateMapCls<unknown>>(),
+    globalStates: new BytesMap<internal.state.GlobalStateCls<unknown>>(),
+    localStates: new BytesMap<internal.state.LocalStateMapCls<unknown>>(),
     totals: stateTotals,
   }
   Object.entries(contract).forEach(([key, value]) => {
@@ -50,7 +51,7 @@ const extractStates = (contract: BaseContract): States => {
       if (value.key === undefined) value.key = Bytes(key)
 
       // capture state into the context
-      if (isLocalState) states.localStates.set(value.key, value.map)
+      if (isLocalState) states.localStates.set(value.key, value)
       else states.globalStates.set(value.key, value)
 
       // populate state totals
@@ -64,23 +65,31 @@ const extractStates = (contract: BaseContract): States => {
   return states
 }
 
-const extractArraysFromArgs = (args: DeliberateAny[]) => {
+const extractArraysFromArgs = (app: Application, args: DeliberateAny[]) => {
   const transactions: Transaction[] = []
   const accounts: Account[] = []
-  const apps: Application[] = []
+  const apps: Application[] = [app]
   const assets: Asset[] = []
+  const appArgs: bytes[] = []
+
+  // TODO: replace `asUint64Cls(accounts.length).toBytes().asAlgoTs()` with `arc4.Uint8(account.length).toBytes().asAlgoTs()`
   for (const arg of args) {
     if (isTransaction(arg)) {
       transactions.push(arg)
     } else if (arg instanceof AccountCls) {
+      appArgs.push(asUint64Cls(accounts.length).toBytes().asAlgoTs())
       accounts.push(arg as Account)
     } else if (arg instanceof ApplicationCls) {
+      appArgs.push(asUint64Cls(apps.length).toBytes().asAlgoTs())
       apps.push(arg as Application)
     } else if (arg instanceof AssetCls) {
+      appArgs.push(asUint64Cls(assets.length).toBytes().asAlgoTs())
       assets.push(arg as Asset)
     }
   }
-  return { accounts, apps, assets, transactions }
+
+  // TODO: use actual method selector in appArgs
+  return { accounts, apps, assets, transactions, appArgs: [Bytes('method_selector'), ...appArgs] }
 }
 
 function isTransaction(obj: unknown): obj is Transaction {
@@ -96,7 +105,6 @@ function isTransaction(obj: unknown): obj is Transaction {
 
 export class ContractContext {
   create<T extends BaseContract>(type: IConstructor<T>, ...args: DeliberateAny[]): T {
-    Object.getPrototypeOf(type)
     const proxy = new Proxy(type, this.getContractProxyHandler<T>(this.isArc4(type)))
     return new proxy(...args)
   }
@@ -114,10 +122,12 @@ export class ContractContext {
   }
 
   private getContractProxyHandler<T extends BaseContract>(isArc4: boolean): ProxyHandler<IConstructor<T>> {
-    const onConstructed = (instance: BaseContract) => {
+    const onConstructed = (instance: T) => {
       const states = extractStates(instance)
 
       const application = lazyContext.any.application({
+        globalStates: states.globalStates,
+        localStates: states.localStates,
         ...states.totals,
       })
       lazyContext.ledger.addAppIdContractMap(application.id, instance)
@@ -127,12 +137,13 @@ export class ContractContext {
         const instance = new Proxy(new target(...args), {
           get(target, prop, receiver) {
             const orig = Reflect.get(target, prop, receiver)
+            const abiMetadata = getAbiMetadata(target, prop as string)
             const isProgramMethod = prop === 'approvalProgram' || prop === 'clearStateProgram'
-            if (isArc4 || isProgramMethod) {
+            const isAbiMethod = isArc4 && abiMetadata
+            if (isAbiMethod || isProgramMethod) {
               return (...args: DeliberateAny[]): DeliberateAny => {
                 const app = lazyContext.ledger.getApplicationForContract(receiver)
-                const { transactions, ...appCallArgs } = extractArraysFromArgs(args)
-                const abiMetadata = getAbiMetadata(target, prop as string)
+                const { transactions, ...appCallArgs } = extractArraysFromArgs(app, args)
                 const appTxn = lazyContext.any.txn.applicationCall({
                   appId: app,
                   ...appCallArgs,
@@ -142,7 +153,7 @@ export class ContractContext {
                 const txns = [...(transactions ?? []), appTxn]
                 return lazyContext.txn.ensureScope(txns).execute(() => {
                   const returnValue = (orig as DeliberateAny).apply(target, args)
-                  if (!isProgramMethod && isArc4 && returnValue !== undefined) {
+                  if (!isProgramMethod && isAbiMethod && returnValue !== undefined) {
                     appTxn.logArc4ReturnValue(returnValue)
                   }
                   return returnValue
@@ -152,6 +163,7 @@ export class ContractContext {
             return orig
           },
         })
+
         onConstructed(instance)
 
         return instance

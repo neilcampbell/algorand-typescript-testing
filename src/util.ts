@@ -68,7 +68,9 @@ export const toBytes = (val: unknown): bytes => {
     return val.reduce((acc: bytes, cur: unknown) => {
       const uint64Val = asMaybeUint64Cls(cur)
       if (!uint64Val) {
-        internal.errors.internalError(`ABI tuple encoding not supported: ${nameOfType(val)}`)
+        // TODO: support ABI tuple encoding
+        // internal.errors.internalError(`ABI tuple encoding not supported: ${nameOfType(val)}`)
+        return acc.concat(Bytes())
       }
       return acc.concat(toBytes(cur))
     }, Bytes())

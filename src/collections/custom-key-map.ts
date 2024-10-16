@@ -1,6 +1,6 @@
-import { Account, internal } from '@algorandfoundation/algorand-typescript'
-import { encodingUtil } from '@algorandfoundation/puya-ts'
+import { Account, bytes } from '@algorandfoundation/algorand-typescript'
 import { DeliberateAny } from '../typescript-helpers'
+import { asBytesCls } from '../util'
 
 type Primitive = number | bigint | string | boolean
 export abstract class CustomKeyMap<TKey, TValue> implements Map<TKey, TValue> {
@@ -62,6 +62,12 @@ export class AccountMap<TValue> extends CustomKeyMap<Account, TValue> {
   }
 
   private static getAddressStrFromAccount = (acc: Account) => {
-    return encodingUtil.uint8ArrayToHex(internal.primitives.BytesCls.fromCompat(acc.bytes).asUint8Array())
+    return asBytesCls(acc.bytes).valueOf()
+  }
+}
+
+export class BytesMap<TValue> extends CustomKeyMap<bytes, TValue> {
+  constructor() {
+    super((bytes) => asBytesCls(bytes).valueOf())
   }
 }
