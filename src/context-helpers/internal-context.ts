@@ -61,8 +61,7 @@ class InternalContext {
   }
 
   getApplicationData(id: internal.primitives.StubUint64Compat): ApplicationData {
-    const key = internal.primitives.Uint64Cls.fromCompat(id)
-    const data = this.ledger.applicationDataMap.get(key.asBigInt())
+    const data = this.ledger.applicationDataMap.get(id)
     if (!data) {
       throw internal.errors.internalError('Unknown application, check correct testing context is active')
     }
