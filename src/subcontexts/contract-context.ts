@@ -1,11 +1,11 @@
-import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract } from '@algorandfoundation/algorand-typescript'
+import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract, LocalState } from '@algorandfoundation/algorand-typescript'
 import { getAbiMetadata } from '../abi-metadata'
 import { BytesMap } from '../collections/custom-key-map'
 import { lazyContext } from '../context-helpers/internal-context'
 import { AccountCls } from '../impl/account'
 import { ApplicationCls } from '../impl/application'
 import { AssetCls } from '../impl/asset'
-import { GlobalStateCls, LocalStateMapCls } from '../impl/state'
+import { GlobalStateCls } from '../impl/state'
 import {
   ApplicationTransaction,
   AssetConfigTransaction,
@@ -27,7 +27,7 @@ type StateTotals = Pick<Application, 'globalNumBytes' | 'globalNumUint' | 'local
 
 interface States {
   globalStates: BytesMap<GlobalStateCls<unknown>>
-  localStates: BytesMap<LocalStateMapCls<unknown>>
+  localStates: BytesMap<LocalState<unknown>>
   totals: StateTotals
 }
 
@@ -41,7 +41,7 @@ const extractStates = (contract: BaseContract): States => {
   const stateTotals = { globalNumBytes: 0, globalNumUint: 0, localNumBytes: 0, localNumUint: 0 }
   const states = {
     globalStates: new BytesMap<GlobalStateCls<unknown>>(),
-    localStates: new BytesMap<LocalStateMapCls<unknown>>(),
+    localStates: new BytesMap<LocalState<unknown>>(),
     totals: stateTotals,
   }
   Object.entries(contract).forEach(([key, value]) => {

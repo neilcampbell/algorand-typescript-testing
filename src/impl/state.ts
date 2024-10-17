@@ -8,7 +8,8 @@ import {
   LocalStateForAccount,
   Uint64,
 } from '@algorandfoundation/algorand-typescript'
-import { asBytes, asBytesCls } from '../util'
+import { AccountMap } from '../collections/custom-key-map'
+import { asBytes } from '../util'
 
 export class GlobalStateCls<ValueType> {
   private readonly _type: string = GlobalStateCls.name
@@ -75,14 +76,13 @@ export class LocalStateCls<ValueType> {
 }
 
 export class LocalStateMapCls<ValueType> {
-  #value = new Map<string, LocalStateCls<ValueType>>()
+  #value = new AccountMap<LocalStateCls<ValueType>>()
 
   getValue(account: Account): LocalStateCls<ValueType> {
-    const accountString = asBytesCls(account.bytes).valueOf()
-    if (!this.#value.has(accountString)) {
-      this.#value.set(accountString, new LocalStateCls<ValueType>())
+    if (!this.#value.has(account)) {
+      this.#value.set(account, new LocalStateCls<ValueType>())
     }
-    return this.#value.get(accountString)!
+    return this.#value.getOrFail(account)!
   }
 }
 
