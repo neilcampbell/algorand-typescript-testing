@@ -367,10 +367,7 @@ describe('State op codes', async () => {
       [3, Uint64(42)],
       [255, Bytes('max_index')],
     ])('should return the correct field value of the scratch slot', async (index: number, value: bytes | uint64) => {
-      const newScratchSpace = Array(256).fill(Uint64(0))
-      newScratchSpace[index] = value
-
-      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: newScratchSpace })]).execute(() => {})
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: { [index]: value } })]).execute(() => {})
 
       expect(ctx.txn.lastGroup.getScratchSlot(index)).toEqual(value)
 

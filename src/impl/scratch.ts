@@ -8,7 +8,7 @@ export const gloadUint64: internal.opTypes.GloadUint64Type = (
   const txn = lazyContext.activeGroup.getTransaction(a)
   const result = txn.getScratchSlot(b)
   if (result instanceof internal.primitives.Uint64Cls) {
-    return result as uint64
+    return result.asAlgoTs()
   }
   throw new internal.errors.InternalError('invalid scratch slot type')
 }
@@ -20,7 +20,7 @@ export const gloadBytes: internal.opTypes.GloadBytesType = (
   const txn = lazyContext.activeGroup.getTransaction(a)
   const result = txn.getScratchSlot(b)
   if (result instanceof internal.primitives.BytesCls) {
-    return result as bytes
+    return result.asAlgoTs()
   }
   throw new internal.errors.InternalError('invalid scratch slot type')
 }

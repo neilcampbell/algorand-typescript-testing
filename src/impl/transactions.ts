@@ -233,7 +233,7 @@ export type ApplicationTransactionFields = TxnFields<gtxn.ApplicationTxn> &
     approvalProgramPages: Array<bytes>
     clearStateProgramPages: Array<bytes>
     appLogs: Array<bytes>
-    scratchSpace: Array<bytes | uint64>
+    scratchSpace: Record<number, bytes | uint64>
   }>
 
 export class ApplicationTransaction extends TransactionBase implements gtxn.ApplicationTxn {
@@ -266,7 +266,7 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     this.#apps = fields.apps ?? []
     this.#approvalProgramPages = fields.approvalProgramPages ?? (fields.approvalProgram ? [fields.approvalProgram] : [])
     this.#clearStateProgramPages = fields.clearStateProgramPages ?? (fields.clearStateProgram ? [fields.clearStateProgram] : [])
-    fields.scratchSpace?.forEach((v, i) => this.setScratchSlot(i, v))
+    Object.entries(fields.scratchSpace ?? {}).forEach(([k, v]) => this.setScratchSlot(Number(k), v))
   }
 
   readonly appId: Application
