@@ -1,10 +1,11 @@
-import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract, internal } from '@algorandfoundation/algorand-typescript'
+import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract } from '@algorandfoundation/algorand-typescript'
 import { getAbiMetadata } from '../abi-metadata'
 import { BytesMap } from '../collections/custom-key-map'
 import { lazyContext } from '../context-helpers/internal-context'
 import { AccountCls } from '../impl/account'
 import { ApplicationCls } from '../impl/application'
 import { AssetCls } from '../impl/asset'
+import { GlobalStateCls, LocalStateMapCls } from '../impl/state'
 import {
   ApplicationTransaction,
   AssetConfigTransaction,
@@ -25,8 +26,8 @@ interface IConstructor<T> {
 type StateTotals = Pick<Application, 'globalNumBytes' | 'globalNumUint' | 'localNumBytes' | 'localNumUint'>
 
 interface States {
-  globalStates: BytesMap<internal.state.GlobalStateCls<unknown>>
-  localStates: BytesMap<internal.state.LocalStateMapCls<unknown>>
+  globalStates: BytesMap<GlobalStateCls<unknown>>
+  localStates: BytesMap<LocalStateMapCls<unknown>>
   totals: StateTotals
 }
 
@@ -39,13 +40,13 @@ const isUint64GenericType = (typeName: string | undefined) => {
 const extractStates = (contract: BaseContract): States => {
   const stateTotals = { globalNumBytes: 0, globalNumUint: 0, localNumBytes: 0, localNumUint: 0 }
   const states = {
-    globalStates: new BytesMap<internal.state.GlobalStateCls<unknown>>(),
-    localStates: new BytesMap<internal.state.LocalStateMapCls<unknown>>(),
+    globalStates: new BytesMap<GlobalStateCls<unknown>>(),
+    localStates: new BytesMap<LocalStateMapCls<unknown>>(),
     totals: stateTotals,
   }
   Object.entries(contract).forEach(([key, value]) => {
     const isLocalState = value instanceof Function && value.name === 'localStateInternal'
-    const isGlobalState = value instanceof internal.state.GlobalStateCls
+    const isGlobalState = value instanceof GlobalStateCls
     if (isLocalState || isGlobalState) {
       // set key using property name if not already set
       if (value.key === undefined) value.key = Bytes(key)

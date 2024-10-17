@@ -1,4 +1,4 @@
-import { Account, Application, Bytes, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, Application, Bytes, bytes, uint64 } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
 import { BytesMap } from '../collections/custom-key-map'
 import { ALWAYS_APPROVE_TEAL_PROGRAM } from '../constants'
@@ -6,12 +6,13 @@ import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable } from '../typescript-helpers'
 import { asBigInt, asUint64 } from '../util'
 import { Uint64BackedCls } from './base'
+import { GlobalStateCls, LocalStateMapCls } from './state'
 
 export class ApplicationData {
   application: Mutable<Omit<Application, 'id' | 'address'>> & {
     appLogs: bytes[]
-    globalStates: BytesMap<internal.state.GlobalStateCls<unknown>>
-    localStates: BytesMap<internal.state.LocalStateMapCls<unknown>>
+    globalStates: BytesMap<GlobalStateCls<unknown>>
+    localStates: BytesMap<LocalStateMapCls<unknown>>
   }
   isCreating: boolean = false
 
