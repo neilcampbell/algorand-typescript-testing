@@ -6,7 +6,7 @@ import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'
 import { GlobalData } from '../impl/global'
 import { GlobalStateCls } from '../impl/state'
-import { asBigInt, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
+import { asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
 
 interface BlockData {
   seed: bigint
