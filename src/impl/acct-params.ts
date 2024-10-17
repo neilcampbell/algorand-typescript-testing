@@ -22,51 +22,51 @@ export const minBalance = (a: Account | internal.primitives.StubUint64Compat): u
 }
 
 export const AcctParams: internal.opTypes.AcctParamsType = {
-  acctBalance: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctBalance(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.balance, acct.balance !== 0]
   },
-  acctMinBalance: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctMinBalance(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.minBalance, acct.balance !== 0]
   },
-  acctAuthAddr: function (a: Account | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
+  acctAuthAddr(a: Account | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
     const acct = getAccount(a)
     return [acct.authAddress, acct.balance !== 0]
   },
-  acctTotalNumUint: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctTotalNumUint(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.totalNumUint, acct.balance !== 0]
   },
-  acctTotalNumByteSlice: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctTotalNumByteSlice(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.totalNumByteSlice, acct.balance !== 0]
   },
-  acctTotalExtraAppPages: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctTotalExtraAppPages(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.totalExtraAppPages, acct.balance !== 0]
   },
-  acctTotalAppsCreated: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctTotalAppsCreated(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.totalAppsCreated, acct.balance !== 0]
   },
-  acctTotalAppsOptedIn: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctTotalAppsOptedIn(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.totalAppsOptedIn, acct.balance !== 0]
   },
-  acctTotalAssetsCreated: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctTotalAssetsCreated(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.totalAssetsCreated, acct.balance !== 0]
   },
-  acctTotalAssets: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctTotalAssets(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.totalAssets, acct.balance !== 0]
   },
-  acctTotalBoxes: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctTotalBoxes(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.totalBoxes, acct.balance !== 0]
   },
-  acctTotalBoxBytes: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  acctTotalBoxBytes(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.totalBoxBytes, acct.balance !== 0]
   },

@@ -23,14 +23,14 @@ const getAssetHolding = (
 }
 
 export const AssetHolding: internal.opTypes.AssetHoldingType = {
-  assetBalance: function (
+  assetBalance(
     a: Account | internal.primitives.StubUint64Compat,
     b: Asset | internal.primitives.StubUint64Compat,
   ): readonly [uint64, boolean] {
     const holding = getAssetHolding(a, b)
     return holding === undefined ? [Uint64(0), false] : [holding.balance, true]
   },
-  assetFrozen: function (
+  assetFrozen(
     a: Account | internal.primitives.StubUint64Compat,
     b: Asset | internal.primitives.StubUint64Compat,
   ): readonly [boolean, boolean] {
