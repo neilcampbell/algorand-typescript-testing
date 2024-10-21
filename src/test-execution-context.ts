@@ -15,7 +15,7 @@ import {
   payment as itxnPayment,
   submitGroup as itxnSubmitGroup,
 } from './impl/inner-transactions'
-import { createGlobalState, createLocalState } from './impl/state'
+import { Box, BoxMap, BoxRef, GlobalState, LocalState } from './impl/state'
 import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
@@ -112,8 +112,11 @@ export class TestExecutionContext implements internal.ExecutionContext {
 
   get state() {
     return {
-      createGlobalState,
-      createLocalState,
+      GlobalState,
+      LocalState,
+      Box,
+      BoxMap,
+      BoxRef,
     }
   }
 

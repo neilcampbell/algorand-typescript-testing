@@ -109,8 +109,7 @@ export class TransactionContext {
   }
 
   exportLogs<const T extends [...LogDecoding[]]>(appId: uint64, ...decoding: T): DecodedLogs<T> {
-    const transaction = this.groups
-      .flatMap((g) => g.transactions)
+    const transaction = this.lastGroup.transactions
       .filter((t) => t.type === TransactionType.ApplicationCall)
       .find((t) => asBigInt(t.appId.id) === asBigInt(appId))
     let logs = []

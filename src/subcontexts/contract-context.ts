@@ -5,7 +5,7 @@ import { lazyContext } from '../context-helpers/internal-context'
 import { AccountCls } from '../impl/account'
 import { ApplicationCls } from '../impl/application'
 import { AssetCls } from '../impl/asset'
-import { GlobalStateCls } from '../impl/state'
+import { BoxCls, BoxMapCls, BoxRefCls, GlobalStateCls } from '../impl/state'
 import {
   ApplicationTransaction,
   AssetConfigTransaction,
@@ -47,10 +47,17 @@ const extractStates = (contract: BaseContract): States => {
   Object.entries(contract).forEach(([key, value]) => {
     const isLocalState = value instanceof Function && value.name === 'localStateInternal'
     const isGlobalState = value instanceof GlobalStateCls
-    if (isLocalState || isGlobalState) {
+    const isBox = value instanceof BoxCls
+    const isBoxRef = value instanceof BoxRefCls
+    const isBoxMap = value instanceof BoxMapCls
+    if (isLocalState || isGlobalState || isBox || isBoxRef) {
       // set key using property name if not already set
-      if (value.key === undefined) value.key = Bytes(key)
+      if (!value.hasKey) value.key = Bytes(key)
+    } else if (isBoxMap) {
+      if (!value.hasKeyPrefix) value.keyPrefix = Bytes(key)
+    }
 
+    if (isLocalState || isGlobalState) {
       // capture state into the context
       if (isLocalState) states.localStates.set(value.key, value)
       else states.globalStates.set(value.key, value)
@@ -123,19 +130,27 @@ export class ContractContext {
   }
 
   private getContractProxyHandler<T extends BaseContract>(isArc4: boolean): ProxyHandler<IConstructor<T>> {
-    const onConstructed = (instance: T) => {
+    const onConstructed = (application: Application, instance: T) => {
       const states = extractStates(instance)
 
-      const application = lazyContext.any.application({
+      const applicationData = lazyContext.ledger.applicationDataMap.getOrFail(application.id)
+      applicationData.application = {
+        ...applicationData.application,
         globalStates: states.globalStates,
         localStates: states.localStates,
         ...states.totals,
-      })
+      }
       lazyContext.ledger.addAppIdContractMap(application.id, instance)
     }
     return {
       construct(target, args) {
-        const instance = new Proxy(new target(...args), {
+        let t: T | undefined = undefined
+        const application = lazyContext.any.application()
+        const txn = lazyContext.any.txn.applicationCall({ appId: application })
+        lazyContext.txn.ensureScope([txn]).execute(() => {
+          t = new target(...args)
+        })
+        const instance = new Proxy(t!, {
           get(target, prop, receiver) {
             const orig = Reflect.get(target, prop, receiver)
             const abiMetadata = getAbiMetadata(target, prop as string)
@@ -165,7 +180,7 @@ export class ContractContext {
           },
         })
 
-        onConstructed(instance)
+        onConstructed(application, instance)
 
         return instance
       },

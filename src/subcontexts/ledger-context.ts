@@ -6,7 +6,7 @@ import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'
 import { GlobalData } from '../impl/global'
 import { GlobalStateCls } from '../impl/state'
-import { asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
+import { asBigInt, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
 
 interface BlockData {
   seed: bigint
@@ -151,5 +151,25 @@ export class LedgerContext {
     } else {
       accountLocalState.value = asMaybeUint64Cls(value) ?? asMaybeBytesCls(value)
     }
+  }
+
+  getBox<TValue>(app: Application, key: internal.primitives.StubBytesCompat): TValue {
+    const appData = this.applicationDataMap.getOrFail(app.id)
+    return appData.application.boxes.get(key) as TValue
+  }
+
+  setBox<TValue>(app: Application, key: internal.primitives.StubBytesCompat, value: TValue): void {
+    const appData = this.applicationDataMap.getOrFail(app.id)
+    appData.application.boxes.set(key, value)
+  }
+
+  deleteBox(app: Application, key: internal.primitives.StubBytesCompat): boolean {
+    const appData = this.applicationDataMap.getOrFail(app.id)
+    return appData.application.boxes.delete(key)
+  }
+
+  boxExists(app: Application, key: internal.primitives.StubBytesCompat): boolean {
+    const appData = this.applicationDataMap.getOrFail(app.id)
+    return appData.application.boxes.has(key)
   }
 }
