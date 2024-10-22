@@ -32,6 +32,7 @@ import {
   INITIAL_BALANCE_MICRO_ALGOS,
 } from './avm-invoker'
 import { asUint8Array } from './util'
+import { Block, gloadBytes, gloadUint64 } from '../src/impl'
 
 describe('State op codes', async () => {
   const ctx = new TestExecutionContext()
@@ -366,14 +367,72 @@ describe('State op codes', async () => {
       [3, Uint64(42)],
       [255, Bytes('max_index')],
     ])('should return the correct field value of the scratch slot', async (index: number, value: bytes | uint64) => {
-      const newScratchSpace = Array(256).fill(Uint64(0))
-      newScratchSpace[index] = value
-
-      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: newScratchSpace })]).execute(() => {})
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: { [index]: value } })]).execute(() => {})
 
       expect(ctx.txn.lastGroup.getScratchSlot(index)).toEqual(value)
 
       expect(() => ctx.txn.lastGroup.getScratchSlot(256)).toThrow('invalid scratch slot')
+    })
+  })
+
+  describe('gloadBytes', async () => {
+    it('should return the correct field value of the scratch slot', async () => {
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: [Uint64(0), Bytes('hello'), Bytes('world')] })]).execute(() => {
+        const slot1 = gloadBytes(0, 1)
+        const slot2 = gloadBytes(0, 2)
+        expect(slot1).toStrictEqual('hello')
+        expect(slot2).toStrictEqual('world')
+      })
+    })
+    it('should throw error if the scratch slot is not a bytes type', async () => {
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: [Uint64(0), Bytes('hello'), Bytes('world')] })]).execute(() => {
+        expect(() => gloadBytes(0, 0)).toThrow('invalid scratch slot type')
+      })
+    })
+    it('should throw error if the scratch slot is out of range', async () => {
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: [Uint64(0), Bytes('hello'), Bytes('world')] })]).execute(() => {
+        expect(() => gloadBytes(0, 256)).toThrow('invalid scratch slot')
+      })
+    })
+  })
+
+  describe('gloadUint64', async () => {
+    it('should return the correct field value of the scratch slot', async () => {
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: [Uint64(7), Uint64(42), Bytes('world')] })]).execute(() => {
+        const slot0 = gloadUint64(0, 0)
+        const slot1 = gloadUint64(0, 1)
+        expect(slot0).toStrictEqual(7n)
+        expect(slot1).toStrictEqual(42n)
+      })
+    })
+    it('should throw error if the scratch slot is not a uint64 type', async () => {
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: [Uint64(7), Uint64(42), Bytes('world')] })]).execute(() => {
+        expect(() => gloadUint64(0, 2)).toThrow('invalid scratch slot type')
+      })
+    })
+    it('should throw error if the scratch slot is out of range', async () => {
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ scratchSpace: [Uint64(7), Uint64(42), Bytes('world')] })]).execute(() => {
+        expect(() => gloadUint64(0, 256)).toThrow('invalid scratch slot')
+      })
+    })
+  })
+
+  describe('Block', async () => {
+    it('should return the correct field value of the block', async () => {
+      const index = 42
+      const seed = 123
+      const timestamp = 1234567890
+      ctx.ledger.setBlock(index, seed, timestamp)
+      const seedResult = op.btoi(Block.blkSeed(Uint64(index)))
+      const timestampResult = Block.blkTimestamp(Uint64(index))
+
+      expect(seedResult).toEqual(Uint64(seed))
+      expect(timestampResult).toEqual(Uint64(timestamp))
+    })
+    it('should throw error if the block is not set', async () => {
+      const index = 42
+      expect(() => Block.blkSeed(Uint64(index))).toThrow('Block 42 not set')
+      expect(() => Block.blkTimestamp(Uint64(index))).toThrow('Block 42 not set')
     })
   })
 })
