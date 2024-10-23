@@ -39,6 +39,9 @@ export const Box: internal.opTypes.BoxType = {
       throw new internal.errors.InternalError('Box does not exist')
     }
     const boxContent = lazyContext.ledger.getBox(app, name)
+    if (boxContent instanceof Uint8Array) {
+      return toBytes(boxContent.slice(start, start + length))
+    }
     const result = toBytes(boxContent).slice(start, start + length)
     return result
   },
@@ -62,7 +65,7 @@ export const Box: internal.opTypes.BoxType = {
     if (lazyContext.ledger.boxExists(app, name)) {
       const boxContent = lazyContext.ledger.getBox(app, name)
       const bytesContent = toBytes(boxContent)
-      if (bytesContent.length !== newContent.length) {
+      if (asNumber(bytesContent.length) !== asNumber(newContent.length)) {
         throw new internal.errors.InternalError('New content length does not match existing box length')
       }
     }
@@ -100,9 +103,10 @@ export const Box: internal.opTypes.BoxType = {
     }
     const boxContent = lazyContext.ledger.getBox(app, name)
     const bytesContent = toBytes(boxContent)
+    const size = asNumber(bytesContent.length)
     let updatedContent
-    if (newSize > bytesContent.length) {
-      updatedContent = bytesContent.concat(Bytes(Array(newSize - bytesContent.length).fill(0)))
+    if (newSize > size) {
+      updatedContent = bytesContent.concat(Bytes(Array(newSize - size).fill(0)))
     } else {
       updatedContent = bytesContent.slice(0, newSize)
     }
@@ -124,17 +128,17 @@ export const Box: internal.opTypes.BoxType = {
     }
     const boxContent = lazyContext.ledger.getBox(app, name)
     const bytesContent = toBytes(boxContent)
-    if (start > bytesContent.length) {
+    const size = asNumber(bytesContent.length)
+    if (start > size) {
       throw new internal.errors.InternalError('Start index exceeds box size')
     }
-    const end = Math.min(start + length, bytesContent.length)
+    const end = Math.min(start + length, size)
     let updatedContent = bytesContent.slice(0, start).concat(newContent).concat(bytesContent.slice(end))
-
     //  Adjust the size if necessary
-    if (updatedContent.length > bytesContent.length) {
-      updatedContent = updatedContent.slice(0, bytesContent.length)
-    } else if (updatedContent.length < bytesContent.length) {
-      updatedContent = updatedContent.concat(Bytes(Array(bytesContent.length - updatedContent.length).fill(0)))
+    if (updatedContent.length > size) {
+      updatedContent = updatedContent.slice(0, size)
+    } else if (updatedContent.length < size) {
+      updatedContent = updatedContent.concat(Bytes(Array(size - asNumber(updatedContent.length)).fill(0)))
     }
     lazyContext.ledger.setBox(app, name, Bytes(updatedContent))
   },

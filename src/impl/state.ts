@@ -4,7 +4,6 @@ import {
   BoxMap as BoxMapType,
   BoxRef as BoxRefType,
   Box as BoxType,
-  Bytes,
   bytes,
   GlobalStateOptions,
   GlobalState as GlobalStateType,
@@ -17,7 +16,7 @@ import {
 import { AccountMap } from '../collections/custom-key-map'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { asBytes, asNumber, toBytes } from '../util'
+import { asBytes, asBytesCls, asNumber, toBytes } from '../util'
 
 export class GlobalStateCls<ValueType> {
   private readonly _type: string = GlobalStateCls.name
@@ -272,7 +271,10 @@ export class BoxRefCls {
   }
 
   get value(): bytes {
-    return lazyContext.ledger.getBox(this.#app, this.key)
+    if (!this.exists) {
+      throw new internal.errors.InternalError('Box has not been created')
+    }
+    return toBytes(this.backingValue)
   }
 
   get exists(): boolean {
@@ -284,14 +286,14 @@ export class BoxRefCls {
     if (size > MAX_BOX_SIZE) {
       throw new internal.errors.InternalError(`Box size cannot exceed ${MAX_BOX_SIZE}`)
     }
-    const [content, exists] = this.maybe()
-    if (exists && content.length !== size) {
+    const content = this.backingValue
+    if (this.exists && content.length !== size) {
       throw new internal.errors.InternalError('Box already exists with a different size')
     }
-    if (exists) {
+    if (this.exists) {
       return false
     }
-    lazyContext.ledger.setBox(this.#app, this.key, Bytes(Array(size).fill(0)))
+    this.backingValue = new Uint8Array(Array(size).fill(0))
     return true
   }
 
@@ -301,12 +303,12 @@ export class BoxRefCls {
   }
 
   put(value: internal.primitives.StubBytesCompat): void {
-    const bytesValue = asBytes(value)
-    const [content, exists] = this.maybe()
-    if (exists && content.length !== bytesValue.length) {
+    const bytesValue = asBytesCls(value)
+    const content = this.backingValue
+    if (this.exists && content.length !== bytesValue.length.asNumber()) {
       throw new internal.errors.InternalError('Box already exists with a different size')
     }
-    lazyContext.ledger.setBox(this.#app, this.key, bytesValue)
+    this.backingValue = bytesValue.asUint8Array()
   }
 
   splice(
@@ -314,55 +316,56 @@ export class BoxRefCls {
     length: internal.primitives.StubUint64Compat,
     value: internal.primitives.StubBytesCompat,
   ): void {
-    const [content, exists] = this.maybe()
+    const content = this.backingValue
     const startNumber = asNumber(start)
     const lengthNumber = asNumber(length)
-    const valueBytes = asBytes(value)
-    if (!exists) {
+    const valueBytes = asBytesCls(value)
+    if (!this.exists) {
       throw new internal.errors.InternalError('Box has not been created')
     }
     if (startNumber > content.length) {
       throw new internal.errors.InternalError('Start index exceeds box size')
     }
     const end = Math.min(startNumber + lengthNumber, content.length)
-    let updatedContent = content.slice(0, startNumber).concat(valueBytes).concat(content.slice(end))
+    let updatedContent = this.concat(content.slice(0, startNumber), valueBytes.asUint8Array(), content.slice(end))
 
     if (updatedContent.length > content.length) {
       updatedContent = updatedContent.slice(0, content.length)
     } else if (updatedContent.length < content.length) {
-      updatedContent = updatedContent.concat(Bytes(Array(content.length - updatedContent.length).fill(0)))
+      updatedContent = this.concat(updatedContent, new Uint8Array(Array(content.length - updatedContent.length).fill(0)))
     }
-    lazyContext.ledger.setBox(this.#app, this.key, updatedContent)
+    this.backingValue = updatedContent
   }
 
   replace(start: internal.primitives.StubUint64Compat, value: internal.primitives.StubBytesCompat): void {
-    const [content, exists] = this.maybe()
+    const content = this.backingValue
     const startNumber = asNumber(start)
-    const valueBytes = asBytes(value)
-    if (!exists) {
+    const valueBytes = asBytesCls(value)
+    if (!this.exists) {
       throw new internal.errors.InternalError('Box has not been created')
     }
-    if (startNumber + valueBytes.length > content.length) {
+    if (startNumber + asNumber(valueBytes.length) > content.length) {
       throw new internal.errors.InternalError('Replacement content exceeds box size')
     }
-    const updatedContent = content
-      .slice(0, startNumber)
-      .concat(valueBytes)
-      .concat(content.slice(startNumber + valueBytes.length))
-    lazyContext.ledger.setBox(this.#app, this.key, updatedContent)
+    const updatedContent = this.concat(
+      content.slice(0, startNumber),
+      valueBytes.asUint8Array(),
+      content.slice(startNumber + valueBytes.length.asNumber()),
+    )
+    this.backingValue = updatedContent
   }
 
   extract(start: internal.primitives.StubUint64Compat, length: internal.primitives.StubUint64Compat): bytes {
-    const [content, exists] = this.maybe()
+    const content = this.backingValue
     const startNumber = asNumber(start)
     const lengthNumber = asNumber(length)
-    if (!exists) {
+    if (!this.exists) {
       throw new internal.errors.InternalError('Box has not been created')
     }
     if (startNumber + lengthNumber > content.length) {
       throw new internal.errors.InternalError('Index out of bounds')
     }
-    return content.slice(startNumber, startNumber + lengthNumber)
+    return toBytes(content.slice(startNumber, startNumber + lengthNumber))
   }
   delete(): boolean {
     return lazyContext.ledger.deleteBox(this.#app, this.key)
@@ -373,29 +376,46 @@ export class BoxRefCls {
     if (newSizeNumber > MAX_BOX_SIZE) {
       throw new internal.errors.InternalError(`Box size cannot exceed ${MAX_BOX_SIZE}`)
     }
-    const [content, exists] = this.maybe()
-    if (!exists) {
+    const content = this.backingValue
+    if (!this.exists) {
       throw new internal.errors.InternalError('Box has not been created')
     }
     let updatedContent
     if (newSizeNumber > content.length) {
-      updatedContent = content.concat(Bytes(Array(newSizeNumber - content.length).fill(0)))
+      updatedContent = this.concat(content, new Uint8Array(Array(newSizeNumber - content.length).fill(0)))
     } else {
       updatedContent = content.slice(0, newSize)
     }
-    lazyContext.ledger.setBox(this.#app, this.key, updatedContent)
+    this.backingValue = updatedContent
   }
 
   maybe(): readonly [bytes, boolean] {
-    return [lazyContext.ledger.getBox(this.#app, this.key), lazyContext.ledger.boxExists(this.#app, this.key)]
+    return [asBytes(lazyContext.ledger.getBox(this.#app, this.key)), lazyContext.ledger.boxExists(this.#app, this.key)]
   }
 
   get length(): uint64 {
-    const [value, exists] = this.maybe()
-    if (!exists) {
+    if (!this.exists) {
       throw new internal.errors.InternalError('Box has not been created')
     }
-    return value.length
+    return this.backingValue.length
+  }
+
+  private get backingValue(): Uint8Array {
+    return lazyContext.ledger.getBox(this.#app, this.key)
+  }
+
+  private set backingValue(value: Uint8Array) {
+    lazyContext.ledger.setBox(this.#app, this.key, value)
+  }
+
+  private concat(...values: Uint8Array[]): Uint8Array {
+    const result = new Uint8Array(values.reduce((acc, value) => acc + value.length, 0))
+    let index = 0
+    for (const value of values) {
+      result.set(value, index)
+      index += value.length
+    }
+    return result
   }
 }
 

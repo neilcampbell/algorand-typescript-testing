@@ -4,7 +4,6 @@ export class BoxContract extends arc4.Contract {
   oca = Box<arc4.OnCompleteAction>()
   txn = Box<TransactionType>()
 
-
   @arc4.abimethod()
   public storeEnums(): void {
     this.oca.value = arc4.OnCompleteAction.OptIn
@@ -13,8 +12,8 @@ export class BoxContract extends arc4.Contract {
 
   @arc4.abimethod()
   public read_enums(): readonly [uint64, uint64] {
-    assert(op.Box.get(Bytes("oca"))[0] === op.itob(this.oca.value))
-    assert(op.Box.get(Bytes("txn"))[0] === op.itob(this.txn.value))
+    assert(op.Box.get(Bytes('oca'))[0] === op.itob(this.oca.value))
+    assert(op.Box.get(Bytes('txn'))[0] === op.itob(this.txn.value))
 
     return [Uint64(this.oca.value), Uint64(this.txn.value)]
     // TODO: use arc4 types when available

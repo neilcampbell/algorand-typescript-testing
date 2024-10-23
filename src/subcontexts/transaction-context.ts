@@ -53,7 +53,7 @@ export class DeferredAppCall<TParams extends unknown[], TReturn> {
     readonly txns: Transaction[],
     private readonly method: (...args: TParams) => TReturn,
     private readonly args: TParams,
-  ) { }
+  ) {}
 
   submit(): TReturn {
     // TODO: check_routing_conditions
@@ -66,7 +66,7 @@ export class TransactionContext {
   #activeGroup: TransactionGroup | undefined
 
   createScope(group: Array<Transaction | DeferredAppCall<unknown[], unknown>>, activeTransactionIndex?: number): ExecutionScope {
-    const transactions = group.map((t) => t instanceof DeferredAppCall ? t.txns : [t]).flat()
+    const transactions = group.map((t) => (t instanceof DeferredAppCall ? t.txns : [t])).flat()
     const transactionGroup = new TransactionGroup(transactions, activeTransactionIndex)
     const previousGroup = this.#activeGroup
     this.#activeGroup = transactionGroup

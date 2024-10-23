@@ -49,13 +49,13 @@ export const toBytes = (val: unknown): bytes => {
   if (uint64Val !== undefined) {
     return uint64Val.toBytes().asAlgoTs()
   }
-  const bigUintVal = asMaybeBigUintCls(val)
-  if (bigUintVal !== undefined) {
-    return bigUintVal.toBytes().asAlgoTs()
-  }
   const bytesVal = asMaybeBytesCls(val)
   if (bytesVal !== undefined) {
     return bytesVal.asAlgoTs()
+  }
+  const bigUintVal = asMaybeBigUintCls(val)
+  if (bigUintVal !== undefined) {
+    return bigUintVal.toBytes().asAlgoTs()
   }
   if (val instanceof BytesBackedCls) {
     return val.bytes

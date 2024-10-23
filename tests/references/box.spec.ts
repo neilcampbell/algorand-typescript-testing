@@ -112,9 +112,8 @@ describe('Box', () => {
       const [oca, txn] = deferredReadCall.submit()
 
       const app = ctx.ledger.getApplicationForContract(contract)
-      expect(toBytes(ctx.ledger.getBox(app, "oca"))).toEqual(itob(oca))
-      expect(toBytes(ctx.ledger.getBox(app, "txn"))).toEqual(itob(txn))
+      expect(toBytes(ctx.ledger.getBox(app, 'oca'))).toEqual(itob(oca))
+      expect(toBytes(ctx.ledger.getBox(app, 'txn'))).toEqual(itob(txn))
     })
-
   })
 })
