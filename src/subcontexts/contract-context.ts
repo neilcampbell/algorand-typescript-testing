@@ -117,6 +117,24 @@ export class ContractContext {
     return new proxy(...args)
   }
 
+  static createMethodCallTxns<TParams extends unknown[], TReturn>(
+    contract: BaseContract,
+    method: (...args: TParams) => TReturn,
+    ...args: TParams
+  ): Transaction[] {
+    const abiMetadata = getAbiMetadata(contract, method.name)
+    const app = lazyContext.ledger.getApplicationForContract(contract)
+    const { transactions, ...appCallArgs } = extractArraysFromArgs(app, args)
+    const appTxn = lazyContext.any.txn.applicationCall({
+      appId: app,
+      ...appCallArgs,
+      // TODO: This needs to be specifiable by the test code
+      onCompletion: (abiMetadata?.allowActions ?? [])[0],
+    })
+    const txns = [...(transactions ?? []), appTxn]
+    return txns
+  }
+
   private isArc4<T extends BaseContract>(type: IConstructor<T>): boolean {
     const proto = Object.getPrototypeOf(type)
     if (proto === BaseContract) {
@@ -158,19 +176,11 @@ export class ContractContext {
             const isAbiMethod = isArc4 && abiMetadata
             if (isAbiMethod || isProgramMethod) {
               return (...args: DeliberateAny[]): DeliberateAny => {
-                const app = lazyContext.ledger.getApplicationForContract(receiver)
-                const { transactions, ...appCallArgs } = extractArraysFromArgs(app, args)
-                const appTxn = lazyContext.any.txn.applicationCall({
-                  appId: app,
-                  ...appCallArgs,
-                  // TODO: This needs to be specifiable by the test code
-                  onCompletion: (abiMetadata?.allowActions ?? [])[0],
-                })
-                const txns = [...(transactions ?? []), appTxn]
+                const txns = ContractContext.createMethodCallTxns(receiver, orig as DeliberateAny, ...args)
                 return lazyContext.txn.ensureScope(txns).execute(() => {
                   const returnValue = (orig as DeliberateAny).apply(target, args)
                   if (!isProgramMethod && isAbiMethod && returnValue !== undefined) {
-                    appTxn.logArc4ReturnValue(returnValue)
+                    ;(txns.at(-1) as ApplicationTransaction).logArc4ReturnValue(returnValue)
                   }
                   return returnValue
                 })

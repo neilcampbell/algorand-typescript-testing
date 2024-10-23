@@ -1,7 +1,9 @@
 import { arc4, BigUint, Box, Bytes, op, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
+import { itob } from '@algorandfoundation/algorand-typescript/op'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { asBytes, toBytes } from '../../src/util'
+import { BoxContract } from '../artifacts/box-contract/contract.algo'
 
 class ATestContract extends arc4.Contract {
   uint64Box = Box<uint64>()
@@ -97,5 +99,22 @@ describe('Box', () => {
       expect(opContent).toEqual(Bytes(''))
       expect(toBytes(content)).toEqual(Bytes(''))
     })
+  })
+
+  it('can store enum values', () => {
+    const contract = ctx.contract.create(BoxContract)
+
+    const deferredStoreCall = ctx.txn.deferAppCall(contract, contract.storeEnums)
+    const deferredReadCall = ctx.txn.deferAppCall(contract, contract.read_enums)
+
+    ctx.txn.createScope([deferredStoreCall, deferredReadCall]).execute(() => {
+      deferredStoreCall.submit()
+      const [oca, txn] = deferredReadCall.submit()
+
+      const app = ctx.ledger.getApplicationForContract(contract)
+      expect(toBytes(ctx.ledger.getBox(app, "oca"))).toEqual(itob(oca))
+      expect(toBytes(ctx.ledger.getBox(app, "txn"))).toEqual(itob(txn))
+    })
+
   })
 })
