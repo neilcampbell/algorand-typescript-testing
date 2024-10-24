@@ -180,3 +180,13 @@ export const combineIntoMaxBytePages = (pages: bytes[]): bytes[] => {
   }
   return result
 }
+
+export const conactUint8Arrays = (...values: Uint8Array[]): Uint8Array => {
+  const result = new Uint8Array(values.reduce((acc, value) => acc + value.length, 0))
+  let index = 0
+  for (const value of values) {
+    result.set(value, index)
+    index += value.length
+  }
+  return result
+}

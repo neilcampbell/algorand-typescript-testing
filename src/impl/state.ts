@@ -16,7 +16,7 @@ import {
 import { AccountMap } from '../collections/custom-key-map'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { asBytes, asBytesCls, asNumber, toBytes } from '../util'
+import { asBytes, asBytesCls, asNumber, conactUint8Arrays, toBytes } from '../util'
 
 export class GlobalStateCls<ValueType> {
   private readonly _type: string = GlobalStateCls.name
@@ -277,6 +277,15 @@ export class BoxRefCls {
     return toBytes(this.backingValue)
   }
 
+  set value(v: internal.primitives.StubBytesCompat) {
+    const bytesValue = asBytesCls(v)
+    const content = this.backingValue
+    if (this.exists && content.length !== bytesValue.length.asNumber()) {
+      throw new internal.errors.InternalError('Box already exists with a different size')
+    }
+    this.backingValue = bytesValue.asUint8Array()
+  }
+
   get exists(): boolean {
     return lazyContext.ledger.boxExists(this.#app, this.key)
   }
@@ -303,12 +312,7 @@ export class BoxRefCls {
   }
 
   put(value: internal.primitives.StubBytesCompat): void {
-    const bytesValue = asBytesCls(value)
-    const content = this.backingValue
-    if (this.exists && content.length !== bytesValue.length.asNumber()) {
-      throw new internal.errors.InternalError('Box already exists with a different size')
-    }
-    this.backingValue = bytesValue.asUint8Array()
+    this.value = value
   }
 
   splice(
@@ -327,12 +331,12 @@ export class BoxRefCls {
       throw new internal.errors.InternalError('Start index exceeds box size')
     }
     const end = Math.min(startNumber + lengthNumber, content.length)
-    let updatedContent = this.concat(content.slice(0, startNumber), valueBytes.asUint8Array(), content.slice(end))
+    let updatedContent = conactUint8Arrays(content.slice(0, startNumber), valueBytes.asUint8Array(), content.slice(end))
 
     if (updatedContent.length > content.length) {
       updatedContent = updatedContent.slice(0, content.length)
     } else if (updatedContent.length < content.length) {
-      updatedContent = this.concat(updatedContent, new Uint8Array(Array(content.length - updatedContent.length).fill(0)))
+      updatedContent = conactUint8Arrays(updatedContent, new Uint8Array(Array(content.length - updatedContent.length).fill(0)))
     }
     this.backingValue = updatedContent
   }
@@ -347,7 +351,7 @@ export class BoxRefCls {
     if (startNumber + asNumber(valueBytes.length) > content.length) {
       throw new internal.errors.InternalError('Replacement content exceeds box size')
     }
-    const updatedContent = this.concat(
+    const updatedContent = conactUint8Arrays(
       content.slice(0, startNumber),
       valueBytes.asUint8Array(),
       content.slice(startNumber + valueBytes.length.asNumber()),
@@ -382,7 +386,7 @@ export class BoxRefCls {
     }
     let updatedContent
     if (newSizeNumber > content.length) {
-      updatedContent = this.concat(content, new Uint8Array(Array(newSizeNumber - content.length).fill(0)))
+      updatedContent = conactUint8Arrays(content, new Uint8Array(Array(newSizeNumber - content.length).fill(0)))
     } else {
       updatedContent = content.slice(0, newSize)
     }
@@ -406,16 +410,6 @@ export class BoxRefCls {
 
   private set backingValue(value: Uint8Array) {
     lazyContext.ledger.setBox(this.#app, this.key, value)
-  }
-
-  private concat(...values: Uint8Array[]): Uint8Array {
-    const result = new Uint8Array(values.reduce((acc, value) => acc + value.length, 0))
-    let index = 0
-    for (const value of values) {
-      result.set(value, index)
-      index += value.length
-    }
-    return result
   }
 }
 

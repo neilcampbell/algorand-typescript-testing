@@ -1,11 +1,7 @@
-import { arc4, BigUint, BoxMap, Bytes, bytes, op, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { BigUint, BoxMap, Bytes, bytes, op, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
-import { afterEach, describe, expect, it, test } from 'vitest'
+import { afterEach, describe, expect, test } from 'vitest'
 import { asBytes, toBytes } from '../../src/util'
-
-class ATestContract extends arc4.Contract {
-  uint64BoxMap = BoxMap<bytes, bytes>()
-}
 
 const BOX_NOT_CREATED_ERROR = 'Box has not been created'
 
@@ -14,11 +10,6 @@ describe('BoxMap', () => {
 
   afterEach(() => {
     ctx.reset()
-  })
-
-  it('can be initialised without key', () => {
-    const contract = ctx.contract.create(ATestContract)
-    expect(contract.uint64BoxMap.keyPrefix.toString()).toBe('uint64BoxMap')
   })
 
   test.for(['key_prefix', Bytes('key_prefix')])('can be initialised with key prefix %s', (keyPrefix) => {

@@ -1,8 +1,8 @@
 import { arc4, assert, Box, Bytes, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 
 export class BoxContract extends arc4.Contract {
-  oca = Box<arc4.OnCompleteAction>()
-  txn = Box<TransactionType>()
+  oca = Box<arc4.OnCompleteAction>({ key: Bytes('oca') })
+  txn = Box<TransactionType>({ key: Bytes('txn') })
 
   @arc4.abimethod()
   public storeEnums(): void {
