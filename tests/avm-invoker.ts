@@ -35,12 +35,10 @@ const invokeMethod = async (
   method: string,
   sendParams?: SendTransactionParams,
   ...methodArgs: ABIAppCallArg[]
-): Promise<ABIReturn> => {
+): Promise<ABIReturn | undefined> => {
   const response = await appClient.call({ method, methodArgs, note: randomUUID(), sendParams })
-  if (!response.return) {
-    throw new Error(`${method} did not return a value`)
-  }
-  if (response.return.decodeError) {
+
+  if (response.return?.decodeError) {
     throw response.return.decodeError
   }
   return response.return
@@ -52,7 +50,7 @@ export const getAvmResult = async <TResult extends ABIValue>(
   ...methodArgs: ABIAppCallArg[]
 ): Promise<TResult> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
-  return result.returnValue as TResult
+  return result?.returnValue as TResult
 }
 
 export const getAvmResultRaw = async (
@@ -61,7 +59,7 @@ export const getAvmResultRaw = async (
   ...methodArgs: ABIAppCallArg[]
 ): Promise<Uint8Array | undefined> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
-  return result.rawReturnValue
+  return result?.rawReturnValue
 }
 
 export const getLocalNetDefaultAccount = () => {

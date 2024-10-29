@@ -1,6 +1,5 @@
 import { Account, Asset, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
-import { asBigInt } from '../util'
 import { AssetHolding as AssetHoldingData } from './account'
 import { getAccount } from './acct-params'
 import { getAsset } from './asset-params'
@@ -16,7 +15,7 @@ const getAssetHolding = (
   }
 
   const accountData = lazyContext.getAccountData(account)
-  const holding = accountData.optedAssets.get(asBigInt(asset.id))
+  const holding = accountData.optedAssets.get(asset.id)
   if (holding === undefined) {
     return undefined
   }
@@ -24,14 +23,14 @@ const getAssetHolding = (
 }
 
 export const AssetHolding: internal.opTypes.AssetHoldingType = {
-  assetBalance: function (
+  assetBalance(
     a: Account | internal.primitives.StubUint64Compat,
     b: Asset | internal.primitives.StubUint64Compat,
   ): readonly [uint64, boolean] {
     const holding = getAssetHolding(a, b)
     return holding === undefined ? [Uint64(0), false] : [holding.balance, true]
   },
-  assetFrozen: function (
+  assetFrozen(
     a: Account | internal.primitives.StubUint64Compat,
     b: Asset | internal.primitives.StubUint64Compat,
   ): readonly [boolean, boolean] {

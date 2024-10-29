@@ -10,12 +10,11 @@ import {
   PaymentTransaction,
   TxnFields,
 } from '../impl/transactions'
-import { asBigInt } from '../util'
 
 export class TxnValueGenerator {
   applicationCall(fields?: ApplicationTransactionFields): ApplicationTransaction {
     const params = fields ?? {}
-    if (params.appId && !lazyContext.ledger.applicationDataMap.has(asBigInt(params.appId.id))) {
+    if (params.appId && !lazyContext.ledger.applicationDataMap.has(params.appId.id)) {
       internal.errors.internalError(`Application ID ${params.appId.id} not found in test context`)
     }
     if (!params.appId) {

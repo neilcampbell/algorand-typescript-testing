@@ -68,7 +68,7 @@ export class AvmValueGenerator {
 
   asset(input?: AssetContextData): Asset {
     const id = input?.assetId
-    if (id && lazyContext.ledger.assetDataMap.has(asBigInt(id))) {
+    if (id && lazyContext.ledger.assetDataMap.has(id)) {
       internal.errors.internalError('Asset with such ID already exists in testing context!')
     }
     const assetId = asUint64Cls(id ?? lazyContext.ledger.assetIdIter.next().value)
@@ -87,7 +87,7 @@ export class AvmValueGenerator {
       reserve: Account(ZERO_ADDRESS),
     }
     const { assetId: _, ...assetData } = input ?? {}
-    lazyContext.ledger.assetDataMap.set(assetId.asBigInt(), {
+    lazyContext.ledger.assetDataMap.set(assetId, {
       ...defaultAssetData,
       ...assetData,
     })
@@ -96,7 +96,7 @@ export class AvmValueGenerator {
 
   application(input?: ApplicationContextData): Application {
     const id = input?.applicationId
-    if (id && lazyContext.ledger.applicationDataMap.has(asBigInt(id))) {
+    if (id && lazyContext.ledger.applicationDataMap.has(id)) {
       internal.errors.internalError('Application with such ID already exists in testing context!')
     }
     const applicationId = asUint64Cls(id ?? lazyContext.ledger.appIdIter.next().value)
@@ -106,7 +106,7 @@ export class AvmValueGenerator {
       ...data.application,
       ...applicationData,
     }
-    lazyContext.ledger.applicationDataMap.set(applicationId.asBigInt(), data)
+    lazyContext.ledger.applicationDataMap.set(applicationId, data)
     return new ApplicationCls(applicationId.asAlgoTs())
   }
 }

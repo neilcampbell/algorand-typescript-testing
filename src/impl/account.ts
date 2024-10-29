@@ -1,4 +1,5 @@
 import { Account, Application, Asset, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Uint64Map } from '../collections/custom-key-map'
 import { DEFAULT_ACCOUNT_MIN_BALANCE, ZERO_ADDRESS } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable } from '../typescript-helpers'
@@ -17,8 +18,8 @@ export class AssetHolding {
 }
 
 export class AccountData {
-  optedAssets = new Map<bigint, AssetHolding>()
-  optedApplications = new Map<bigint, Application>()
+  optedAssets = new Uint64Map<AssetHolding>()
+  optedApplications = new Uint64Map<Application>()
   account: Mutable<Omit<Account, 'bytes' | 'isOptedIn'>>
 
   constructor() {
@@ -91,7 +92,7 @@ export class AccountCls extends BytesBackedCls implements Account {
 
   isOptedIn(assetOrApp: Asset | Application): boolean {
     if (assetOrApp instanceof AssetCls) {
-      return this.data.optedAssets.has(asUint64Cls(assetOrApp.id).asBigInt())
+      return this.data.optedAssets.has(assetOrApp.id)
     }
     if (assetOrApp instanceof ApplicationCls) {
       return this.data.optedApplications.has(asUint64Cls(assetOrApp.id).asBigInt())

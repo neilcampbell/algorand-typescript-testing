@@ -14,11 +14,15 @@ import {
   ItxnDemoContract,
   ITxnOpsContract,
   StateAcctParamsGetContract,
+  StateAppGlobalContract,
+  StateAppGlobalExContract,
   StateAppParamsContract,
   StateAssetHoldingContract,
   StateAssetParamsContract,
 } from './artifacts/state-ops/contract.algo'
 import acctParamsAppSpecJson from './artifacts/state-ops/data/StateAcctParamsGetContract.arc32.json'
+import appGlobalAppSpecJson from './artifacts/state-ops/data/StateAppGlobalContract.arc32.json'
+import appGlobalExAppSpecJson from './artifacts/state-ops/data/StateAppGlobalExContract.arc32.json'
 import appParamsAppSpecJson from './artifacts/state-ops/data/StateAppParamsContract.arc32.json'
 import assetHoldingAppSpecJson from './artifacts/state-ops/data/StateAssetHoldingContract.arc32.json'
 import assetParamsAppSpecJson from './artifacts/state-ops/data/StateAssetParamsContract.arc32.json'
@@ -434,5 +438,63 @@ describe('State op codes', async () => {
       expect(() => Block.blkSeed(Uint64(index))).toThrow('Block 42 not set')
       expect(() => Block.blkTimestamp(Uint64(index))).toThrow('Block 42 not set')
     })
+  })
+
+  describe('AppGlobal', async () => {
+    const appClient = await getAlgorandAppClient(appGlobalAppSpecJson as AppSpec)
+    const [_exAppClient, exApp] = await getAlgorandAppClientWithApp(appGlobalExAppSpecJson as AppSpec)
+    it('should be able to put, get and delete app global state', async () => {
+      const bytesKey = 'global_bytes'
+      const uint64Key = 'global_uint64'
+      const bytesValue = 'test_bytes'
+      const uint64Value = 42
+
+      // put
+      await getAvmResult({ appClient }, 'verify_put_bytes', asUint8Array(bytesKey), asUint8Array(bytesValue))
+      await getAvmResult({ appClient }, 'verify_put_uint64', asUint8Array(uint64Key), uint64Value)
+
+      const contract = ctx.contract.create(StateAppGlobalContract)
+      contract.verify_put_bytes(Bytes(bytesKey), Bytes(bytesValue))
+      contract.verify_put_uint64(Bytes(uint64Key), Uint64(uint64Value))
+
+      // get
+      const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_bytes', asUint8Array(bytesKey))
+      const uint64AvmResult = await getAvmResult({ appClient }, 'verify_get_uint64', asUint8Array(uint64Key))
+
+      const bytesResult = contract.verify_get_bytes(Bytes(bytesKey))
+      const uint64Result = contract.verify_get_uint64(Bytes(uint64Key))
+      expect(bytesResult).toEqual(bytesAvmResult)
+      expect(asBigInt(uint64Result)).toEqual(uint64AvmResult)
+
+      // delete
+      await getAvmResult({ appClient }, 'verify_delete', asUint8Array(bytesKey))
+      await getAvmResult({ appClient }, 'verify_delete', asUint8Array(uint64Key))
+      contract.verify_delete(Bytes(bytesKey))
+      contract.verify_delete(Bytes(uint64Key))
+
+      await expect(() => getAvmResult({ appClient }, 'verify_get_bytes', asUint8Array(bytesKey))).rejects.toThrow()
+      expect(() => contract.verify_get_bytes(Bytes(bytesKey))).toThrow('value is not set')
+
+      const uint64AvmResult2 = await getAvmResult({ appClient }, 'verify_get_uint64', asUint8Array(uint64Key))
+      const uint64Result2 = contract.verify_get_uint64(Bytes(uint64Key))
+      expect(asBigInt(uint64Result2)).toEqual(uint64AvmResult2)
+    })
+
+    it('should be able to use _ex methods to get state of another app', async () => {
+      const key = 'global_bytes_explicit'
+      const secondContract = ctx.contract.create(StateAppGlobalExContract)
+      const secondApp = ctx.ledger.getApplicationForContract(secondContract)
+      expect(secondApp.globalNumUint.valueOf()).toEqual(2)
+      expect(secondApp.globalNumBytes.valueOf()).toEqual(2)
+
+      const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_ex_bytes', exApp.appId, asUint8Array(key))
+
+      const contract = ctx.contract.create(StateAppGlobalContract)
+      const bytesResult = contract.verify_get_ex_bytes(secondApp, Bytes(key))
+
+      expect(bytesResult).toEqual(bytesAvmResult)
+    })
+
+    // TODO: implement test_app_global_ex_get_arc4 test method when arc4 stubs are implemented
   })
 })

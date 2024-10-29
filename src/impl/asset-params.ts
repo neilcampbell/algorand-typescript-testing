@@ -24,51 +24,51 @@ export const getAsset = (asset: Asset | internal.primitives.StubUint64Compat): A
 }
 
 export const AssetParams: internal.opTypes.AssetParamsType = {
-  assetTotal: function (a: Asset | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  assetTotal(a: Asset | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Uint64(0), false] : [asset.total, true]
   },
-  assetDecimals: function (a: Asset | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  assetDecimals(a: Asset | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Uint64(0), false] : [asset.decimals, true]
   },
-  assetDefaultFrozen: function (a: Asset | internal.primitives.StubUint64Compat): readonly [boolean, boolean] {
+  assetDefaultFrozen(a: Asset | internal.primitives.StubUint64Compat): readonly [boolean, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [false, false] : [asset.defaultFrozen, true]
   },
-  assetUnitName: function (a: Asset | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
+  assetUnitName(a: Asset | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Bytes(), false] : [asset.unitName, true]
   },
-  assetName: function (a: Asset | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
+  assetName(a: Asset | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Bytes(), false] : [asset.name, true]
   },
-  assetUrl: function (a: Asset | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
+  assetUrl(a: Asset | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Bytes(), false] : [asset.url, true]
   },
-  assetMetadataHash: function (a: Asset | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
+  assetMetadataHash(a: Asset | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Bytes(), false] : [asset.metadataHash, true]
   },
-  assetManager: function (a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
+  assetManager(a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Account(), false] : [asset.manager, true]
   },
-  assetReserve: function (a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
+  assetReserve(a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Account(), false] : [asset.reserve, true]
   },
-  assetFreeze: function (a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
+  assetFreeze(a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Account(), false] : [asset.freeze, true]
   },
-  assetClawback: function (a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
+  assetClawback(a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Account(), false] : [asset.clawback, true]
   },
-  assetCreator: function (a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
+  assetCreator(a: Asset | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Account(), false] : [asset.creator, true]
   },

@@ -1,7 +1,7 @@
 import { Account, Asset, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable } from '../typescript-helpers'
-import { asBigInt, asUint64 } from '../util'
+import { asUint64 } from '../util'
 import { AssetHolding } from './account'
 import { Uint64BackedCls } from './base'
 
@@ -65,11 +65,12 @@ export class AssetCls extends Uint64BackedCls implements Asset {
 
   private getAssetHolding(account: Account): AssetHolding {
     const accountData = lazyContext.getAccountData(account)
-    if (!accountData.optedAssets.has(asBigInt(this.id))) {
+    const assetHolding = accountData.optedAssets.get(this.id)
+    if (assetHolding === undefined) {
       internal.errors.internalError(
         'The asset is not opted into the account! Use `ctx.any.account(opted_asset_balances={{ASSET_ID: VALUE}})` to set emulated opted asset into the account.',
       )
     }
-    return accountData.optedAssets.get(asBigInt(this.id))!
+    return assetHolding
   }
 }

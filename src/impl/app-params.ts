@@ -24,39 +24,39 @@ export const getApp = (app: Application | internal.primitives.StubUint64Compat):
 }
 
 export const AppParams: internal.opTypes.AppParamsType = {
-  appApprovalProgram: function (a: Application | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
+  appApprovalProgram(a: Application | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
     const app = getApp(a)
     return app === undefined ? [Bytes(), false] : [app.approvalProgram, true]
   },
-  appClearStateProgram: function (a: Application | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
+  appClearStateProgram(a: Application | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
     const app = getApp(a)
     return app === undefined ? [Bytes(), false] : [app.clearStateProgram, true]
   },
-  appGlobalNumUint: function (a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  appGlobalNumUint(a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const app = getApp(a)
     return app === undefined ? [Uint64(0), false] : [app.globalNumUint, true]
   },
-  appGlobalNumByteSlice: function (a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  appGlobalNumByteSlice(a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const app = getApp(a)
     return app === undefined ? [Uint64(0), false] : [app.globalNumBytes, true]
   },
-  appLocalNumUint: function (a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  appLocalNumUint(a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const app = getApp(a)
     return app === undefined ? [Uint64(0), false] : [app.localNumUint, true]
   },
-  appLocalNumByteSlice: function (a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  appLocalNumByteSlice(a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const app = getApp(a)
     return app === undefined ? [Uint64(0), false] : [app.localNumBytes, true]
   },
-  appExtraProgramPages: function (a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+  appExtraProgramPages(a: Application | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const app = getApp(a)
     return app === undefined ? [Uint64(0), false] : [app.extraProgramPages, true]
   },
-  appCreator: function (a: Application | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
+  appCreator(a: Application | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
     const app = getApp(a)
     return app === undefined ? [Account(), false] : [app.creator, true]
   },
-  appAddress: function (a: Application | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
+  appAddress(a: Application | internal.primitives.StubUint64Compat): readonly [Account, boolean] {
     const app = getApp(a)
     return app === undefined ? [Account(), false] : [app.address, true]
   },
