@@ -1,5 +1,7 @@
 import { anyPType, ContractClassPType, FunctionPType, PType, SourceLocation, typeRegistry, TypeResolver } from '@algorandfoundation/puya-ts'
 import ts from 'typescript'
+import type { GenericTypeInfo } from '../encoders'
+import { DeliberateAny } from '../typescript-helpers'
 import { TransformerConfig } from './index'
 import { nodeFactory } from './node-factory'
 import { supportedBinaryOpString, supportedPrefixUnaryOpString } from './supported-binary-op-string'
@@ -49,7 +51,7 @@ export class SourceFileVisitor {
 
   private visit = (node: ts.Node): ts.Node => {
     if (ts.isFunctionLike(node)) {
-      return new FunctionLikeDecVisitor(this.context, node).result()
+      return new FunctionLikeDecVisitor(this.context, this.helper, node).result()
     }
     if (ts.isClassDeclaration(node)) {
       return new ClassVisitor(this.context, this.helper, node).result()
@@ -60,7 +62,11 @@ export class SourceFileVisitor {
 }
 
 class FunctionOrMethodVisitor {
-  constructor(protected context: ts.TransformationContext) {}
+  constructor(
+    protected context: ts.TransformationContext,
+    protected helper: VisitorHelper,
+    private isFunction?: boolean,
+  ) {}
   protected visit = (node: ts.Node): ts.Node => {
     return ts.visitEachChild(this.updateNode(node), this.visit, this.context)
   }
@@ -86,6 +92,28 @@ class FunctionOrMethodVisitor {
         return nodeFactory.prefixUnaryOp(node.operand, tokenText)
       }
     }
+    /*
+     * capture generic type info in test functions; e.g.
+     * ```
+     *   it('should work', () => {
+     *     ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
+     *       const box = Box<uint64>({key: Bytes('test-key')})
+     *     })
+     *   })
+     * ```
+     */
+    if (this.isFunction && ts.isVariableDeclaration(node) && node.initializer && ts.isCallExpression(node.initializer)) {
+      const initializerNode = node.initializer
+      let type = this.helper.resolveType(initializerNode)
+
+      // `voted = LocalState<uint64>()` is resolved to FunctionPType with returnType LocalState<uint64>
+      if (type instanceof FunctionPType) type = type.returnType
+      if (typeRegistry.isGeneric(type)) {
+        const info = getGenericTypeInfo(type)
+        const updatedInitializer = nodeFactory.captureGenericTypeInfo(initializerNode, JSON.stringify(info))
+        return factory.updateVariableDeclaration(node, node.name, node.exclamationToken, node.type, updatedInitializer)
+      }
+    }
     return node
   }
 }
@@ -93,9 +121,10 @@ class FunctionOrMethodVisitor {
 class FunctionLikeDecVisitor extends FunctionOrMethodVisitor {
   constructor(
     context: ts.TransformationContext,
+    helper: VisitorHelper,
     private funcNode: ts.SignatureDeclaration,
   ) {
-    super(context)
+    super(context, helper, true)
   }
 
   public result(): ts.SignatureDeclaration {
@@ -105,9 +134,10 @@ class FunctionLikeDecVisitor extends FunctionOrMethodVisitor {
 class MethodDecVisitor extends FunctionOrMethodVisitor {
   constructor(
     context: ts.TransformationContext,
+    helper: VisitorHelper,
     private methodNode: ts.MethodDeclaration,
   ) {
-    super(context)
+    super(context, helper)
   }
 
   public result(): ts.MethodDeclaration {
@@ -139,7 +169,7 @@ class ClassVisitor {
         }
       }
 
-      return new MethodDecVisitor(this.context, node).result()
+      return new MethodDecVisitor(this.context, this.helper, node).result()
     }
 
     if (ts.isCallExpression(node)) {
@@ -149,10 +179,31 @@ class ClassVisitor {
       if (type instanceof FunctionPType) type = type.returnType
 
       if (typeRegistry.isGeneric(type)) {
-        const typeName = type.name
-        return nodeFactory.captureGenericTypeInfo(ts.visitEachChild(node, this.visit, this.context), typeName)
+        const info = getGenericTypeInfo(type)
+        return nodeFactory.captureGenericTypeInfo(ts.visitEachChild(node, this.visit, this.context), JSON.stringify(info))
       }
     }
     return ts.visitEachChild(node, this.visit, this.context)
   }
+}
+
+const getGenericTypeInfo = (type: PType | PType['wtype']): GenericTypeInfo => {
+  let genericArgs = undefined
+  let wtypeName = undefined
+  if (type instanceof PType) {
+    genericArgs = typeRegistry.isGeneric(type)
+      ? type.getGenericArgs().map(getGenericTypeInfo)
+      : type.wtype && Object.hasOwn(type.wtype, 'types')
+        ? (type.wtype as DeliberateAny).types.map(getGenericTypeInfo)
+        : undefined
+    wtypeName = type.wtype?.name
+  } else if (type) {
+    genericArgs = Object.hasOwn(type, 'types') ? (type as DeliberateAny).types.map(getGenericTypeInfo) : undefined
+    wtypeName = type.name
+  }
+  const result: GenericTypeInfo = { name: type?.name ?? 'unknown', wtypeName: wtypeName }
+  if (genericArgs && genericArgs.length) {
+    result.genericArgs = genericArgs
+  }
+  return result
 }

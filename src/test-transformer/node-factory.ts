@@ -57,14 +57,14 @@ export const nodeFactory = {
     )
   },
 
-  captureGenericTypeInfo(x: ts.Expression, type: string) {
+  captureGenericTypeInfo(x: ts.Expression, info: string) {
     return factory.createCallExpression(
       factory.createPropertyAccessExpression(
         factory.createIdentifier('runtimeHelpers'),
         factory.createIdentifier('captureGenericTypeInfo'),
       ),
       undefined,
-      [x, factory.createStringLiteral(type)],
+      [x, factory.createStringLiteral(info)],
     )
   },
 } satisfies Record<string, (...args: DeliberateAny[]) => ts.Node>

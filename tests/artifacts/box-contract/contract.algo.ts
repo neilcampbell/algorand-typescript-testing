@@ -1,8 +1,14 @@
-import { arc4, assert, Box, Bytes, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, assert, Box, bytes, Bytes, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 
+type X = [a: uint64, b: string, c: bytes]
+type Y = { a: uint64; b: string; c: bytes }
+type Z = { x: X; y: Y }
 export class BoxContract extends arc4.Contract {
   oca = Box<arc4.OnCompleteAction>({ key: Bytes('oca') })
   txn = Box<TransactionType>({ key: Bytes('txn') })
+  a = Box<X>({ key: Bytes('a') })
+  b = Box<Y>({ key: Bytes('b') })
+  c = Box<Z>({ key: Bytes('c') })
 
   @arc4.abimethod()
   public storeEnums(): void {

@@ -4,6 +4,7 @@ import {
   BoxMap as BoxMapType,
   BoxRef as BoxRefType,
   Box as BoxType,
+  Bytes,
   bytes,
   GlobalStateOptions,
   GlobalState as GlobalStateType,
@@ -16,7 +17,9 @@ import {
 import { AccountMap } from '../collections/custom-key-map'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { asBytes, asBytesCls, asNumber, conactUint8Arrays, toBytes } from '../util'
+import { getEncoder } from '../encoders'
+import { getGenericTypeInfo } from '../runtime-helpers'
+import { asBytes, asBytesCls, asNumber, asUint8Array, conactUint8Arrays, toBytes } from '../util'
 
 export class GlobalStateCls<ValueType> {
   private readonly _type: string = GlobalStateCls.name
@@ -126,14 +129,21 @@ export class BoxCls<TValue> {
     this.#app = lazyContext.activeApplication
   }
 
+  private get fromBytes() {
+    const typeInfo = getGenericTypeInfo(this)
+    const valueType = typeInfo!.genericArgs![0]
+    return (val: Uint8Array) => getEncoder<TValue>(valueType)(val, valueType)
+  }
+
   get value(): TValue {
     if (!this.exists) {
       throw new internal.errors.InternalError('Box has not been created')
     }
-    return lazyContext.ledger.getBox(this.#app, this.key)
+
+    return this.fromBytes(lazyContext.ledger.getBox(this.#app, this.key))
   }
   set value(v: TValue) {
-    lazyContext.ledger.setBox(this.#app, this.key, v)
+    lazyContext.ledger.setBox(this.#app, this.key, asUint8Array(toBytes(v)))
   }
 
   get hasKey(): boolean {
@@ -172,7 +182,8 @@ export class BoxCls<TValue> {
   }
 
   maybe(): readonly [TValue, boolean] {
-    return [lazyContext.ledger.getBox(this.#app, this.key), lazyContext.ledger.boxExists(this.#app, this.key)]
+    const value = this.fromBytes(lazyContext.ledger.getBox(this.#app, this.key))
+    return [value, lazyContext.ledger.boxExists(this.#app, this.key)]
   }
 }
 
@@ -184,6 +195,12 @@ export class BoxMapCls<TKey, TValue> {
 
   static [Symbol.hasInstance](x: unknown): x is BoxMapCls<unknown, unknown> {
     return x instanceof Object && '_type' in x && (x as { _type: string })['_type'] === BoxMapCls.name
+  }
+
+  private get fromBytes() {
+    const typeInfo = getGenericTypeInfo(this)
+    const valueType = typeInfo!.genericArgs![1]
+    return (val: Uint8Array) => getEncoder<TValue>(valueType)(val, valueType)
   }
 
   constructor(keyPrefix?: internal.primitives.StubBytesCompat) {
@@ -215,7 +232,7 @@ export class BoxMapCls<TKey, TValue> {
   }
 
   set(key: TKey, value: TValue): void {
-    lazyContext.ledger.setBox(this.#app, this.getFullKey(key), value)
+    lazyContext.ledger.setBox(this.#app, this.getFullKey(key), asUint8Array(toBytes(value)))
   }
 
   delete(key: TKey): boolean {
@@ -228,7 +245,8 @@ export class BoxMapCls<TKey, TValue> {
 
   maybe(key: TKey): readonly [TValue, boolean] {
     const fullKey = this.getFullKey(key)
-    return [lazyContext.ledger.getBox(this.#app, fullKey), lazyContext.ledger.boxExists(this.#app, fullKey)]
+    const value = this.fromBytes(lazyContext.ledger.getBox(this.#app, fullKey))
+    return [value, lazyContext.ledger.boxExists(this.#app, fullKey)]
   }
 
   length(key: TKey): uint64 {
@@ -394,7 +412,7 @@ export class BoxRefCls {
   }
 
   maybe(): readonly [bytes, boolean] {
-    return [asBytes(lazyContext.ledger.getBox(this.#app, this.key)), lazyContext.ledger.boxExists(this.#app, this.key)]
+    return [Bytes(lazyContext.ledger.getBox(this.#app, this.key)), lazyContext.ledger.boxExists(this.#app, this.key)]
   }
 
   get length(): uint64 {

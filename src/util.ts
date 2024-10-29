@@ -43,6 +43,8 @@ export const asBigUint = (val: internal.primitives.StubBigUintCompat) => asBigUi
 
 export const asBytes = (val: internal.primitives.StubBytesCompat) => asBytesCls(val).asAlgoTs()
 
+export const asUint8Array = (val: internal.primitives.StubBytesCompat) => asBytesCls(val).asUint8Array()
+
 //TODO: handle arc4 types, bytes backed types
 export const toBytes = (val: unknown): bytes => {
   const uint64Val = asMaybeUint64Cls(val)

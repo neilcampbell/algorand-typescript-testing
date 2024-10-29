@@ -153,12 +153,12 @@ export class LedgerContext {
     }
   }
 
-  getBox<TValue>(app: Application, key: internal.primitives.StubBytesCompat): TValue {
+  getBox(app: Application, key: internal.primitives.StubBytesCompat): Uint8Array {
     const appData = this.applicationDataMap.getOrFail(app.id)
-    return appData.application.boxes.get(key) as TValue
+    return appData.application.boxes.get(key) ?? new Uint8Array()
   }
 
-  setBox<TValue>(app: Application, key: internal.primitives.StubBytesCompat, value: TValue): void {
+  setBox(app: Application, key: internal.primitives.StubBytesCompat, value: Uint8Array): void {
     const appData = this.applicationDataMap.getOrFail(app.id)
     appData.application.boxes.set(key, value)
   }

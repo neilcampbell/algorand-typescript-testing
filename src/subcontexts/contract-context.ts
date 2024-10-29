@@ -2,6 +2,7 @@ import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract, Loca
 import { getAbiMetadata } from '../abi-metadata'
 import { BytesMap } from '../collections/custom-key-map'
 import { lazyContext } from '../context-helpers/internal-context'
+import type { GenericTypeInfo } from '../encoders'
 import { AccountCls } from '../impl/account'
 import { ApplicationCls } from '../impl/application'
 import { AssetCls } from '../impl/asset'
@@ -17,7 +18,7 @@ import {
 } from '../impl/transactions'
 import { getGenericTypeInfo } from '../runtime-helpers'
 import { DeliberateAny } from '../typescript-helpers'
-import { asUint64Cls, extractGenericTypeArgs } from '../util'
+import { asUint64Cls } from '../util'
 
 interface IConstructor<T> {
   new (...args: DeliberateAny[]): T
@@ -31,10 +32,9 @@ interface States {
   totals: StateTotals
 }
 
-const isUint64GenericType = (typeName: string | undefined) => {
-  if (typeName === undefined) return false
-  const genericTypes: string[] = extractGenericTypeArgs(typeName)
-  return genericTypes.some((t) => t.toLocaleLowerCase() === 'uint64')
+const isUint64GenericType = (typeInfo: GenericTypeInfo | undefined) => {
+  if (!typeInfo?.genericArgs?.length) return false
+  return typeInfo.genericArgs.some((t) => t.name.toLocaleLowerCase() === 'uint64')
 }
 
 const extractStates = (contract: BaseContract): States => {

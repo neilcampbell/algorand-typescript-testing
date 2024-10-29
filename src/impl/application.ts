@@ -13,7 +13,7 @@ export class ApplicationData {
     appLogs: bytes[]
     globalStates: BytesMap<GlobalStateCls<unknown>>
     localStates: BytesMap<LocalState<unknown>>
-    boxes: BytesMap<unknown>
+    boxes: BytesMap<Uint8Array>
   }
   isCreating: boolean = false
 

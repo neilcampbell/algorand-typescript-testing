@@ -1,20 +1,51 @@
-import { BigUint, Box, Bytes, op, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { BigUint, biguint, Box, bytes, Bytes, op, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { itob } from '@algorandfoundation/algorand-typescript/op'
 import { afterEach, describe, expect, it, test } from 'vitest'
-import { asBytes, toBytes } from '../../src/util'
+import { asBigUintCls, asBytes, asUint64Cls, toBytes } from '../../src/util'
 import { BoxContract } from '../artifacts/box-contract/contract.algo'
 
 const BOX_NOT_CREATED_ERROR = 'Box has not been created'
 
 describe('Box', () => {
   const ctx = new TestExecutionContext()
+  const key = Bytes('test_key')
+  const testUint64Box = (test: (box: Box<uint64>) => void) => {
+    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
+      const box = Box<uint64>({ key })
+      test(box)
+    })
+  }
+  const testBytesBox = (test: (box: Box<bytes>) => void) => {
+    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
+      const box = Box<bytes>({ key })
+      test(box)
+    })
+  }
+  const testStringBox = (test: (box: Box<string>) => void) => {
+    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
+      const box = Box<string>({ key })
+      test(box)
+    })
+  }
+  const testBigUintBox = (test: (box: Box<biguint>) => void) => {
+    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
+      const box = Box<biguint>({ key })
+      test(box)
+    })
+  }
+  const testBooleanBox = (test: (box: Box<boolean>) => void) => {
+    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
+      const box = Box<boolean>({ key })
+      test(box)
+    })
+  }
 
   afterEach(() => {
     ctx.reset()
   })
 
-  test.for(['key', Bytes('key')])('can be initialised with key %s', (key) => {
+  test.each(['key', Bytes('key')])('can be initialised with key %s', (key) => {
     ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
       const box = Box({ key })
       expect(box.exists).toBe(false)
@@ -25,10 +56,13 @@ describe('Box', () => {
   })
 
   // TODO: add tests for settign arc4 types as value
-  test.for([Uint64(100), Bytes('Test'), 'Test', BigUint(100)])('%s can be set as value', (value) => {
-    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
-      const key = Bytes('test_key')
-      const box = Box({ key })
+  test.each([
+    [Uint64(100), testUint64Box],
+    [Bytes('Test'), testBytesBox],
+    ['Test', testStringBox],
+    [BigUint(100), testBigUintBox],
+  ])('%s can be set as value', (value, testBox) => {
+    testBox((box) => {
       box.value = value
 
       const [content, exists] = op.Box.get(key)
@@ -40,11 +74,14 @@ describe('Box', () => {
     })
   })
 
-  // TODO: add tests for settign arc4 types as value
-  test.for([Uint64(100), Bytes('Test'), 'Test', BigUint(100)])('%s value can be delete', (value) => {
-    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
-      const key = Bytes('test_key')
-      const box = Box({ key })
+  // // TODO: add tests for settign arc4 types as value
+  test.each([
+    [Uint64(100), testUint64Box],
+    [Bytes('Test'), testBytesBox],
+    ['Test', testStringBox],
+    [BigUint(100), testBigUintBox],
+  ])('%s value can be delete', (value, testBox) => {
+    testBox((box) => {
       box.value = value
 
       box.delete()
@@ -58,11 +95,14 @@ describe('Box', () => {
     })
   })
 
-  // TODO: add tests for settign arc4 types as value
-  test.for([Uint64(100), Bytes('Test'), 'Test', BigUint(100)])('can retrieve existing value %s using maybe', (value) => {
-    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
-      const key = Bytes('test_key')
-      const box = Box({ key })
+  // // TODO: add tests for settign arc4 types as value
+  test.each([
+    [Uint64(100), testUint64Box],
+    [Bytes('Test'), testBytesBox],
+    ['Test', testStringBox],
+    [BigUint(100), testBigUintBox],
+  ])('can retrieve existing value %s using maybe', (value, testBox) => {
+    testBox((box) => {
       box.value = value
 
       const [content, exists] = box.maybe()
@@ -74,11 +114,14 @@ describe('Box', () => {
     })
   })
 
-  // TODO: add tests for settign arc4 types as value
-  test.for([Uint64(100), Bytes('Test'), 'Test', BigUint(100)])('can retrieve non-existing value using maybe', (value) => {
-    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
-      const key = Bytes('test_key')
-      const box = Box({ key })
+  // // TODO: add tests for settign arc4 types as value
+  test.each([
+    [Uint64(100), testUint64Box, Uint64(0)],
+    [Bytes('Test'), testBytesBox, Bytes('')],
+    ['Test', testStringBox, ''],
+    [BigUint(100), testBigUintBox, BigUint(0)],
+  ])('can retrieve non-existing value using maybe', (value, testBox, expectedValue) => {
+    testBox((box) => {
       box.value = value
       box.delete()
 
@@ -88,7 +131,7 @@ describe('Box', () => {
       expect(exists).toBe(false)
       expect(opExists).toBe(false)
       expect(opContent).toEqual(Bytes(''))
-      expect(toBytes(content)).toEqual(Bytes(''))
+      expect(content).toEqual(expectedValue)
     })
   })
 
@@ -105,6 +148,25 @@ describe('Box', () => {
       const app = ctx.ledger.getApplicationForContract(contract)
       expect(toBytes(ctx.ledger.getBox(app, 'oca'))).toEqual(itob(oca))
       expect(toBytes(ctx.ledger.getBox(app, 'txn'))).toEqual(itob(txn))
+    })
+  })
+
+  test.each([
+    [Uint64(100), Uint64(200), asUint64Cls(200).toBytes().asAlgoTs(), testUint64Box],
+    [BigUint(100), BigUint(200), asBigUintCls(200).toBytes().asAlgoTs(), testBigUintBox],
+    [Bytes('abc'), Bytes('def'), Bytes('def'), testBytesBox],
+    ['abc', 'def', Bytes('def'), testStringBox],
+    [true, false, asUint64Cls(0).toBytes().asAlgoTs(), testBooleanBox],
+  ])('can get typed value after using op.Box.put', (value, newValue, newBytesValue, testBox) => {
+    testBox((box) => {
+      box.value = value
+      expect(box.value).toEqual(value)
+
+      op.Box.put(key, newBytesValue)
+      const [opContent, _] = op.Box.get(key)
+
+      expect(opContent).toEqual(newBytesValue)
+      expect(box.value).toEqual(newValue)
     })
   })
 })
