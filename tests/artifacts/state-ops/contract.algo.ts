@@ -10,6 +10,7 @@ import {
   Global,
   GlobalState,
   itxn,
+  LocalState,
   op,
   TransactionType,
   Txn,
@@ -402,6 +403,78 @@ export class StateAppGlobalContract extends arc4.Contract {
   @arc4.abimethod()
   verify_delete(a: bytes): void {
     op.AppGlobal.delete(a)
+  }
+}
+
+export class StateAppLocalExContract extends arc4.Contract {
+  localUint64 = LocalState<uint64>({ key: 'local_uint64' })
+  localBytes = LocalState<bytes>({ key: 'local_bytes' })
+
+  // TODO: uncomment when arc4 types are ready
+  // localArc4Bytes = LocalState<arc4.DynamicBytes>({ key: "local_arc4_bytes" })
+
+  @arc4.abimethod({ allowActions: ['OptIn'] })
+  optIn(): void {
+    this.localBytes(Global.creatorAddress).value = Bytes('dummy_bytes_from_external_contract')
+    this.localUint64(Global.creatorAddress).value = Uint64(99)
+    // TODO: uncomment when arc4 types are ready
+    // this.localArc4Bytes(Global.creatorAddress).value = arc4.DynamicBytes("dummy_arc4_bytes")
+  }
+}
+
+export class StateAppLocalContract extends arc4.Contract {
+  localUint64 = LocalState<uint64>({ key: 'local_uint64' })
+  localBytes = LocalState<bytes>({ key: 'local_bytes' })
+
+  @arc4.abimethod({ allowActions: ['OptIn'] })
+  opt_in() {
+    this.localBytes(Global.creatorAddress).value = Bytes('dummy_bytes')
+    this.localUint64(Global.creatorAddress).value = Uint64(999)
+  }
+
+  @arc4.abimethod()
+  verify_get_bytes(a: Account, b: bytes): bytes {
+    const value = op.AppLocal.getBytes(a, b)
+    return value
+  }
+
+  @arc4.abimethod()
+  verify_get_uint64(a: Account, b: bytes): uint64 {
+    const value = op.AppLocal.getUint64(a, b)
+    return value
+  }
+
+  @arc4.abimethod()
+  verify_get_ex_bytes(a: Account, b: Application, c: bytes): bytes {
+    const [value, _val] = op.AppLocal.getExBytes(a, b, c)
+    return value
+  }
+
+  @arc4.abimethod()
+  verify_get_ex_uint64(a: Account, b: Application, c: bytes): uint64 {
+    const [value, _val] = op.AppLocal.getExUint64(a, b, c)
+    return value
+  }
+
+  @arc4.abimethod()
+  verify_delete(a: Account, b: bytes): void {
+    op.AppLocal.delete(a, b)
+  }
+
+  @arc4.abimethod()
+  verify_exists(a: Account, b: bytes): boolean {
+    const [_value, exists] = op.AppLocal.getExUint64(a, 0, b)
+    return exists
+  }
+
+  @arc4.abimethod()
+  verify_put_uint64(a: Account, b: bytes, c: uint64): void {
+    op.AppLocal.put(a, b, c)
+  }
+
+  @arc4.abimethod()
+  verify_put_bytes(a: Account, b: bytes, c: bytes): void {
+    op.AppLocal.put(a, b, c)
   }
 }
 

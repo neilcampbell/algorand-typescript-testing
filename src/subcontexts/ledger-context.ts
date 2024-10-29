@@ -1,4 +1,4 @@
-import { Account, Application, Asset, BaseContract, internal } from '@algorandfoundation/algorand-typescript'
+import { Account, Application, Asset, BaseContract, internal, LocalStateForAccount } from '@algorandfoundation/algorand-typescript'
 import { AccountMap, Uint64Map } from '../collections/custom-key-map'
 import { MAX_UINT64 } from '../constants'
 import { AccountData, AssetHolding } from '../impl/account'
@@ -121,6 +121,35 @@ export class LedgerContext {
       globalState.delete()
     } else {
       globalState.value = asMaybeUint64Cls(value) ?? asMaybeBytesCls(value)
+    }
+  }
+
+  getLocalState(
+    app: Application,
+    account: Account,
+    key: internal.primitives.StubBytesCompat,
+  ): [LocalStateForAccount<unknown>, true] | [undefined, false] {
+    const appData = this.applicationDataMap.get(app.id)
+    if (!appData?.application.localStates.has(key)) {
+      return [undefined, false]
+    }
+    const localState = appData.application.localStates.getOrFail(key)
+    return [localState(account), true]
+  }
+
+  setLocalState(
+    app: Application,
+    account: Account,
+    key: internal.primitives.StubBytesCompat,
+    value: internal.primitives.StubUint64Compat | internal.primitives.StubBytesCompat | undefined,
+  ): void {
+    const appData = this.applicationDataMap.getOrFail(app.id)
+    const localState = appData.application.localStates.getOrFail(key)
+    const accountLocalState = localState(account)
+    if (value === undefined) {
+      accountLocalState.delete()
+    } else {
+      accountLocalState.value = asMaybeUint64Cls(value) ?? asMaybeBytesCls(value)
     }
   }
 }

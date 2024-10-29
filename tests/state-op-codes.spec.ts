@@ -1,4 +1,5 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
+import { ApplicationClient } from '@algorandfoundation/algokit-utils/types/app-client'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Account, arc4, bytes, Bytes, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { afterEach, describe, expect, it, test } from 'vitest'
@@ -8,6 +9,7 @@ import { testInvariant } from '../src/errors'
 import { AccountCls } from '../src/impl/account'
 import { InnerTxn } from '../src/impl/itxn'
 import { ApplicationTransaction } from '../src/impl/transactions'
+import { DeliberateAny } from '../src/typescript-helpers'
 import { asBigInt, asNumber, asUint64Cls } from '../src/util'
 import { AppExpectingEffects } from './artifacts/created-app-asset/contract.algo'
 import {
@@ -16,6 +18,8 @@ import {
   StateAcctParamsGetContract,
   StateAppGlobalContract,
   StateAppGlobalExContract,
+  StateAppLocalContract,
+  StateAppLocalExContract,
   StateAppParamsContract,
   StateAssetHoldingContract,
   StateAssetParamsContract,
@@ -23,6 +27,8 @@ import {
 import acctParamsAppSpecJson from './artifacts/state-ops/data/StateAcctParamsGetContract.arc32.json'
 import appGlobalAppSpecJson from './artifacts/state-ops/data/StateAppGlobalContract.arc32.json'
 import appGlobalExAppSpecJson from './artifacts/state-ops/data/StateAppGlobalExContract.arc32.json'
+import appLocalAppSpecJson from './artifacts/state-ops/data/StateAppLocalContract.arc32.json'
+import appLocalExAppSpecJson from './artifacts/state-ops/data/StateAppLocalExContract.arc32.json'
 import appParamsAppSpecJson from './artifacts/state-ops/data/StateAppParamsContract.arc32.json'
 import assetHoldingAppSpecJson from './artifacts/state-ops/data/StateAssetHoldingContract.arc32.json'
 import assetParamsAppSpecJson from './artifacts/state-ops/data/StateAssetParamsContract.arc32.json'
@@ -496,5 +502,81 @@ describe('State op codes', async () => {
     })
 
     // TODO: implement test_app_global_ex_get_arc4 test method when arc4 stubs are implemented
+  })
+
+  describe('AppLocal', async () => {
+    const tryOptIn = async (client: ApplicationClient) => {
+      try {
+        await client.optIn({ method: 'opt_in', methodArgs: [] })
+      } catch (e) {
+        if (!(e as DeliberateAny).message.includes('has already opted in to app')) {
+          throw e
+        }
+        // ignore error if account has already opted in
+      }
+    }
+    const appClient = await getAlgorandAppClient(appLocalAppSpecJson as AppSpec)
+    const [exAppClient, exApp] = await getAlgorandAppClientWithApp(appLocalExAppSpecJson as AppSpec)
+    await tryOptIn(appClient)
+    await tryOptIn(exAppClient)
+
+    it('should be able to put, get and delete app local state', async () => {
+      const localNetAccount = await getLocalNetDefaultAccount()
+      const account = Account(Bytes.fromBase32(localNetAccount.addr))
+      const bytesKey = 'local_bytes'
+      const uint64Key = 'local_uint64'
+      const bytesValue = 'test_bytes'
+      const uint64Value = 42
+
+      // put
+      await getAvmResult({ appClient }, 'verify_put_bytes', localNetAccount.addr, asUint8Array(bytesKey), asUint8Array(bytesValue))
+      await getAvmResult({ appClient }, 'verify_put_uint64', localNetAccount.addr, asUint8Array(uint64Key), uint64Value)
+
+      const contract = ctx.contract.create(StateAppLocalContract)
+      contract.verify_put_bytes(account, Bytes(bytesKey), Bytes(bytesValue))
+      contract.verify_put_uint64(account, Bytes(uint64Key), Uint64(uint64Value))
+
+      // get
+      const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_bytes', localNetAccount.addr, asUint8Array(bytesKey))
+      const uint64AvmResult = await getAvmResult({ appClient }, 'verify_get_uint64', localNetAccount.addr, asUint8Array(uint64Key))
+
+      const bytesResult = contract.verify_get_bytes(account, Bytes(bytesKey))
+      const uint64Result = contract.verify_get_uint64(account, Bytes(uint64Key))
+      expect(bytesResult).toEqual(bytesAvmResult)
+      expect(asBigInt(uint64Result)).toEqual(uint64AvmResult)
+
+      // delete
+      await getAvmResult({ appClient }, 'verify_delete', localNetAccount.addr, asUint8Array(bytesKey))
+      await getAvmResult({ appClient }, 'verify_delete', localNetAccount.addr, asUint8Array(uint64Key))
+      contract.verify_delete(account, Bytes(bytesKey))
+      contract.verify_delete(account, Bytes(uint64Key))
+
+      await expect(() => getAvmResult({ appClient }, 'verify_get_bytes', localNetAccount.addr, asUint8Array(bytesKey))).rejects.toThrow()
+      expect(() => contract.verify_get_bytes(account, Bytes(bytesKey))).toThrow('value is not set')
+
+      const uint64AvmResult2 = await getAvmResult({ appClient }, 'verify_get_uint64', localNetAccount.addr, asUint8Array(uint64Key))
+      const uint64Result2 = contract.verify_get_uint64(account, Bytes(uint64Key))
+      expect(asBigInt(uint64Result2)).toEqual(uint64AvmResult2)
+    })
+
+    it('should be able to use _ex methods to get state of another app', async () => {
+      const key = 'local_bytes'
+      const localNetAccount = await getLocalNetDefaultAccount()
+      const account = Account(Bytes.fromBase32(localNetAccount.addr))
+      const secondContract = ctx.contract.create(StateAppLocalExContract)
+      const secondApp = ctx.ledger.getApplicationForContract(secondContract)
+      expect(secondApp.localNumUint.valueOf()).toEqual(1)
+      expect(secondApp.localNumBytes.valueOf()).toEqual(1)
+
+      const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_ex_bytes', localNetAccount.addr, exApp.appId, asUint8Array(key))
+
+      const contract = ctx.contract.create(StateAppLocalContract)
+      secondContract.localBytes(account).value = Bytes('dummy_bytes_from_external_contract')
+      const bytesResult = contract.verify_get_ex_bytes(account, secondApp, Bytes(key))
+
+      expect(bytesResult).toEqual(bytesAvmResult)
+    })
+
+    // TODO: implement test_app_local_ex_get_arc4 test method when arc4 stubs are implemented
   })
 })
