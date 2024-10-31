@@ -52,7 +52,7 @@ export const bzero = (a: internal.primitives.StubUint64Compat): bytes => {
   if (size > MAX_BYTES_SIZE) {
     internal.errors.avmError('bzero attempted to create a too large string')
   }
-  return Bytes(new Uint8Array(Array(Number(size)).fill(0x00)))
+  return Bytes(new Uint8Array(Number(size)))
 }
 
 export const concat = (a: internal.primitives.StubBytesCompat, b: internal.primitives.StubBytesCompat): bytes => {

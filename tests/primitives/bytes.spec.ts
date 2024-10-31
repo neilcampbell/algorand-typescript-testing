@@ -170,7 +170,7 @@ describe('Bytes', async () => {
 
   describe.each([MAX_BYTES_SIZE + 1, MAX_BYTES_SIZE * 2])('value overflows', (size) => {
     it(`${size} bytes`, () => {
-      const a = new Uint8Array(size).fill(0)
+      const a = new Uint8Array(size)
       expect(() => Bytes(a)).toThrow(/Bytes length \d+ exceeds maximum length/)
     })
   })

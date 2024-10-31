@@ -14,7 +14,7 @@ export const Box: internal.opTypes.BoxType = {
     if (lazyContext.ledger.boxExists(app, name)) {
       return false
     }
-    lazyContext.ledger.setBox(app, name, new Uint8Array(Array(size).fill(0)))
+    lazyContext.ledger.setBox(app, name, new Uint8Array(size))
     return true
   },
   delete(a: internal.primitives.StubBytesCompat): boolean {
@@ -89,7 +89,7 @@ export const Box: internal.opTypes.BoxType = {
     const size = boxContent.length
     let updatedContent
     if (newSize > size) {
-      updatedContent = conactUint8Arrays(boxContent, new Uint8Array(Array(newSize - size).fill(0)))
+      updatedContent = conactUint8Arrays(boxContent, new Uint8Array(newSize - size))
     } else {
       updatedContent = boxContent.slice(0, newSize)
     }
@@ -120,7 +120,7 @@ export const Box: internal.opTypes.BoxType = {
     if (updatedContent.length > size) {
       updatedContent = updatedContent.slice(0, size)
     } else if (updatedContent.length < size) {
-      updatedContent = conactUint8Arrays(updatedContent, new Uint8Array(Array(size - asNumber(updatedContent.length)).fill(0)))
+      updatedContent = conactUint8Arrays(updatedContent, new Uint8Array(size - asNumber(updatedContent.length)))
     }
     lazyContext.ledger.setBox(app, name, updatedContent)
   },

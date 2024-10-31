@@ -4,12 +4,12 @@ import { AccountCls } from './impl/account'
 import { ApplicationCls } from './impl/application'
 import { AssetCls } from './impl/asset'
 
-export interface GenericTypeInfo {
+export interface TypeInfo {
   name: string
-  genericArgs?: GenericTypeInfo[] | Record<string, GenericTypeInfo>
+  genericArgs?: TypeInfo[] | Record<string, TypeInfo>
 }
 
-type fromBytes<T> = (val: Uint8Array, typeInfo: GenericTypeInfo) => T
+type fromBytes<T> = (val: Uint8Array, typeInfo: TypeInfo) => T
 
 const booleanFromBytes: fromBytes<boolean> = (val) => {
   return internal.encodingUtil.uint8ArrayToBigInt(val) > 0n
@@ -53,7 +53,7 @@ export const encoders = {
   // 'Tuple<*>': tupleFromBytes,
 }
 
-export const getEncoder = <T>(typeInfo: GenericTypeInfo): fromBytes<T> => {
+export const getEncoder = <T>(typeInfo: TypeInfo): fromBytes<T> => {
   const encoder = Object.entries(encoders).find(([k, _]) => new RegExp(`^${k}$`, 'i').test(typeInfo.name))?.[1]
   if (!encoder) {
     throw new Error(`No encoder found for type ${typeInfo.name}`)

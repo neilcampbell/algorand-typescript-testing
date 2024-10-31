@@ -31,7 +31,7 @@ describe('BoxRef', () => {
 
       expect(box.length).toBe(size)
 
-      assertBoxValue(box, new Uint8Array(Array(size).fill(0)))
+      assertBoxValue(box, new Uint8Array(size))
     })
   })
 
@@ -196,7 +196,7 @@ describe('BoxRef', () => {
 
       box.put(value)
 
-      const content = box.get({ default: Bytes(new Uint8Array(Array(size).fill(0x00))) })
+      const content = box.get({ default: Bytes(new Uint8Array(size)) })
       expect(content).toEqual(value)
 
       const [opContent, opExists] = op.Box.get(box.key)
@@ -215,7 +215,7 @@ describe('BoxRef', () => {
       expect(box.exists).toBe(true)
       expect(box.length).toBe(10)
 
-      const content = box.get({ default: Bytes(new Uint8Array(Array(10).fill(0x00))) })
+      const content = box.get({ default: Bytes(new Uint8Array(10)) })
       expect(content).toEqual(Bytes(boxValue))
     })
   })
@@ -224,7 +224,7 @@ describe('BoxRef', () => {
     ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
       const box = BoxRef({ key: TEST_BOX_KEY })
 
-      const defaultValue = Bytes(new Uint8Array(Array(10).fill(0x00)))
+      const defaultValue = Bytes(new Uint8Array(10))
       const content = box.get({ default: defaultValue })
       expect(content).toEqual(defaultValue)
     })
@@ -252,7 +252,7 @@ describe('BoxRef', () => {
       const replacement = new Uint8Array(Array(2).fill(0x11))
       box.splice(1, 1, Bytes(replacement))
 
-      const content = box.get({ default: Bytes(new Uint8Array(Array(size).fill(0x00))) })
+      const content = box.get({ default: Bytes(new Uint8Array(size)) })
 
       const opBoxKey = asBytes('another_key')
       op.Box.create(opBoxKey, size)
@@ -280,7 +280,7 @@ describe('BoxRef', () => {
       const replacement = new Uint8Array(Array(2).fill(0x11))
       box.splice(1, 5, Bytes(replacement))
 
-      const content = box.get({ default: Bytes(new Uint8Array(Array(size).fill(0x00))) })
+      const content = box.get({ default: Bytes(new Uint8Array(size)) })
 
       const opBoxKey = asBytes('another_key')
       op.Box.create(opBoxKey, size)

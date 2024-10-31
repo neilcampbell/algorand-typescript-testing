@@ -2,7 +2,7 @@ import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract, Loca
 import { getAbiMetadata } from '../abi-metadata'
 import { BytesMap } from '../collections/custom-key-map'
 import { lazyContext } from '../context-helpers/internal-context'
-import type { GenericTypeInfo } from '../encoders'
+import type { TypeInfo } from '../encoders'
 import { AccountCls } from '../impl/account'
 import { ApplicationCls } from '../impl/application'
 import { AssetCls } from '../impl/asset'
@@ -32,7 +32,7 @@ interface States {
   totals: StateTotals
 }
 
-const isUint64GenericType = (typeInfo: GenericTypeInfo | undefined) => {
+const isUint64GenericType = (typeInfo: TypeInfo | undefined) => {
   if (!Array.isArray(typeInfo?.genericArgs) || !typeInfo?.genericArgs?.length) return false
   return typeInfo.genericArgs.some((t) => t.name.toLocaleLowerCase() === 'uint64')
 }

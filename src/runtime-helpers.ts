@@ -1,6 +1,6 @@
 import { internal } from '@algorandfoundation/algorand-typescript'
 import { MAX_UINT64 } from './constants'
-import type { GenericTypeInfo } from './encoders'
+import type { TypeInfo } from './encoders'
 import { DeliberateAny } from './typescript-helpers'
 import { nameOfType } from './util'
 
@@ -274,12 +274,12 @@ function defaultUnaryOp(_operand: DeliberateAny, op: UnaryOps): DeliberateAny {
   internal.errors.internalError(`Unsupported operator ${op}`)
 }
 
-const genericTypeMap = new Map<DeliberateAny, GenericTypeInfo>()
+const genericTypeMap = new WeakMap<DeliberateAny, TypeInfo>()
 export function captureGenericTypeInfo(target: DeliberateAny, t: string) {
   genericTypeMap.set(target, JSON.parse(t))
   return target
 }
 
-export function getGenericTypeInfo(target: DeliberateAny): GenericTypeInfo | undefined {
+export function getGenericTypeInfo(target: DeliberateAny): TypeInfo | undefined {
   return genericTypeMap.get(target)
 }

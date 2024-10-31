@@ -1,6 +1,6 @@
 import { Bytes, bytes, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
-import type { GenericTypeInfo } from '../encoders'
+import type { TypeInfo } from '../encoders'
 
 export abstract class BytesBackedCls {
   #value: bytes
@@ -9,16 +9,12 @@ export abstract class BytesBackedCls {
   get bytes() {
     return this.#value
   }
-  constructor(value: bytes, _typeInfo?: GenericTypeInfo) {
+  constructor(value: bytes, _typeInfo?: TypeInfo) {
     this.#value = value
     // this.#typeInfo = typeInfo
   }
 
-  static fromBytes<T extends BytesBackedCls>(
-    this: { new (v: bytes, typeInfo?: GenericTypeInfo): T },
-    value: Uint8Array,
-    typeInfo?: GenericTypeInfo,
-  ) {
+  static fromBytes<T extends BytesBackedCls>(this: { new (v: bytes, typeInfo?: TypeInfo): T }, value: Uint8Array, typeInfo?: TypeInfo) {
     return new this(Bytes(value), typeInfo)
   }
 }

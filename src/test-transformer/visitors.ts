@@ -1,6 +1,6 @@
 import { anyPType, ContractClassPType, FunctionPType, PType, SourceLocation, typeRegistry, TypeResolver } from '@algorandfoundation/puya-ts'
 import ts from 'typescript'
-import type { GenericTypeInfo } from '../encoders'
+import type { TypeInfo } from '../encoders'
 import { DeliberateAny } from '../typescript-helpers'
 import { TransformerConfig } from './index'
 import { nodeFactory } from './node-factory'
@@ -187,8 +187,8 @@ class ClassVisitor {
   }
 }
 
-const getGenericTypeInfo = (type: PType): GenericTypeInfo => {
-  let genericArgs: GenericTypeInfo[] | Record<string, GenericTypeInfo> | undefined = typeRegistry.isGeneric(type)
+const getGenericTypeInfo = (type: PType): TypeInfo => {
+  let genericArgs: TypeInfo[] | Record<string, TypeInfo> | undefined = typeRegistry.isGeneric(type)
     ? type.getGenericArgs().map(getGenericTypeInfo)
     : undefined
 
@@ -204,7 +204,7 @@ const getGenericTypeInfo = (type: PType): GenericTypeInfo => {
     }
   }
 
-  const result: GenericTypeInfo = { name: type?.name ?? 'unknown' }
+  const result: TypeInfo = { name: type?.name ?? 'unknown' }
   if (genericArgs && (genericArgs.length || Object.keys(genericArgs).length)) {
     result.genericArgs = genericArgs
   }

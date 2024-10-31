@@ -17,7 +17,7 @@ import {
 import { AccountMap } from '../collections/custom-key-map'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { GenericTypeInfo, getEncoder } from '../encoders'
+import { getEncoder, TypeInfo } from '../encoders'
 import { getGenericTypeInfo } from '../runtime-helpers'
 import { asBytes, asBytesCls, asNumber, asUint8Array, conactUint8Arrays, toBytes } from '../util'
 
@@ -131,7 +131,7 @@ export class BoxCls<TValue> {
 
   private get fromBytes() {
     const typeInfo = getGenericTypeInfo(this)
-    const valueType = (typeInfo!.genericArgs! as GenericTypeInfo[])[0]
+    const valueType = (typeInfo!.genericArgs! as TypeInfo[])[0]
     return (val: Uint8Array) => getEncoder<TValue>(valueType)(val, valueType)
   }
 
@@ -199,7 +199,7 @@ export class BoxMapCls<TKey, TValue> {
 
   private get fromBytes() {
     const typeInfo = getGenericTypeInfo(this)
-    const valueType = (typeInfo!.genericArgs! as GenericTypeInfo[])[1]
+    const valueType = (typeInfo!.genericArgs! as TypeInfo[])[1]
     return (val: Uint8Array) => getEncoder<TValue>(valueType)(val, valueType)
   }
 
@@ -320,7 +320,7 @@ export class BoxRefCls {
     if (this.exists) {
       return false
     }
-    this.backingValue = new Uint8Array(Array(size).fill(0))
+    this.backingValue = new Uint8Array(size)
     return true
   }
 
@@ -354,7 +354,7 @@ export class BoxRefCls {
     if (updatedContent.length > content.length) {
       updatedContent = updatedContent.slice(0, content.length)
     } else if (updatedContent.length < content.length) {
-      updatedContent = conactUint8Arrays(updatedContent, new Uint8Array(Array(content.length - updatedContent.length).fill(0)))
+      updatedContent = conactUint8Arrays(updatedContent, new Uint8Array(content.length - updatedContent.length))
     }
     this.backingValue = updatedContent
   }
@@ -404,7 +404,7 @@ export class BoxRefCls {
     }
     let updatedContent
     if (newSizeNumber > content.length) {
-      updatedContent = conactUint8Arrays(content, new Uint8Array(Array(newSizeNumber - content.length).fill(0)))
+      updatedContent = conactUint8Arrays(content, new Uint8Array(newSizeNumber - content.length))
     } else {
       updatedContent = content.slice(0, newSize)
     }
