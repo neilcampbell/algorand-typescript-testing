@@ -187,22 +187,25 @@ class ClassVisitor {
   }
 }
 
-const getGenericTypeInfo = (type: PType | PType['wtype']): GenericTypeInfo => {
-  let genericArgs = undefined
-  let wtypeName = undefined
-  if (type instanceof PType) {
-    genericArgs = typeRegistry.isGeneric(type)
-      ? type.getGenericArgs().map(getGenericTypeInfo)
-      : type.wtype && Object.hasOwn(type.wtype, 'types')
-        ? (type.wtype as DeliberateAny).types.map(getGenericTypeInfo)
-        : undefined
-    wtypeName = type.wtype?.name
-  } else if (type) {
-    genericArgs = Object.hasOwn(type, 'types') ? (type as DeliberateAny).types.map(getGenericTypeInfo) : undefined
-    wtypeName = type.name
+const getGenericTypeInfo = (type: PType): GenericTypeInfo => {
+  let genericArgs: GenericTypeInfo[] | Record<string, GenericTypeInfo> | undefined = typeRegistry.isGeneric(type)
+    ? type.getGenericArgs().map(getGenericTypeInfo)
+    : undefined
+
+  if (!genericArgs || !genericArgs.length) {
+    if (Object.hasOwn(type, 'items')) {
+      genericArgs = (type as DeliberateAny).items.map(getGenericTypeInfo)
+    } else if (Object.hasOwn(type, 'itemType')) {
+      genericArgs = [getGenericTypeInfo((type as DeliberateAny).itemType)]
+    } else if (Object.hasOwn(type, 'properties')) {
+      genericArgs = Object.fromEntries(
+        Object.entries((type as DeliberateAny).properties).map(([key, value]) => [key, getGenericTypeInfo(value as PType)]),
+      )
+    }
   }
-  const result: GenericTypeInfo = { name: type?.name ?? 'unknown', wtypeName: wtypeName }
-  if (genericArgs && genericArgs.length) {
+
+  const result: GenericTypeInfo = { name: type?.name ?? 'unknown' }
+  if (genericArgs && (genericArgs.length || Object.keys(genericArgs).length)) {
     result.genericArgs = genericArgs
   }
   return result

@@ -17,7 +17,7 @@ import {
 import { AccountMap } from '../collections/custom-key-map'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { getEncoder } from '../encoders'
+import { GenericTypeInfo, getEncoder } from '../encoders'
 import { getGenericTypeInfo } from '../runtime-helpers'
 import { asBytes, asBytesCls, asNumber, asUint8Array, conactUint8Arrays, toBytes } from '../util'
 
@@ -131,7 +131,7 @@ export class BoxCls<TValue> {
 
   private get fromBytes() {
     const typeInfo = getGenericTypeInfo(this)
-    const valueType = typeInfo!.genericArgs![0]
+    const valueType = (typeInfo!.genericArgs! as GenericTypeInfo[])[0]
     return (val: Uint8Array) => getEncoder<TValue>(valueType)(val, valueType)
   }
 
@@ -199,7 +199,7 @@ export class BoxMapCls<TKey, TValue> {
 
   private get fromBytes() {
     const typeInfo = getGenericTypeInfo(this)
-    const valueType = typeInfo!.genericArgs![1]
+    const valueType = (typeInfo!.genericArgs! as GenericTypeInfo[])[1]
     return (val: Uint8Array) => getEncoder<TValue>(valueType)(val, valueType)
   }
 

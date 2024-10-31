@@ -33,7 +33,7 @@ interface States {
 }
 
 const isUint64GenericType = (typeInfo: GenericTypeInfo | undefined) => {
-  if (!typeInfo?.genericArgs?.length) return false
+  if (!Array.isArray(typeInfo?.genericArgs) || !typeInfo?.genericArgs?.length) return false
   return typeInfo.genericArgs.some((t) => t.name.toLocaleLowerCase() === 'uint64')
 }
 

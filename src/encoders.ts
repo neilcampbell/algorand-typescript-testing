@@ -6,8 +6,7 @@ import { AssetCls } from './impl/asset'
 
 export interface GenericTypeInfo {
   name: string
-  wtypeName?: string
-  genericArgs?: GenericTypeInfo[]
+  genericArgs?: GenericTypeInfo[] | Record<string, GenericTypeInfo>
 }
 
 type fromBytes<T> = (val: Uint8Array, typeInfo: GenericTypeInfo) => T
@@ -42,23 +41,20 @@ const transactionTypeFromBytes: fromBytes<TransactionType> = (val) => {
 
 export const encoders = {
   account: AccountCls.fromBytes,
-  Account: AccountCls.fromBytes,
   application: ApplicationCls.fromBytes,
-  Application: ApplicationCls.fromBytes,
   asset: AssetCls.fromBytes,
-  Asset: AssetCls.fromBytes,
-  bool: booleanFromBytes,
-  boolean: booleanFromBytes,
+  'bool(ean)?': booleanFromBytes,
   biguint: bigUintFromBytes,
   bytes: bytesFromBytes,
   string: stringFromBytes,
   uint64: uint64FromBytes,
   OnCompleteAction: onCompletionFromBytes,
   TransactionType: transactionTypeFromBytes,
+  // 'Tuple<*>': tupleFromBytes,
 }
 
 export const getEncoder = <T>(typeInfo: GenericTypeInfo): fromBytes<T> => {
-  const encoder = encoders[typeInfo.name as keyof typeof encoders]
+  const encoder = Object.entries(encoders).find(([k, _]) => new RegExp(`^${k}$`, 'i').test(typeInfo.name))?.[1]
   if (!encoder) {
     throw new Error(`No encoder found for type ${typeInfo.name}`)
   }
