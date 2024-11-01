@@ -1,5 +1,5 @@
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { BigUint, bytes, Bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Base64, BigUint, bytes, Bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
 import {
@@ -67,7 +67,7 @@ describe('Pure op codes', async () => {
       base64Encode(Bytes(Array(256).fill(0x00).concat([0xff]))),
     ])('should decode standard base64 string', async (a) => {
       const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_base64_decode_standard', asUint8Array(a)))!
-      const result = op.base64Decode(internal.opTypes.Base64.StdEncoding, a)
+      const result = op.base64Decode(Base64.StdEncoding, a)
       expect(result).toEqual(avmResult)
     })
 
@@ -77,7 +77,7 @@ describe('Pure op codes', async () => {
         await expect(getAvmResultRaw({ appClient }, 'verify_base64_decode_standard', asUint8Array(a))).rejects.toThrow(
           'illegal base64 data at input byte 0',
         )
-        expect(() => op.base64Decode(internal.opTypes.Base64.StdEncoding, a)).toThrow('illegal base64 data')
+        expect(() => op.base64Decode(Base64.StdEncoding, a)).toThrow('illegal base64 data')
       },
     )
 
@@ -90,7 +90,7 @@ describe('Pure op codes', async () => {
       base64UrlEncode(Bytes(Array(256).fill(0x00).concat([0xff]))),
     ])('should decode base64url string', async (a) => {
       const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_base64_decode_url', asUint8Array(a)))!
-      const result = op.base64Decode(internal.opTypes.Base64.URLEncoding, a)
+      const result = op.base64Decode(Base64.URLEncoding, a)
       expect(result).toEqual(avmResult)
     })
 
@@ -98,7 +98,7 @@ describe('Pure op codes', async () => {
       'should throw error when input is not a valid base64url string',
       async (a) => {
         await expect(getAvmResultRaw({ appClient }, 'verify_base64_decode_url', asUint8Array(a))).rejects.toThrow('illegal base64 data')
-        expect(() => op.base64Decode(internal.opTypes.Base64.URLEncoding, a)).toThrow('illegal base64 data')
+        expect(() => op.base64Decode(Base64.URLEncoding, a)).toThrow('illegal base64 data')
       },
     )
   })
