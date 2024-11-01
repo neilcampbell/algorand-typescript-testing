@@ -34,7 +34,7 @@ export class SourceFileVisitor {
         }
       },
       sourceLocation(node: ts.Node): SourceLocation {
-        return SourceLocation.fromNode(sourceFile, node, program.getCurrentDirectory())
+        return SourceLocation.fromNode(node, program.getCurrentDirectory())
       },
     }
   }
