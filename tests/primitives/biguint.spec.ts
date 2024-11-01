@@ -5,7 +5,7 @@ import type { biguint } from '@algorandfoundation/algorand-typescript'
 import { BigUint, Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { describe, expect, it } from 'vitest'
 import { BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE, MAX_UINT512, MAX_UINT64 } from '../../src/constants'
-import appSpecJson from '../artifacts/primitives/data/PrimitiveOpsContract.arc32.json'
+import appSpecJson from '../artifacts/primitive-ops/data/PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult, getAvmResultRaw } from '../avm-invoker'
 import { abiAsBytes } from '../util'
 
