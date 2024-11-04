@@ -20,7 +20,30 @@ export function switchableValue(x: unknown): bigint | string | boolean {
 //   internalError(`Cannot wrap ${nameOfType(x)}`)
 // }
 
-type BinaryOps = '+' | '-' | '*' | '**' | '/' | '%' | '>' | '>=' | '<' | '<=' | '===' | '!==' | '<<' | '>>' | '&' | '|' | '^'
+type BinaryOps =
+  | '+'
+  | '-'
+  | '*'
+  | '**'
+  | '/'
+  | '%'
+  | '>'
+  | '>='
+  | '<'
+  | '<='
+  | '==='
+  | '!=='
+  | '<<'
+  | '>>'
+  | '&'
+  | '|'
+  | '^'
+  | '+='
+  | '-='
+  | '/='
+  | '*='
+  | '**='
+  | '%='
 type UnaryOps = '~'
 
 function tryGetBigInt(value: unknown): bigint | undefined {
@@ -72,19 +95,25 @@ function uint64BinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps
   const result = (function () {
     switch (op) {
       case '+':
+      case '+=':
         return lbi + rbi
       case '-':
+      case '-=':
         return lbi - rbi
       case '*':
+      case '*=':
         return lbi * rbi
       case '**':
+      case '**=':
         if (lbi === 0n && rbi === 0n) {
           throw internal.errors.codeError('0 ** 0 is undefined')
         }
         return lbi ** rbi
       case '/':
+      case '/=':
         return lbi / rbi
       case '%':
+      case '%=':
         return lbi % rbi
       case '>>':
         if (rbi > 63n) {
@@ -127,19 +156,25 @@ function bigUintBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOp
   const result = (function () {
     switch (op) {
       case '+':
+      case '+=':
         return lbi + rbi
       case '-':
+      case '-=':
         return lbi - rbi
       case '*':
+      case '*=':
         return lbi * rbi
       case '**':
+      case '**=':
         if (lbi === 0n && rbi === 0n) {
           throw internal.errors.codeError('0 ** 0 is undefined')
         }
         return lbi ** rbi
       case '/':
+      case '/=':
         return lbi / rbi
       case '%':
+      case '%=':
         return lbi % rbi
       case '>>':
         throw new internal.errors.CodeError('BigUint does not support >> operator')
@@ -207,19 +242,25 @@ function bytesBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps)
 function defaultBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps): DeliberateAny {
   switch (op) {
     case '+':
+    case '+=':
       return left + right
     case '-':
+    case '-=':
       return left - right
     case '*':
+    case '*=':
       return left * right
     case '**':
+    case '**=':
       if (left === 0n && right === 0n) {
         throw new internal.errors.CodeError('0 ** 0 is undefined')
       }
       return left ** right
     case '/':
+    case '/=':
       return left / right
     case '%':
+    case '%=':
       return left % right
     case '>>':
       if (typeof left === 'bigint' && typeof right === 'bigint') {

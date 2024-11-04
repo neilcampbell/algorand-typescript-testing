@@ -4,7 +4,11 @@ import type { TypeInfo } from '../encoders'
 import { DeliberateAny } from '../typescript-helpers'
 import { TransformerConfig } from './index'
 import { nodeFactory } from './node-factory'
-import { supportedBinaryOpString, supportedPrefixUnaryOpString } from './supported-binary-op-string'
+import {
+  supportedAugmentedAssignmentBinaryOpString,
+  supportedBinaryOpString,
+  supportedPrefixUnaryOpString,
+} from './supported-binary-op-string'
 
 const { factory } = ts
 
@@ -81,9 +85,13 @@ class FunctionOrMethodVisitor {
     }
 
     if (ts.isBinaryExpression(node)) {
-      const tokenText = supportedBinaryOpString(node.operatorToken.kind)
-      if (tokenText) {
-        return nodeFactory.binaryOp(node.left, node.right, tokenText)
+      const opTokenText = supportedBinaryOpString(node.operatorToken.kind)
+      if (opTokenText) {
+        return nodeFactory.binaryOp(node.left, node.right, opTokenText)
+      }
+      const augmentedAssignmentOpTokenText = supportedAugmentedAssignmentBinaryOpString(node.operatorToken.kind)
+      if (augmentedAssignmentOpTokenText) {
+        return nodeFactory.augmentedAssignmentBinaryOp(node.left, node.right, augmentedAssignmentOpTokenText)
       }
     }
     if (ts.isPrefixUnaryExpression(node)) {

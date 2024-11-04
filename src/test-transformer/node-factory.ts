@@ -28,6 +28,16 @@ export const nodeFactory = {
       [left, right, factory.createStringLiteral(op)],
     )
   },
+  augmentedAssignmentBinaryOp(left: ts.Expression, right: ts.Expression, op: string) {
+    return factory.createAssignment(
+      left,
+      factory.createCallExpression(
+        factory.createPropertyAccessExpression(factory.createIdentifier('runtimeHelpers'), factory.createIdentifier('binaryOp')),
+        undefined,
+        [left, right, factory.createStringLiteral(op)],
+      ),
+    )
+  },
 
   prefixUnaryOp(operand: ts.Expression, op: string) {
     return factory.createCallExpression(
