@@ -1,4 +1,4 @@
-import { bytes, internal, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
+import { bytes, Contract, internal, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
 import { lazyContext } from '../context-helpers/internal-context'
 import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
@@ -24,6 +24,7 @@ import {
   Transaction,
 } from '../impl/transactions'
 import { asBigInt, asNumber, asUint64 } from '../util'
+import { ContractContext } from './contract-context'
 
 function ScopeGenerator(dispose: () => void) {
   function* internal() {
@@ -46,12 +47,27 @@ interface ExecutionScope {
   execute: <TReturn>(body: () => TReturn) => TReturn
 }
 
+export class DeferredAppCall<TParams extends unknown[], TReturn> {
+  constructor(
+    private readonly appId: uint64,
+    readonly txns: Transaction[],
+    private readonly method: (...args: TParams) => TReturn,
+    private readonly args: TParams,
+  ) {}
+
+  submit(): TReturn {
+    // TODO: check_routing_conditions
+    return this.method(...this.args)
+  }
+}
+
 export class TransactionContext {
   readonly groups: TransactionGroup[] = []
   #activeGroup: TransactionGroup | undefined
 
-  createScope(group: Transaction[], activeTransactionIndex?: number): ExecutionScope {
-    const transactionGroup = new TransactionGroup(group, activeTransactionIndex)
+  createScope(group: Array<Transaction | DeferredAppCall<unknown[], unknown>>, activeTransactionIndex?: number): ExecutionScope {
+    const transactions = group.map((t) => (t instanceof DeferredAppCall ? t.txns : [t])).flat()
+    const transactionGroup = new TransactionGroup(transactions, activeTransactionIndex)
     const previousGroup = this.#activeGroup
     this.#activeGroup = transactionGroup
 
@@ -108,9 +124,18 @@ export class TransactionContext {
     activeTransaction.appendLog(value)
   }
 
+  deferAppCall<TParams extends unknown[], TReturn>(
+    contract: Contract,
+    method: (...args: TParams) => TReturn,
+    ...args: TParams
+  ): DeferredAppCall<TParams, TReturn> {
+    const appId = lazyContext.ledger.getApplicationForContract(contract)
+    const txns = ContractContext.createMethodCallTxns(contract, method, ...args)
+    return new DeferredAppCall(appId.id, txns, method, args)
+  }
+
   exportLogs<const T extends [...LogDecoding[]]>(appId: uint64, ...decoding: T): DecodedLogs<T> {
-    const transaction = this.groups
-      .flatMap((g) => g.transactions)
+    const transaction = this.lastGroup.transactions
       .filter((t) => t.type === TransactionType.ApplicationCall)
       .find((t) => asBigInt(t.appId.id) === asBigInt(appId))
     let logs = []

@@ -56,7 +56,7 @@ describe('Asset', () => {
       unitName: asBytes('TEST'),
       name: asBytes('Test Asset'),
       url: asBytes('https://test.com'),
-      metadataHash: Bytes(new Uint8Array(Array(32).fill(0x00))),
+      metadataHash: Bytes(new Uint8Array(32)),
       manager: Account(),
       freeze: Account(),
       clawback: Account(),

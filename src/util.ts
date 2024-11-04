@@ -43,19 +43,21 @@ export const asBigUint = (val: internal.primitives.StubBigUintCompat) => asBigUi
 
 export const asBytes = (val: internal.primitives.StubBytesCompat) => asBytesCls(val).asAlgoTs()
 
+export const asUint8Array = (val: internal.primitives.StubBytesCompat) => asBytesCls(val).asUint8Array()
+
 //TODO: handle arc4 types, bytes backed types
 export const toBytes = (val: unknown): bytes => {
   const uint64Val = asMaybeUint64Cls(val)
   if (uint64Val !== undefined) {
     return uint64Val.toBytes().asAlgoTs()
   }
-  const bigUintVal = asMaybeBigUintCls(val)
-  if (bigUintVal !== undefined) {
-    return bigUintVal.toBytes().asAlgoTs()
-  }
   const bytesVal = asMaybeBytesCls(val)
   if (bytesVal !== undefined) {
     return bytesVal.asAlgoTs()
+  }
+  const bigUintVal = asMaybeBigUintCls(val)
+  if (bigUintVal !== undefined) {
+    return bigUintVal.toBytes().asAlgoTs()
   }
   if (val instanceof BytesBackedCls) {
     return val.bytes
@@ -177,6 +179,16 @@ export const combineIntoMaxBytePages = (pages: bytes[]): bytes[] => {
     const end = Math.min((i + 1) * MAX_BYTES_SIZE, asNumber(combined.length))
     const page = combined.slice(start, end)
     result.push(page.asAlgoTs())
+  }
+  return result
+}
+
+export const conactUint8Arrays = (...values: Uint8Array[]): Uint8Array => {
+  const result = new Uint8Array(values.reduce((acc, value) => acc + value.length, 0))
+  let index = 0
+  for (const value of values) {
+    result.set(value, index)
+    index += value.length
   }
   return result
 }

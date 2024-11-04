@@ -152,4 +152,24 @@ export class LedgerContext {
       accountLocalState.value = asMaybeUint64Cls(value) ?? asMaybeBytesCls(value)
     }
   }
+
+  getBox(app: Application, key: internal.primitives.StubBytesCompat): Uint8Array {
+    const appData = this.applicationDataMap.getOrFail(app.id)
+    return appData.application.boxes.get(key) ?? new Uint8Array()
+  }
+
+  setBox(app: Application, key: internal.primitives.StubBytesCompat, value: Uint8Array): void {
+    const appData = this.applicationDataMap.getOrFail(app.id)
+    appData.application.boxes.set(key, value)
+  }
+
+  deleteBox(app: Application, key: internal.primitives.StubBytesCompat): boolean {
+    const appData = this.applicationDataMap.getOrFail(app.id)
+    return appData.application.boxes.delete(key)
+  }
+
+  boxExists(app: Application, key: internal.primitives.StubBytesCompat): boolean {
+    const appData = this.applicationDataMap.getOrFail(app.id)
+    return appData.application.boxes.has(key)
+  }
 }

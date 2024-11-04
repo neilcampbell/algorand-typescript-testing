@@ -3,7 +3,7 @@ import { ABIValue } from 'algosdk'
 import { createHash } from 'crypto'
 
 export const padUint8Array = (arr: Uint8Array, padSize: number): Uint8Array => {
-  const paddedUint8Array = new Uint8Array(arr.length + padSize).fill(0)
+  const paddedUint8Array = new Uint8Array(arr.length + padSize)
   arr.forEach((v, i) => (paddedUint8Array[padSize + i] = v))
   return paddedUint8Array
 }
