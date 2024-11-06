@@ -1,7 +1,5 @@
 #pragma version 10
 
-tests.artifacts.StateOps.contract.StateAssetParamsContract.clear_state_program:
-    // tests/artifacts/StateOps/contract.py:150
-    // class StateAssetParamsContract(ARC4Contract):
-    int 1
+tests/artifacts/state-ops/contract.algo.ts::StateAssetParamsContract.clearStateProgram:
+    pushint 1 // 1
     return

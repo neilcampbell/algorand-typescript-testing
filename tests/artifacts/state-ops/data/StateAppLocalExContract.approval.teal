@@ -1,77 +1,87 @@
 #pragma version 10
 
-tests.artifacts.StateOps.contract.StateAppLocalExContract.approval_program:
-    // tests/artifacts/StateOps/contract.py:323
-    // class StateAppLocalExContract(ARC4Contract):
+tests/artifacts/state-ops/contract.algo.ts::StateAppLocalExContract.approvalProgram:
+    intcblock 1 0
+    callsub __puya_arc4_router__
+    return
+
+
+// tests/artifacts/state-ops/contract.algo.ts::StateAppLocalExContract.__puya_arc4_router__() -> uint64:
+__puya_arc4_router__:
+    // tests/artifacts/state-ops/contract.algo.ts:400
+    // export class StateAppLocalExContract extends arc4.Contract {
+    proto 0 1
     txn NumAppArgs
-    bz main_bare_routing@5
-    method "opt_in()void"
+    bz __puya_arc4_router___bare_routing@5
+    pushbytes 0x30c6d58a // method "opt_in()void"
     txna ApplicationArgs 0
-    match main_opt_in_route@2
-    err // reject transaction
+    match __puya_arc4_router___opt_in_route@2
+    intc_1 // 0
+    retsub
 
-main_opt_in_route@2:
-    // tests/artifacts/StateOps/contract.py:340
-    // @arc4.abimethod(allow_actions=["OptIn"])
+__puya_arc4_router___opt_in_route@2:
+    // tests/artifacts/state-ops/contract.algo.ts:405
+    // @arc4.abimethod({ allowActions: ['OptIn'] })
     txn OnCompletion
-    int OptIn
+    intc_0 // OptIn
     ==
-    assert // OnCompletion is OptIn
+    assert // OnCompletion is not OptIn
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     callsub opt_in
-    int 1
-    return
+    intc_0 // 1
+    retsub
 
-main_bare_routing@5:
-    // tests/artifacts/StateOps/contract.py:323
-    // class StateAppLocalExContract(ARC4Contract):
+__puya_arc4_router___bare_routing@5:
+    // tests/artifacts/state-ops/contract.algo.ts:400
+    // export class StateAppLocalExContract extends arc4.Contract {
     txn OnCompletion
-    !
-    assert // reject transaction
+    bnz __puya_arc4_router___after_if_else@9
     txn ApplicationID
     !
-    assert // is creating
-    int 1
-    return
+    assert // can only call when creating
+    intc_0 // 1
+    retsub
+
+__puya_arc4_router___after_if_else@9:
+    // tests/artifacts/state-ops/contract.algo.ts:400
+    // export class StateAppLocalExContract extends arc4.Contract {
+    intc_1 // 0
+    retsub
 
 
-// tests.artifacts.StateOps.contract.StateAppLocalExContract.opt_in() -> void:
+// tests/artifacts/state-ops/contract.algo.ts::StateAppLocalExContract.opt_in() -> void:
 opt_in:
-    // tests/artifacts/StateOps/contract.py:340-341
-    // @arc4.abimethod(allow_actions=["OptIn"])
-    // def opt_in(self) -> None:
+    // tests/artifacts/state-ops/contract.algo.ts:405-406
+    // @arc4.abimethod({ allowActions: ['OptIn'] })
+    // opt_in(): void {
     proto 0 0
-    // tests/artifacts/StateOps/contract.py:342
-    // self.local_bytes[Global.creator_address] = Bytes(b"dummy_bytes_from_external_contract")
+    // tests/artifacts/state-ops/contract.algo.ts:407
+    // this.localBytes(Global.creatorAddress).value = Bytes('dummy_bytes_from_external_contract')
     global CreatorAddress
-    // tests/artifacts/StateOps/contract.py:332
-    // key="local_bytes",
-    byte "local_bytes"
-    // tests/artifacts/StateOps/contract.py:342
-    // self.local_bytes[Global.creator_address] = Bytes(b"dummy_bytes_from_external_contract")
-    byte 0x64756d6d795f62797465735f66726f6d5f65787465726e616c5f636f6e7472616374
+    // tests/artifacts/state-ops/contract.algo.ts:402
+    // localBytes = LocalState<bytes>({ key: 'local_bytes' })
+    pushbytess "local_bytes" "dummy_bytes_from_external_contract" // "local_bytes", "dummy_bytes_from_external_contract"
+    // tests/artifacts/state-ops/contract.algo.ts:407
+    // this.localBytes(Global.creatorAddress).value = Bytes('dummy_bytes_from_external_contract')
     app_local_put
-    // tests/artifacts/StateOps/contract.py:343
-    // self.local_uint64[Global.creator_address] = UInt64(99)
+    // tests/artifacts/state-ops/contract.algo.ts:408
+    // this.localUint64(Global.creatorAddress).value = Uint64(99)
     global CreatorAddress
-    // tests/artifacts/StateOps/contract.py:327
-    // key="local_uint64",
-    byte "local_uint64"
-    // tests/artifacts/StateOps/contract.py:343
-    // self.local_uint64[Global.creator_address] = UInt64(99)
-    int 99
+    // tests/artifacts/state-ops/contract.algo.ts:401
+    // localUint64 = LocalState<uint64>({ key: 'local_uint64' })
+    pushbytes "local_uint64"
+    // tests/artifacts/state-ops/contract.algo.ts:408
+    // this.localUint64(Global.creatorAddress).value = Uint64(99)
+    pushint 99 // 99
     app_local_put
-    // tests/artifacts/StateOps/contract.py:344
-    // self.local_arc4_bytes[Global.creator_address] = algopy.arc4.DynamicBytes(
+    // tests/artifacts/state-ops/contract.algo.ts:409
+    // this.localArc4Bytes(Global.creatorAddress).value = new DynamicBytes('dummy_arc4_bytes')
     global CreatorAddress
-    // tests/artifacts/StateOps/contract.py:337
-    // key="local_arc4_bytes",
-    byte "local_arc4_bytes"
-    // tests/artifacts/StateOps/contract.py:344-346
-    // self.local_arc4_bytes[Global.creator_address] = algopy.arc4.DynamicBytes(
-    //     b"dummy_arc4_bytes"
-    // )
-    byte 0x001064756d6d795f617263345f6279746573
+    // tests/artifacts/state-ops/contract.algo.ts:403
+    // localArc4Bytes = LocalState<DynamicBytes>({ key: 'local_arc4_bytes' })
+    pushbytess "local_arc4_bytes" 0x001064756d6d795f617263345f6279746573 // "local_arc4_bytes", 0x001064756d6d795f617263345f6279746573
+    // tests/artifacts/state-ops/contract.algo.ts:409
+    // this.localArc4Bytes(Global.creatorAddress).value = new DynamicBytes('dummy_arc4_bytes')
     app_local_put
     retsub

@@ -18,7 +18,7 @@ import {
 } from '../impl/transactions'
 import { getGenericTypeInfo } from '../runtime-helpers'
 import { DeliberateAny, IConstructor } from '../typescript-helpers'
-import { asUint64Cls } from '../util'
+import { toBytes } from '../util'
 
 type StateTotals = Pick<Application, 'globalNumBytes' | 'globalNumUint' | 'localNumBytes' | 'localNumUint'>
 
@@ -76,18 +76,17 @@ const extractArraysFromArgs = (app: Application, args: DeliberateAny[]) => {
   const assets: Asset[] = []
   const appArgs: bytes[] = []
 
-  // TODO: replace `asUint64Cls(accounts.length).toBytes().asAlgoTs()` with `arc4.Uint8(account.length).toBytes().asAlgoTs()`
   for (const arg of args) {
     if (isTransaction(arg)) {
       transactions.push(arg)
     } else if (arg instanceof AccountCls) {
-      appArgs.push(asUint64Cls(accounts.length).toBytes().asAlgoTs())
+      appArgs.push(toBytes(accounts.length))
       accounts.push(arg as Account)
     } else if (arg instanceof ApplicationCls) {
-      appArgs.push(asUint64Cls(apps.length).toBytes().asAlgoTs())
+      appArgs.push(toBytes(apps.length))
       apps.push(arg as Application)
     } else if (arg instanceof AssetCls) {
-      appArgs.push(asUint64Cls(assets.length).toBytes().asAlgoTs())
+      appArgs.push(toBytes(assets.length))
       assets.push(arg as Asset)
     }
   }

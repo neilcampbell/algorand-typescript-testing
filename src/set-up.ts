@@ -1,4 +1,5 @@
 import { internal } from '@algorandfoundation/algorand-typescript'
+import { Address } from '@algorandfoundation/algorand-typescript/arc4'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { AccountCls } from './impl/account'
 
@@ -72,6 +73,33 @@ function addEqualityTesters(expectObj: ExpectObj) {
       if (subject instanceof AccountCls) {
         const testValue = test instanceof internal.primitives.BytesCls ? test.asUint8Array().slice(0, 32) : undefined
         if (testValue !== undefined) return this.equals(subject.bytes, testValue, customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
+    function AddressIsAccountStr(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (subject instanceof Address) {
+        const testValue = typeof test === 'string' ? encodingUtil.base32ToUint8Array(test).slice(0, 32) : undefined
+        if (testValue !== undefined) return this.equals(subject.native.bytes, testValue, customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
+    function AddressIsAccountBytes(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (subject instanceof Address) {
+        const testValue = test instanceof internal.primitives.BytesCls ? test.asUint8Array().slice(0, 32) : undefined
+        if (testValue !== undefined) return this.equals(subject.native.bytes, testValue, customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
+    function AddressIsAccount(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (subject instanceof Address) {
+        const testValue = test instanceof AccountCls ? test.bytes : undefined
+        if (testValue !== undefined) return this.equals(subject.native.bytes, testValue, customTesters)
         return undefined
       }
       // Defer to other testers

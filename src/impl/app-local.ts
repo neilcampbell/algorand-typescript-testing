@@ -1,6 +1,6 @@
 import { Account, Application, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
-import { asBytes } from '../util'
+import { asBytes, toBytes } from '../util'
 import { getAccount } from './acct-params'
 import { getApp } from './app-params'
 
@@ -32,7 +32,7 @@ export const AppLocal: internal.opTypes.AppLocalType = {
     if (!exists) {
       return [Bytes(), false]
     }
-    return [state!.value as bytes, exists]
+    return [toBytes(state!.value), exists]
   },
   getExUint64: function (
     a: Account | internal.primitives.StubUint64Compat,

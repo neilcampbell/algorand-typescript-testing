@@ -1,6 +1,6 @@
 import { Application, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
-import { asBytes } from '../util'
+import { asBytes, toBytes } from '../util'
 import { getApp } from './app-params'
 
 export const AppGlobal: internal.opTypes.AppGlobalType = {
@@ -22,7 +22,7 @@ export const AppGlobal: internal.opTypes.AppGlobalType = {
     if (!exists) {
       return [Bytes(), false]
     }
-    return [state!.value as bytes, exists]
+    return [toBytes(state!.value), exists]
   },
   getExUint64(a: Application | internal.primitives.StubUint64Compat, b: internal.primitives.StubBytesCompat): readonly [uint64, boolean] {
     const app = getApp(a)

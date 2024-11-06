@@ -1,4 +1,5 @@
 import { Bytes, bytes, internal } from '@algorandfoundation/algorand-typescript'
+import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { randomBytes } from 'crypto'
 import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT512, MAX_UINT8, UINT512_SIZE } from './constants'
 import { BytesBackedCls, Uint64BackedCls } from './impl/base'
@@ -45,7 +46,6 @@ export const asBytes = (val: internal.primitives.StubBytesCompat | Uint8Array) =
 
 export const asUint8Array = (val: internal.primitives.StubBytesCompat | Uint8Array) => asBytesCls(val).asUint8Array()
 
-//TODO: handle arc4 types, bytes backed types
 export const toBytes = (val: unknown): bytes => {
   const uint64Val = asMaybeUint64Cls(val)
   if (uint64Val !== undefined) {
@@ -66,16 +66,12 @@ export const toBytes = (val: unknown): bytes => {
     return asUint64Cls(val.uint64).toBytes().asAlgoTs()
   }
   if (Array.isArray(val)) {
-    // This hack handles tuples/arrays of uint64 only
     return val.reduce((acc: bytes, cur: unknown) => {
-      const uint64Val = asMaybeUint64Cls(cur)
-      if (!uint64Val) {
-        // TODO: support ABI tuple encoding
-        // internal.errors.internalError(`ABI tuple encoding not supported: ${nameOfType(val)}`)
-        return acc.concat(Bytes())
-      }
       return acc.concat(toBytes(cur))
     }, Bytes())
+  }
+  if (val instanceof ARC4Encoded) {
+    return val.bytes
   }
   internal.errors.internalError(`Invalid type for bytes: ${nameOfType(val)}`)
 }
