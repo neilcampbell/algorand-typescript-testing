@@ -34,7 +34,7 @@ export const nodeFactory = {
       factory.createCallExpression(
         factory.createPropertyAccessExpression(factory.createIdentifier('runtimeHelpers'), factory.createIdentifier('binaryOp')),
         undefined,
-        [left, right, factory.createStringLiteral(op)],
+        [left, right, factory.createStringLiteral(op.replace('=', ''))],
       ),
     )
   },
