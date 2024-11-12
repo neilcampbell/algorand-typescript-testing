@@ -1,7 +1,5 @@
 #pragma version 10
 
-tests.artifacts.MiscellaneousOps.contract.MiscellaneousOpsContract.clear_state_program:
-    // tests/artifacts/MiscellaneousOps/contract.py:4
-    // class MiscellaneousOpsContract(ARC4Contract):
-    int 1
+tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.clearStateProgram:
+    pushint 1 // 1
     return

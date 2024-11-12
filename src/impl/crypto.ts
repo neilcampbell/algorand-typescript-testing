@@ -1,4 +1,4 @@
-import { arc4, bytes, Bytes, gtxn, internal } from '@algorandfoundation/algorand-typescript'
+import { arc4, bytes, Bytes, Ecdsa, gtxn, internal, VrfVerify } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
 import { ec } from 'elliptic'
 import { sha256 as js_sha256 } from 'js-sha256'
@@ -68,7 +68,7 @@ export const ed25519verify = (
 }
 
 export const ecdsaVerify = (
-  v: internal.opTypes.Ecdsa,
+  v: Ecdsa,
   a: internal.primitives.StubBytesCompat,
   b: internal.primitives.StubBytesCompat,
   c: internal.primitives.StubBytesCompat,
@@ -91,13 +91,13 @@ export const ecdsaVerify = (
 }
 
 export const ecdsaPkRecover = (
-  v: internal.opTypes.Ecdsa,
+  v: Ecdsa,
   a: internal.primitives.StubBytesCompat,
   b: internal.primitives.StubUint64Compat,
   c: internal.primitives.StubBytesCompat,
   d: internal.primitives.StubBytesCompat,
 ): readonly [bytes, bytes] => {
-  if (v !== internal.opTypes.Ecdsa.Secp256k1) {
+  if (v !== Ecdsa.Secp256k1) {
     internal.errors.internalError(`Unsupported ECDSA curve: ${v}`)
   }
   const dataBytes = internal.primitives.BytesCls.fromCompat(a)
@@ -117,7 +117,7 @@ export const ecdsaPkRecover = (
   return [Bytes(x), Bytes(y)]
 }
 
-export const ecdsaPkDecompress = (v: internal.opTypes.Ecdsa, a: internal.primitives.StubBytesCompat): readonly [bytes, bytes] => {
+export const ecdsaPkDecompress = (v: Ecdsa, a: internal.primitives.StubBytesCompat): readonly [bytes, bytes] => {
   const bytesA = internal.primitives.BytesCls.fromCompat(a)
 
   const ecdsa = new ec(curveMap[v])
@@ -130,7 +130,7 @@ export const ecdsaPkDecompress = (v: internal.opTypes.Ecdsa, a: internal.primiti
 }
 
 export const vrfVerify = (
-  _s: internal.opTypes.VrfVerify,
+  _s: VrfVerify,
   _a: internal.primitives.StubBytesCompat,
   _b: internal.primitives.StubBytesCompat,
   _c: internal.primitives.StubBytesCompat,
@@ -145,6 +145,6 @@ export const EllipticCurve = new Proxy({} as internal.opTypes.EllipticCurveType,
 })
 
 const curveMap = {
-  [internal.opTypes.Ecdsa.Secp256k1]: 'secp256k1',
-  [internal.opTypes.Ecdsa.Secp256r1]: 'p256',
+  [Ecdsa.Secp256k1]: 'secp256k1',
+  [Ecdsa.Secp256r1]: 'p256',
 }

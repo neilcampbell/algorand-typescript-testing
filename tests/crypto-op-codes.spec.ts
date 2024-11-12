@@ -1,6 +1,6 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { Bytes, internal, op as publicOps, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Bytes, Ec, Ecdsa, internal, uint64, VrfVerify } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
 import { ec } from 'elliptic'
 import { keccak256 as js_keccak256 } from 'js-sha3'
@@ -15,8 +15,8 @@ import { asUint8Array, getPaddedBytes } from './util'
 
 const MAX_ARG_LEN = 2048
 const curveMap = {
-  [internal.opTypes.Ecdsa.Secp256k1]: 'secp256k1',
-  [internal.opTypes.Ecdsa.Secp256r1]: 'p256',
+  [Ecdsa.Secp256k1]: 'secp256k1',
+  [Ecdsa.Secp256r1]: 'p256',
 }
 
 vi.mock('../src/impl/crypto', async (importOriginal) => {
@@ -157,7 +157,7 @@ describe('crypto op codes', async () => {
         asUint8Array(pubkeyX),
         asUint8Array(pubkeyY),
       )
-      const result = op.ecdsaVerify(internal.opTypes.Ecdsa.Secp256k1, messageHash, sigR, sigS, pubkeyX, pubkeyY)
+      const result = op.ecdsaVerify(Ecdsa.Secp256k1, messageHash, sigR, sigS, pubkeyX, pubkeyY)
 
       expect(result).toEqual(avmResult)
     })
@@ -177,7 +177,7 @@ describe('crypto op codes', async () => {
         asUint8Array(pubkeyX),
         asUint8Array(pubkeyY),
       )
-      const result = op.ecdsaVerify(internal.opTypes.Ecdsa.Secp256r1, messageHash, sigR, sigS, pubkeyX, pubkeyY)
+      const result = op.ecdsaVerify(Ecdsa.Secp256r1, messageHash, sigR, sigS, pubkeyX, pubkeyY)
 
       expect(result).toEqual(avmResult)
     })
@@ -185,7 +185,7 @@ describe('crypto op codes', async () => {
 
   describe('ecdsaPkRecover', async () => {
     it('should be able to recover k1 public key', async () => {
-      const testData = generateEcdsaTestData(internal.opTypes.Ecdsa.Secp256k1)
+      const testData = generateEcdsaTestData(Ecdsa.Secp256k1)
       const a = testData.data
       const b = testData.recoveryId
       const c = testData.r
@@ -198,14 +198,14 @@ describe('crypto op codes', async () => {
         asUint8Array(c),
         asUint8Array(d),
       )
-      const result = op.ecdsaPkRecover(internal.opTypes.Ecdsa.Secp256k1, a, b, c, d)
+      const result = op.ecdsaPkRecover(Ecdsa.Secp256k1, a, b, c, d)
 
       expect(result[0]).toEqual(avmResult[0])
       expect(result[1]).toEqual(avmResult[1])
     })
 
     it('should throw unsupported error when trying to recover r1 public key', async () => {
-      const testData = generateEcdsaTestData(internal.opTypes.Ecdsa.Secp256r1)
+      const testData = generateEcdsaTestData(Ecdsa.Secp256r1)
       const a = testData.data
       const b = testData.recoveryId
       const c = testData.r
@@ -221,13 +221,13 @@ describe('crypto op codes', async () => {
         ),
       ).rejects.toThrow('unsupported curve')
 
-      expect(() => op.ecdsaPkRecover(internal.opTypes.Ecdsa.Secp256r1, a, b, c, d)).toThrow('Unsupported ECDSA curve')
+      expect(() => op.ecdsaPkRecover(Ecdsa.Secp256r1, a, b, c, d)).toThrow('Unsupported ECDSA curve')
     })
   })
 
   describe('ecdsaPkDecompress', async () => {
     it('should be able to decompress k1 public key', async () => {
-      const v = internal.opTypes.Ecdsa.Secp256k1
+      const v = Ecdsa.Secp256k1
       const testData = generateEcdsaTestData(v)
       const ecdsa = new ec(curveMap[v])
       const keyPair = ecdsa.keyFromPublic(testData.pubkeyX.concat(testData.pubkeyY).asUint8Array())
@@ -252,7 +252,7 @@ describe('crypto op codes', async () => {
     const c = internal.primitives.BytesCls.fromHex('3a2740da7a0788ebb12a52154acbcca1813c128ca0b249e93f8eb6563fee418d')
 
     it('should throw not available error', async () => {
-      expect(() => op.vrfVerify(internal.opTypes.VrfVerify.VrfAlgorand, a, b, c)).toThrow('vrfVerify is not available in test context')
+      expect(() => op.vrfVerify(VrfVerify.VrfAlgorand, a, b, c)).toThrow('vrfVerify is not available in test context')
     })
 
     it('should return mocked result', async () => {
@@ -265,7 +265,7 @@ describe('crypto op codes', async () => {
       )
       const mockedVrfVerify = (op as unknown as { mockedVrfVerify: Mock<typeof op.vrfVerify> }).mockedVrfVerify
       mockedVrfVerify.mockReturnValue([internal.primitives.BytesCls.fromCompat(new Uint8Array(avmResult[0])).asAlgoTs(), avmResult[1]])
-      const result = mockedVrfVerify(publicOps.VrfVerify.VrfAlgorand, a, b, c)
+      const result = mockedVrfVerify(VrfVerify.VrfAlgorand, a, b, c)
 
       expect(asUint8Array(result[0])).toEqual(new Uint8Array(avmResult[0]))
       expect(result[1]).toEqual(avmResult[1])
@@ -274,29 +274,25 @@ describe('crypto op codes', async () => {
 
   describe('EllipticCurve', async () => {
     it('should throw not available error', async () => {
-      expect(() => op.EllipticCurve.add(internal.opTypes.Ec.BN254g2, Bytes(''), Bytes(''))).toThrow(
-        'EllipticCurve.add is not available in test context',
-      )
-      expect(() => op.EllipticCurve.mapTo(internal.opTypes.Ec.BN254g2, Bytes(''))).toThrow(
-        'EllipticCurve.mapTo is not available in test context',
-      )
-      expect(() => op.EllipticCurve.pairingCheck(internal.opTypes.Ec.BN254g2, Bytes(''), Bytes(''))).toThrow(
+      expect(() => op.EllipticCurve.add(Ec.BN254g2, Bytes(''), Bytes(''))).toThrow('EllipticCurve.add is not available in test context')
+      expect(() => op.EllipticCurve.mapTo(Ec.BN254g2, Bytes(''))).toThrow('EllipticCurve.mapTo is not available in test context')
+      expect(() => op.EllipticCurve.pairingCheck(Ec.BN254g2, Bytes(''), Bytes(''))).toThrow(
         'EllipticCurve.pairingCheck is not available in test context',
       )
-      expect(() => op.EllipticCurve.scalarMul(internal.opTypes.Ec.BN254g2, Bytes(''), Bytes(''))).toThrow(
+      expect(() => op.EllipticCurve.scalarMul(Ec.BN254g2, Bytes(''), Bytes(''))).toThrow(
         'EllipticCurve.scalarMul is not available in test context',
       )
-      expect(() => op.EllipticCurve.scalarMulMulti(internal.opTypes.Ec.BN254g2, Bytes(''), Bytes(''))).toThrow(
+      expect(() => op.EllipticCurve.scalarMulMulti(Ec.BN254g2, Bytes(''), Bytes(''))).toThrow(
         'EllipticCurve.scalarMulMulti is not available in test context',
       )
-      expect(() => op.EllipticCurve.subgroupCheck(internal.opTypes.Ec.BN254g2, Bytes(''))).toThrow(
+      expect(() => op.EllipticCurve.subgroupCheck(Ec.BN254g2, Bytes(''))).toThrow(
         'EllipticCurve.subgroupCheck is not available in test context',
       )
     })
   })
 })
 
-const generateEcdsaTestData = (v: internal.opTypes.Ecdsa) => {
+const generateEcdsaTestData = (v: Ecdsa) => {
   const ecdsa = new ec(curveMap[v])
   const keyPair = ecdsa.genKeyPair()
   const pk = keyPair.getPublic('array')

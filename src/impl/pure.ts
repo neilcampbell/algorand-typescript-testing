@@ -1,4 +1,4 @@
-import { biguint, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Base64, biguint, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT64, MAX_UINT8, UINT64_SIZE } from '../constants'
 import { notImplementedError, testInvariant } from '../errors'
 import { asBigUint, asBytes, asMaybeBytesCls, asMaybeUint64Cls, asUint64Cls, binaryStringToBytes } from '../util'
@@ -10,8 +10,8 @@ export const addw = (a: internal.primitives.StubUint64Compat, b: internal.primit
   return toUint128(sum)
 }
 
-export const base64Decode = (e: internal.opTypes.Base64, a: internal.primitives.StubBytesCompat): bytes => {
-  const encoding = e === internal.opTypes.Base64.StdEncoding ? 'base64' : 'base64url'
+export const base64Decode = (e: Base64, a: internal.primitives.StubBytesCompat): bytes => {
+  const encoding = e === Base64.StdEncoding ? 'base64' : 'base64url'
   const bytesValue = internal.primitives.BytesCls.fromCompat(a)
   const stringValue = bytesValue.toString()
 
