@@ -18,3 +18,10 @@ export type KeyIsNotFunction<TKey extends keyof TObj, TObj> = TKey extends Delib
   : never
 export type ObjectKeys<T> = KeyIsNotFunction<keyof T, T>
 export type FunctionKeys<T> = KeyIsFunction<keyof T, T>
+
+export function instanceOfAny<T extends Array<{ new (...args: DeliberateAny[]): DeliberateAny }>>(
+  x: unknown,
+  ...types: T
+): x is InstanceType<T[number]> {
+  return types.some((t) => x instanceof t)
+}
