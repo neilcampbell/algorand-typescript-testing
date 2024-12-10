@@ -187,4 +187,10 @@ export const Global: internal.opTypes.GlobalType = {
   get genesisHash(): bytes {
     return getGlobalData().genesisHash
   },
+  payoutsEnabled: false,
+  // TODO: implement v11 fields
+  payoutsGoOnlineFee: 0,
+  payoutsPercent: 0,
+  payoutsMinBalance: 0,
+  payoutsMaxBalance: 0,
 }
