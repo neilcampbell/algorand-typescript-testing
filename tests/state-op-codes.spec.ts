@@ -2,10 +2,10 @@ import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { ApplicationClient } from '@algorandfoundation/algokit-utils/types/app-client'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Account, arc4, bytes, Bytes, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
-import { DynamicBytes } from '@algorandfoundation/algorand-typescript/arc4'
+import { DynamicBytes, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
-import { MIN_TXN_FEE, ZERO_ADDRESS } from '../src/constants'
+import { ABI_RETURN_VALUE_LOG_PREFIX, MIN_TXN_FEE, ZERO_ADDRESS } from '../src/constants'
 import { testInvariant } from '../src/errors'
 import { Block, gloadBytes, gloadUint64 } from '../src/impl'
 import { AccountCls } from '../src/impl/account'
@@ -285,22 +285,12 @@ describe('State op codes', async () => {
 
     it('should be able to pass app call txn as app arg', async () => {
       const appCallTxn = ctx.any.txn.applicationCall({
-        appArgs: [Bytes('some_value()uint64')],
-        appLogs: [Bytes('this is a log statement')],
+        appArgs: [arc4.methodSelector('some_value()uint64')],
+        appLogs: [ABI_RETURN_VALUE_LOG_PREFIX.concat(new UintN64(2).bytes)],
       })
       const contract = ctx.contract.create(AppExpectingEffects)
       contract.log_group(appCallTxn)
     })
-
-    // TODO: uncomment when arc4 stubs are implemented
-    // it('should be able to pass app call txn as app arg', async () => {
-    //   const appCallTxn = ctx.any.txn.applicationCall({
-    //     appArgs: [arc4.arc4Signature("some_value()uint64")],
-    //     logs: [arc4Prefix.concat(arc4.Uint64(2).bytes)]
-    //   })
-    //   const contract = ctx.contract.create(AppExpectingEffects)
-    //   contract.log_group(appCallTxn)
-    // })
   })
 
   describe('itxn', async () => {

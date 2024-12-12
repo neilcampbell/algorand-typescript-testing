@@ -1,10 +1,13 @@
 import { BaseContract, Contract } from '@algorandfoundation/algorand-typescript'
 import { AbiMethodConfig, BareMethodConfig, CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
+import { ABIMethod } from 'algosdk'
+import { TypeInfo } from './encoders'
+import { getArc4TypeName as getArc4TypeNameForARC4Encoded } from './impl/encoded-types'
 import { DeliberateAny } from './typescript-helpers'
 
 export interface AbiMetadata {
   methodName: string
-  methodSelector: string
+  methodSignature: string | undefined
   argTypes: string[]
   returnType: string
   onCreate?: CreateOptions
@@ -28,19 +31,9 @@ export const captureMethodConfig = <T extends Contract>(
   methodName: string,
   config?: AbiMethodConfig<T> | BareMethodConfig,
 ): void => {
-  const metadata = ensureMetadata(contract, methodName)
+  const metadata = getAbiMetadata(contract, methodName)
   metadata.onCreate = config?.onCreate ?? 'disallow'
   metadata.allowActions = ([] as OnCompleteActionStr[]).concat(config?.allowActions ?? 'NoOp')
-}
-
-const ensureMetadata = <T extends Contract>(contract: T, methodName: string): AbiMetadata => {
-  if (!hasAbiMetadata(contract)) {
-    const contractClass = contract.constructor as { new (): T }
-    Object.getOwnPropertyNames(Object.getPrototypeOf(contract)).forEach((name) => {
-      attachAbiMetadata(contractClass, name, { methodName: name, methodSelector: name, argTypes: [], returnType: '' })
-    })
-  }
-  return getAbiMetadata(contract, methodName)
 }
 
 export const hasAbiMetadata = <T extends Contract>(contract: T): boolean => {
@@ -57,4 +50,49 @@ export const getAbiMetadata = <T extends BaseContract>(contract: T, methodName: 
     s ? (contractClass as DeliberateAny)[s] : AbiMetaSymbol in contractClass ? contractClass[AbiMetaSymbol] : {}
   ) as Record<string, AbiMetadata>
   return metadatas[methodName]
+}
+
+export const getArc4Signature = (metadata: AbiMetadata): string => {
+  if (metadata.methodSignature === undefined) {
+    const argTypes = metadata.argTypes.map((t) => JSON.parse(t) as TypeInfo).map(getArc4TypeName)
+    const returnType = getArc4TypeName(JSON.parse(metadata.returnType) as TypeInfo)
+    const method = new ABIMethod({ name: metadata.methodName, args: argTypes.map((t) => ({ type: t })), returns: { type: returnType } })
+    metadata.methodSignature = method.getSignature()
+  }
+  return metadata.methodSignature
+}
+
+const getArc4TypeName = (t: TypeInfo): string => {
+  const map: Record<string, string | ((t: TypeInfo) => string)> = {
+    void: 'void',
+    account: 'account',
+    application: 'application',
+    asset: 'asset',
+    boolean: 'bool',
+    biguint: 'uint512',
+    bytes: 'byte[]',
+    string: 'string',
+    uint64: 'uint64',
+    OnCompleteAction: 'uint64',
+    TransactionType: 'uint64',
+    Transaction: 'txn',
+    PaymentTxn: 'pay',
+    KeyRegistrationTxn: 'keyreg',
+    AssetConfigTxn: 'acfg',
+    AssetTransferTxn: 'axfer',
+    AssetFreezeTxn: 'afrz',
+    ApplicationTxn: 'appl',
+    'Tuple<.*>': (t) =>
+      `(${Object.values(t.genericArgs as Record<string, TypeInfo>)
+        .map(getArc4TypeName)
+        .join(',')})`,
+  }
+  const entry = Object.entries(map).find(([k, _]) => new RegExp(`^${k}$`, 'i').test(t.name))?.[1]
+  if (entry === undefined) {
+    return getArc4TypeNameForARC4Encoded(t) ?? t.name
+  }
+  if (entry instanceof Function) {
+    return entry(t)
+  }
+  return entry
 }

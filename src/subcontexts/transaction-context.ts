@@ -1,5 +1,6 @@
 import { bytes, Contract, internal, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
+import { getAbiMetadata } from '../abi-metadata'
 import { lazyContext } from '../context-helpers/internal-context'
 import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
 import { testInvariant } from '../errors'
@@ -130,7 +131,8 @@ export class TransactionContext {
     ...args: TParams
   ): DeferredAppCall<TParams, TReturn> {
     const appId = lazyContext.ledger.getApplicationForContract(contract)
-    const txns = ContractContext.createMethodCallTxns(contract, method, ...args)
+    const abiMetadata = getAbiMetadata(contract, method.name)
+    const txns = ContractContext.createMethodCallTxns(contract, abiMetadata, ...args)
     return new DeferredAppCall(appId.id, txns, method, args)
   }
 

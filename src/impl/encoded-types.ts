@@ -81,6 +81,10 @@ export class UintNImpl<N extends BitSize> extends UintN<N> {
   static getMaxBitsLength(typeInfo: TypeInfo): BitSize {
     return parseInt((typeInfo.genericArgs as TypeInfo[])![0].name, 10) as BitSize
   }
+
+  static getArc4TypeName = (t: TypeInfo): string => {
+    return `uint${this.getMaxBitsLength(t)}`
+  }
 }
 
 const regExpNxM = (maxPrecision: number) => new RegExp(`^\\d*\\.?\\d{0,${maxPrecision}}$`)
@@ -143,6 +147,11 @@ export class UFixedNxMImpl<N extends BitSize, M extends number> extends UFixedNx
   static getMaxBitsLength(typeInfo: TypeInfo): BitSize {
     const genericArgs = typeInfo.genericArgs as uFixedNxMGenericArgs
     return parseInt(genericArgs.n.name, 10) as BitSize
+  }
+
+  static getArc4TypeName = (t: TypeInfo): string => {
+    const genericArgs = t.genericArgs as uFixedNxMGenericArgs
+    return `ufixed${genericArgs.n.name}x${genericArgs.m.name}`
   }
 }
 
@@ -403,6 +412,11 @@ export class StaticArrayImpl<TItem extends ARC4Encoded, TLength extends number> 
     }
     return size
   }
+
+  static getArc4TypeName = (t: TypeInfo): string => {
+    const genericArgs = t.genericArgs as StaticArrayGenericArgs
+    return `${getArc4TypeName(genericArgs.elementType)}[${genericArgs.size.name}]`
+  }
 }
 
 export class AddressImpl extends Address {
@@ -562,6 +576,11 @@ export class DynamicArrayImpl<TItem extends ARC4Encoded> extends DynamicArray<TI
     return result
   }
 
+  static getArc4TypeName = (t: TypeInfo): string => {
+    const genericArgs = t.genericArgs as DynamicArrayGenericArgs
+    return `${getArc4TypeName(genericArgs.elementType)}[]`
+  }
+
   private encodeWithLength(items: TItem[]) {
     return conactUint8Arrays(encodeLength(items.length).asUint8Array(), encode(items))
   }
@@ -657,6 +676,11 @@ export class TupleImpl<TTuple extends [ARC4Encoded, ...ARC4Encoded[]]> extends T
     }
     return size
   }
+
+  static getArc4TypeName = (t: TypeInfo): string => {
+    const genericArgs = Object.values(t.genericArgs as Record<string, TypeInfo>)
+    return `(${genericArgs.map(getArc4TypeName).join(',')})`
+  }
 }
 
 type StructConstraint = Record<string, ARC4Encoded>
@@ -732,6 +756,11 @@ export class StructImpl<T extends StructConstraint> extends (Struct<StructConstr
     result.uint8ArrayValue = asUint8Array(bytesValue)
     return result
   }
+
+  static getArc4TypeName = (t: TypeInfo): string => {
+    const genericArgs = Object.values(t.genericArgs as Record<string, TypeInfo>)
+    return `(${genericArgs.map(getArc4TypeName).join(',')})`
+  }
 }
 
 export class DynamicBytesImpl extends DynamicBytes {
@@ -782,6 +811,10 @@ export class DynamicBytesImpl extends DynamicBytes {
     const result = new DynamicBytesImpl(typeInfo)
     result.value = dynamicArrayValue
     return result
+  }
+
+  static getArc4TypeName = (_t: TypeInfo): string => {
+    return 'byte[]'
   }
 }
 
@@ -837,6 +870,11 @@ export class StaticBytesImpl extends StaticBytes {
 
   static getMaxBytesLength(typeInfo: TypeInfo): number {
     return StaticArrayImpl.getMaxBytesLength(typeInfo)
+  }
+
+  static getArc4TypeName = (t: TypeInfo): string => {
+    const genericArgs = t.genericArgs as StaticArrayGenericArgs
+    return `byte[${genericArgs.size.name}]`
   }
 }
 
@@ -1096,4 +1134,25 @@ export const getArc4Encoder = <T>(typeInfo: TypeInfo, encoders?: Record<string, 
     throw new Error(`No encoder found for type ${typeInfo.name}`)
   }
   return encoder as fromBytes<T>
+}
+
+export const getArc4TypeName = (typeInfo: TypeInfo): string | undefined => {
+  const map = {
+    Address: 'address',
+    Bool: 'bool',
+    Byte: 'byte',
+    Str: 'string',
+    'UintN<.*>': UintNImpl.getArc4TypeName,
+    'UFixedNxM<.*>': UFixedNxMImpl.getArc4TypeName,
+    'StaticArray<.*>': StaticArrayImpl.getArc4TypeName,
+    'DynamicArray<.*>': DynamicArrayImpl.getArc4TypeName,
+    Tuple: TupleImpl.getArc4TypeName,
+    Struct: StructImpl.getArc4TypeName,
+    DynamicBytes: DynamicBytesImpl.getArc4TypeName,
+    'StaticBytes<.*>': StaticBytesImpl.getArc4TypeName,
+  }
+  const name = Object.entries(map).find(([k, _]) => new RegExp(`^${k}$`, 'i').test(typeInfo.name))?.[1]
+  if (typeof name === 'string') return name
+  else if (typeof name === 'function') return name(typeInfo)
+  return undefined
 }

@@ -249,7 +249,9 @@ class ClassVisitor {
       if (this.classDec.name && this.isArc4) {
         const methodType = this.helper.resolveType(node)
         if (methodType instanceof ptypes.FunctionPType) {
-          this.helper.additionalStatements.push(nodeFactory.attachMetaData(this.classDec.name, node, methodType))
+          const argTypes = methodType.parameters.map((p) => JSON.stringify(getGenericTypeInfo(p[1])))
+          const returnType = JSON.stringify(getGenericTypeInfo(methodType.returnType))
+          this.helper.additionalStatements.push(nodeFactory.attachMetaData(this.classDec.name, node, methodType, argTypes, returnType))
         }
       }
 
@@ -318,7 +320,7 @@ const getGenericTypeInfo = (type: ptypes.PType): TypeInfo => {
         .map(([key, value]) => [key, getGenericTypeInfo(value)])
         .filter((x) => !!x),
     )
-  } else if (type instanceof ptypes.ARC4TupleType) {
+  } else if (type instanceof ptypes.ARC4TupleType || type instanceof ptypes.TuplePType) {
     genericArgs.push(...type.items.map(getGenericTypeInfo))
   }
 

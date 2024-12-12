@@ -1,5 +1,6 @@
 import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract, LocalState } from '@algorandfoundation/algorand-typescript'
-import { getAbiMetadata } from '../abi-metadata'
+import { ABIMethod } from 'algosdk'
+import { AbiMetadata, getAbiMetadata, getArc4Signature } from '../abi-metadata'
 import { BytesMap } from '../collections/custom-key-map'
 import { lazyContext } from '../context-helpers/internal-context'
 import type { TypeInfo } from '../encoders'
@@ -69,7 +70,7 @@ const extractStates = (contract: BaseContract): States => {
   return states
 }
 
-const extractArraysFromArgs = (app: Application, args: DeliberateAny[]) => {
+const extractArraysFromArgs = (app: Application, methodSelector: Uint8Array, args: DeliberateAny[]) => {
   const transactions: Transaction[] = []
   const accounts: Account[] = []
   const apps: Application[] = [app]
@@ -90,9 +91,7 @@ const extractArraysFromArgs = (app: Application, args: DeliberateAny[]) => {
       assets.push(arg as Asset)
     }
   }
-
-  // TODO: use actual method selector in appArgs
-  return { accounts, apps, assets, transactions, appArgs: [Bytes('method_selector'), ...appArgs] }
+  return { accounts, apps, assets, transactions, appArgs: [Bytes(methodSelector), ...appArgs] }
 }
 
 function isTransaction(obj: unknown): obj is Transaction {
@@ -112,14 +111,14 @@ export class ContractContext {
     return new proxy(...args)
   }
 
-  static createMethodCallTxns<TParams extends unknown[], TReturn>(
+  static createMethodCallTxns<TParams extends unknown[]>(
     contract: BaseContract,
-    method: (...args: TParams) => TReturn,
+    abiMetadata: AbiMetadata | undefined,
     ...args: TParams
   ): Transaction[] {
-    const abiMetadata = getAbiMetadata(contract, method.name)
     const app = lazyContext.ledger.getApplicationForContract(contract)
-    const { transactions, ...appCallArgs } = extractArraysFromArgs(app, args)
+    const methodSelector = abiMetadata ? ABIMethod.fromSignature(getArc4Signature(abiMetadata)).getSelector() : new Uint8Array()
+    const { transactions, ...appCallArgs } = extractArraysFromArgs(app, methodSelector, args)
     const appTxn = lazyContext.any.txn.applicationCall({
       appId: app,
       ...appCallArgs,
@@ -171,7 +170,7 @@ export class ContractContext {
             const isAbiMethod = isArc4 && abiMetadata
             if (isAbiMethod || isProgramMethod) {
               return (...args: DeliberateAny[]): DeliberateAny => {
-                const txns = ContractContext.createMethodCallTxns(receiver, orig as DeliberateAny, ...args)
+                const txns = ContractContext.createMethodCallTxns(receiver, abiMetadata, ...args)
                 return lazyContext.txn.ensureScope(txns).execute(() => {
                   const returnValue = (orig as DeliberateAny).apply(target, args)
                   if (!isProgramMethod && isAbiMethod && returnValue !== undefined) {
