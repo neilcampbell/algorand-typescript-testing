@@ -70,4 +70,14 @@ export const AcctParams: internal.opTypes.AcctParamsType = {
     const acct = getAccount(a)
     return [acct.totalBoxBytes, acct.balance !== 0]
   },
+  // TODO: implement v11 methods
+  acctIncentiveEligible: function (_a: Account | uint64): readonly [boolean, boolean] {
+    throw new Error('Function not implemented.')
+  },
+  acctLastProposed: function (_a: Account | uint64): readonly [uint64, boolean] {
+    throw new Error('Function not implemented.')
+  },
+  acctLastHeartbeat: function (_a: Account | uint64): readonly [uint64, boolean] {
+    throw new Error('Function not implemented.')
+  },
 }
