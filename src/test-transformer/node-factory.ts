@@ -1,7 +1,8 @@
-import { FunctionPType } from '@algorandfoundation/puya-ts'
+import { ptypes } from '@algorandfoundation/puya-ts'
 import ts from 'typescript'
+import { TypeInfo } from '../encoders'
 import type { DeliberateAny } from '../typescript-helpers'
-import { getPropertyNameAsString } from './helpers'
+import { getPropertyNameAsString, trimGenericTypeName } from './helpers'
 
 const factory = ts.factory
 export const nodeFactory = {
@@ -47,7 +48,7 @@ export const nodeFactory = {
     )
   },
 
-  attachMetaData(classIdentifier: ts.Identifier, method: ts.MethodDeclaration, functionType: FunctionPType) {
+  attachMetaData(classIdentifier: ts.Identifier, method: ts.MethodDeclaration, functionType: ptypes.FunctionPType) {
     const methodName = getPropertyNameAsString(method.name)
     const metadata = factory.createObjectLiteralExpression([
       factory.createPropertyAssignment('methodName', methodName),
@@ -75,6 +76,31 @@ export const nodeFactory = {
       ),
       undefined,
       [x, factory.createStringLiteral(info)],
+    )
+  },
+
+  instantiateARC4EncodedType(node: ts.NewExpression, typeInfo?: TypeInfo) {
+    const infoString = JSON.stringify(typeInfo)
+    const classIdentifier = node.expression.getText().replace('arc4.', '')
+    return factory.createNewExpression(
+      factory.createIdentifier(`runtimeHelpers.${trimGenericTypeName(typeInfo?.name ?? classIdentifier)}Impl`),
+      node.typeArguments,
+      [infoString ? factory.createStringLiteral(infoString) : undefined, ...(node.arguments ?? [])].filter((arg) => !!arg),
+    )
+  },
+
+  callARC4EncodingUtil(node: ts.CallExpression, typeInfo?: TypeInfo) {
+    const identifierExpression = node.expression as ts.Identifier
+    const infoString = JSON.stringify(typeInfo)
+    const updatedPropertyAccessExpression = factory.createPropertyAccessExpression(
+      factory.createIdentifier('runtimeHelpers'),
+      `${identifierExpression.getText()}Impl`,
+    )
+
+    return factory.createCallExpression(
+      updatedPropertyAccessExpression,
+      node.typeArguments,
+      [infoString ? factory.createStringLiteral(infoString) : undefined, ...(node.arguments ?? [])].filter((arg) => !!arg),
     )
   },
 } satisfies Record<string, (...args: DeliberateAny[]) => ts.Node>

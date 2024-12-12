@@ -35,15 +35,15 @@ export const asUint64Cls = (val: internal.primitives.StubUint64Compat) => intern
 
 export const asBigUintCls = (val: internal.primitives.StubBigUintCompat) => internal.primitives.BigUintCls.fromCompat(val)
 
-export const asBytesCls = (val: internal.primitives.StubBytesCompat) => internal.primitives.BytesCls.fromCompat(val)
+export const asBytesCls = (val: internal.primitives.StubBytesCompat | Uint8Array) => internal.primitives.BytesCls.fromCompat(val)
 
 export const asUint64 = (val: internal.primitives.StubUint64Compat) => asUint64Cls(val).asAlgoTs()
 
 export const asBigUint = (val: internal.primitives.StubBigUintCompat) => asBigUintCls(val).asAlgoTs()
 
-export const asBytes = (val: internal.primitives.StubBytesCompat) => asBytesCls(val).asAlgoTs()
+export const asBytes = (val: internal.primitives.StubBytesCompat | Uint8Array) => asBytesCls(val).asAlgoTs()
 
-export const asUint8Array = (val: internal.primitives.StubBytesCompat) => asBytesCls(val).asUint8Array()
+export const asUint8Array = (val: internal.primitives.StubBytesCompat | Uint8Array) => asBytesCls(val).asUint8Array()
 
 //TODO: handle arc4 types, bytes backed types
 export const toBytes = (val: unknown): bytes => {
@@ -191,4 +191,8 @@ export const conactUint8Arrays = (...values: Uint8Array[]): Uint8Array => {
     index += value.length
   }
   return result
+}
+
+export const uint8ArrayToNumber = (value: Uint8Array): number => {
+  return value.reduce((acc, x) => acc * 256 + x, 0)
 }
