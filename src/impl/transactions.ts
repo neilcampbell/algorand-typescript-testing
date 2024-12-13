@@ -226,7 +226,7 @@ export class AssetFreezeTransaction extends TransactionBase implements gtxn.Asse
 
 export type ApplicationTransactionFields = TxnFields<gtxn.ApplicationTxn> &
   Partial<{
-    appArgs: Array<bytes>
+    appArgs: Array<unknown>
     accounts: Array<Account>
     assets: Array<Asset>
     apps: Array<Application>
@@ -241,7 +241,7 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
   static create(fields: ApplicationTransactionFields) {
     return new ApplicationTransaction(fields)
   }
-  #appArgs: Array<bytes>
+  #appArgs: Array<unknown>
   #accounts: Array<Account>
   #assets: Array<Asset>
   #apps: Array<Application>
@@ -308,7 +308,7 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     return this.#appLogs.at(-1) ?? lazyContext.getApplicationData(this.appId.id).appLogs.at(-1) ?? Bytes()
   }
   appArgs(index: internal.primitives.StubUint64Compat): bytes {
-    return this.#appArgs[asNumber(index)]
+    return toBytes(this.#appArgs[asNumber(index)])
   }
   accounts(index: internal.primitives.StubUint64Compat): Account {
     return this.#accounts[asNumber(index)]

@@ -1,6 +1,6 @@
 import { bytes, Contract, internal, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import algosdk from 'algosdk'
-import { getAbiMetadata } from '../abi-metadata'
+import { AbiMetadata, getContractMethodAbiMetadata } from '../abi-metadata'
 import { lazyContext } from '../context-helpers/internal-context'
 import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
 import { testInvariant } from '../errors'
@@ -24,6 +24,7 @@ import {
   PaymentTransaction,
   Transaction,
 } from '../impl/transactions'
+import { FunctionKeys } from '../typescript-helpers'
 import { asBigInt, asNumber, asUint64 } from '../util'
 import { ContractContext } from './contract-context'
 
@@ -48,16 +49,34 @@ interface ExecutionScope {
   execute: <TReturn>(body: () => TReturn) => TReturn
 }
 
+export const checkRoutingConditions = (appId: uint64, metadata: AbiMetadata) => {
+  const appData = lazyContext.getApplicationData(appId)
+  const isCreating = appData.isCreating
+  if (isCreating && metadata.onCreate === 'disallow') {
+    throw new internal.errors.CodeError('method can not be called while creating')
+  }
+  if (!isCreating && metadata.onCreate === 'require') {
+    throw new internal.errors.CodeError('method can only be called while creating')
+  }
+  const txn = lazyContext.activeGroup.activeTransaction
+  if (txn instanceof ApplicationTransaction && metadata.allowActions && !metadata.allowActions.includes(txn.onCompletion)) {
+    throw new internal.errors.CodeError(
+      `method can only be called with one of the following on_completion values: ${metadata.allowActions.join(', ')}`,
+    )
+  }
+}
+
 export class DeferredAppCall<TParams extends unknown[], TReturn> {
   constructor(
     private readonly appId: uint64,
     readonly txns: Transaction[],
     private readonly method: (...args: TParams) => TReturn,
+    private readonly abiMetadata: AbiMetadata,
     private readonly args: TParams,
   ) {}
 
   submit(): TReturn {
-    // TODO: check_routing_conditions
+    checkRoutingConditions(this.appId, this.abiMetadata)
     return this.method(...this.args)
   }
 }
@@ -125,15 +144,16 @@ export class TransactionContext {
     activeTransaction.appendLog(value)
   }
 
-  deferAppCall<TParams extends unknown[], TReturn>(
-    contract: Contract,
+  deferAppCall<TContract extends Contract, TParams extends unknown[], TReturn>(
+    contract: TContract,
     method: (...args: TParams) => TReturn,
+    methodName: FunctionKeys<TContract>,
     ...args: TParams
   ): DeferredAppCall<TParams, TReturn> {
     const appId = lazyContext.ledger.getApplicationForContract(contract)
-    const abiMetadata = getAbiMetadata(contract, method.name)
+    const abiMetadata = getContractMethodAbiMetadata(contract, methodName as string)
     const txns = ContractContext.createMethodCallTxns(contract, abiMetadata, ...args)
-    return new DeferredAppCall(appId.id, txns, method, args)
+    return new DeferredAppCall(appId.id, txns, method, abiMetadata, args)
   }
 
   exportLogs<const T extends [...LogDecoding[]]>(appId: uint64, ...decoding: T): DecodedLogs<T> {

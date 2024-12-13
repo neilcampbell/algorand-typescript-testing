@@ -169,8 +169,8 @@ describe('Box', () => {
   it('can store enum values', () => {
     const contract = ctx.contract.create(BoxContract)
 
-    const deferredStoreCall = ctx.txn.deferAppCall(contract, contract.storeEnums)
-    const deferredReadCall = ctx.txn.deferAppCall(contract, contract.read_enums)
+    const deferredStoreCall = ctx.txn.deferAppCall(contract, contract.storeEnums, 'storeEnums')
+    const deferredReadCall = ctx.txn.deferAppCall(contract, contract.read_enums, 'read_enums')
 
     ctx.txn.createScope([deferredStoreCall, deferredReadCall]).execute(() => {
       deferredStoreCall.submit()

@@ -1,7 +1,26 @@
-import { Account, Application, Asset, BaseContract, Bytes, bytes, Contract, LocalState } from '@algorandfoundation/algorand-typescript'
+import {
+  Account,
+  Application,
+  Asset,
+  BaseContract,
+  Bytes,
+  bytes,
+  Contract,
+  contract,
+  internal,
+  LocalState,
+} from '@algorandfoundation/algorand-typescript'
 import { ABIMethod } from 'algosdk'
-import { AbiMetadata, getAbiMetadata, getArc4Signature } from '../abi-metadata'
+import {
+  AbiMetadata,
+  copyAbiMetadatas,
+  getArc4Signature,
+  getContractAbiMetadata,
+  getContractMethodAbiMetadata,
+  isContractProxy,
+} from '../abi-metadata'
 import { BytesMap } from '../collections/custom-key-map'
+import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
 import type { TypeInfo } from '../encoders'
 import { AccountCls } from '../impl/account'
@@ -21,6 +40,8 @@ import { getGenericTypeInfo } from '../runtime-helpers'
 import { DeliberateAny, IConstructor } from '../typescript-helpers'
 import { toBytes } from '../util'
 
+type ContractOptionsParameter = Parameters<typeof contract>[0]
+
 type StateTotals = Pick<Application, 'globalNumBytes' | 'globalNumUint' | 'localNumBytes' | 'localNumUint'>
 
 interface States {
@@ -34,7 +55,7 @@ const isUint64GenericType = (typeInfo: TypeInfo | undefined) => {
   return typeInfo.genericArgs.some((t) => t.name.toLocaleLowerCase() === 'uint64')
 }
 
-const extractStates = (contract: BaseContract): States => {
+const extractStates = (contract: BaseContract, contractOptions: ContractOptionsParameter | undefined): States => {
   const stateTotals = { globalNumBytes: 0, globalNumUint: 0, localNumBytes: 0, localNumUint: 0 }
   const states = {
     globalStates: new BytesMap<GlobalStateCls<unknown>>(),
@@ -67,6 +88,12 @@ const extractStates = (contract: BaseContract): States => {
       stateTotals.localNumBytes += isLocalState && !isUint64State ? 1 : 0
     }
   })
+
+  stateTotals.globalNumUint = contractOptions?.stateTotals?.globalUints ?? stateTotals.globalNumUint
+  stateTotals.globalNumBytes = contractOptions?.stateTotals?.globalBytes ?? stateTotals.globalNumBytes
+  stateTotals.localNumUint = contractOptions?.stateTotals?.localUints ?? stateTotals.localNumUint
+  stateTotals.localNumBytes = contractOptions?.stateTotals?.localBytes ?? stateTotals.localNumBytes
+
   return states
 }
 
@@ -142,8 +169,8 @@ export class ContractContext {
   }
 
   private getContractProxyHandler<T extends BaseContract>(isArc4: boolean): ProxyHandler<IConstructor<T>> {
-    const onConstructed = (application: Application, instance: T) => {
-      const states = extractStates(instance)
+    const onConstructed = (application: Application, instance: T, conrtactOptions: ContractOptionsParameter | undefined) => {
+      const states = extractStates(instance, conrtactOptions)
 
       const applicationData = lazyContext.ledger.applicationDataMap.getOrFail(application.id)
       applicationData.application = {
@@ -159,23 +186,33 @@ export class ContractContext {
         let t: T | undefined = undefined
         const application = lazyContext.any.application()
         const txn = lazyContext.any.txn.applicationCall({ appId: application })
+        const appData = lazyContext.ledger.applicationDataMap.getOrFail(application.id)
+        appData.isCreating = true
         lazyContext.txn.ensureScope([txn]).execute(() => {
           t = new target(...args)
         })
+        appData.isCreating = hasCreateMethods(t!)
         const instance = new Proxy(t!, {
           get(target, prop, receiver) {
+            if (prop === isContractProxy) {
+              return true
+            }
             const orig = Reflect.get(target, prop, receiver)
-            const abiMetadata = getAbiMetadata(target, prop as string)
+            const abiMetadata = getContractMethodAbiMetadata(target, prop as string)
             const isProgramMethod = prop === 'approvalProgram' || prop === 'clearStateProgram'
             const isAbiMethod = isArc4 && abiMetadata
             if (isAbiMethod || isProgramMethod) {
               return (...args: DeliberateAny[]): DeliberateAny => {
                 const txns = ContractContext.createMethodCallTxns(receiver, abiMetadata, ...args)
                 return lazyContext.txn.ensureScope(txns).execute(() => {
+                  if (isAbiMethod) {
+                    checkRoutingConditions(application.id, abiMetadata)
+                  }
                   const returnValue = (orig as DeliberateAny).apply(target, args)
                   if (!isProgramMethod && isAbiMethod && returnValue !== undefined) {
                     ;(txns.at(-1) as ApplicationTransaction).logArc4ReturnValue(returnValue)
                   }
+                  appData.isCreating = false
                   return returnValue
                 })
               }
@@ -184,10 +221,22 @@ export class ContractContext {
           },
         })
 
-        onConstructed(application, instance)
+        onConstructed(application, instance, getContractOptions(t!))
+
+        copyAbiMetadatas(t!, instance)
 
         return instance
       },
     }
   }
+}
+
+const getContractOptions = (contract: BaseContract): ContractOptionsParameter | undefined => {
+  const contractClass = contract.constructor as DeliberateAny
+  return contractClass[internal.ContractOptionsSymbol] as ContractOptionsParameter
+}
+
+const hasCreateMethods = (contract: BaseContract) => {
+  const metadatas = getContractAbiMetadata(contract)
+  return Object.values(metadatas).some((metadata) => (metadata.onCreate ?? 'disallow') !== 'disallow')
 }

@@ -1,4 +1,4 @@
-import { Account, internal } from '@algorandfoundation/algorand-typescript'
+import { Account, BaseContract, internal } from '@algorandfoundation/algorand-typescript'
 import { AccountData } from '../impl/account'
 import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'
@@ -60,8 +60,10 @@ class InternalContext {
     return data
   }
 
-  getApplicationData(id: internal.primitives.StubUint64Compat): ApplicationData {
-    const data = this.ledger.applicationDataMap.get(id)
+  getApplicationData(id: internal.primitives.StubUint64Compat | BaseContract): ApplicationData {
+    const uint64Id =
+      id instanceof BaseContract ? this.ledger.getApplicationForContract(id).id : internal.primitives.Uint64Cls.fromCompat(id)
+    const data = this.ledger.applicationDataMap.get(uint64Id)
     if (!data) {
       throw internal.errors.internalError('Unknown application, check correct testing context is active')
     }

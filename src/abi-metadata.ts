@@ -14,6 +14,7 @@ export interface AbiMetadata {
   allowActions?: OnCompleteActionStr[]
 }
 const AbiMetaSymbol = Symbol('AbiMetadata')
+export const isContractProxy = Symbol('isContractProxy')
 export const attachAbiMetadata = (contract: { new (): Contract }, methodName: string, metadata: AbiMetadata): void => {
   const metadatas: Record<string, AbiMetadata> = (AbiMetaSymbol in contract ? contract[AbiMetaSymbol] : {}) as Record<string, AbiMetadata>
   metadatas[methodName] = metadata
@@ -26,12 +27,21 @@ export const attachAbiMetadata = (contract: { new (): Contract }, methodName: st
   }
 }
 
+export const copyAbiMetadatas = <T extends BaseContract>(sourceContract: T, targetContract: T): void => {
+  const metadatas = getContractAbiMetadata(sourceContract)
+  Object.defineProperty(targetContract, AbiMetaSymbol, {
+    value: metadatas,
+    writable: true,
+    enumerable: false,
+  })
+}
+
 export const captureMethodConfig = <T extends Contract>(
   contract: T,
   methodName: string,
   config?: AbiMethodConfig<T> | BareMethodConfig,
 ): void => {
-  const metadata = getAbiMetadata(contract, methodName)
+  const metadata = getContractMethodAbiMetadata(contract, methodName)
   metadata.onCreate = config?.onCreate ?? 'disallow'
   metadata.allowActions = ([] as OnCompleteActionStr[]).concat(config?.allowActions ?? 'NoOp')
 }
@@ -42,13 +52,20 @@ export const hasAbiMetadata = <T extends Contract>(contract: T): boolean => {
     Object.getOwnPropertySymbols(contractClass).some((s) => s.toString() === AbiMetaSymbol.toString()) || AbiMetaSymbol in contractClass
   )
 }
-
-export const getAbiMetadata = <T extends BaseContract>(contract: T, methodName: string): AbiMetadata => {
+export const getContractAbiMetadata = <T extends BaseContract>(contract: T): Record<string, AbiMetadata> => {
+  if ((contract as DeliberateAny)[isContractProxy]) {
+    return (contract as DeliberateAny)[AbiMetaSymbol] as Record<string, AbiMetadata>
+  }
   const contractClass = contract.constructor as { new (): T }
   const s = Object.getOwnPropertySymbols(contractClass).find((s) => s.toString() === AbiMetaSymbol.toString())
   const metadatas: Record<string, AbiMetadata> = (
     s ? (contractClass as DeliberateAny)[s] : AbiMetaSymbol in contractClass ? contractClass[AbiMetaSymbol] : {}
   ) as Record<string, AbiMetadata>
+  return metadatas
+}
+
+export const getContractMethodAbiMetadata = <T extends BaseContract>(contract: T, methodName: string): AbiMetadata => {
+  const metadatas = getContractAbiMetadata(contract)
   return metadatas[methodName]
 }
 
