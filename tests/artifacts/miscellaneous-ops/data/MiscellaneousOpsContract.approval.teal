@@ -13,10 +13,10 @@ __puya_arc4_router__:
     // export class MiscellaneousOpsContract extends arc4.Contract {
     proto 0 1
     txn NumAppArgs
-    bz __puya_arc4_router___bare_routing@38
-    pushbytess 0x45847eea 0xf57aceb5 0x7d631730 0xa1b24441 0xcd7be1ac 0x7cfda64b 0x54a910d9 0xc46568de 0x7a46a6ae 0x04372209 0x7e5f6d72 0x24ebcf84 0x9c0b3397 0x0ad40da4 0x95178870 0xdeedc99b 0xab2150bb 0x02a54017 0x3db66b41 0xc7ea8c2a 0x1dcea50c 0x16166f9a 0x2f472065 0xd5a739c3 0x61f3b3e1 0x56cf368b 0x919ffbd2 0x8e30f4e7 0x89f81d92 0xd5260327 0x114c8c6d 0x39e9e62a 0xd6a4c05e 0x1ef8151a // method "verify_addw(uint64,uint64)(uint64,uint64)", method "verify_base64_decode_standard(byte[])byte[]", method "verify_base64_decode_url(byte[])byte[]", method "verify_bytes_bitlen(byte[],uint64)uint64", method "verify_uint64_bitlen(uint64)uint64", method "verify_bsqrt(byte[])byte[]", method "verify_btoi(byte[])uint64", method "verify_bzero(uint64)byte[]", method "verify_concat(byte[],byte[],uint64,uint64)byte[]", method "verify_divmodw(uint64,uint64,uint64,uint64)(uint64,uint64,uint64,uint64)", method "verify_divw(uint64,uint64,uint64)uint64", method "verify_err()void", method "verify_exp(uint64,uint64)uint64", method "verify_expw(uint64,uint64)(uint64,uint64)", method "verify_extract(byte[],uint64,uint64)byte[]", method "verify_extract_from_2(byte[])byte[]", method "verify_extract_uint16(byte[],uint64)uint64", method "verify_extract_uint32(byte[],uint64)uint64", method "verify_extract_uint64(byte[],uint64)uint64", method "verify_getbit_bytes(byte[],uint64)uint64", method "verify_getbit_uint64(uint64,uint64)uint64", method "verify_getbyte(byte[],uint64)uint64", method "verify_itob(uint64)byte[]", method "verify_mulw(uint64,uint64)(uint64,uint64)", method "verify_replace(byte[],uint64,byte[])byte[]", method "verify_select_bytes(byte[],byte[],uint64)byte[]", method "verify_select_uint64(uint64,uint64,uint64)uint64", method "verify_setbit_bytes(byte[],uint64,uint64)byte[]", method "verify_setbit_uint64(uint64,uint64,uint64)uint64", method "verify_setbyte(byte[],uint64,uint64)byte[]", method "verify_shl(uint64,uint64)uint64", method "verify_shr(uint64,uint64)uint64", method "verify_sqrt(uint64)uint64", method "verify_substring(byte[],uint64,uint64)byte[]"
+    bz __puya_arc4_router___bare_routing@39
+    pushbytess 0x45847eea 0xf57aceb5 0x7d631730 0xa1b24441 0xcd7be1ac 0x7cfda64b 0x54a910d9 0xc46568de 0x7a46a6ae 0x04372209 0x7e5f6d72 0x24ebcf84 0x9c0b3397 0x0ad40da4 0x95178870 0xdeedc99b 0xab2150bb 0x02a54017 0x3db66b41 0xc7ea8c2a 0x1dcea50c 0x16166f9a 0x2f472065 0xc58d30e0 0xd5a739c3 0x61f3b3e1 0x56cf368b 0x919ffbd2 0x8e30f4e7 0x89f81d92 0xd5260327 0x114c8c6d 0x39e9e62a 0xd6a4c05e 0x1ef8151a // method "verify_addw(uint64,uint64)(uint64,uint64)", method "verify_base64_decode_standard(byte[])byte[]", method "verify_base64_decode_url(byte[])byte[]", method "verify_bytes_bitlen(byte[],uint64)uint64", method "verify_uint64_bitlen(uint64)uint64", method "verify_bsqrt(byte[])byte[]", method "verify_btoi(byte[])uint64", method "verify_bzero(uint64)byte[]", method "verify_concat(byte[],byte[],uint64,uint64)byte[]", method "verify_divmodw(uint64,uint64,uint64,uint64)(uint64,uint64,uint64,uint64)", method "verify_divw(uint64,uint64,uint64)uint64", method "verify_err()void", method "verify_exp(uint64,uint64)uint64", method "verify_expw(uint64,uint64)(uint64,uint64)", method "verify_extract(byte[],uint64,uint64)byte[]", method "verify_extract_from_2(byte[])byte[]", method "verify_extract_uint16(byte[],uint64)uint64", method "verify_extract_uint32(byte[],uint64)uint64", method "verify_extract_uint64(byte[],uint64)uint64", method "verify_getbit_bytes(byte[],uint64)uint64", method "verify_getbit_uint64(uint64,uint64)uint64", method "verify_getbyte(byte[],uint64)uint64", method "verify_itob(uint64)byte[]", method "verify_bytes_len(byte[],uint64)uint64", method "verify_mulw(uint64,uint64)(uint64,uint64)", method "verify_replace(byte[],uint64,byte[])byte[]", method "verify_select_bytes(byte[],byte[],uint64)byte[]", method "verify_select_uint64(uint64,uint64,uint64)uint64", method "verify_setbit_bytes(byte[],uint64,uint64)byte[]", method "verify_setbit_uint64(uint64,uint64,uint64)uint64", method "verify_setbyte(byte[],uint64,uint64)byte[]", method "verify_shl(uint64,uint64)uint64", method "verify_shr(uint64,uint64)uint64", method "verify_sqrt(uint64)uint64", method "verify_substring(byte[],uint64,uint64)byte[]"
     txna ApplicationArgs 0
-    match __puya_arc4_router___verify_addw_route@2 __puya_arc4_router___verify_base64_decode_standard_route@3 __puya_arc4_router___verify_base64_decode_url_route@4 __puya_arc4_router___verify_bytes_bitlen_route@5 __puya_arc4_router___verify_uint64_bitlen_route@6 __puya_arc4_router___verify_bsqrt_route@7 __puya_arc4_router___verify_btoi_route@8 __puya_arc4_router___verify_bzero_route@9 __puya_arc4_router___verify_concat_route@10 __puya_arc4_router___verify_divmodw_route@11 __puya_arc4_router___verify_divw_route@12 __puya_arc4_router___verify_err_route@13 __puya_arc4_router___verify_exp_route@14 __puya_arc4_router___verify_expw_route@15 __puya_arc4_router___verify_extract_route@16 __puya_arc4_router___verify_extract_from_2_route@17 __puya_arc4_router___verify_extract_uint16_route@18 __puya_arc4_router___verify_extract_uint32_route@19 __puya_arc4_router___verify_extract_uint64_route@20 __puya_arc4_router___verify_getbit_bytes_route@21 __puya_arc4_router___verify_getbit_uint64_route@22 __puya_arc4_router___verify_getbyte_route@23 __puya_arc4_router___verify_itob_route@24 __puya_arc4_router___verify_mulw_route@25 __puya_arc4_router___verify_replace_route@26 __puya_arc4_router___verify_select_bytes_route@27 __puya_arc4_router___verify_select_uint64_route@28 __puya_arc4_router___verify_setbit_bytes_route@29 __puya_arc4_router___verify_setbit_uint64_route@30 __puya_arc4_router___verify_setbyte_route@31 __puya_arc4_router___verify_shl_route@32 __puya_arc4_router___verify_shr_route@33 __puya_arc4_router___verify_sqrt_route@34 __puya_arc4_router___verify_substring_route@35
+    match __puya_arc4_router___verify_addw_route@2 __puya_arc4_router___verify_base64_decode_standard_route@3 __puya_arc4_router___verify_base64_decode_url_route@4 __puya_arc4_router___verify_bytes_bitlen_route@5 __puya_arc4_router___verify_uint64_bitlen_route@6 __puya_arc4_router___verify_bsqrt_route@7 __puya_arc4_router___verify_btoi_route@8 __puya_arc4_router___verify_bzero_route@9 __puya_arc4_router___verify_concat_route@10 __puya_arc4_router___verify_divmodw_route@11 __puya_arc4_router___verify_divw_route@12 __puya_arc4_router___verify_err_route@13 __puya_arc4_router___verify_exp_route@14 __puya_arc4_router___verify_expw_route@15 __puya_arc4_router___verify_extract_route@16 __puya_arc4_router___verify_extract_from_2_route@17 __puya_arc4_router___verify_extract_uint16_route@18 __puya_arc4_router___verify_extract_uint32_route@19 __puya_arc4_router___verify_extract_uint64_route@20 __puya_arc4_router___verify_getbit_bytes_route@21 __puya_arc4_router___verify_getbit_uint64_route@22 __puya_arc4_router___verify_getbyte_route@23 __puya_arc4_router___verify_itob_route@24 __puya_arc4_router___verify_bytes_len_route@25 __puya_arc4_router___verify_mulw_route@26 __puya_arc4_router___verify_replace_route@27 __puya_arc4_router___verify_select_bytes_route@28 __puya_arc4_router___verify_select_uint64_route@29 __puya_arc4_router___verify_setbit_bytes_route@30 __puya_arc4_router___verify_setbit_uint64_route@31 __puya_arc4_router___verify_setbyte_route@32 __puya_arc4_router___verify_shl_route@33 __puya_arc4_router___verify_shr_route@34 __puya_arc4_router___verify_sqrt_route@35 __puya_arc4_router___verify_substring_route@36
     intc_1 // 0
     retsub
 
@@ -25,9 +25,9 @@ __puya_arc4_router___verify_addw_route@2:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -54,9 +54,9 @@ __puya_arc4_router___verify_base64_decode_standard_route@3:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -82,9 +82,9 @@ __puya_arc4_router___verify_base64_decode_url_route@4:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -110,9 +110,9 @@ __puya_arc4_router___verify_bytes_bitlen_route@5:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -135,9 +135,9 @@ __puya_arc4_router___verify_uint64_bitlen_route@6:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -158,9 +158,9 @@ __puya_arc4_router___verify_bsqrt_route@7:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -186,9 +186,9 @@ __puya_arc4_router___verify_btoi_route@8:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -209,9 +209,9 @@ __puya_arc4_router___verify_bzero_route@9:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -237,9 +237,9 @@ __puya_arc4_router___verify_concat_route@10:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -271,9 +271,9 @@ __puya_arc4_router___verify_divmodw_route@11:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -314,9 +314,9 @@ __puya_arc4_router___verify_divw_route@12:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -341,9 +341,9 @@ __puya_arc4_router___verify_err_route@13:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     callsub verify_err
     intc_0 // 1
     retsub
@@ -353,9 +353,9 @@ __puya_arc4_router___verify_exp_route@14:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -378,9 +378,9 @@ __puya_arc4_router___verify_expw_route@15:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -407,9 +407,9 @@ __puya_arc4_router___verify_extract_route@16:
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -435,18 +435,18 @@ __puya_arc4_router___verify_extract_route@16:
     retsub
 
 __puya_arc4_router___verify_extract_from_2_route@17:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:98
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:99
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:98
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:99
     // @arc4.abimethod()
     callsub verify_extract_from_2
     dup
@@ -463,20 +463,20 @@ __puya_arc4_router___verify_extract_from_2_route@17:
     retsub
 
 __puya_arc4_router___verify_extract_uint16_route@18:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:104
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:105
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:104
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:105
     // @arc4.abimethod()
     callsub verify_extract_uint16
     itob
@@ -488,20 +488,20 @@ __puya_arc4_router___verify_extract_uint16_route@18:
     retsub
 
 __puya_arc4_router___verify_extract_uint32_route@19:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:110
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:111
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:110
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:111
     // @arc4.abimethod()
     callsub verify_extract_uint32
     itob
@@ -513,20 +513,20 @@ __puya_arc4_router___verify_extract_uint32_route@19:
     retsub
 
 __puya_arc4_router___verify_extract_uint64_route@20:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:116
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:117
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:116
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:117
     // @arc4.abimethod()
     callsub verify_extract_uint64
     itob
@@ -538,20 +538,20 @@ __puya_arc4_router___verify_extract_uint64_route@20:
     retsub
 
 __puya_arc4_router___verify_getbit_bytes_route@21:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:122
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:123
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:122
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:123
     // @arc4.abimethod()
     callsub verify_getbit_bytes
     itob
@@ -563,20 +563,20 @@ __puya_arc4_router___verify_getbit_bytes_route@21:
     retsub
 
 __puya_arc4_router___verify_getbit_uint64_route@22:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:128
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:129
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:128
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:129
     // @arc4.abimethod()
     callsub verify_getbit_uint64
     itob
@@ -588,20 +588,20 @@ __puya_arc4_router___verify_getbit_uint64_route@22:
     retsub
 
 __puya_arc4_router___verify_getbyte_route@23:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:134
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:135
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:134
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:135
     // @arc4.abimethod()
     callsub verify_getbyte
     itob
@@ -613,18 +613,18 @@ __puya_arc4_router___verify_getbyte_route@23:
     retsub
 
 __puya_arc4_router___verify_itob_route@24:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:140
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:141
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:140
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:141
     // @arc4.abimethod()
     callsub verify_itob
     dup
@@ -640,21 +640,46 @@ __puya_arc4_router___verify_itob_route@24:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_mulw_route@25:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:146
+__puya_arc4_router___verify_bytes_len_route@25:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:147
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
+    // export class MiscellaneousOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:147
+    // @arc4.abimethod()
+    callsub verify_bytes_len
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    retsub
+
+__puya_arc4_router___verify_mulw_route@26:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:154
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:146
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:154
     // @arc4.abimethod()
     callsub verify_mulw
     swap
@@ -669,14 +694,14 @@ __puya_arc4_router___verify_mulw_route@25:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_replace_route@26:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:152
+__puya_arc4_router___verify_replace_route@27:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:160
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -685,7 +710,7 @@ __puya_arc4_router___verify_replace_route@26:
     btoi
     txna ApplicationArgs 3
     extract 2 0
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:152
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:160
     // @arc4.abimethod()
     callsub verify_replace
     dup
@@ -701,14 +726,14 @@ __puya_arc4_router___verify_replace_route@26:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_select_bytes_route@27:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:158
+__puya_arc4_router___verify_select_bytes_route@28:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:166
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -717,7 +742,7 @@ __puya_arc4_router___verify_select_bytes_route@27:
     extract 2 0
     txna ApplicationArgs 3
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:158
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:166
     // @arc4.abimethod()
     callsub verify_select_bytes
     dup
@@ -733,14 +758,14 @@ __puya_arc4_router___verify_select_bytes_route@27:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_select_uint64_route@28:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:164
+__puya_arc4_router___verify_select_uint64_route@29:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:172
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -749,7 +774,7 @@ __puya_arc4_router___verify_select_uint64_route@28:
     btoi
     txna ApplicationArgs 3
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:164
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:172
     // @arc4.abimethod()
     callsub verify_select_uint64
     itob
@@ -760,14 +785,14 @@ __puya_arc4_router___verify_select_uint64_route@28:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_setbit_bytes_route@29:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:170
+__puya_arc4_router___verify_setbit_bytes_route@30:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:178
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -776,7 +801,7 @@ __puya_arc4_router___verify_setbit_bytes_route@29:
     btoi
     txna ApplicationArgs 3
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:170
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:178
     // @arc4.abimethod()
     callsub verify_setbit_bytes
     dup
@@ -792,14 +817,14 @@ __puya_arc4_router___verify_setbit_bytes_route@29:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_setbit_uint64_route@30:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:176
+__puya_arc4_router___verify_setbit_uint64_route@31:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:184
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -808,7 +833,7 @@ __puya_arc4_router___verify_setbit_uint64_route@30:
     btoi
     txna ApplicationArgs 3
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:176
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:184
     // @arc4.abimethod()
     callsub verify_setbit_uint64
     itob
@@ -819,14 +844,14 @@ __puya_arc4_router___verify_setbit_uint64_route@30:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_setbyte_route@31:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:182
+__puya_arc4_router___verify_setbyte_route@32:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:190
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -835,7 +860,7 @@ __puya_arc4_router___verify_setbyte_route@31:
     btoi
     txna ApplicationArgs 3
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:182
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:190
     // @arc4.abimethod()
     callsub verify_setbyte
     dup
@@ -851,21 +876,21 @@ __puya_arc4_router___verify_setbyte_route@31:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_shl_route@32:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:188
+__puya_arc4_router___verify_shl_route@33:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:196
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:188
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:196
     // @arc4.abimethod()
     callsub verify_shl
     itob
@@ -876,21 +901,21 @@ __puya_arc4_router___verify_shl_route@32:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_shr_route@33:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:194
+__puya_arc4_router___verify_shr_route@34:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:202
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:194
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:202
     // @arc4.abimethod()
     callsub verify_shr
     itob
@@ -901,19 +926,19 @@ __puya_arc4_router___verify_shr_route@33:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_sqrt_route@34:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:200
+__puya_arc4_router___verify_sqrt_route@35:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:208
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:200
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:208
     // @arc4.abimethod()
     callsub verify_sqrt
     itob
@@ -924,14 +949,14 @@ __puya_arc4_router___verify_sqrt_route@34:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___verify_substring_route@35:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:206
+__puya_arc4_router___verify_substring_route@36:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:214
     // @arc4.abimethod()
     txn OnCompletion
     !
-    assert // OnCompletion is NoOp
+    assert // OnCompletion is not NoOp
     txn ApplicationID
-    assert // is not creating
+    assert // can only call when not creating
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
@@ -940,7 +965,7 @@ __puya_arc4_router___verify_substring_route@35:
     btoi
     txna ApplicationArgs 3
     btoi
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:206
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:214
     // @arc4.abimethod()
     callsub verify_substring
     dup
@@ -956,18 +981,18 @@ __puya_arc4_router___verify_substring_route@35:
     intc_0 // 1
     retsub
 
-__puya_arc4_router___bare_routing@38:
+__puya_arc4_router___bare_routing@39:
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     txn OnCompletion
-    bnz __puya_arc4_router___after_if_else@42
+    bnz __puya_arc4_router___after_if_else@43
     txn ApplicationID
     !
-    assert // is creating
+    assert // can only call when creating
     intc_0 // 1
     retsub
 
-__puya_arc4_router___after_if_else@42:
+__puya_arc4_router___after_if_else@43:
     // tests/artifacts/miscellaneous-ops/contract.algo.ts:3
     // export class MiscellaneousOpsContract extends arc4.Contract {
     intc_1 // 0
@@ -1227,307 +1252,327 @@ verify_extract:
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_extract_from_2(a: bytes) -> bytes:
 verify_extract_from_2:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:98-99
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:99-100
     // @arc4.abimethod()
     // public verify_extract_from_2(a: bytes): bytes {
     proto 1 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:100
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:101
     // const result = op.extract(a, 2, 0)
     frame_dig -1
     extract 2 0
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:101
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:102
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_extract_uint16(a: bytes, b: uint64) -> uint64:
 verify_extract_uint16:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:104-105
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:105-106
     // @arc4.abimethod()
     // public verify_extract_uint16(a: bytes, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:106
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:107
     // const result = op.extractUint16(a, b)
     frame_dig -2
     frame_dig -1
     extract_uint16
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:107
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:108
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_extract_uint32(a: bytes, b: uint64) -> uint64:
 verify_extract_uint32:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:110-111
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:111-112
     // @arc4.abimethod()
     // public verify_extract_uint32(a: bytes, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:112
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:113
     // const result = op.extractUint32(a, b)
     frame_dig -2
     frame_dig -1
     extract_uint32
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:113
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:114
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_extract_uint64(a: bytes, b: uint64) -> uint64:
 verify_extract_uint64:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:116-117
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:117-118
     // @arc4.abimethod()
     // public verify_extract_uint64(a: bytes, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:118
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:119
     // const result = op.extractUint64(a, b)
     frame_dig -2
     frame_dig -1
     extract_uint64
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:119
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:120
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_getbit_bytes(a: bytes, b: uint64) -> uint64:
 verify_getbit_bytes:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:122-123
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:123-124
     // @arc4.abimethod()
     // public verify_getbit_bytes(a: bytes, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:124
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:125
     // const result = op.getBit(a, b)
     frame_dig -2
     frame_dig -1
     getbit
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:125
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:126
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_getbit_uint64(a: uint64, b: uint64) -> uint64:
 verify_getbit_uint64:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:128-129
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:129-130
     // @arc4.abimethod()
     // public verify_getbit_uint64(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:130
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:131
     // const result = op.getBit(a, b)
     frame_dig -2
     frame_dig -1
     getbit
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:131
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:132
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_getbyte(a: bytes, b: uint64) -> uint64:
 verify_getbyte:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:134-135
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:135-136
     // @arc4.abimethod()
     // public verify_getbyte(a: bytes, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:136
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:137
     // const result = op.getByte(a, b)
     frame_dig -2
     frame_dig -1
     getbyte
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:137
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:138
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_itob(a: uint64) -> bytes:
 verify_itob:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:140-141
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:141-142
     // @arc4.abimethod()
     // public verify_itob(a: uint64): bytes {
     proto 1 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:142
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:143
     // const result = op.itob(a)
     frame_dig -1
     itob
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:143
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:144
+    // return result
+    retsub
+
+
+// tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_bytes_len(a: bytes, pad_a_size: uint64) -> uint64:
+verify_bytes_len:
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:147-148
+    // @arc4.abimethod()
+    // public verify_bytes_len(a: bytes, pad_a_size: uint64): uint64 {
+    proto 2 1
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:149
+    // const paddedA = op.bzero(pad_a_size).concat(a)
+    frame_dig -1
+    bzero
+    frame_dig -2
+    concat
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:150
+    // const result = op.len(paddedA)
+    len
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:151
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_mulw(a: uint64, b: uint64) -> uint64, uint64:
 verify_mulw:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:146-147
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:154-155
     // @arc4.abimethod()
     // public verify_mulw(a: uint64, b: uint64): readonly [uint64, uint64] {
     proto 2 2
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:148
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:156
     // const result = op.mulw(a, b)
     frame_dig -2
     frame_dig -1
     mulw
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:149
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:157
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_replace(a: bytes, b: uint64, c: bytes) -> bytes:
 verify_replace:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:152-153
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:160-161
     // @arc4.abimethod()
     // public verify_replace(a: bytes, b: uint64, c: bytes): bytes {
     proto 3 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:154
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:162
     // const result = op.replace(a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     replace3
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:155
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:163
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_select_bytes(a: bytes, b: bytes, c: uint64) -> bytes:
 verify_select_bytes:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:158-159
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:166-167
     // @arc4.abimethod()
     // public verify_select_bytes(a: bytes, b: bytes, c: uint64): bytes {
     proto 3 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:160
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:168
     // const result = op.select(a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     select
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:161
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:169
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_select_uint64(a: uint64, b: uint64, c: uint64) -> uint64:
 verify_select_uint64:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:164-165
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:172-173
     // @arc4.abimethod()
     // public verify_select_uint64(a: uint64, b: uint64, c: uint64): uint64 {
     proto 3 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:166
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:174
     // const result = op.select(a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     select
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:167
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:175
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_setbit_bytes(a: bytes, b: uint64, c: uint64) -> bytes:
 verify_setbit_bytes:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:170-171
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:178-179
     // @arc4.abimethod()
     // public verify_setbit_bytes(a: bytes, b: uint64, c: uint64): bytes {
     proto 3 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:172
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:180
     // const result = op.setBit(a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     setbit
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:173
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:181
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_setbit_uint64(a: uint64, b: uint64, c: uint64) -> uint64:
 verify_setbit_uint64:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:176-177
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:184-185
     // @arc4.abimethod()
     // public verify_setbit_uint64(a: uint64, b: uint64, c: uint64): uint64 {
     proto 3 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:178
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:186
     // const result = op.setBit(a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     setbit
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:179
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:187
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_setbyte(a: bytes, b: uint64, c: uint64) -> bytes:
 verify_setbyte:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:182-183
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:190-191
     // @arc4.abimethod()
     // public verify_setbyte(a: bytes, b: uint64, c: uint64): bytes {
     proto 3 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:184
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:192
     // const result = op.setByte(a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     setbyte
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:185
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:193
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_shl(a: uint64, b: uint64) -> uint64:
 verify_shl:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:188-189
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:196-197
     // @arc4.abimethod()
     // public verify_shl(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:190
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:198
     // const result = op.shl(a, b)
     frame_dig -2
     frame_dig -1
     shl
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:191
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:199
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_shr(a: uint64, b: uint64) -> uint64:
 verify_shr:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:194-195
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:202-203
     // @arc4.abimethod()
     // public verify_shr(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:196
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:204
     // const result = op.shr(a, b)
     frame_dig -2
     frame_dig -1
     shr
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:197
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:205
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_sqrt(a: uint64) -> uint64:
 verify_sqrt:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:200-201
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:208-209
     // @arc4.abimethod()
     // public verify_sqrt(a: uint64): uint64 {
     proto 1 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:202
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:210
     // const result = op.sqrt(a)
     frame_dig -1
     sqrt
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:203
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:211
     // return result
     retsub
 
 
 // tests/artifacts/miscellaneous-ops/contract.algo.ts::MiscellaneousOpsContract.verify_substring(a: bytes, b: uint64, c: uint64) -> bytes:
 verify_substring:
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:206-207
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:214-215
     // @arc4.abimethod()
     // public verify_substring(a: bytes, b: uint64, c: uint64): bytes {
     proto 3 1
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:208
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:216
     // const result = op.substring(a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     substring3
-    // tests/artifacts/miscellaneous-ops/contract.algo.ts:209
+    // tests/artifacts/miscellaneous-ops/contract.algo.ts:217
     // return result
     retsub

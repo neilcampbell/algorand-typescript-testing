@@ -672,6 +672,24 @@ describe('Pure op codes', async () => {
     })
   })
 
+  describe('len', async () => {
+    test.each([
+      [Bytes(internal.encodingUtil.bigIntToUint8Array(0n)), 0],
+      [Bytes(internal.encodingUtil.bigIntToUint8Array(1n)), 0],
+      [Bytes(internal.encodingUtil.bigIntToUint8Array(MAX_UINT64)), 0],
+      [Bytes(internal.encodingUtil.bigIntToUint8Array(MAX_UINT512)), 0],
+      [Bytes(internal.encodingUtil.bigIntToUint8Array(MAX_UINT512 * MAX_UINT512)), 0],
+      [Bytes(Array(8).fill(0x00).concat(Array(4).fill(0x0f))), 0],
+      [Bytes([0x0f]), MAX_BYTES_SIZE - 1],
+      [Bytes(), 0],
+    ])('should return the length of the bytes input', async (a, padSize) => {
+      const avmResult = await getAvmResult<uint64>({ appClient }, 'verify_bytes_len', asUint8Array(a), padSize)
+      const paddedA = getPaddedBytes(padSize, a)
+      const result = op.len(paddedA)
+      expect(result).toEqual(avmResult)
+    })
+  })
+
   describe('mulw', async () => {
     test.each([
       [0, 0],

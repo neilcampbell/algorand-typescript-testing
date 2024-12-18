@@ -145,6 +145,13 @@ export class MiscellaneousOpsContract extends arc4.Contract {
   }
 
   @arc4.abimethod()
+  public verify_bytes_len(a: bytes, pad_a_size: uint64): uint64 {
+    const paddedA = op.bzero(pad_a_size).concat(a)
+    const result = op.len(paddedA)
+    return result
+  }
+
+  @arc4.abimethod()
   public verify_mulw(a: uint64, b: uint64): readonly [uint64, uint64] {
     const result = op.mulw(a, b)
     return result

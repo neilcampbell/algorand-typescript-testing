@@ -1,7 +1,7 @@
 import { Base64, biguint, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT64, MAX_UINT8, UINT64_SIZE } from '../constants'
 import { notImplementedError, testInvariant } from '../errors'
-import { asBigUint, asBytes, asMaybeBytesCls, asMaybeUint64Cls, asUint64Cls, binaryStringToBytes } from '../util'
+import { asBigUint, asBytes, asBytesCls, asMaybeBytesCls, asMaybeUint64Cls, asUint64Cls, binaryStringToBytes } from '../util'
 
 export const addw = (a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): readonly [uint64, uint64] => {
   const uint64A = internal.primitives.Uint64Cls.fromCompat(a)
@@ -170,6 +170,10 @@ export const getByte = (a: internal.primitives.StubBytesCompat, b: internal.prim
 
 export const itob = (a: internal.primitives.StubUint64Compat): bytes => {
   return asUint64Cls(a).toBytes().asAlgoTs()
+}
+
+export const len = (a: internal.primitives.StubBytesCompat): uint64 => {
+  return asBytesCls(a).length.asAlgoTs()
 }
 
 export const mulw = (a: internal.primitives.StubUint64Compat, b: internal.primitives.StubUint64Compat): readonly [uint64, uint64] => {

@@ -1,4 +1,4 @@
-import { Account, Application, Asset, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, Application, Asset, Bytes, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import { captureMethodConfig } from './abi-metadata'
 import { DecodedLogs, LogDecoding } from './decode-logs'
 import * as ops from './impl'
@@ -27,6 +27,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
   #txnContext: TransactionContext
   #valueGenerator: ValueGenerator
   #defaultSender: Account
+  #activeLogicSigArgs: bytes[]
 
   constructor(defaultSenderAddress?: bytes) {
     internal.ctxMgr.instance = this
@@ -35,6 +36,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
     this.#txnContext = new TransactionContext()
     this.#valueGenerator = new ValueGenerator()
     this.#defaultSender = Account(defaultSenderAddress ?? getRandomBytes(32).asAlgoTs())
+    this.#activeLogicSigArgs = []
   }
 
   account(address?: bytes): Account {
@@ -117,6 +119,19 @@ export class TestExecutionContext implements internal.ExecutionContext {
       Box,
       BoxMap,
       BoxRef,
+    }
+  }
+
+  get activeLogicSigArgs(): bytes[] {
+    return this.#activeLogicSigArgs
+  }
+
+  executeLogicSig(logicSig: LogicSig, ...args: bytes[]): boolean | uint64 {
+    this.#activeLogicSigArgs = args
+    try {
+      return logicSig.program()
+    } finally {
+      this.#activeLogicSigArgs = []
     }
   }
 
