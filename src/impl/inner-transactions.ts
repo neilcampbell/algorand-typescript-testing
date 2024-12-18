@@ -1,4 +1,10 @@
 import { Account, Application, arc4, Asset, bytes, internal, itxn, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
+import { lazyContext } from '../context-helpers/internal-context'
+import { Mutable } from '../typescript-helpers'
+import { asBytes } from '../util'
+import { getApp } from './app-params'
+import { getAsset } from './asset-params'
+import { InnerTxn, InnerTxnFields } from './itxn'
 import {
   ApplicationTransaction,
   AssetConfigTransaction,
@@ -7,12 +13,6 @@ import {
   KeyRegistrationTransaction,
   PaymentTransaction,
 } from './transactions'
-import { asBytes, toBytes } from '../util'
-import { getAsset } from './asset-params'
-import { InnerTxn, InnerTxnFields } from './itxn'
-import { getApp } from './app-params'
-import { Mutable } from '../typescript-helpers'
-import { lazyContext } from '../context-helpers/internal-context'
 
 const mapCommonFields = <T extends InnerTxnFields>(
   fields: T,
@@ -149,7 +149,7 @@ export class ApplicationInnerTxn extends ApplicationTransaction implements itxn.
       approvalProgramPages: Array.isArray(approvalProgram) ? approvalProgram : undefined,
       clearStateProgram: Array.isArray(clearStateProgram) ? undefined : (clearStateProgram as bytes),
       clearStateProgramPages: Array.isArray(clearStateProgram) ? clearStateProgram : undefined,
-      appArgs: appArgs?.map((x) => toBytes(x)),
+      appArgs: appArgs?.map((x) => x),
       accounts: accounts?.map((x) => x),
       assets: assets?.map((x) => x),
       apps: apps?.map((x) => x),

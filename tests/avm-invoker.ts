@@ -1,6 +1,6 @@
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
-import { ABIAppCallArg, ABIReturn } from '@algorandfoundation/algokit-utils/types/app'
+import { ABIAppCallArg, AppCallTransactionResult } from '@algorandfoundation/algokit-utils/types/app'
 import { ApplicationClient } from '@algorandfoundation/algokit-utils/types/app-client'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { KmdAccountManager } from '@algorandfoundation/algokit-utils/types/kmd-account-manager'
@@ -35,13 +35,13 @@ const invokeMethod = async (
   method: string,
   sendParams?: SendTransactionParams,
   ...methodArgs: ABIAppCallArg[]
-): Promise<ABIReturn | undefined> => {
+): Promise<AppCallTransactionResult | undefined> => {
   const response = await appClient.call({ method, methodArgs, note: randomUUID(), sendParams })
 
   if (response.return?.decodeError) {
     throw response.return.decodeError
   }
-  return response.return
+  return response
 }
 
 export const getAvmResult = async <TResult extends ABIValue>(
@@ -50,7 +50,16 @@ export const getAvmResult = async <TResult extends ABIValue>(
   ...methodArgs: ABIAppCallArg[]
 ): Promise<TResult> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
-  return result?.returnValue as TResult
+  return result?.return?.returnValue as TResult
+}
+
+export const getAvmResultLog = async (
+  { appClient, sendParams }: { appClient: ApplicationClient; sendParams?: SendTransactionParams },
+  method: string,
+  ...methodArgs: ABIAppCallArg[]
+): Promise<Uint8Array[] | undefined> => {
+  const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
+  return result?.confirmation?.logs
 }
 
 export const getAvmResultRaw = async (
@@ -59,7 +68,7 @@ export const getAvmResultRaw = async (
   ...methodArgs: ABIAppCallArg[]
 ): Promise<Uint8Array | undefined> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
-  return result?.rawReturnValue
+  return result?.return?.rawReturnValue
 }
 
 export const getLocalNetDefaultAccount = () => {

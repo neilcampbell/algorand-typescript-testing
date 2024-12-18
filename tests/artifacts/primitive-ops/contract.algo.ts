@@ -1,4 +1,18 @@
-import { arc4, biguint, BigUint, Bytes, bytes, op, uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, biguint, BigUint, Bytes, bytes, log, op, uint64 } from '@algorandfoundation/algorand-typescript'
+import {
+  Bool,
+  DynamicArray,
+  interpretAsArc4,
+  StaticArray,
+  Str,
+  Tuple,
+  UFixedNxM,
+  UintN,
+  UintN16,
+  UintN32,
+  UintN64,
+  UintN8,
+} from '@algorandfoundation/algorand-typescript/arc4'
 
 export class PrimitiveOpsContract extends arc4.Contract {
   @arc4.abimethod()
@@ -390,27 +404,26 @@ export class PrimitiveOpsContract extends arc4.Contract {
     return result
   }
 
-  // TODO: uncomment when arc4 types are available
-  // @arc4.abimethod
-  // public verify_log(  # noqa: PLR0913
-  //     self,
-  //     a: String,
-  //     b: uint64,
-  //     c: bytes,
-  //     d: bytes,
-  //     e: arc4.boolean,
-  //     f: arc4.String,
-  //     g: arc4.UIntN[typing.Literal[64]],
-  //     h: arc4.BigUIntN[typing.Literal[256]],
-  //     i: arc4.UFixedNxM[typing.Literal[32], typing.Literal[8]],
-  //     j: arc4.BigUFixedNxM[typing.Literal[256], typing.Literal[16]],
-  //     k: bytes,
-  //     m: bytes,
-  //     n: bytes,
-  // ) : None:
-  //     d_biguint = BigUint(d)
-  //     arc4_k = arc4.StaticArray[arc4.UInt8, typing.Literal[3]].from_bytes(k)
-  //     arc4_m = arc4.DynamicArray[arc4.UInt16].from_bytes(m)
-  //     arc4_n = arc4.Tuple[arc4.UInt32, arc4.uint64, arc4.String].from_bytes(n)
-  //     log(a, b, c, d_biguint, e, f, g, h, i, j, arc4_k, arc4_m, arc4_n, sep="-")
+  @arc4.abimethod()
+  public verify_log(
+    a: string,
+    b: uint64,
+    c: bytes,
+    d: bytes,
+    e: Bool,
+    f: Str,
+    g: UintN<64>,
+    h: UintN<256>,
+    i: UFixedNxM<32, 8>,
+    j: UFixedNxM<256, 16>,
+    k: bytes,
+    m: bytes,
+    n: bytes,
+  ) {
+    const d_biguint = BigUint(d)
+    const arc4_k = interpretAsArc4<StaticArray<UintN8, 3>>(k)
+    const arc4_m = interpretAsArc4<DynamicArray<UintN16>>(m)
+    const arc4_n = interpretAsArc4<Tuple<[UintN32, UintN64, Str]>>(n)
+    log(a, b, c, d_biguint, e, f, g, h, i, j, arc4_k, arc4_m, arc4_n)
+  }
 }

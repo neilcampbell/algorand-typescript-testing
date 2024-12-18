@@ -2,10 +2,12 @@ import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { ApplicationClient } from '@algorandfoundation/algokit-utils/types/app-client'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Account, arc4, bytes, Bytes, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { DynamicBytes, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
-import { MIN_TXN_FEE, ZERO_ADDRESS } from '../src/constants'
+import { ABI_RETURN_VALUE_LOG_PREFIX, MIN_TXN_FEE, ZERO_ADDRESS } from '../src/constants'
 import { testInvariant } from '../src/errors'
+import { Block, gloadBytes, gloadUint64 } from '../src/impl'
 import { AccountCls } from '../src/impl/account'
 import { InnerTxn } from '../src/impl/itxn'
 import { ApplicationTransaction } from '../src/impl/transactions'
@@ -42,7 +44,6 @@ import {
   INITIAL_BALANCE_MICRO_ALGOS,
 } from './avm-invoker'
 import { asUint8Array } from './util'
-import { Block, gloadBytes, gloadUint64 } from '../src/impl'
 
 describe('State op codes', async () => {
   const ctx = new TestExecutionContext()
@@ -284,22 +285,12 @@ describe('State op codes', async () => {
 
     it('should be able to pass app call txn as app arg', async () => {
       const appCallTxn = ctx.any.txn.applicationCall({
-        appArgs: [Bytes('some_value()uint64')],
-        appLogs: [Bytes('this is a log statement')],
+        appArgs: [arc4.methodSelector('some_value()uint64')],
+        appLogs: [ABI_RETURN_VALUE_LOG_PREFIX.concat(new UintN64(2).bytes)],
       })
       const contract = ctx.contract.create(AppExpectingEffects)
       contract.log_group(appCallTxn)
     })
-
-    // TODO: uncomment when arc4 stubs are implemented
-    // it('should be able to pass app call txn as app arg', async () => {
-    //   const appCallTxn = ctx.any.txn.applicationCall({
-    //     appArgs: [arc4.arc4Signature("some_value()uint64")],
-    //     logs: [arc4Prefix.concat(arc4.Uint64(2).bytes)]
-    //   })
-    //   const contract = ctx.contract.create(AppExpectingEffects)
-    //   contract.log_group(appCallTxn)
-    // })
   })
 
   describe('itxn', async () => {
@@ -491,7 +482,7 @@ describe('State op codes', async () => {
       const secondContract = ctx.contract.create(StateAppGlobalExContract)
       const secondApp = ctx.ledger.getApplicationForContract(secondContract)
       expect(secondApp.globalNumUint.valueOf()).toEqual(2)
-      expect(secondApp.globalNumBytes.valueOf()).toEqual(2)
+      expect(secondApp.globalNumBytes.valueOf()).toEqual(4)
 
       const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_ex_bytes', exApp.appId, asUint8Array(key))
 
@@ -501,20 +492,25 @@ describe('State op codes', async () => {
       expect(bytesResult).toEqual(bytesAvmResult)
     })
 
-    // TODO: implement test_app_global_ex_get_arc4 test method when arc4 stubs are implemented
+    test.each(['global_arc4_bytes_explicit', 'global_arc4_bytes'])(
+      'should be able to use _ex methods to get arc4 state values of another app',
+      async (key) => {
+        const secondContract = ctx.contract.create(StateAppGlobalExContract)
+        const secondApp = ctx.ledger.getApplicationForContract(secondContract)
+        expect(secondApp.globalNumUint.valueOf()).toEqual(2)
+        expect(secondApp.globalNumBytes.valueOf()).toEqual(4)
+
+        const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_ex_bytes', exApp.appId, asUint8Array(key))
+
+        const contract = ctx.contract.create(StateAppGlobalContract)
+        const bytesResult = contract.verify_get_ex_bytes(secondApp, Bytes(key))
+
+        expect(bytesResult).toEqual(bytesAvmResult)
+      },
+    )
   })
 
   describe('AppLocal', async () => {
-    const tryOptIn = async (client: ApplicationClient) => {
-      try {
-        await client.optIn({ method: 'opt_in', methodArgs: [] })
-      } catch (e) {
-        if (!(e as DeliberateAny).message.includes('has already opted in to app')) {
-          throw e
-        }
-        // ignore error if account has already opted in
-      }
-    }
     const appClient = await getAlgorandAppClient(appLocalAppSpecJson as AppSpec)
     const [exAppClient, exApp] = await getAlgorandAppClientWithApp(appLocalExAppSpecJson as AppSpec)
     await tryOptIn(appClient)
@@ -566,7 +562,7 @@ describe('State op codes', async () => {
       const secondContract = ctx.contract.create(StateAppLocalExContract)
       const secondApp = ctx.ledger.getApplicationForContract(secondContract)
       expect(secondApp.localNumUint.valueOf()).toEqual(1)
-      expect(secondApp.localNumBytes.valueOf()).toEqual(1)
+      expect(secondApp.localNumBytes.valueOf()).toEqual(2)
 
       const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_ex_bytes', localNetAccount.addr, exApp.appId, asUint8Array(key))
 
@@ -577,6 +573,32 @@ describe('State op codes', async () => {
       expect(bytesResult).toEqual(bytesAvmResult)
     })
 
-    // TODO: implement test_app_local_ex_get_arc4 test method when arc4 stubs are implemented
+    it('should be able to use _ex methods to get arc4 state values of another app', async () => {
+      const key = 'local_arc4_bytes'
+      const localNetAccount = await getLocalNetDefaultAccount()
+      const account = Account(Bytes.fromBase32(localNetAccount.addr))
+      const secondContract = ctx.contract.create(StateAppLocalExContract)
+      const secondApp = ctx.ledger.getApplicationForContract(secondContract)
+      expect(secondApp.localNumUint.valueOf()).toEqual(1)
+      expect(secondApp.localNumBytes.valueOf()).toEqual(2)
+
+      const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_ex_bytes', localNetAccount.addr, exApp.appId, asUint8Array(key))
+
+      const contract = ctx.contract.create(StateAppLocalContract)
+      secondContract.localArc4Bytes(account).value = new DynamicBytes('dummy_arc4_bytes')
+      const bytesResult = contract.verify_get_ex_bytes(account, secondApp, Bytes(key))
+
+      expect(bytesResult).toEqual(bytesAvmResult)
+    })
   })
 })
+const tryOptIn = async (client: ApplicationClient) => {
+  try {
+    await client.optIn({ method: 'opt_in', methodArgs: [] })
+  } catch (e) {
+    if (!(e as DeliberateAny).message.includes('has already opted in to app')) {
+      throw e
+    }
+    // ignore error if account has already opted in
+  }
+}

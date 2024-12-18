@@ -17,6 +17,7 @@ import {
   Uint64,
   uint64,
 } from '@algorandfoundation/algorand-typescript'
+import { Address, Bool, Byte, DynamicBytes, Str, UintN128, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 
 function get_1st_ref_index(): uint64 {
   return op.btoi(Txn.applicationArgs(1))
@@ -48,13 +49,12 @@ export class StateAcctParamsGetContract extends arc4.Contract {
   }
 
   @arc4.abimethod()
-  public verify_acct_auth_addr(a: Account): Account {
+  public verify_acct_auth_addr(a: Account): Address {
     const [value, funded] = op.AcctParams.acctAuthAddr(a)
     const [value_index, funded_index] = op.AcctParams.acctAuthAddr(get_1st_ref_index())
     assert(value === value_index, 'expected value by index to match')
     assert(funded === funded_index, 'expected funded by index to match')
-    // TODO: return arc4.Address(value)
-    return value
+    return new Address(value)
   }
 
   @arc4.abimethod()
@@ -218,53 +218,48 @@ export class StateAssetParamsContract extends arc4.Contract {
   }
 
   @arc4.abimethod()
-  public verify_asset_params_get_manager(a: Asset): Account {
+  public verify_asset_params_get_manager(a: Asset): Address {
     const [value, exists] = op.AssetParams.assetManager(a)
     const [value_index, exists_index] = op.AssetParams.assetManager(get_1st_ref_index())
     assert(value === value_index, 'expected value by index to match')
     assert(exists === exists_index, 'expected exists by index to match')
-    // TODO: return arc4.Address(value)
-    return value
+    return new Address(value)
   }
 
   @arc4.abimethod()
-  public verify_asset_params_get_reserve(a: Asset): Account {
+  public verify_asset_params_get_reserve(a: Asset): Address {
     const [value, exists] = op.AssetParams.assetReserve(a)
     const [value_index, exists_index] = op.AssetParams.assetReserve(get_1st_ref_index())
     assert(value === value_index, 'expected value by index to match')
     assert(exists === exists_index, 'expected exists by index to match')
-    // TODO: return arc4.Address(value)
-    return value
+    return new Address(value)
   }
 
   @arc4.abimethod()
-  public verify_asset_params_get_freeze(a: Asset): Account {
+  public verify_asset_params_get_freeze(a: Asset): Address {
     const [value, exists] = op.AssetParams.assetFreeze(a)
     const [value_index, exists_index] = op.AssetParams.assetFreeze(get_1st_ref_index())
     assert(value === value_index, 'expected value by index to match')
     assert(exists === exists_index, 'expected exists by index to match')
-    // TODO: return arc4.Address(value)
-    return value
+    return new Address(value)
   }
 
   @arc4.abimethod()
-  public verify_asset_params_get_clawback(a: Asset): Account {
+  public verify_asset_params_get_clawback(a: Asset): Address {
     const [value, exists] = op.AssetParams.assetClawback(a)
     const [value_index, exists_index] = op.AssetParams.assetClawback(get_1st_ref_index())
     assert(value === value_index, 'expected value by index to match')
     assert(exists === exists_index, 'expected exists by index to match')
-    // TODO: return arc4.Address(value)
-    return value
+    return new Address(value)
   }
 
   @arc4.abimethod()
-  public verify_asset_params_get_creator(a: Asset): Account {
+  public verify_asset_params_get_creator(a: Asset): Address {
     const [value, exists] = op.AssetParams.assetCreator(a)
     const [value_index, exists_index] = op.AssetParams.assetCreator(get_1st_ref_index())
     assert(value === value_index, 'expected value by index to match')
     assert(exists === exists_index, 'expected exists by index to match')
-    // TODO: return arc4.Address(value)
-    return value
+    return new Address(value)
   }
 }
 
@@ -333,24 +328,21 @@ export class StateAppParamsContract extends arc4.Contract {
   }
 
   @arc4.abimethod()
-  public verify_app_params_get_creator(a: Application): Account {
+  public verify_app_params_get_creator(a: Application): Address {
     const [value, exists] = op.AppParams.appCreator(a)
     const [value_index, exists_index] = op.AppParams.appCreator(get_1st_ref_index())
     assert(value === value_index, 'expected value by index to match')
     assert(exists === exists_index, 'expected exists by index to match')
-    // TODO: return arc4.Address(value)
-    return value
+    return new Address(value)
   }
 
   @arc4.abimethod()
-  public verify_app_params_get_address(a: Application): Account {
+  public verify_app_params_get_address(a: Application): Address {
     const [value, exists] = op.AppParams.appAddress(a)
     const [value_index, exists_index] = op.AppParams.appAddress(get_1st_ref_index())
-    // TODO: recompile when puya ts is ready
     assert(value.bytes.toString() === value_index.bytes.toString(), 'expected value by index to match')
     assert(exists === exists_index, 'expected exists by index to match')
-    // TODO: return arc4.Address(value)
-    return value
+    return new Address(value)
   }
 }
 
@@ -359,9 +351,8 @@ export class StateAppGlobalExContract extends arc4.Contract {
   globalBytes = GlobalState({ key: Bytes('global_bytes'), initialValue: Bytes('dummy_bytes') })
   global_uint64_explicit = GlobalState({ initialValue: Uint64(2) })
   global_bytes_explicit = GlobalState({ initialValue: Bytes('dummy_bytes') })
-  // TODO: uncomment when arc4 types are ready
-  // globalArc4Bytes = GlobalState({ key: Bytes('global_arc4_bytes'), initialValue: arc4.DynamicBytes('dummy_arc4_bytes') })
-  // global_arc4_bytes_explicit = GlobalState({ initialValue: arc4.DynamicBytes('dummy_arc4_bytes') })
+  globalArc4Bytes = GlobalState({ key: Bytes('global_arc4_bytes'), initialValue: new DynamicBytes('dummy_arc4_bytes') })
+  global_arc4_bytes_explicit = GlobalState({ initialValue: new DynamicBytes('dummy_arc4_bytes') })
 }
 
 export class StateAppGlobalContract extends arc4.Contract {
@@ -409,16 +400,13 @@ export class StateAppGlobalContract extends arc4.Contract {
 export class StateAppLocalExContract extends arc4.Contract {
   localUint64 = LocalState<uint64>({ key: 'local_uint64' })
   localBytes = LocalState<bytes>({ key: 'local_bytes' })
-
-  // TODO: uncomment when arc4 types are ready
-  // localArc4Bytes = LocalState<arc4.DynamicBytes>({ key: "local_arc4_bytes" })
+  localArc4Bytes = LocalState<DynamicBytes>({ key: 'local_arc4_bytes' })
 
   @arc4.abimethod({ allowActions: ['OptIn'] })
-  optIn(): void {
+  opt_in(): void {
     this.localBytes(Global.creatorAddress).value = Bytes('dummy_bytes_from_external_contract')
     this.localUint64(Global.creatorAddress).value = Uint64(99)
-    // TODO: uncomment when arc4 types are ready
-    // this.localArc4Bytes(Global.creatorAddress).value = arc4.DynamicBytes("dummy_arc4_bytes")
+    this.localArc4Bytes(Global.creatorAddress).value = new DynamicBytes('dummy_arc4_bytes')
   }
 }
 
@@ -600,5 +588,277 @@ export class ItxnDemoContract extends BaseContract {
   }
 }
 
-// TODO: add GlobalStateContract when arc4 types are ready
-// TODO: add LocalStateContract when arc4 types are ready
+export class GlobalStateContract extends arc4.Contract {
+  // Implicit key state variables
+  implicitKeyArc4UintN64 = GlobalState({ initialValue: new UintN64(1337) })
+  implicitKeyArc4Str = GlobalState({ initialValue: new Str('Hello') })
+  implicitKeyArc4Byte = GlobalState({ initialValue: new Byte(0) })
+  implicitKeyArc4Bool = GlobalState({ initialValue: new Bool(true) })
+  implicitKeyArc4Address = GlobalState({ initialValue: new Address(Global.creatorAddress) })
+  implicitKeyArc4UintN128 = GlobalState({ initialValue: new UintN128(2n ** 100n) })
+  implicitKeyArc4DynamicBytes = GlobalState({ initialValue: new DynamicBytes('dynamic bytes') })
+
+  // Explicit key state variables
+  arc4UintN64 = GlobalState({ initialValue: new UintN64(1337), key: 'explicit_key_arc4_uintn64' })
+  arc4Str = GlobalState({ initialValue: new Str('Hello'), key: 'explicit_key_arc4_str' })
+  arc4Byte = GlobalState({ initialValue: new Byte(0), key: 'explicit_key_arc4_byte' })
+  arc4Bool = GlobalState({ initialValue: new Bool(true), key: 'explicit_key_arc4_bool' })
+  arc4Address = GlobalState({ initialValue: new Address(Global.creatorAddress), key: 'explicit_key_arc4_address' })
+  arc4UintN128 = GlobalState({ initialValue: new UintN128(2n ** 100n), key: 'explicit_key_arc4_uintn128' })
+  arc4DynamicBytes = GlobalState({ initialValue: new DynamicBytes('dynamic bytes'), key: 'explicit_key_arc4_dynamic_bytes' })
+
+  // Getter methods for implicit key state variables
+  @arc4.abimethod()
+  get_implicit_key_arc4_uintn64(): UintN64 {
+    return this.implicitKeyArc4UintN64.value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_str(): Str {
+    return this.implicitKeyArc4Str.value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_byte(): Byte {
+    return this.implicitKeyArc4Byte.value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_bool(): arc4.Bool {
+    return this.implicitKeyArc4Bool.value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_address(): Address {
+    return this.implicitKeyArc4Address.value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_uintn128(): UintN128 {
+    return this.implicitKeyArc4UintN128.value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_dynamic_bytes(): DynamicBytes {
+    return this.implicitKeyArc4DynamicBytes.value
+  }
+
+  // Getter methods for explicit key state variables
+  @arc4.abimethod()
+  get_arc4_uintn64(): UintN64 {
+    return this.arc4UintN64.value
+  }
+
+  @arc4.abimethod()
+  get_arc4_str(): Str {
+    return this.arc4Str.value
+  }
+
+  @arc4.abimethod()
+  get_arc4_byte(): Byte {
+    return this.arc4Byte.value
+  }
+
+  @arc4.abimethod()
+  get_arc4_bool(): arc4.Bool {
+    return this.arc4Bool.value
+  }
+
+  @arc4.abimethod()
+  get_arc4_address(): Address {
+    return this.arc4Address.value
+  }
+
+  @arc4.abimethod()
+  get_arc4_uintn128(): UintN128 {
+    return this.arc4UintN128.value
+  }
+
+  @arc4.abimethod()
+  get_arc4_dynamic_bytes(): DynamicBytes {
+    return this.arc4DynamicBytes.value
+  }
+
+  // Setter methods for implicit key state variables
+  @arc4.abimethod()
+  set_implicit_key_arc4_uintn64(value: UintN64) {
+    this.implicitKeyArc4UintN64.value = value
+  }
+
+  @arc4.abimethod()
+  set_implicit_key_arc4_str(value: Str) {
+    this.implicitKeyArc4Str.value = value
+  }
+
+  @arc4.abimethod()
+  set_implicit_key_arc4_byte(value: Byte) {
+    this.implicitKeyArc4Byte.value = value
+  }
+
+  @arc4.abimethod()
+  set_implicit_key_arc4_bool(value: Bool) {
+    this.implicitKeyArc4Bool.value = value
+  }
+
+  @arc4.abimethod()
+  set_implicit_key_arc4_address(value: Address) {
+    this.implicitKeyArc4Address.value = value
+  }
+
+  @arc4.abimethod()
+  set_implicit_key_arc4_uintn128(value: UintN128) {
+    this.implicitKeyArc4UintN128.value = value
+  }
+
+  @arc4.abimethod()
+  set_implicit_key_arc4_dynamic_bytes(value: DynamicBytes) {
+    this.implicitKeyArc4DynamicBytes.value = value
+  }
+
+  // Setter methods for explicit key state variables
+  @arc4.abimethod()
+  set_arc4_uintn64(value: UintN64) {
+    this.arc4UintN64.value = value
+  }
+
+  @arc4.abimethod()
+  set_arc4_str(value: Str) {
+    this.arc4Str.value = value
+  }
+
+  @arc4.abimethod()
+  set_arc4_byte(value: Byte) {
+    this.arc4Byte.value = value
+  }
+
+  @arc4.abimethod()
+  set_arc4_bool(value: Bool) {
+    this.arc4Bool.value = value
+  }
+
+  @arc4.abimethod()
+  set_arc4_address(value: Address) {
+    this.arc4Address.value = value
+  }
+
+  @arc4.abimethod()
+  set_arc4_uintn128(value: UintN128) {
+    this.arc4UintN128.value = value
+  }
+
+  @arc4.abimethod()
+  set_arc4_dynamic_bytes(value: DynamicBytes) {
+    this.arc4DynamicBytes.value = value
+  }
+}
+
+export class LocalStateContract extends arc4.Contract {
+  // Implicit key state variables
+  implicitKeyArc4UintN64 = LocalState<UintN64>()
+  implicitKeyArc4Str = LocalState<Str>()
+  implicitKeyArc4Byte = LocalState<Byte>()
+  implicitKeyArc4Bool = LocalState<Bool>()
+  implicitKeyArc4Address = LocalState<Address>()
+  implicitKeyArc4UintN128 = LocalState<UintN128>()
+  implicitKeyArc4DynamicBytes = LocalState<DynamicBytes>()
+
+  // Explicit key state variables
+  arc4UintN64 = LocalState<UintN64>({ key: 'explicit_key_arc4_uintn64' })
+  arc4Str = LocalState<Str>({ key: 'explicit_key_arc4_str' })
+  arc4Byte = LocalState<Byte>({ key: 'explicit_key_arc4_byte' })
+  arc4Bool = LocalState<Bool>({ key: 'explicit_key_arc4_bool' })
+  arc4Address = LocalState<Address>({ key: 'explicit_key_arc4_address' })
+  arc4UintN128 = LocalState<UintN128>({ key: 'explicit_key_arc4_uintn128' })
+  arc4DynamicBytes = LocalState<DynamicBytes>({ key: 'explicit_key_arc4_dynamic_bytes' })
+
+  @arc4.abimethod({ allowActions: ['OptIn'] })
+  opt_in(): void {
+    this.implicitKeyArc4UintN64(Global.creatorAddress).value = new UintN64(1337)
+    this.implicitKeyArc4Str(Global.creatorAddress).value = new Str('Hello')
+    this.implicitKeyArc4Byte(Global.creatorAddress).value = new Byte(0)
+    this.implicitKeyArc4Bool(Global.creatorAddress).value = new Bool(true)
+    this.implicitKeyArc4Address(Global.creatorAddress).value = new Address(Global.creatorAddress)
+    this.implicitKeyArc4UintN128(Global.creatorAddress).value = new UintN128(2n ** 100n)
+    this.implicitKeyArc4DynamicBytes(Global.creatorAddress).value = new DynamicBytes('dynamic bytes')
+
+    this.arc4UintN64(Global.creatorAddress).value = new UintN64(1337)
+    this.arc4Str(Global.creatorAddress).value = new Str('Hello')
+    this.arc4Byte(Global.creatorAddress).value = new Byte(0)
+    this.arc4Bool(Global.creatorAddress).value = new Bool(true)
+    this.arc4Address(Global.creatorAddress).value = new Address(Global.creatorAddress)
+    this.arc4UintN128(Global.creatorAddress).value = new UintN128(2n ** 100n)
+    this.arc4DynamicBytes(Global.creatorAddress).value = new DynamicBytes('dynamic bytes')
+  }
+
+  // Getter methods for implicit key state variables
+  @arc4.abimethod()
+  get_implicit_key_arc4_uintn64(a: Account): UintN64 {
+    return this.implicitKeyArc4UintN64(a).value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_str(a: Account): Str {
+    return this.implicitKeyArc4Str(a).value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_byte(a: Account): Byte {
+    return this.implicitKeyArc4Byte(a).value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_bool(a: Account): Bool {
+    return this.implicitKeyArc4Bool(a).value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_address(a: Account): Address {
+    return this.implicitKeyArc4Address(a).value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_uintn128(a: Account): UintN128 {
+    return this.implicitKeyArc4UintN128(a).value
+  }
+
+  @arc4.abimethod()
+  get_implicit_key_arc4_dynamic_bytes(a: Account): DynamicBytes {
+    return this.implicitKeyArc4DynamicBytes(a).value
+  }
+
+  // Getter methods for explicit key state variables
+  @arc4.abimethod()
+  get_arc4_uintn64(a: Account): arc4.UintN64 {
+    return this.arc4UintN64(a).value
+  }
+
+  @arc4.abimethod()
+  get_arc4_str(a: Account): Str {
+    return this.arc4Str(a).value
+  }
+
+  @arc4.abimethod()
+  get_arc4_byte(a: Account): Byte {
+    return this.arc4Byte(a).value
+  }
+
+  @arc4.abimethod()
+  get_arc4_bool(a: Account): Bool {
+    return this.arc4Bool(a).value
+  }
+
+  @arc4.abimethod()
+  get_arc4_address(a: Account): Address {
+    return this.arc4Address(a).value
+  }
+
+  @arc4.abimethod()
+  get_arc4_uintn128(a: Account): UintN128 {
+    return this.arc4UintN128(a).value
+  }
+
+  @arc4.abimethod()
+  get_arc4_dynamic_bytes(a: Account): DynamicBytes {
+    return this.arc4DynamicBytes(a).value
+  }
+}

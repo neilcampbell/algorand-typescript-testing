@@ -48,16 +48,21 @@ export const nodeFactory = {
     )
   },
 
-  attachMetaData(classIdentifier: ts.Identifier, method: ts.MethodDeclaration, functionType: ptypes.FunctionPType) {
+  attachMetaData(
+    classIdentifier: ts.Identifier,
+    method: ts.MethodDeclaration,
+    functionType: ptypes.FunctionPType,
+    argTypes: string[],
+    returnType: string,
+  ) {
     const methodName = getPropertyNameAsString(method.name)
     const metadata = factory.createObjectLiteralExpression([
       factory.createPropertyAssignment('methodName', methodName),
-      factory.createPropertyAssignment('methodSelector', methodName),
       factory.createPropertyAssignment(
         'argTypes',
-        factory.createArrayLiteralExpression(functionType.parameters.map((p) => factory.createStringLiteral(p[1].fullName))),
+        factory.createArrayLiteralExpression(argTypes.map((p) => factory.createStringLiteral(p))),
       ),
-      factory.createPropertyAssignment('returnType', factory.createStringLiteral(functionType.returnType.fullName)),
+      factory.createPropertyAssignment('returnType', factory.createStringLiteral(returnType)),
     ])
     return factory.createExpressionStatement(
       factory.createCallExpression(

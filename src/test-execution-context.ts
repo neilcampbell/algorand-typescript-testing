@@ -28,13 +28,13 @@ export class TestExecutionContext implements internal.ExecutionContext {
   #valueGenerator: ValueGenerator
   #defaultSender: Account
 
-  constructor() {
+  constructor(defaultSenderAddress?: bytes) {
     internal.ctxMgr.instance = this
     this.#contractContext = new ContractContext()
     this.#ledgerContext = new LedgerContext()
     this.#txnContext = new TransactionContext()
     this.#valueGenerator = new ValueGenerator()
-    this.#defaultSender = Account(Bytes.fromBase32(algosdk.generateAccount().addr))
+    this.#defaultSender = Account(defaultSenderAddress ?? Bytes.fromBase32(algosdk.generateAccount().addr))
   }
 
   account(address?: bytes): Account {

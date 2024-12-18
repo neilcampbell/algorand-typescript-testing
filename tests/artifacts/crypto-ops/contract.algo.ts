@@ -1,4 +1,5 @@
 import { arc4, bytes, Ecdsa, ensureBudget, op, OpUpFeeSource, uint64, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import { Bool } from '@algorandfoundation/algorand-typescript/arc4'
 
 export class CryptoOpsContract extends arc4.Contract {
   @arc4.abimethod()
@@ -29,20 +30,18 @@ export class CryptoOpsContract extends arc4.Contract {
     return result
   }
 
-  // TODO: return arc4.Bool to match python version when arc4 types are available
   @arc4.abimethod()
-  public verify_ed25519verify(a: bytes, b: bytes, c: bytes): boolean {
+  public verify_ed25519verify(a: bytes, b: bytes, c: bytes): Bool {
     ensureBudget(1900, OpUpFeeSource.GroupCredit)
     const result = op.ed25519verify(a, b, c)
-    return result
+    return new Bool(result)
   }
 
-  // TODO: return arc4.Bool to match python version when arc4 types are available
   @arc4.abimethod()
-  public verify_ed25519verify_bare(a: bytes, b: bytes, c: bytes): boolean {
+  public verify_ed25519verify_bare(a: bytes, b: bytes, c: bytes): Bool {
     ensureBudget(1900, OpUpFeeSource.GroupCredit)
     const result = op.ed25519verifyBare(a, b, c)
-    return result
+    return new Bool(result)
   }
 
   @arc4.abimethod()

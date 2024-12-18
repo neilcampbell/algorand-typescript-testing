@@ -1,7 +1,5 @@
 #pragma version 10
 
-tests.artifacts.StateOps.contract.StateAppLocalContract.clear_state_program:
-    // tests/artifacts/StateOps/contract.py:349
-    // class StateAppLocalContract(ARC4Contract):
-    int 1
+tests/artifacts/state-ops/contract.algo.ts::StateAppLocalContract.clearStateProgram:
+    pushint 1 // 1
     return

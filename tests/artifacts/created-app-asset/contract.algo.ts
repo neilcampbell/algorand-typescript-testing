@@ -1,4 +1,5 @@
-import { arc4, assert, Bytes, gtxn, op, uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, assert, Global, gtxn, op, uint64 } from '@algorandfoundation/algorand-typescript'
+import { interpretAsArc4, methodSelector, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 
 export class AppExpectingEffects extends arc4.Contract {
   @arc4.abimethod()
@@ -13,16 +14,8 @@ export class AppExpectingEffects extends arc4.Contract {
 
   @arc4.abimethod()
   public log_group(appCall: gtxn.ApplicationTxn): void {
-    assert(appCall.appArgs(0) === Bytes('some_value()uint64'), 'expected correct method called')
+    assert(appCall.appArgs(0) === methodSelector('some_value()uint64'), 'expected correct method called')
     assert(appCall.numLogs === 1, 'expected logs')
-    assert(appCall.lastLog === Bytes('this is a log statement'))
+    assert(interpretAsArc4<UintN64>(appCall.lastLog, 'log').native === (appCall.groupIndex + 1) * Global.groupSize)
   }
-
-  // TODO: uncomment when arc4 stubs are implemented
-  // @arc4.abimethod()
-  // public log_group(appCall: gtxn.ApplicationTxn): void {
-  //   assert(appCall.appArgs(0) === arc4.arc4Signature("some_value()uint64"), "expected correct method called")
-  //   assert(appCall.numLogs === 1, "expected logs")
-  //   assert(arc4.UInt64.from_log(appCall.lastLog) === (appCall.groupIndex + 1) * Global.groupSize)
-  // }
 }

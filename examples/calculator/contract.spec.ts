@@ -1,4 +1,4 @@
-import { internal, op, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { afterEach, describe, expect, it } from 'vitest'
 import MyContract from './contract.algo'
@@ -31,7 +31,7 @@ describe('Calculator', () => {
         .createScope([
           ctx.any.txn.applicationCall({
             appId: application,
-            appArgs: [op.itob(Uint64(1)), op.itob(Uint64(2)), op.itob(Uint64(3))],
+            appArgs: [Uint64(1), Uint64(2), Uint64(3)],
           }),
         ])
         .execute(contract.approvalProgram)
