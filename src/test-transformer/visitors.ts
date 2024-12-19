@@ -1,4 +1,5 @@
 import { ptypes, SourceLocation, TypeResolver } from '@algorandfoundation/puya-ts'
+import path from 'path'
 import ts from 'typescript'
 import type { TypeInfo } from '../encoders'
 import { instanceOfAny } from '../typescript-helpers'
@@ -12,10 +13,16 @@ import {
 
 const { factory } = ts
 
+const algotsModulePaths = [
+  `@algorandfoundation${path.sep}algorand-typescript`,
+  `${path.sep}puya-ts${path.sep}packages${path.sep}algo-ts${path.sep}`,
+]
+
 type VisitorHelper = {
   additionalStatements: ts.Statement[]
   resolveType(node: ts.Node): ptypes.PType
   sourceLocation(node: ts.Node): SourceLocation
+  tryGetSymbol(node: ts.Node): ts.Symbol | undefined
 }
 
 export class SourceFileVisitor {
@@ -26,8 +33,8 @@ export class SourceFileVisitor {
     program: ts.Program,
     private config: TransformerConfig,
   ) {
-    const typeResolver = new TypeResolver(program.getTypeChecker(), program.getCurrentDirectory())
-
+    const typeChecker = program.getTypeChecker()
+    const typeResolver = new TypeResolver(typeChecker, program.getCurrentDirectory())
     this.helper = {
       additionalStatements: [],
       resolveType(node: ts.Node): ptypes.PType {
@@ -37,6 +44,10 @@ export class SourceFileVisitor {
           return ptypes.anyPType
         }
       },
+      tryGetSymbol(node: ts.Node): ts.Symbol | undefined {
+        const s = typeChecker.getSymbolAtLocation(node)
+        return s && s.flags & ts.SymbolFlags.Alias ? typeChecker.getAliasedSymbol(s) : s
+      },
       sourceLocation(node: ts.Node): SourceLocation {
         return SourceLocation.fromNode(node, program.getCurrentDirectory())
       },
@@ -45,7 +56,6 @@ export class SourceFileVisitor {
 
   public result(): ts.SourceFile {
     const updatedSourceFile = ts.visitNode(this.sourceFile, this.visit) as ts.SourceFile
-
     return factory.updateSourceFile(updatedSourceFile, [
       nodeFactory.importHelpers(this.config.testingPackageName),
       ...updatedSourceFile.statements,
@@ -91,20 +101,21 @@ class ExpressionVisitor {
 
       const isGeneric = isGenericType(type)
       const isArc4Encoded = isArc4EncodedType(type)
-      if (isGeneric || isArc4Encoded) {
-        let updatedNode = node
-        const info = getGenericTypeInfo(type)
+      const info = isGeneric || isArc4Encoded ? getGenericTypeInfo(type) : undefined
+      let updatedNode = node
+
+      if (ts.isNewExpression(updatedNode)) {
         if (isArc4EncodedType(type)) {
-          if (ts.isNewExpression(updatedNode)) {
-            updatedNode = nodeFactory.instantiateARC4EncodedType(updatedNode, info)
-          } else if (ts.isCallExpression(updatedNode) && isCallingARC4EncodingUtils(updatedNode)) {
-            updatedNode = nodeFactory.callARC4EncodingUtil(updatedNode, info)
-          }
+          updatedNode = nodeFactory.instantiateARC4EncodedType(updatedNode, info)
         }
-        return isGeneric
-          ? nodeFactory.captureGenericTypeInfo(ts.visitEachChild(updatedNode, this.visit, this.context), JSON.stringify(info))
-          : ts.visitEachChild(updatedNode, this.visit, this.context)
       }
+      if (ts.isCallExpression(updatedNode)) {
+        const stubbedFunctionName = tryGetStubbedFunctionName(updatedNode, this.helper)
+        updatedNode = stubbedFunctionName ? nodeFactory.callStubbedFunction(stubbedFunctionName, updatedNode, info) : updatedNode
+      }
+      return isGeneric
+        ? nodeFactory.captureGenericTypeInfo(ts.visitEachChild(updatedNode, this.visit, this.context), JSON.stringify(info))
+        : ts.visitEachChild(updatedNode, this.visit, this.context)
     }
     return ts.visitEachChild(node, this.visit, this.context)
   }
@@ -194,7 +205,7 @@ class FunctionOrMethodVisitor {
     if (ts.isNewExpression(node)) {
       return new ExpressionVisitor(this.context, this.helper, node).result()
     }
-    if (ts.isCallExpression(node) && isCallingARC4EncodingUtils(node)) {
+    if (ts.isCallExpression(node) && tryGetStubbedFunctionName(node, this.helper)) {
       return new ExpressionVisitor(this.context, this.helper, node).result()
     }
 
@@ -331,9 +342,17 @@ const getGenericTypeInfo = (type: ptypes.PType): TypeInfo => {
   return result
 }
 
-const isCallingARC4EncodingUtils = (node: ts.CallExpression) => {
-  if (node.expression.kind !== ts.SyntaxKind.Identifier) return false
-  const identityExpression = node.expression as ts.Identifier
-  const utilMethods = ['interpretAsArc4', 'decodeArc4', 'encodeArc4']
-  return utilMethods.includes(identityExpression.text)
+const tryGetStubbedFunctionName = (node: ts.CallExpression, helper: VisitorHelper): string | undefined => {
+  if (node.expression.kind !== ts.SyntaxKind.Identifier && !ts.isPropertyAccessExpression(node.expression)) return undefined
+  const identityExpression = ts.isPropertyAccessExpression(node.expression)
+    ? (node.expression as ts.PropertyAccessExpression).name
+    : (node.expression as ts.Identifier)
+  const functionSymbol = helper.tryGetSymbol(identityExpression)
+  if (functionSymbol) {
+    const sourceFileName = functionSymbol.valueDeclaration?.getSourceFile().fileName
+    if (sourceFileName && !algotsModulePaths.some((s) => sourceFileName.includes(s))) return undefined
+  }
+  const functionName = functionSymbol?.getName() ?? identityExpression.text
+  const stubbedFunctionNames = ['interpretAsArc4', 'decodeArc4', 'encodeArc4', 'TemplateVar', 'ensureBudget']
+  return stubbedFunctionNames.includes(functionName) ? functionName : undefined
 }

@@ -1,4 +1,4 @@
-export { AcctParams, balance, minBalance } from './acct-params'
+export { AcctParams, appOptedIn, balance, minBalance } from './acct-params'
 export { AppGlobal } from './app-global'
 export { AppLocal } from './app-local'
 export { AppParams } from './app-params'

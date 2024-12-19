@@ -8,6 +8,8 @@ import { nameOfType } from './util'
 
 export { attachAbiMetadata } from './abi-metadata'
 export * from './impl/encoded-types'
+export { ensureBudgetImpl } from './impl/ensure-budget'
+export { TemplateVarImpl } from './impl/template-var'
 
 export function switchableValue(x: unknown): bigint | string | boolean {
   if (typeof x === 'boolean') return x
@@ -92,6 +94,7 @@ function arc4EncodedOp(left: ARC4Encoded, right: ARC4Encoded, op: BinaryOps): De
 function accountBinaryOp(left: AccountCls, right: AccountCls, op: BinaryOps): DeliberateAny {
   switch (op) {
     case '===':
+    case '!==':
       return bytesBinaryOp(left.bytes, right.bytes, op)
     default:
       internal.errors.internalError(`Unsupported operator ${op}`)

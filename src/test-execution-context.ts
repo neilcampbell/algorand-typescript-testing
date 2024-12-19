@@ -1,5 +1,6 @@
-import { Account, Application, Asset, Bytes, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, Application, Asset, bytes, internal, LogicSig, uint64 } from '@algorandfoundation/algorand-typescript'
 import { captureMethodConfig } from './abi-metadata'
+import { DEFAULT_TEMPLATE_VAR_PREFIX } from './constants'
 import { DecodedLogs, LogDecoding } from './decode-logs'
 import * as ops from './impl'
 import { AccountCls } from './impl/account'
@@ -18,6 +19,7 @@ import { Box, BoxMap, BoxRef, GlobalState, LocalState } from './impl/state'
 import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
+import { DeliberateAny } from './typescript-helpers'
 import { getRandomBytes } from './util'
 import { ValueGenerator } from './value-generators'
 
@@ -28,6 +30,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
   #valueGenerator: ValueGenerator
   #defaultSender: Account
   #activeLogicSigArgs: bytes[]
+  #template_vars: Record<string, DeliberateAny> = {}
 
   constructor(defaultSenderAddress?: bytes) {
     internal.ctxMgr.instance = this
@@ -126,6 +129,10 @@ export class TestExecutionContext implements internal.ExecutionContext {
     return this.#activeLogicSigArgs
   }
 
+  get templateVars(): Record<string, DeliberateAny> {
+    return this.#template_vars
+  }
+
   executeLogicSig(logicSig: LogicSig, ...args: bytes[]): boolean | uint64 {
     this.#activeLogicSigArgs = args
     try {
@@ -135,10 +142,16 @@ export class TestExecutionContext implements internal.ExecutionContext {
     }
   }
 
+  setTemplateVar(name: string, value: DeliberateAny) {
+    this.#template_vars[DEFAULT_TEMPLATE_VAR_PREFIX + name] = value
+  }
+
   reset() {
     this.#contractContext = new ContractContext()
     this.#ledgerContext = new LedgerContext()
     this.#txnContext = new TransactionContext()
+    this.#activeLogicSigArgs = []
+    this.#template_vars = {}
     internal.ctxMgr.reset()
     internal.ctxMgr.instance = this
   }
