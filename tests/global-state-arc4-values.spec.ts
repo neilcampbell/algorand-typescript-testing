@@ -20,7 +20,7 @@ import { asUint8Array } from './util'
 describe('ARC4 AppGlobal values', async () => {
   const appClient = await getAlgorandAppClient(arc4AppGlobalAppSpecJson as AppSpec)
   const localNetAccount = await getLocalNetDefaultAccount()
-  const defaultSenderAccountAddress = Bytes.fromBase32(localNetAccount.addr)
+  const defaultSenderAccountAddress = Bytes.fromBase32(localNetAccount.addr.toString())
   const ctx = new TestExecutionContext(defaultSenderAccountAddress)
 
   afterEach(async () => {

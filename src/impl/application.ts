@@ -1,10 +1,9 @@
-import { Account, Application, Bytes, bytes, LocalState, uint64 } from '@algorandfoundation/algorand-typescript'
-import algosdk from 'algosdk'
+import { Account, Application, bytes, LocalState, uint64 } from '@algorandfoundation/algorand-typescript'
 import { BytesMap } from '../collections/custom-key-map'
 import { ALWAYS_APPROVE_TEAL_PROGRAM } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable } from '../typescript-helpers'
-import { asBigInt, asUint64 } from '../util'
+import { asUint64, getApplicationAddress } from '../util'
 import { Uint64BackedCls } from './base'
 import { GlobalStateCls } from './state'
 
@@ -76,7 +75,6 @@ export class ApplicationCls extends Uint64BackedCls implements Application {
     return this.data.application.creator
   }
   get address(): Account {
-    const addr = algosdk.getApplicationAddress(asBigInt(this.id))
-    return Account(Bytes.fromBase32(addr))
+    return getApplicationAddress(this.id)
   }
 }

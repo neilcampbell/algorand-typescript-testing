@@ -43,3 +43,22 @@ export const ABI_RETURN_VALUE_LOG_PREFIX = Bytes.fromHex('151F7C75')
 
 export const UINT64_OVERFLOW_UNDERFLOW_MESSAGE = 'Uint64 overflow or underflow'
 export const BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE = 'BigUint overflow or underflow'
+
+export const APP_ID_PREFIX = 'appID'
+export const HASH_BYTES_LENGTH = 32
+export const ALGORAND_ADDRESS_BYTE_LENGTH = 36
+export const ALGORAND_CHECKSUM_BYTE_LENGTH = 4
+export const ALGORAND_ADDRESS_LENGTH = 58
+
+export const PROGRAM_TAG = 'Program'
+
+export const TRANSACTION_GROUP_MAX_SIZE = 16
+
+export enum OnApplicationComplete {
+  NoOpOC = 0,
+  OptInOC = 1,
+  CloseOutOC = 2,
+  ClearStateOC = 3,
+  UpdateApplicationOC = 4,
+  DeleteApplicationOC = 5,
+}

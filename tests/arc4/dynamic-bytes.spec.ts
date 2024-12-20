@@ -1,10 +1,10 @@
+import { getABIEncodedValue } from '@algorandfoundation/algokit-utils/types/app-arc56'
 import { Bytes } from '@algorandfoundation/algorand-typescript'
 import { DynamicBytes, interpretAsArc4 } from '@algorandfoundation/algorand-typescript/arc4'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
-import { ABIType } from 'algosdk'
 import { describe, expect, test } from 'vitest'
 
-const abiType = ABIType.from('byte[]')
+const abiTypeString = 'byte[]'
 const testData = [
   {
     nativeValue() {
@@ -16,7 +16,7 @@ const testData = [
   },
   {
     nativeValue() {
-      return encodingUtil.utf8ToUint8Array('01ff99aa'.repeat(8))
+      return [...encodingUtil.utf8ToUint8Array('01ff99aa'.repeat(8))]
     },
     dynamicBytes() {
       return new DynamicBytes('01ff99aa'.repeat(8))
@@ -26,7 +26,7 @@ const testData = [
 
 describe('arc4.DynamicBytes', async () => {
   test.each(testData)('should be able to get bytes representation', async (data) => {
-    const sdkResult = abiType.encode(data.nativeValue())
+    const sdkResult = getABIEncodedValue(data.nativeValue(), abiTypeString, {})
     const result = data.dynamicBytes().bytes
     expect(result).toEqual(Bytes(sdkResult))
   })
@@ -42,7 +42,7 @@ describe('arc4.DynamicBytes', async () => {
 
   test.each(testData)('create dynamic bytes from bytes', async (data) => {
     const nativeValue = data.nativeValue()
-    const sdkEncodedBytes = abiType.encode(nativeValue)
+    const sdkEncodedBytes = getABIEncodedValue(nativeValue, abiTypeString, {})
     const result = interpretAsArc4<DynamicBytes>(Bytes(sdkEncodedBytes))
     for (let i = 0; i < result.length; i++) {
       expect(result[i].native).toEqual(nativeValue[i])

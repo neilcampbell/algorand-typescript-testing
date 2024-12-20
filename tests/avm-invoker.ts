@@ -1,15 +1,16 @@
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
-import { ABIAppCallArg, AppCallTransactionResult } from '@algorandfoundation/algokit-utils/types/app'
-import { ApplicationClient } from '@algorandfoundation/algokit-utils/types/app-client'
+import { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import { AssetCreateParams } from '@algorandfoundation/algokit-utils/types/composer'
 import { KmdAccountManager } from '@algorandfoundation/algokit-utils/types/kmd-account-manager'
 import { nullLogger } from '@algorandfoundation/algokit-utils/types/logging'
-import { SendTransactionFrom, SendTransactionParams } from '@algorandfoundation/algokit-utils/types/transaction'
 import { Account, Bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
-import { ABIValue, generateAccount } from 'algosdk'
 import { randomUUID } from 'crypto'
-import { asUint64, getRandomNumber, Lazy } from '../src/util'
+import { Mutable } from '../src/typescript-helpers'
+import { asUint64, getRandomBigInt, getRandomNumber, Lazy } from '../src/util'
+
+export type ABIValue = boolean | number | bigint | string | Uint8Array | ABIValue[]
 
 algokit.Config.configure({ logger: nullLogger })
 
@@ -23,52 +24,56 @@ export const getAlgorandAppClient = async (appSpec: AppSpec) => {
 }
 
 export const getAlgorandAppClientWithApp = async (appSpec: AppSpec) => {
-  const client = algorandClient()
-  const defaultSigner = await client.account.kmd.getLocalNetDispenserAccount()
-  const appClient = algokit.getAppClient({ app: appSpec, resolveBy: 'id', id: 0, sender: defaultSigner.account }, client.client.algod)
-  const app = await appClient.create({ note: randomUUID() })
-  return [appClient, app] as const
+  const algorand = algorandClient()
+  const defaultSigner = await algorand.account.kmd.getLocalNetDispenserAccount()
+  const appClient = algorand.client.getAppFactory({
+    appSpec,
+    defaultSigner: defaultSigner.signer,
+    defaultSender: defaultSigner.account.sender.addr,
+  })
+  const app = await appClient.deploy({ appName: `${appSpec.contract.name}${randomUUID()}`, createParams: { extraProgramPages: undefined } })
+
+  return [app.appClient, app.result] as const
 }
 
 const invokeMethod = async (
-  appClient: ApplicationClient,
+  appClient: AppClient,
   method: string,
-  sendParams?: SendTransactionParams,
-  ...methodArgs: ABIAppCallArg[]
-): Promise<AppCallTransactionResult | undefined> => {
-  const response = await appClient.call({ method, methodArgs, note: randomUUID(), sendParams })
-
-  if (response.return?.decodeError) {
-    throw response.return.decodeError
-  }
+  sendParams?: Partial<Parameters<AppClient['send']['call']>[0]>,
+  ...methodArgs: ABIValue[]
+): ReturnType<AppClient['send']['call']> => {
+  const response = await appClient.send.call({ method, args: methodArgs, note: randomUUID(), ...sendParams })
   return response
 }
 
 export const getAvmResult = async <TResult extends ABIValue>(
-  { appClient, sendParams }: { appClient: ApplicationClient; sendParams?: SendTransactionParams },
+  { appClient, sendParams }: { appClient: AppClient; sendParams?: Partial<Parameters<AppClient['send']['call']>[0]> },
   method: string,
-  ...methodArgs: ABIAppCallArg[]
+  ...methodArgs: ABIValue[]
 ): Promise<TResult> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
-  return result?.return?.returnValue as TResult
+  if (result.returns?.at(-1)?.decodeError) {
+    throw result.returns.at(-1)!.decodeError
+  }
+  return result?.return?.valueOf() as TResult
 }
 
 export const getAvmResultLog = async (
-  { appClient, sendParams }: { appClient: ApplicationClient; sendParams?: SendTransactionParams },
+  { appClient, sendParams }: { appClient: AppClient; sendParams?: Partial<Parameters<AppClient['send']['call']>[0]> },
   method: string,
-  ...methodArgs: ABIAppCallArg[]
+  ...methodArgs: ABIValue[]
 ): Promise<Uint8Array[] | undefined> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
   return result?.confirmation?.logs
 }
 
 export const getAvmResultRaw = async (
-  { appClient, sendParams }: { appClient: ApplicationClient; sendParams?: SendTransactionParams },
+  { appClient, sendParams }: { appClient: AppClient; sendParams?: Partial<Parameters<AppClient['send']['call']>[0]> },
   method: string,
-  ...methodArgs: ABIAppCallArg[]
+  ...methodArgs: ABIValue[]
 ): Promise<Uint8Array | undefined> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
-  return result?.return?.rawReturnValue
+  return result?.returns?.at(-1)?.rawReturnValue
 }
 
 export const getLocalNetDefaultAccount = () => {
@@ -77,66 +82,49 @@ export const getLocalNetDefaultAccount = () => {
   return kmdAccountManager.getLocalNetDispenserAccount()
 }
 
-export const generateTestAccount = async (): Promise<Account> => {
-  const account = generateAccount()
-
-  await algokit.ensureFunded(
-    {
-      accountToFund: account,
-      minSpendingBalance: AlgoAmount.MicroAlgos(INITIAL_BALANCE_MICRO_ALGOS),
-    },
-    algorandClient().client.algod,
-  )
-  return Account(Bytes.fromBase32(account.addr))
+export const generateAVMTestAccount = async (): Promise<ReturnType<algokit.AlgorandClient['account']['random']>> => {
+  const client = algorandClient()
+  const account = client.account.random()
+  await client.account.ensureFundedFromEnvironment(account.addr, AlgoAmount.MicroAlgos(INITIAL_BALANCE_MICRO_ALGOS))
+  return account
 }
 
-export const generateTestAsset = async (fields: {
-  creator: SendTransactionFrom
-  total?: number | bigint
-  decimals?: number
-  name?: string
-  unit?: string
-  url?: string
-  metadataHash?: string
-  manager?: SendTransactionFrom
-  reserveAccount?: SendTransactionFrom
-  freezeAccount?: SendTransactionFrom
-  clawbackAccount?: SendTransactionFrom
-  frozenByDefault?: boolean
-}): Promise<uint64> => {
-  const client = algorandClient()
+export const generateTestAccount = async (): Promise<Account> => {
+  // const account = generateAccount()
+  const account = await generateAVMTestAccount()
+  return Account(Bytes.fromBase32(account.addr.toString()))
+}
+
+export const generateTestAsset = async (fields: Mutable<AssetCreateParams>): Promise<uint64> => {
   if (fields.total === undefined) {
-    fields.total = getRandomNumber(20, 120)
+    fields.total = getRandomBigInt(20, 120)
   }
 
-  if (fields.name === undefined) {
-    fields.name = `ASA ${getRandomNumber(1, 100)}_${getRandomNumber(1, 100)}_${fields.total}`
+  if (fields.assetName === undefined) {
+    fields.assetName = `ASA ${getRandomNumber(1, 100)}_${getRandomNumber(1, 100)}_${fields.total}`
   }
 
   if (fields.decimals === undefined) {
     fields.decimals = 0
   }
-  const params = await client.getSuggestedParams()
-  const x = await algokit.createAsset(
-    {
-      creator: fields.creator,
-      total: BigInt(fields.total) * 10n ** BigInt(fields.decimals),
-      decimals: fields.decimals,
-      name: fields.name,
-      unit: fields.unit ?? '',
-      url: fields.url ?? 'https://algorand.co',
-      metadataHash: fields.metadataHash,
-      manager: fields.manager,
-      reserveAccount: fields.reserveAccount,
-      freezeAccount: fields.freezeAccount,
-      clawbackAccount: fields.clawbackAccount,
-      frozenByDefault: fields.frozenByDefault ?? false,
-      transactionParams: params,
-      note: randomUUID(),
-    },
-    client.client.algod,
-  )
-  if (x.confirmation === undefined) {
+
+  const client = algorandClient()
+  const x = await client.send.assetCreate({
+    sender: fields.sender,
+    total: BigInt(fields.total) * 10n ** BigInt(fields.decimals),
+    decimals: fields.decimals,
+    assetName: fields.assetName,
+    unitName: fields.unitName ?? '',
+    url: fields.url ?? 'https://algorand.co',
+    metadataHash: fields.metadataHash,
+    manager: fields.manager,
+    reserve: fields.reserve,
+    freeze: fields.freeze,
+    clawback: fields.clawback,
+    defaultFrozen: fields.defaultFrozen ?? false,
+    note: randomUUID(),
+  })
+  if (x.confirmation === undefined || x.confirmation.assetIndex === undefined) {
     internal.errors.internalError('Failed to create asset')
   }
   return asUint64(x.confirmation.assetIndex)

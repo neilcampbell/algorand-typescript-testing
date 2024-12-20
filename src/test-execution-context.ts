@@ -1,5 +1,4 @@
-import { Account, Application, Asset, Bytes, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
-import algosdk from 'algosdk'
+import { Account, Application, Asset, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import { captureMethodConfig } from './abi-metadata'
 import { DecodedLogs, LogDecoding } from './decode-logs'
 import * as ops from './impl'
@@ -19,6 +18,7 @@ import { Box, BoxMap, BoxRef, GlobalState, LocalState } from './impl/state'
 import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
+import { getRandomBytes } from './util'
 import { ValueGenerator } from './value-generators'
 
 export class TestExecutionContext implements internal.ExecutionContext {
@@ -34,7 +34,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
     this.#ledgerContext = new LedgerContext()
     this.#txnContext = new TransactionContext()
     this.#valueGenerator = new ValueGenerator()
-    this.#defaultSender = Account(defaultSenderAddress ?? Bytes.fromBase32(algosdk.generateAccount().addr))
+    this.#defaultSender = Account(defaultSenderAddress ?? getRandomBytes(32).asAlgoTs())
   }
 
   account(address?: bytes): Account {

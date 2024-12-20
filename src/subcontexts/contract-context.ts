@@ -10,11 +10,10 @@ import {
   internal,
   LocalState,
 } from '@algorandfoundation/algorand-typescript'
-import { ABIMethod } from 'algosdk'
 import {
   AbiMetadata,
   copyAbiMetadatas,
-  getArc4Signature,
+  getArc4Selector,
   getContractAbiMetadata,
   getContractMethodAbiMetadata,
   isContractProxy,
@@ -144,7 +143,7 @@ export class ContractContext {
     ...args: TParams
   ): Transaction[] {
     const app = lazyContext.ledger.getApplicationForContract(contract)
-    const methodSelector = abiMetadata ? ABIMethod.fromSignature(getArc4Signature(abiMetadata)).getSelector() : new Uint8Array()
+    const methodSelector = abiMetadata ? getArc4Selector(abiMetadata) : new Uint8Array()
     const { transactions, ...appCallArgs } = extractArraysFromArgs(app, methodSelector, args)
     const appTxn = lazyContext.any.txn.applicationCall({
       appId: app,

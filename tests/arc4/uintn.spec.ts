@@ -43,8 +43,8 @@ describe('arc4.UintN', async () => {
 
     const result = new UintN32(value)
 
-    expect(result.native).toEqual(BigInt(expected))
-    expect(avmResult).toEqual(BigInt(expected))
+    expect(result.native).toEqual(expected)
+    expect(avmResult).toEqual(expected)
   })
 
   test.each([
@@ -211,7 +211,7 @@ describe('arc4.UintN', async () => {
     const avmResult = await getAvmResult({ appClient }, 'verify_uintn_from_log', logValue)
 
     const result = interpretAsArc4<UintN<32>>(Bytes(logValue), 'log')
-    expect(avmResult).toEqual(expected)
+    expect(BigInt(avmResult as number)).toEqual(expected)
     expect(result.native).toEqual(expected)
   })
 

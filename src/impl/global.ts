@@ -1,5 +1,4 @@
 import { Account, Application, Bytes, bytes, internal, op, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
-import algosdk from 'algosdk'
 import {
   DEFAULT_ACCOUNT_MIN_BALANCE,
   DEFAULT_ASSET_CREATE_MIN_BALANCE,
@@ -10,7 +9,7 @@ import {
   ZERO_ADDRESS,
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { asBigInt, getObjectReference } from '../util'
+import { getApplicationAddress, getObjectReference } from '../util'
 
 export class GlobalData {
   minTxnFee: uint64
@@ -128,8 +127,7 @@ export const Global: internal.opTypes.GlobalType = {
    * Address that the current application controls. Application mode only.
    */
   get currentApplicationAddress(): Account {
-    const appAddress = algosdk.getApplicationAddress(asBigInt(this.currentApplicationId.id))
-    return Account(Bytes.fromBase32(appAddress))
+    return this.currentApplicationId.address
   },
 
   /**
@@ -163,8 +161,7 @@ export const Global: internal.opTypes.GlobalType = {
    * The application address of the application that called this application. ZeroAddress if this application is at the top-level. Application mode only.
    */
   get callerApplicationAddress(): Account {
-    const appAddress = algosdk.getApplicationAddress(asBigInt(this.callerApplicationId))
-    return Account(Bytes.fromBase32(appAddress))
+    return getApplicationAddress(this.callerApplicationId)
   },
 
   /**
