@@ -1,6 +1,6 @@
 import { bytes, Contract, internal, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
-import algosdk from 'algosdk'
 import { AbiMetadata, getContractMethodAbiMetadata } from '../abi-metadata'
+import { TRANSACTION_GROUP_MAX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
 import { testInvariant } from '../errors'
@@ -180,10 +180,8 @@ export class TransactionGroup {
 
   constructor(transactions: Transaction[], activeTransactionIndex?: number) {
     this.latestTimestamp = Date.now()
-    if (transactions.length > algosdk.AtomicTransactionComposer.MAX_GROUP_SIZE) {
-      internal.errors.internalError(
-        `Transaction group can have at most ${algosdk.AtomicTransactionComposer.MAX_GROUP_SIZE} transactions, as per AVM limits.`,
-      )
+    if (transactions.length > TRANSACTION_GROUP_MAX_SIZE) {
+      internal.errors.internalError(`Transaction group can have at most ${TRANSACTION_GROUP_MAX_SIZE} transactions, as per AVM limits.`)
     }
     transactions.forEach((txn, index) => Object.assign(txn, { groupIndex: asUint64(index) }))
     this.activeTransactionIndex = activeTransactionIndex === undefined ? transactions.length - 1 : activeTransactionIndex
@@ -245,8 +243,8 @@ export class TransactionGroup {
     if (!this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn submit without itxn begin')
     }
-    if (this.constructingItxnGroup.length > algosdk.AtomicTransactionComposer.MAX_GROUP_SIZE) {
-      internal.errors.internalError('Cannot submit more than 16 inner transactions at once')
+    if (this.constructingItxnGroup.length > TRANSACTION_GROUP_MAX_SIZE) {
+      internal.errors.internalError(`Cannot submit more than ${TRANSACTION_GROUP_MAX_SIZE} inner transactions at once`)
     }
     const itxns = this.constructingItxnGroup.map((t) => createInnerTxn(t))
     itxns.forEach((itxn, index) => Object.assign(itxn, { groupIndex: asUint64(index) }))

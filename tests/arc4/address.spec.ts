@@ -1,12 +1,13 @@
+import { getABIEncodedValue } from '@algorandfoundation/algokit-utils/types/app-arc56'
 import { Account, Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { Address, interpretAsArc4 } from '@algorandfoundation/algorand-typescript/arc4'
-import { ABIType, encodeAddress } from 'algosdk'
 import { afterEach, describe, expect, test } from 'vitest'
 import { ABI_RETURN_VALUE_LOG_PREFIX } from '../../src/constants'
+import { encodeAddress } from '../../src/util'
 import { asUint8Array } from '../util'
 
-const abiAddressType = ABIType.from('address')
+const abiTypeString = 'address'
 const testData = [
   Bytes.fromHex('00'.repeat(32)),
   Bytes.fromHex('01'.repeat(32)),
@@ -21,19 +22,19 @@ describe('arc4.Address', async () => {
   })
 
   test.each(testData)('create address from bytes', async (value) => {
-    const sdkResult = abiAddressType.encode(asUint8Array(value))
+    const sdkResult = getABIEncodedValue(asUint8Array(value), abiTypeString, {})
     const result = new Address(value)
     expect(result.bytes).toEqual(sdkResult)
   })
   test.each(testData)('create address from str', async (value) => {
     const stringValue = encodeAddress(asUint8Array(value))
-    const sdkResult = abiAddressType.encode(stringValue)
+    const sdkResult = getABIEncodedValue(stringValue, abiTypeString, {})
     const result = new Address(stringValue)
     expect(result.bytes).toEqual(sdkResult)
   })
   test.each(testData)('create address from Account', async (value) => {
     const accountValue = Account(value)
-    const sdkResult = abiAddressType.encode(asUint8Array(accountValue.bytes))
+    const sdkResult = getABIEncodedValue(asUint8Array(accountValue.bytes), abiTypeString, {})
     const result = new Address(accountValue)
     expect(result.bytes).toEqual(sdkResult)
   })
@@ -69,13 +70,13 @@ describe('arc4.Address', async () => {
   })
 
   test.each(testData)('fromBytes method', async (value) => {
-    const sdkResult = abiAddressType.encode(asUint8Array(value))
+    const sdkResult = getABIEncodedValue(asUint8Array(value), abiTypeString, {})
     const result = interpretAsArc4<Address>(value)
     expect(result.bytes).toEqual(sdkResult)
   })
 
   test.each(testData)('fromLog method', async (value) => {
-    const sdkResult = abiAddressType.encode(asUint8Array(value))
+    const sdkResult = getABIEncodedValue(asUint8Array(value), abiTypeString, {})
     const paddedValue = Bytes([...asUint8Array(ABI_RETURN_VALUE_LOG_PREFIX), ...asUint8Array(value)])
     const result = interpretAsArc4<Address>(paddedValue, 'log')
     expect(result.bytes).toEqual(sdkResult)

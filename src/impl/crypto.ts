@@ -1,14 +1,13 @@
 import { arc4, bytes, Bytes, Ecdsa, gtxn, internal, VrfVerify } from '@algorandfoundation/algorand-typescript'
-import algosdk from 'algosdk'
 import { ec } from 'elliptic'
 import { sha256 as js_sha256 } from 'js-sha256'
 import { keccak256 as js_keccak256, sha3_256 as js_sha3_256 } from 'js-sha3'
 import { sha512_256 as js_sha512_256 } from 'js-sha512'
 import nacl from 'tweetnacl'
-import { LOGIC_DATA_PREFIX } from '../constants'
+import { LOGIC_DATA_PREFIX, PROGRAM_TAG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { notImplementedError } from '../errors'
-import { asBytes, asBytesCls } from '../util'
+import { asBytes, asBytesCls, asUint8Array, conactUint8Arrays } from '../util'
 
 export const sha256 = (a: internal.primitives.StubBytesCompat): bytes => {
   const bytesA = internal.primitives.BytesCls.fromCompat(a)
@@ -59,10 +58,10 @@ export const ed25519verify = (
     txn.onCompletion == arc4.OnCompleteAction[arc4.OnCompleteAction.ClearState] ? txn.clearStateProgram : txn.approvalProgram,
   )
 
-  const logicSig = new algosdk.LogicSig(programBytes.asUint8Array())
-  const decodedAddress = algosdk.decodeAddress(logicSig.address())
+  const logicSig = conactUint8Arrays(asUint8Array(PROGRAM_TAG), programBytes.asUint8Array())
+  const logicSigAddress = js_sha512_256.array(logicSig)
 
-  const addressBytes = Bytes(decodedAddress.publicKey)
+  const addressBytes = Bytes(logicSigAddress)
   const data = LOGIC_DATA_PREFIX.concat(addressBytes).concat(asBytes(a))
   return ed25519verifyBare(data, b, c)
 }

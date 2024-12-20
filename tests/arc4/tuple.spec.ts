@@ -1,8 +1,8 @@
+import { getABIEncodedValue } from '@algorandfoundation/algokit-utils/types/app-arc56'
 import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { Address, Bool, DynamicArray, interpretAsArc4, StaticArray, Str, Tuple, UintN } from '@algorandfoundation/algorand-typescript/arc4'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
-import { ABIType } from 'algosdk'
 import { afterEach, describe, expect, test } from 'vitest'
 import { AccountCls } from '../../src/impl/account'
 import { DeliberateAny } from '../../src/typescript-helpers'
@@ -26,7 +26,7 @@ const otherAbiUint8 = new UintN<8>(42)
 
 const testData = [
   {
-    abiType: ABIType.from('(uint8,bool,bool,address)'),
+    abiTypeString: '(uint8,bool,bool,address)',
     nativeValues() {
       return [nativeNumber, nativeBool, nativeBool, nativeAddress]
     },
@@ -41,7 +41,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('(string,uint8,bool)'),
+    abiTypeString: '(string,uint8,bool)',
     nativeValues() {
       return [nativeString, nativeNumber, nativeBool]
     },
@@ -56,7 +56,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('((uint8,bool,bool),(uint8,bool,bool))'),
+    abiTypeString: '((uint8,bool,bool),(uint8,bool,bool))',
     nativeValues() {
       return [
         [nativeNumber, nativeBool, nativeBool],
@@ -77,7 +77,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('(string[],string[],string,uint8,bool,uint8[3])'),
+    abiTypeString: '(string[],string[],string,uint8,bool,uint8[3])',
     nativeValues() {
       return [
         [nativeString, nativeString],
@@ -106,7 +106,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('((bool,string[],string),uint8,uint8[3])'),
+    abiTypeString: '((bool,string[],string),uint8,uint8[3])',
     nativeValues() {
       return [[nativeBool, [nativeString, nativeString], nativeString], nativeNumber, [nativeNumber, nativeNumber, nativeNumber]]
     },
@@ -125,7 +125,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('((bool,string[],string),(uint8,uint8[3]))'),
+    abiTypeString: '((bool,string[],string),(uint8,uint8[3]))',
     nativeValues() {
       return [
         [nativeBool, [nativeString, nativeString], nativeString],
@@ -146,7 +146,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('((bool,(string[],string,address)),(uint8,uint8[3]))'),
+    abiTypeString: '((bool,(string[],string,address)),(uint8,uint8[3]))',
     nativeValues() {
       return [
         [nativeBool, [[nativeString, nativeString], nativeString, nativeAddress]],
@@ -177,7 +177,7 @@ const testData = [
 
 const testDataWithArray = [
   {
-    abiType: ABIType.from('(string[],string[],string,uint8,bool,uint8[3])'),
+    abiTypeString: '(string[],string[],string,uint8,bool,uint8[3])',
     updatedNativeValues() {
       return [
         [otherNativeString, nativeString, otherNativeString],
@@ -211,7 +211,7 @@ const testDataWithArray = [
     },
   },
   {
-    abiType: ABIType.from('((bool,string[],string),uint8,uint8[3])'),
+    abiTypeString: '((bool,string[],string),uint8,uint8[3])',
     updatedNativeValues() {
       return [
         [nativeBool, [otherNativeString, nativeString, otherNativeString], nativeString],
@@ -237,7 +237,7 @@ const testDataWithArray = [
     },
   },
   {
-    abiType: ABIType.from('((bool,string[],string),(uint8,uint8[3]))'),
+    abiTypeString: '((bool,string[],string),(uint8,uint8[3]))',
     updatedNativeValues() {
       return [
         [nativeBool, [otherNativeString, nativeString, otherNativeString], nativeString],
@@ -261,7 +261,7 @@ const testDataWithArray = [
     },
   },
   {
-    abiType: ABIType.from('((bool,(string[],string,address)),(uint8,uint8[3]))'),
+    abiTypeString: '((bool,(string[],string,address)),(uint8,uint8[3]))',
     updatedNativeValues() {
       return [
         [nativeBool, [[otherNativeString, nativeString, otherNativeString], nativeString, nativeAddress]],
@@ -298,7 +298,7 @@ describe('arc4.Tuple', async () => {
   })
 
   test.each(testData)('should be able to get bytes representation', async (data) => {
-    const sdkResult = data.abiType.encode(data.nativeValues())
+    const sdkResult = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const result = data.tuple().bytes
     expect(result).toEqual(Bytes(sdkResult))
   })
@@ -314,7 +314,7 @@ describe('arc4.Tuple', async () => {
 
   test.each(testData)('create tuple from bytes', async (data) => {
     const nativeValues = data.nativeValues()
-    const sdkEncodedBytes = data.abiType.encode(nativeValues)
+    const sdkEncodedBytes = getABIEncodedValue(nativeValues, data.abiTypeString, {})
 
     const result = data.create(Bytes(sdkEncodedBytes))
     const tupleValues = result.native
@@ -325,7 +325,7 @@ describe('arc4.Tuple', async () => {
   })
 
   test.each(testDataWithArray)('update array values in tuple', async (data) => {
-    const sdkResult = data.abiType.encode(data.updatedNativeValues())
+    const sdkResult = getABIEncodedValue(data.updatedNativeValues(), data.abiTypeString, {})
     const tuple = data.tuple()
     data.update(tuple as DeliberateAny)
     const result = tuple.bytes

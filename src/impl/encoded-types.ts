@@ -16,9 +16,14 @@ import {
   UintN,
 } from '@algorandfoundation/algorand-typescript/arc4'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
-import { decodeAddress } from 'algosdk'
 import assert from 'assert'
-import { ABI_RETURN_VALUE_LOG_PREFIX, BITS_IN_BYTE, UINT64_SIZE } from '../constants'
+import {
+  ABI_RETURN_VALUE_LOG_PREFIX,
+  ALGORAND_ADDRESS_BYTE_LENGTH,
+  ALGORAND_CHECKSUM_BYTE_LENGTH,
+  BITS_IN_BYTE,
+  UINT64_SIZE,
+} from '../constants'
 import { fromBytes, TypeInfo } from '../encoders'
 import { DeliberateAny } from '../typescript-helpers'
 import { asBigUint, asBigUintCls, asBytesCls, asUint64, asUint8Array, conactUint8Arrays, uint8ArrayToNumber } from '../util'
@@ -429,7 +434,7 @@ export class AddressImpl extends Address {
     if (value === undefined) {
       uint8ArrayValue = new Uint8Array(32)
     } else if (typeof value === 'string') {
-      uint8ArrayValue = decodeAddress(value).publicKey
+      uint8ArrayValue = encodingUtil.base32ToUint8Array(value).slice(0, ALGORAND_ADDRESS_BYTE_LENGTH - ALGORAND_CHECKSUM_BYTE_LENGTH)
     } else if (internal.primitives.isBytes(value)) {
       uint8ArrayValue = internal.primitives.getUint8Array(value)
     } else {

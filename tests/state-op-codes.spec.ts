@@ -1,11 +1,11 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
-import { ApplicationClient } from '@algorandfoundation/algokit-utils/types/app-client'
+import { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Account, arc4, bytes, Bytes, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { DynamicBytes, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
-import { ABI_RETURN_VALUE_LOG_PREFIX, MIN_TXN_FEE, ZERO_ADDRESS } from '../src/constants'
+import { ABI_RETURN_VALUE_LOG_PREFIX, MIN_TXN_FEE, OnApplicationComplete, ZERO_ADDRESS } from '../src/constants'
 import { testInvariant } from '../src/errors'
 import { Block, gloadBytes, gloadUint64 } from '../src/impl'
 import { AccountCls } from '../src/impl/account'
@@ -87,7 +87,7 @@ describe('State op codes', async () => {
       })
 
       const avmResult = await getAvmResult(
-        { appClient, sendParams: { fee: AlgoAmount.Algos(1000) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(1000) } },
         methodName,
         asUint8Array(dummyAccount.bytes),
       )
@@ -116,16 +116,16 @@ describe('State op codes', async () => {
     ])('%s should return %s', async (methodName, expectedValue) => {
       const application = ctx.any.application({
         applicationId: app.appId,
-        approvalProgram: Bytes(app.compiledApproval.compiledBase64ToBytes),
-        clearStateProgram: Bytes(app.compiledClear.compiledBase64ToBytes),
+        approvalProgram: Bytes(app.compiledApproval!.compiledBase64ToBytes),
+        clearStateProgram: Bytes(app.compiledClear!.compiledBase64ToBytes),
         globalNumUint: Uint64(0),
         globalNumBytes: Uint64(0),
         localNumUint: Uint64(0),
         localNumBytes: Uint64(0),
         extraProgramPages: Uint64(0),
-        creator: Account(Bytes.fromBase32(dummyAccount.addr)),
+        creator: Account(Bytes.fromBase32(dummyAccount.addr.toString())),
       })
-      const avmResult = await getAvmResult({ appClient, sendParams: { fee: AlgoAmount.Algos(1000) } }, methodName, app.appId)
+      const avmResult = await getAvmResult({ appClient, sendParams: { staticFee: AlgoAmount.Algos(1000) } }, methodName, app.appId)
 
       const mockContract = ctx.contract.create(StateAppParamsContract)
       const mockResult = mockContract[methodName as keyof StateAppParamsContract](application)
@@ -150,12 +150,12 @@ describe('State op codes', async () => {
       ['verify_asset_frozen_get', false],
     ])('should return the correct field value of the asset holding', async (methodName, expectedValue) => {
       const dummyAsset = await generateTestAsset({
-        creator: dummyAccount,
-        total: 100,
+        sender: dummyAccount.addr,
+        total: 100n,
         decimals: 0,
-        frozenByDefault: false,
+        defaultFrozen: false,
       })
-      const avmResult = await getAvmResult({ appClient }, methodName, dummyAccount.addr, asBigInt(dummyAsset))
+      const avmResult = await getAvmResult({ appClient }, methodName, dummyAccount.addr.toString(), asBigInt(dummyAsset))
 
       const mockAsset = ctx.any.asset()
       const mockAccount = ctx.any.account({
@@ -192,7 +192,7 @@ describe('State op codes', async () => {
       ['verify_asset_params_get_clawback', ZERO_ADDRESS],
       ['verify_asset_params_get_creator', 'creator'],
     ])('should return the correct field value of the asset', async (methodName, expectedValue) => {
-      const creator = Account(Bytes.fromBase32(dummyAccount.addr))
+      const creator = Account(Bytes.fromBase32(dummyAccount.addr.toString()))
       const metadataHash = Bytes(`test${' '.repeat(28)}`)
       const mockAsset = ctx.any.asset({
         total: Uint64(100),
@@ -205,12 +205,12 @@ describe('State op codes', async () => {
       })
 
       const dummyAsset = await generateTestAsset({
-        creator: dummyAccount,
-        total: 100,
+        sender: dummyAccount.addr,
+        total: 100n,
         decimals: 0,
-        frozenByDefault: false,
-        name: 'TEST',
-        unit: 'UNIT',
+        defaultFrozen: false,
+        assetName: 'TEST',
+        unitName: 'UNIT',
         url: 'https://algorand.co',
         metadataHash: metadataHash.toString(),
       })
@@ -518,23 +518,34 @@ describe('State op codes', async () => {
 
     it('should be able to put, get and delete app local state', async () => {
       const localNetAccount = await getLocalNetDefaultAccount()
-      const account = Account(Bytes.fromBase32(localNetAccount.addr))
+      const account = Account(Bytes.fromBase32(localNetAccount.addr.toString()))
       const bytesKey = 'local_bytes'
       const uint64Key = 'local_uint64'
       const bytesValue = 'test_bytes'
       const uint64Value = 42
 
       // put
-      await getAvmResult({ appClient }, 'verify_put_bytes', localNetAccount.addr, asUint8Array(bytesKey), asUint8Array(bytesValue))
-      await getAvmResult({ appClient }, 'verify_put_uint64', localNetAccount.addr, asUint8Array(uint64Key), uint64Value)
+      await getAvmResult(
+        { appClient },
+        'verify_put_bytes',
+        localNetAccount.addr.toString(),
+        asUint8Array(bytesKey),
+        asUint8Array(bytesValue),
+      )
+      await getAvmResult({ appClient }, 'verify_put_uint64', localNetAccount.addr.toString(), asUint8Array(uint64Key), uint64Value)
 
       const contract = ctx.contract.create(StateAppLocalContract)
       contract.verify_put_bytes(account, Bytes(bytesKey), Bytes(bytesValue))
       contract.verify_put_uint64(account, Bytes(uint64Key), Uint64(uint64Value))
 
       // get
-      const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_bytes', localNetAccount.addr, asUint8Array(bytesKey))
-      const uint64AvmResult = await getAvmResult({ appClient }, 'verify_get_uint64', localNetAccount.addr, asUint8Array(uint64Key))
+      const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_bytes', localNetAccount.addr.toString(), asUint8Array(bytesKey))
+      const uint64AvmResult = await getAvmResult(
+        { appClient },
+        'verify_get_uint64',
+        localNetAccount.addr.toString(),
+        asUint8Array(uint64Key),
+      )
 
       const bytesResult = contract.verify_get_bytes(account, Bytes(bytesKey))
       const uint64Result = contract.verify_get_uint64(account, Bytes(uint64Key))
@@ -542,15 +553,22 @@ describe('State op codes', async () => {
       expect(asBigInt(uint64Result)).toEqual(uint64AvmResult)
 
       // delete
-      await getAvmResult({ appClient }, 'verify_delete', localNetAccount.addr, asUint8Array(bytesKey))
-      await getAvmResult({ appClient }, 'verify_delete', localNetAccount.addr, asUint8Array(uint64Key))
+      await getAvmResult({ appClient }, 'verify_delete', localNetAccount.addr.toString(), asUint8Array(bytesKey))
+      await getAvmResult({ appClient }, 'verify_delete', localNetAccount.addr.toString(), asUint8Array(uint64Key))
       contract.verify_delete(account, Bytes(bytesKey))
       contract.verify_delete(account, Bytes(uint64Key))
 
-      await expect(() => getAvmResult({ appClient }, 'verify_get_bytes', localNetAccount.addr, asUint8Array(bytesKey))).rejects.toThrow()
+      await expect(() =>
+        getAvmResult({ appClient }, 'verify_get_bytes', localNetAccount.addr.toString(), asUint8Array(bytesKey)),
+      ).rejects.toThrow()
       expect(() => contract.verify_get_bytes(account, Bytes(bytesKey))).toThrow('value is not set')
 
-      const uint64AvmResult2 = await getAvmResult({ appClient }, 'verify_get_uint64', localNetAccount.addr, asUint8Array(uint64Key))
+      const uint64AvmResult2 = await getAvmResult(
+        { appClient },
+        'verify_get_uint64',
+        localNetAccount.addr.toString(),
+        asUint8Array(uint64Key),
+      )
       const uint64Result2 = contract.verify_get_uint64(account, Bytes(uint64Key))
       expect(asBigInt(uint64Result2)).toEqual(uint64AvmResult2)
     })
@@ -558,13 +576,19 @@ describe('State op codes', async () => {
     it('should be able to use _ex methods to get state of another app', async () => {
       const key = 'local_bytes'
       const localNetAccount = await getLocalNetDefaultAccount()
-      const account = Account(Bytes.fromBase32(localNetAccount.addr))
+      const account = Account(Bytes.fromBase32(localNetAccount.addr.toString()))
       const secondContract = ctx.contract.create(StateAppLocalExContract)
       const secondApp = ctx.ledger.getApplicationForContract(secondContract)
       expect(secondApp.localNumUint.valueOf()).toEqual(1)
       expect(secondApp.localNumBytes.valueOf()).toEqual(2)
 
-      const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_ex_bytes', localNetAccount.addr, exApp.appId, asUint8Array(key))
+      const bytesAvmResult = await getAvmResult(
+        { appClient },
+        'verify_get_ex_bytes',
+        localNetAccount.addr.toString(),
+        exApp.appId,
+        asUint8Array(key),
+      )
 
       const contract = ctx.contract.create(StateAppLocalContract)
       secondContract.localBytes(account).value = Bytes('dummy_bytes_from_external_contract')
@@ -576,13 +600,19 @@ describe('State op codes', async () => {
     it('should be able to use _ex methods to get arc4 state values of another app', async () => {
       const key = 'local_arc4_bytes'
       const localNetAccount = await getLocalNetDefaultAccount()
-      const account = Account(Bytes.fromBase32(localNetAccount.addr))
+      const account = Account(Bytes.fromBase32(localNetAccount.addr.toString()))
       const secondContract = ctx.contract.create(StateAppLocalExContract)
       const secondApp = ctx.ledger.getApplicationForContract(secondContract)
       expect(secondApp.localNumUint.valueOf()).toEqual(1)
       expect(secondApp.localNumBytes.valueOf()).toEqual(2)
 
-      const bytesAvmResult = await getAvmResult({ appClient }, 'verify_get_ex_bytes', localNetAccount.addr, exApp.appId, asUint8Array(key))
+      const bytesAvmResult = await getAvmResult(
+        { appClient },
+        'verify_get_ex_bytes',
+        localNetAccount.addr.toString(),
+        exApp.appId,
+        asUint8Array(key),
+      )
 
       const contract = ctx.contract.create(StateAppLocalContract)
       secondContract.localArc4Bytes(account).value = new DynamicBytes('dummy_arc4_bytes')
@@ -592,9 +622,9 @@ describe('State op codes', async () => {
     })
   })
 })
-const tryOptIn = async (client: ApplicationClient) => {
+const tryOptIn = async (client: AppClient) => {
   try {
-    await client.optIn({ method: 'opt_in', methodArgs: [] })
+    await client.send.call({ method: 'opt_in', args: [], onComplete: OnApplicationComplete.OptInOC })
   } catch (e) {
     if (!(e as DeliberateAny).message.includes('has already opted in to app')) {
       throw e

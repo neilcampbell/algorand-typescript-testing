@@ -1,6 +1,6 @@
 import { Bytes, bytes, internal } from '@algorandfoundation/algorand-typescript'
-import { ABIValue } from 'algosdk'
 import { createHash } from 'crypto'
+import type { ABIValue } from './avm-invoker'
 
 export const padUint8Array = (arr: Uint8Array, padSize: number): Uint8Array => {
   const paddedUint8Array = new Uint8Array(arr.length + padSize)

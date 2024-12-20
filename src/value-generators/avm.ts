@@ -1,12 +1,11 @@
 import { Account, Application, Asset, bytes, Bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
-import algosdk from 'algosdk'
 import { randomBytes } from 'crypto'
 import { MAX_BYTES_SIZE, MAX_UINT64, ZERO_ADDRESS } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { AccountData } from '../impl/account'
 import { ApplicationCls, ApplicationData } from '../impl/application'
 import { AssetCls, AssetData } from '../impl/asset'
-import { asBigInt, asUint64Cls, getRandomBigInt } from '../util'
+import { asBigInt, asUint64Cls, getRandomBigInt, getRandomBytes } from '../util'
 
 type AccountContextData = Partial<AccountData['account']> & {
   address?: Account
@@ -37,7 +36,7 @@ export class AvmValueGenerator {
   }
 
   account(input?: AccountContextData): Account {
-    const account = input?.address ?? Account(Bytes.fromBase32(algosdk.generateAccount().addr))
+    const account = input?.address ?? Account(getRandomBytes(32).asAlgoTs())
 
     if (input?.address && lazyContext.ledger.accountDataMap.has(account)) {
       internal.errors.internalError(

@@ -1,7 +1,6 @@
+import { getABIEncodedValue } from '@algorandfoundation/algokit-utils/types/app-arc56'
 import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { Bool, DynamicArray, interpretAsArc4, StaticArray, Str, Struct, Tuple, UintN } from '@algorandfoundation/algorand-typescript/arc4'
-import { ABIType } from 'algosdk'
-
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { describe, expect, it, test } from 'vitest'
 import { AccountCls } from '../../src/impl/account'
@@ -60,7 +59,7 @@ class Swapped6 extends Struct<{
 
 const testData = [
   {
-    abiType: ABIType.from('(uint64,bool,string,(uint64,bool,bool))'),
+    abiTypeString: '(uint64,bool,string,(uint64,bool,bool))',
     nativeValues() {
       return [nativeNumber, nativeBool, nativeString, [nativeNumber, nativeBool, nativeBool]]
     },
@@ -75,7 +74,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('(uint64,bool,string,((uint64,bool,bool),(uint64,bool,bool)))'),
+    abiTypeString: '(uint64,bool,string,((uint64,bool,bool),(uint64,bool,bool)))',
     nativeValues() {
       return [
         nativeNumber,
@@ -103,7 +102,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('(uint64,bool,string,(string[],string[],string,uint64,bool,uint64[3]))'),
+    abiTypeString: '(uint64,bool,string,(string[],string[],string,uint64,bool,uint64[3]))',
     nativeValues() {
       return [
         nativeNumber,
@@ -142,7 +141,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('(uint64,bool,string,((bool,string[],string),uint64,uint64[3]))'),
+    abiTypeString: '(uint64,bool,string,((bool,string[],string),uint64,uint64[3]))',
     nativeValues() {
       return [
         nativeNumber,
@@ -171,7 +170,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('(uint64,bool,string,((bool,string[],string),(uint64,uint64[3])))'),
+    abiTypeString: '(uint64,bool,string,((bool,string[],string),(uint64,uint64[3])))',
     nativeValues() {
       return [
         nativeNumber,
@@ -202,7 +201,7 @@ const testData = [
     },
   },
   {
-    abiType: ABIType.from('(uint64,bool,string,((bool,(string[],string)),(uint64,uint64[3])))'),
+    abiTypeString: '(uint64,bool,string,((bool,(string[],string)),(uint64,uint64[3])))',
     nativeValues() {
       return [
         nativeNumber,
@@ -236,14 +235,14 @@ const testData = [
 
 describe('arc4.Struct', async () => {
   test.each(testData)('should be able to get bytes representation', async (data) => {
-    const sdkResult = data.abiType.encode(data.nativeValues())
+    const sdkResult = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const result = data.struct()
     expect(result.bytes).toEqual(sdkResult)
   })
 
   test.each(testData)('create struct from bytes', async (data) => {
     const nativeValues = data.nativeValues()
-    const sdkResult = data.abiType.encode(nativeValues)
+    const sdkResult = getABIEncodedValue(nativeValues, data.abiTypeString, {})
     const result = data.create(Bytes(sdkResult))
 
     let i = 0
@@ -261,7 +260,7 @@ describe('arc4.Struct', async () => {
     nativeValues[3][0][1][0][1] = 'hello, world'
     nativeValues[3][0][1][0].push('test')
     nativeValues[3][1][1][0] = 24
-    const sdkResult = data.abiType.encode(nativeValues)
+    const sdkResult = getABIEncodedValue(nativeValues, data.abiTypeString, {})
 
     const abiValues = data.struct() as Swapped6
     abiValues.b = new UintN<64>(43)
@@ -282,9 +281,9 @@ describe('arc4.Struct', async () => {
     nativeValues[3][0][1][0][1] = 'hello, world'
     nativeValues[3][0][1][0].push('test')
     nativeValues[3][1][1][0] = 24
-    const sdkResult = data.abiType.encode(nativeValues)
+    const sdkResult = getABIEncodedValue(nativeValues, data.abiTypeString, {})
 
-    const bytes = Bytes(data.abiType.encode(data.nativeValues()))
+    const bytes = Bytes(getABIEncodedValue(data.nativeValues(), data.abiTypeString, {}))
     const abiValues = data.create(bytes) as Swapped6
     abiValues.b = new UintN<64>(43)
     abiValues.d = new Str('world')

@@ -1,16 +1,17 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Bytes, Ec, Ecdsa, internal, uint64, VrfVerify } from '@algorandfoundation/algorand-typescript'
-import algosdk from 'algosdk'
 import { ec } from 'elliptic'
 import { keccak256 as js_keccak256 } from 'js-sha3'
+import { sha512_256 as js_sha512_256 } from 'js-sha512'
 import nacl from 'tweetnacl'
 import { afterEach, describe, expect, it, Mock, test, vi } from 'vitest'
 import { TestExecutionContext } from '../src'
-import { MAX_BYTES_SIZE } from '../src/constants'
+import { LOGIC_DATA_PREFIX, MAX_BYTES_SIZE, PROGRAM_TAG } from '../src/constants'
 import * as op from '../src/impl/crypto'
+import { conactUint8Arrays, decodePublicKey } from '../src/util'
 import appSpecJson from './artifacts/crypto-ops/data/CryptoOpsContract.arc32.json'
-import { getAlgorandAppClientWithApp, getAvmResult } from './avm-invoker'
+import { generateAVMTestAccount, getAlgorandAppClientWithApp, getAvmResult } from './avm-invoker'
 import { asUint8Array, getPaddedBytes } from './util'
 
 const MAX_ARG_LEN = 2048
@@ -99,7 +100,7 @@ describe('crypto op codes', async () => {
       const signature = nacl.sign.detached(asUint8Array(message), keyPair.secretKey)
 
       const avmResult = await getAvmResult<boolean>(
-        { appClient, sendParams: { fee: AlgoAmount.Algos(2000) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(2000) } },
         'verify_ed25519verify_bare',
         asUint8Array(message),
         signature,
@@ -112,18 +113,22 @@ describe('crypto op codes', async () => {
 
   describe('ed25519verify', async () => {
     it('should return true for valid signature', async () => {
-      const approval = app.compiledApproval
+      const approval = app.compiledApproval!
       const appCallTxn = ctx.any.txn.applicationCall({
         approvalProgram: Bytes(approval.compiledBase64ToBytes),
       })
 
       const message = Bytes('Test message for ed25519 verification')
-      const account = algosdk.generateAccount()
-      const publicKey = algosdk.decodeAddress(account.addr).publicKey
-      const signature = algosdk.tealSignFromProgram(account.sk, asUint8Array(message), approval.compiledBase64ToBytes)
+      const account = await generateAVMTestAccount()
+      const publicKey = decodePublicKey(account.addr.toString())
+      const logicSig = conactUint8Arrays(asUint8Array(PROGRAM_TAG), approval.compiledBase64ToBytes)
+      const logicSigAddress = js_sha512_256.array(logicSig)
+      const parts = conactUint8Arrays(new Uint8Array(logicSigAddress), asUint8Array(message))
+      const toBeSigned = conactUint8Arrays(asUint8Array(LOGIC_DATA_PREFIX), parts)
+      const signature = nacl.sign.detached(toBeSigned, account.account.sk)
 
       const avmResult = await getAvmResult<boolean>(
-        { appClient, sendParams: { fee: AlgoAmount.Algos(2000) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(2000) } },
         'verify_ed25519verify',
         asUint8Array(message),
         signature,
@@ -149,7 +154,7 @@ describe('crypto op codes', async () => {
       const pubkeyY = Bytes.fromHex('48d0d337704fe2c675909d2c93f7995e199156f302f63c74a8b96827b28d777b')
 
       const avmResult = await getAvmResult<boolean>(
-        { appClient, sendParams: { fee: AlgoAmount.Algos(5000) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(5000) } },
         'verify_ecdsa_verify_k1',
         asUint8Array(messageHash),
         asUint8Array(sigR),
@@ -169,7 +174,7 @@ describe('crypto op codes', async () => {
       const pubkeyY = Bytes.fromHex('bd437b75d6f1db67155a95a0da4b41f2b6b3dc5d42f7db56238449e404a6c0a3')
 
       const avmResult = await getAvmResult<boolean>(
-        { appClient, sendParams: { fee: AlgoAmount.Algos(5000) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(5000) } },
         'verify_ecdsa_verify_r1',
         asUint8Array(messageHash),
         asUint8Array(sigR),
@@ -191,7 +196,7 @@ describe('crypto op codes', async () => {
       const c = testData.r
       const d = testData.s
       const avmResult = await getAvmResult<uint64[][]>(
-        { appClient, sendParams: { fee: AlgoAmount.Algos(5000) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(5000) } },
         'verify_ecdsa_recover_k1',
         asUint8Array(a),
         b.asNumber(),
@@ -212,7 +217,7 @@ describe('crypto op codes', async () => {
       const d = testData.s
       await expect(
         getAvmResult<uint64[][]>(
-          { appClient, sendParams: { fee: AlgoAmount.Algos(5000) } },
+          { appClient, sendParams: { staticFee: AlgoAmount.Algos(5000) } },
           'verify_ecdsa_recover_r1',
           asUint8Array(a),
           b.asNumber(),
@@ -233,7 +238,7 @@ describe('crypto op codes', async () => {
       const keyPair = ecdsa.keyFromPublic(testData.pubkeyX.concat(testData.pubkeyY).asUint8Array())
       const pubKeyArray = new Uint8Array(keyPair.getPublic(true, 'array'))
       const avmResult = await getAvmResult<uint64[][]>(
-        { appClient, sendParams: { fee: AlgoAmount.Algos(3000) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(3000) } },
         'verify_ecdsa_decompress_k1',
         pubKeyArray,
       )
@@ -257,7 +262,7 @@ describe('crypto op codes', async () => {
 
     it('should return mocked result', async () => {
       const avmResult = await getAvmResult<[Uint8Array, boolean]>(
-        { appClient, sendParams: { fee: AlgoAmount.Algos(6000) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(6000) } },
         'verify_vrf_verify',
         asUint8Array(a),
         asUint8Array(b),

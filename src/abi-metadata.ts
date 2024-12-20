@@ -1,6 +1,6 @@
 import { BaseContract, Contract } from '@algorandfoundation/algorand-typescript'
 import { AbiMethodConfig, BareMethodConfig, CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
-import { ABIMethod } from 'algosdk'
+import { sha512_256 as js_sha512_256 } from 'js-sha512'
 import { TypeInfo } from './encoders'
 import { getArc4TypeName as getArc4TypeNameForARC4Encoded } from './impl/encoded-types'
 import { DeliberateAny } from './typescript-helpers'
@@ -73,10 +73,14 @@ export const getArc4Signature = (metadata: AbiMetadata): string => {
   if (metadata.methodSignature === undefined) {
     const argTypes = metadata.argTypes.map((t) => JSON.parse(t) as TypeInfo).map(getArc4TypeName)
     const returnType = getArc4TypeName(JSON.parse(metadata.returnType) as TypeInfo)
-    const method = new ABIMethod({ name: metadata.methodName, args: argTypes.map((t) => ({ type: t })), returns: { type: returnType } })
-    metadata.methodSignature = method.getSignature()
+    metadata.methodSignature = `${metadata.methodName}(${argTypes.join(',')})${returnType}`
   }
   return metadata.methodSignature
+}
+
+export const getArc4Selector = (metadata: AbiMetadata): Uint8Array => {
+  const hash = js_sha512_256.array(getArc4Signature(metadata))
+  return new Uint8Array(hash.slice(0, 4))
 }
 
 const getArc4TypeName = (t: TypeInfo): string => {
