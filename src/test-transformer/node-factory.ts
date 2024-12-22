@@ -94,12 +94,11 @@ export const nodeFactory = {
     )
   },
 
-  callARC4EncodingUtil(node: ts.CallExpression, typeInfo?: TypeInfo) {
-    const identifierExpression = node.expression as ts.Identifier
+  callStubbedFunction(functionName: string, node: ts.CallExpression, typeInfo?: TypeInfo) {
     const infoString = JSON.stringify(typeInfo)
     const updatedPropertyAccessExpression = factory.createPropertyAccessExpression(
       factory.createIdentifier('runtimeHelpers'),
-      `${identifierExpression.getText()}Impl`,
+      `${functionName}Impl`,
     )
 
     return factory.createCallExpression(

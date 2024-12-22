@@ -3,7 +3,11 @@ import { Bytes } from '@algorandfoundation/algorand-typescript'
 export const UINT64_SIZE = 64
 export const UINT512_SIZE = 512
 export const MAX_UINT8 = 2 ** 8 - 1
+export const MAX_UINT16 = 2 ** 16 - 1
+export const MAX_UINT32 = 2 ** 32 - 1
 export const MAX_UINT64 = 2n ** 64n - 1n
+export const MAX_UINT128 = 2n ** 128n - 1n
+export const MAX_UINT256 = 2n ** 256n - 1n
 export const MAX_UINT512 = 2n ** 512n - 1n
 export const MAX_BYTES_SIZE = 4096
 export const MAX_LOG_SIZE = 1024
@@ -43,6 +47,7 @@ export const ABI_RETURN_VALUE_LOG_PREFIX = Bytes.fromHex('151F7C75')
 
 export const UINT64_OVERFLOW_UNDERFLOW_MESSAGE = 'Uint64 overflow or underflow'
 export const BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE = 'BigUint overflow or underflow'
+export const DEFAULT_TEMPLATE_VAR_PREFIX = 'TMPL_'
 
 export const APP_ID_PREFIX = 'appID'
 export const HASH_BYTES_LENGTH = 32

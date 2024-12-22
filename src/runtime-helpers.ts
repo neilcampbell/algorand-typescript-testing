@@ -2,11 +2,14 @@ import { internal } from '@algorandfoundation/algorand-typescript'
 import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { MAX_UINT64 } from './constants'
 import type { TypeInfo } from './encoders'
+import { AccountCls } from './impl/account'
 import { DeliberateAny } from './typescript-helpers'
 import { nameOfType } from './util'
 
 export { attachAbiMetadata } from './abi-metadata'
 export * from './impl/encoded-types'
+export { ensureBudgetImpl } from './impl/ensure-budget'
+export { TemplateVarImpl } from './impl/template-var'
 
 export function switchableValue(x: unknown): bigint | string | boolean {
   if (typeof x === 'boolean') return x
@@ -36,6 +39,9 @@ function tryGetBigInt(value: unknown): bigint | undefined {
 export function binaryOp(left: unknown, right: unknown, op: BinaryOps) {
   if (left instanceof ARC4Encoded && right instanceof ARC4Encoded) {
     return arc4EncodedOp(left, right, op)
+  }
+  if (left instanceof AccountCls && right instanceof AccountCls) {
+    return accountBinaryOp(left, right, op)
   }
   if (left instanceof internal.primitives.BigUintCls || right instanceof internal.primitives.BigUintCls) {
     return bigUintBinaryOp(left, right, op)
@@ -80,6 +86,16 @@ function arc4EncodedOp(left: ARC4Encoded, right: ARC4Encoded, op: BinaryOps): De
       return compareEquality(left, right)
     case '!==':
       return !compareEquality(left, right)
+    default:
+      internal.errors.internalError(`Unsupported operator ${op}`)
+  }
+}
+
+function accountBinaryOp(left: AccountCls, right: AccountCls, op: BinaryOps): DeliberateAny {
+  switch (op) {
+    case '===':
+    case '!==':
+      return bytesBinaryOp(left.bytes, right.bytes, op)
     default:
       internal.errors.internalError(`Unsupported operator ${op}`)
   }

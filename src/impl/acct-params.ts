@@ -1,6 +1,7 @@
-import { Account, gtxn, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, Application, gtxn, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asMaybeUint64Cls } from '../util'
+import { getApp } from './app-params'
 
 export const getAccount = (acct: Account | internal.primitives.StubUint64Compat): Account => {
   const acctId = asMaybeUint64Cls(acct)
@@ -19,6 +20,19 @@ export const balance = (a: Account | internal.primitives.StubUint64Compat): uint
 export const minBalance = (a: Account | internal.primitives.StubUint64Compat): uint64 => {
   const acct = getAccount(a)
   return acct.minBalance
+}
+
+export const appOptedIn = (
+  a: Account | internal.primitives.StubUint64Compat,
+  b: Application | internal.primitives.StubUint64Compat,
+): boolean => {
+  const account = getAccount(a)
+  const app = getApp(b)
+
+  if (account === undefined || app === undefined) {
+    return false
+  }
+  return account.isOptedIn(app)
 }
 
 export const AcctParams: internal.opTypes.AcctParamsType = {
