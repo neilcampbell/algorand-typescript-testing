@@ -111,7 +111,13 @@ class ExpressionVisitor {
       }
       if (ts.isCallExpression(updatedNode)) {
         const stubbedFunctionName = tryGetStubbedFunctionName(updatedNode, this.helper)
-        updatedNode = stubbedFunctionName ? nodeFactory.callStubbedFunction(stubbedFunctionName, updatedNode, info) : updatedNode
+        const infos = [info]
+        if (isCallingDecodeArc4(stubbedFunctionName)) {
+          const targetType = ptypes.ptypeToArc4EncodedType(type, this.helper.sourceLocation(node))
+          const targetTypeInfo = getGenericTypeInfo(targetType)
+          infos[0] = targetTypeInfo
+        }
+        updatedNode = stubbedFunctionName ? nodeFactory.callStubbedFunction(stubbedFunctionName, updatedNode, ...infos) : updatedNode
       }
       return isGeneric
         ? nodeFactory.captureGenericTypeInfo(ts.visitEachChild(updatedNode, this.visit, this.context), JSON.stringify(info))
@@ -289,6 +295,7 @@ const isGenericType = (type: ptypes.PType): boolean =>
     ptypes.StaticArrayType,
     ptypes.UFixedNxMType,
     ptypes.UintNType,
+    ptypes.TuplePType,
   )
 
 const isArc4EncodedType = (type: ptypes.PType): boolean =>
@@ -356,3 +363,5 @@ const tryGetStubbedFunctionName = (node: ts.CallExpression, helper: VisitorHelpe
   const stubbedFunctionNames = ['interpretAsArc4', 'decodeArc4', 'encodeArc4', 'TemplateVar', 'ensureBudget']
   return stubbedFunctionNames.includes(functionName) ? functionName : undefined
 }
+
+const isCallingDecodeArc4 = (functionName: string | undefined): boolean => ['decodeArc4', 'encodeArc4'].includes(functionName ?? '')

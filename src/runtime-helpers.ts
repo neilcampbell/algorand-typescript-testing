@@ -8,6 +8,7 @@ import { nameOfType } from './util'
 
 export { attachAbiMetadata } from './abi-metadata'
 export * from './impl/encoded-types'
+export { decodeArc4Impl, encodeArc4Impl } from './impl/encoded-types'
 export { ensureBudgetImpl } from './impl/ensure-budget'
 export { TemplateVarImpl } from './impl/template-var'
 
