@@ -63,8 +63,8 @@
     "tslib": "^2.6.2"
   },
   "dependencies": {
-    "@algorandfoundation/algorand-typescript": "^0.0.1-alpha.22",
-    "@algorandfoundation/puya-ts": "^1.0.0-alpha.34",
+    "@algorandfoundation/algorand-typescript": "^0.0.1-alpha.23",
+    "@algorandfoundation/puya-ts": "^1.0.0-alpha.35",
     "elliptic": "^6.5.7",
     "js-sha256": "^0.11.0",
     "js-sha3": "^0.9.3",
