@@ -24,14 +24,20 @@ import {
   BITS_IN_BYTE,
   UINT64_SIZE,
 } from '../constants'
+import { lazyContext } from '../context-helpers/internal-context'
 import { fromBytes, TypeInfo } from '../encoders'
 import { DeliberateAny } from '../typescript-helpers'
-import { asBigUint, asBigUintCls, asBytesCls, asUint64, asUint8Array, conactUint8Arrays, uint8ArrayToNumber } from '../util'
+import { asBigInt, asBigUint, asBigUintCls, asBytesCls, asUint64, asUint8Array, conactUint8Arrays, uint8ArrayToNumber } from '../util'
+import { AccountCls } from './account'
+import { ApplicationCls } from './application'
+import { AssetCls } from './asset'
+import { ApplicationTransaction } from './transactions'
 
 const ABI_LENGTH_SIZE = 2
 const maxBigIntValue = (bitSize: number) => 2n ** BigInt(bitSize) - 1n
 const maxBytesLength = (bitSize: number) => Math.floor(bitSize / BITS_IN_BYTE)
 const encodeLength = (length: number) => new internal.primitives.BytesCls(encodingUtil.bigIntToUint8Array(BigInt(length), ABI_LENGTH_SIZE))
+
 type CompatForArc4Int<N extends BitSize> = N extends 8 | 16 | 32 | 64 ? Uint64Compat : BigUintCompat
 export class UintNImpl<N extends BitSize> extends UintN<N> {
   private value: Uint8Array
@@ -99,7 +105,7 @@ export class UFixedNxMImpl<N extends BitSize, M extends number> extends UFixedNx
   private value: Uint8Array
   private bitSize: N
   private precision: M
-  private typeInfo: TypeInfo
+  typeInfo: TypeInfo
 
   constructor(typeInfo: TypeInfo | string, v: `${number}.${number}`) {
     super(v)
@@ -163,7 +169,10 @@ export class UFixedNxMImpl<N extends BitSize, M extends number> extends UFixedNx
 export class ByteImpl extends Byte {
   private value: UintNImpl<8>
 
-  constructor(typeInfo: TypeInfo | string, v?: CompatForArc4Int<8>) {
+  constructor(
+    public typeInfo: TypeInfo | string,
+    v?: CompatForArc4Int<8>,
+  ) {
     super(v)
     this.value = new UintNImpl<8>(typeInfo, v)
   }
@@ -202,7 +211,10 @@ export class ByteImpl extends Byte {
 export class StrImpl extends Str {
   private value: Uint8Array
 
-  constructor(_typeInfo: TypeInfo | string, s?: StringCompat) {
+  constructor(
+    public typeInfo: TypeInfo | string,
+    s?: StringCompat,
+  ) {
     super()
     const bytesValue = asBytesCls(s ?? '')
     const bytesLength = encodeLength(bytesValue.length.asNumber())
@@ -244,7 +256,10 @@ const FALSE_BIGINT_VALUE = 0n
 export class BoolImpl extends Bool {
   private value: Uint8Array
 
-  constructor(_typeInfo: TypeInfo | string, v?: boolean) {
+  constructor(
+    public typeInfo: TypeInfo | string,
+    v?: boolean,
+  ) {
     super(v)
     this.value = encodingUtil.bigIntToUint8Array(v ? TRUE_BIGINT_VALUE : FALSE_BIGINT_VALUE, 1)
   }
@@ -320,8 +335,8 @@ const arrayProxyHandler = <TItem>() => ({
 export class StaticArrayImpl<TItem extends ARC4Encoded, TLength extends number> extends StaticArray<TItem, TLength> {
   private value?: TItem[]
   private uint8ArrayValue?: Uint8Array
-  private typeInfo: TypeInfo
   private size: number
+  typeInfo: TypeInfo
   genericArgs: StaticArrayGenericArgs
 
   constructor(typeInfo: TypeInfo | string, ...items: TItem[] & { length: TLength })
@@ -383,6 +398,10 @@ export class StaticArrayImpl<TItem extends ARC4Encoded, TLength extends number> 
     return StaticArrayImpl.fromBytesImpl(this.bytes, JSON.stringify(this.typeInfo)) as StaticArrayImpl<TItem, TLength>
   }
 
+  get native(): TItem[] {
+    return this.items
+  }
+
   static fromBytesImpl(
     value: internal.primitives.StubBytesCompat | Uint8Array,
     typeInfo: string | TypeInfo,
@@ -425,7 +444,7 @@ export class StaticArrayImpl<TItem extends ARC4Encoded, TLength extends number> 
 }
 
 export class AddressImpl extends Address {
-  private typeInfo: TypeInfo
+  typeInfo: TypeInfo
   private value: StaticArrayImpl<ByteImpl, 32>
 
   constructor(typeInfo: TypeInfo | string, value?: Account | string | bytes) {
@@ -499,7 +518,7 @@ const readLength = (value: Uint8Array): readonly [number, Uint8Array] => {
 export class DynamicArrayImpl<TItem extends ARC4Encoded> extends DynamicArray<TItem> {
   private value?: TItem[]
   private uint8ArrayValue?: Uint8Array
-  private typeInfo: TypeInfo
+  typeInfo: TypeInfo
   genericArgs: DynamicArrayGenericArgs
 
   constructor(typeInfo: TypeInfo | string, ...items: TItem[]) {
@@ -554,6 +573,10 @@ export class DynamicArrayImpl<TItem extends ARC4Encoded> extends DynamicArray<TI
     return DynamicArrayImpl.fromBytesImpl(this.bytes, JSON.stringify(this.typeInfo)) as DynamicArrayImpl<TItem>
   }
 
+  get native(): TItem[] {
+    return this.items
+  }
+
   push(...values: TItem[]) {
     const items = this.items
     items.push(...values)
@@ -594,7 +617,7 @@ export class DynamicArrayImpl<TItem extends ARC4Encoded> extends DynamicArray<TI
 export class TupleImpl<TTuple extends [ARC4Encoded, ...ARC4Encoded[]]> extends Tuple<TTuple> {
   private value?: TTuple
   private uint8ArrayValue?: Uint8Array
-  private typeInfo: TypeInfo
+  typeInfo: TypeInfo
   genericArgs: TypeInfo[]
 
   constructor(typeInfo: TypeInfo | string)
@@ -691,7 +714,6 @@ export class TupleImpl<TTuple extends [ARC4Encoded, ...ARC4Encoded[]]> extends T
 type StructConstraint = Record<string, ARC4Encoded>
 export class StructImpl<T extends StructConstraint> extends (Struct<StructConstraint> as DeliberateAny) {
   private uint8ArrayValue?: Uint8Array
-  private typeInfo: TypeInfo
   genericArgs: Record<string, TypeInfo>
 
   constructor(typeInfo: TypeInfo | string, value: T = {} as T) {
@@ -737,6 +759,10 @@ export class StructImpl<T extends StructConstraint> extends (Struct<StructConstr
     return result as T
   }
 
+  get native(): T {
+    return this.items
+  }
+
   private decodeAsProperties() {
     if (this.uint8ArrayValue) {
       const values = decode(this.uint8ArrayValue, Object.values(this.genericArgs))
@@ -769,7 +795,7 @@ export class StructImpl<T extends StructConstraint> extends (Struct<StructConstr
 }
 
 export class DynamicBytesImpl extends DynamicBytes {
-  private typeInfo: TypeInfo
+  typeInfo: TypeInfo
   private value: DynamicArrayImpl<ByteImpl>
 
   constructor(typeInfo: TypeInfo | string, value?: bytes | string) {
@@ -825,7 +851,7 @@ export class DynamicBytesImpl extends DynamicBytes {
 
 export class StaticBytesImpl extends StaticBytes {
   private value: StaticArrayImpl<ByteImpl, number>
-  private typeInfo: TypeInfo
+  typeInfo: TypeInfo
 
   constructor(typeInfo: TypeInfo | string, value?: bytes | string) {
     super(value)
@@ -1160,4 +1186,86 @@ export const getArc4TypeName = (typeInfo: TypeInfo): string | undefined => {
   if (typeof name === 'string') return name
   else if (typeof name === 'function') return name(typeInfo)
   return undefined
+}
+
+export function decodeArc4Impl<T>(sourceTypeInfoString: string, bytes: internal.primitives.StubBytesCompat): T {
+  const sourceTypeInfo = JSON.parse(sourceTypeInfoString)
+  const encoder = getArc4Encoder(sourceTypeInfo)
+  const source = encoder(bytes, sourceTypeInfo)
+
+  return getNativeValue(source) as T
+}
+
+export function encodeArc4Impl<T>(_targetTypeInfoString: string, source: T): bytes {
+  const arc4Encoded = getArc4Encoded(source)
+  return arc4Encoded.bytes
+}
+
+const getNativeValue = (value: DeliberateAny): DeliberateAny => {
+  const native = (value as DeliberateAny).native
+  if (Array.isArray(native)) {
+    return native.map((item) => getNativeValue(item))
+  } else if (native instanceof internal.primitives.AlgoTsPrimitiveCls) {
+    return native
+  } else if (typeof native === 'object') {
+    return Object.fromEntries(Object.entries(native).map(([key, value]) => [key, getNativeValue(value)]))
+  }
+  return native
+}
+
+const getArc4Encoded = (value: DeliberateAny): ARC4Encoded => {
+  if (value instanceof ARC4Encoded) {
+    return value
+  }
+  if (value instanceof AccountCls) {
+    const index = (lazyContext.activeGroup.activeTransaction as ApplicationTransaction).apat.indexOf(value)
+    return new UintNImpl({ name: 'UintN<64>', genericArgs: [{ name: '64' }] }, asBigInt(index))
+  }
+  if (value instanceof AssetCls) {
+    const index = (lazyContext.activeGroup.activeTransaction as ApplicationTransaction).apas.indexOf(value)
+    return new UintNImpl({ name: 'UintN<64>', genericArgs: [{ name: '64' }] }, asBigInt(index))
+  }
+  if (value instanceof ApplicationCls) {
+    const index = (lazyContext.activeGroup.activeTransaction as ApplicationTransaction).apfa.indexOf(value)
+    return new UintNImpl({ name: 'UintN<64>', genericArgs: [{ name: '64' }] }, asBigInt(index))
+  }
+  if (typeof value === 'boolean') {
+    return new BoolImpl({ name: 'Bool' }, value)
+  }
+  if (value instanceof internal.primitives.Uint64Cls || typeof value === 'number') {
+    return new UintNImpl({ name: 'UintN<64>', genericArgs: [{ name: '64' }] }, asBigInt(value))
+  }
+  if (value instanceof internal.primitives.BigUintCls) {
+    return new UintNImpl({ name: 'UintN<512>', genericArgs: [{ name: '512' }] }, value.asBigInt())
+  }
+  if (typeof value === 'bigint') {
+    return new UintNImpl({ name: 'UintN<512>', genericArgs: [{ name: '512' }] }, value)
+  }
+  if (value instanceof internal.primitives.BytesCls) {
+    return new DynamicBytesImpl(
+      { name: 'DynamicBytes', genericArgs: { elementType: { name: 'Byte', genericArgs: [{ name: '8' }] } } },
+      value.asAlgoTs(),
+    )
+  }
+  if (typeof value === 'string') {
+    return new StrImpl({ name: 'Str' }, value)
+  }
+  if (Array.isArray(value)) {
+    const result: ARC4Encoded[] = value.reduce((acc: ARC4Encoded[], cur: DeliberateAny) => {
+      return acc.concat(getArc4Encoded(cur))
+    }, [])
+    const genericArgs: TypeInfo[] = result.map((x) => (x as DeliberateAny).typeInfo)
+    const typeInfo = { name: `Tuple<[${genericArgs.map((x) => x.name).join(',')}]>`, genericArgs }
+    return new TupleImpl(typeInfo, ...(result as []))
+  }
+  if (typeof value === 'object') {
+    const result = Object.values(value).reduce((acc: ARC4Encoded[], cur: DeliberateAny) => {
+      return acc.concat(getArc4Encoded(cur))
+    }, [])
+    const genericArgs: TypeInfo[] = result.map((x) => (x as DeliberateAny).typeInfo)
+    const typeInfo = { name: 'Struct', genericArgs: Object.fromEntries(Object.keys(value).map((x, i) => [x, genericArgs[i]])) }
+    return new StructImpl(typeInfo, Object.fromEntries(Object.keys(value).map((x, i) => [x, result[i]])))
+  }
+
+  throw internal.errors.codeError(`Unsupported type for encoding: ${typeof value}`)
 }

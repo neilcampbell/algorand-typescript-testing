@@ -11,7 +11,10 @@ export class Arc4ValueGenerator {
    * */
   address(): arc4.Address {
     const source = new AvmValueGenerator().account()
-    const result = new AddressImpl({ name: 'StaticArray', genericArgs: { elementType: { name: 'Byte' }, size: { name: '32' } } }, source)
+    const result = new AddressImpl(
+      { name: 'StaticArray', genericArgs: { elementType: { name: 'Byte', genericArgs: [{ name: '8' }] }, size: { name: '32' } } },
+      source,
+    )
     return result
   }
 
@@ -93,7 +96,7 @@ export class Arc4ValueGenerator {
    * */
   dynamicBytes(n: number): arc4.DynamicBytes {
     return new DynamicBytesImpl(
-      { name: 'DynamicArray', genericArgs: { elementType: { name: 'Byte' } } },
+      { name: 'DynamicBytes', genericArgs: { elementType: { name: 'Byte', genericArgs: [{ name: '8' }] } } },
       getRandomBytes(n / BITS_IN_BYTE).asAlgoTs(),
     )
   }

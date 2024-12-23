@@ -307,6 +307,15 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
   get lastLog() {
     return this.#appLogs.at(-1) ?? lazyContext.getApplicationData(this.appId.id).appLogs.at(-1) ?? Bytes()
   }
+  get apat() {
+    return this.#accounts
+  }
+  get apas() {
+    return this.#assets
+  }
+  get apfa() {
+    return this.#apps
+  }
   appArgs(index: internal.primitives.StubUint64Compat): bytes {
     return toBytes(this.#appArgs[asNumber(index)])
   }
