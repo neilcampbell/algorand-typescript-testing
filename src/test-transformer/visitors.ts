@@ -21,6 +21,7 @@ const algotsModulePaths = [
 type VisitorHelper = {
   additionalStatements: ts.Statement[]
   resolveType(node: ts.Node): ptypes.PType
+  resolveTypeParameters(node: ts.CallExpression): ptypes.PType[]
   sourceLocation(node: ts.Node): SourceLocation
   tryGetSymbol(node: ts.Node): ts.Symbol | undefined
 }
@@ -43,6 +44,9 @@ export class SourceFileVisitor {
         } catch {
           return ptypes.anyPType
         }
+      },
+      resolveTypeParameters(node: ts.CallExpression) {
+        return typeResolver.resolveTypeParameters(node, this.sourceLocation(node))
       },
       tryGetSymbol(node: ts.Node): ts.Symbol | undefined {
         const s = typeChecker.getSymbolAtLocation(node)
@@ -112,6 +116,9 @@ class ExpressionVisitor {
       if (ts.isCallExpression(updatedNode)) {
         const stubbedFunctionName = tryGetStubbedFunctionName(updatedNode, this.helper)
         const infos = [info]
+        if (isCallingEmit(stubbedFunctionName)) {
+          infos[0] = this.helper.resolveTypeParameters(updatedNode).map(getGenericTypeInfo)[0]
+        }
         if (isCallingDecodeArc4(stubbedFunctionName)) {
           const targetType = ptypes.ptypeToArc4EncodedType(type, this.helper.sourceLocation(node))
           const targetTypeInfo = getGenericTypeInfo(targetType)
@@ -332,7 +339,7 @@ const getGenericTypeInfo = (type: ptypes.PType): TypeInfo => {
   } else if (type instanceof ptypes.UintNType) {
     genericArgs.push({ name: type.n.toString() })
   } else if (type instanceof ptypes.ARC4StructType) {
-    typeName = 'Struct'
+    typeName = `Struct<${type.name}>`
     genericArgs = Object.fromEntries(
       Object.entries(type.fields)
         .map(([key, value]) => [key, getGenericTypeInfo(value)])
@@ -360,8 +367,9 @@ const tryGetStubbedFunctionName = (node: ts.CallExpression, helper: VisitorHelpe
     if (sourceFileName && !algotsModulePaths.some((s) => sourceFileName.includes(s))) return undefined
   }
   const functionName = functionSymbol?.getName() ?? identityExpression.text
-  const stubbedFunctionNames = ['interpretAsArc4', 'decodeArc4', 'encodeArc4', 'TemplateVar', 'ensureBudget']
+  const stubbedFunctionNames = ['interpretAsArc4', 'decodeArc4', 'encodeArc4', 'TemplateVar', 'ensureBudget', 'emit']
   return stubbedFunctionNames.includes(functionName) ? functionName : undefined
 }
 
 const isCallingDecodeArc4 = (functionName: string | undefined): boolean => ['decodeArc4', 'encodeArc4'].includes(functionName ?? '')
+const isCallingEmit = (functionName: string | undefined): boolean => 'emit' === (functionName ?? '')
