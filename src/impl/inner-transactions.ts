@@ -137,8 +137,17 @@ export class ApplicationInnerTxn extends ApplicationTransaction implements itxn.
   /* @internal */
   constructor(fields: Mutable<itxn.ApplicationCallFields>) {
     const { appId, approvalProgram, clearStateProgram, onCompletion, appArgs, accounts, assets, apps, ...rest } = mapCommonFields(fields)
+    const compiledApp =
+      appId === undefined && approvalProgram !== undefined
+        ? lazyContext.ledger.getApplicationForApprovalProgram(approvalProgram)
+        : undefined
     super({
-      appId: appId instanceof internal.primitives.Uint64Cls ? getApp(appId) : (appId as Application),
+      appId:
+        appId === undefined && compiledApp
+          ? compiledApp
+          : appId instanceof internal.primitives.Uint64Cls
+            ? getApp(appId)
+            : (appId as Application),
       onCompletion:
         typeof onCompletion === 'string'
           ? (onCompletion as arc4.OnCompleteActionStr)
@@ -153,6 +162,7 @@ export class ApplicationInnerTxn extends ApplicationTransaction implements itxn.
       accounts: accounts?.map((x) => x),
       assets: assets?.map((x) => x),
       apps: apps?.map((x) => x),
+      createdApp: compiledApp,
       ...rest,
     })
   }

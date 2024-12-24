@@ -7,6 +7,7 @@ import { DeliberateAny } from './typescript-helpers'
 import { nameOfType } from './util'
 
 export { attachAbiMetadata } from './abi-metadata'
+export { compileImpl } from './impl/compiled'
 export { emitImpl } from './impl/emit'
 export * from './impl/encoded-types'
 export { decodeArc4Impl, encodeArc4Impl } from './impl/encoded-types'

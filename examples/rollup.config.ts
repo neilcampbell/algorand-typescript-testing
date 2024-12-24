@@ -13,6 +13,7 @@ const config: RollupOptions = {
     'examples/voting/contract.algo.ts',
     'examples/simple-voting/contract.algo.ts',
     'examples/zk-whitelist/contract.algo.ts',
+    'examples/precompiled/contract.algo.ts',
   ],
   output: [
     {

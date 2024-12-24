@@ -1185,11 +1185,14 @@ export const getArc4TypeName = (typeInfo: TypeInfo): string | undefined => {
   return undefined
 }
 
-export function decodeArc4Impl<T>(sourceTypeInfoString: string, bytes: internal.primitives.StubBytesCompat): T {
+export function decodeArc4Impl<T>(
+  sourceTypeInfoString: string,
+  bytes: internal.primitives.StubBytesCompat,
+  prefix: 'none' | 'log' = 'none',
+): T {
   const sourceTypeInfo = JSON.parse(sourceTypeInfoString)
   const encoder = getArc4Encoder(sourceTypeInfo)
-  const source = encoder(bytes, sourceTypeInfo)
-
+  const source = encoder(bytes, sourceTypeInfo, prefix)
   return getNativeValue(source) as T
 }
 

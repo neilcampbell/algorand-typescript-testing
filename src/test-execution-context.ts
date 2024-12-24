@@ -1,4 +1,4 @@
-import { Account, Application, Asset, bytes, internal, LogicSig, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, Application, Asset, BaseContract, bytes, internal, LogicSig, uint64 } from '@algorandfoundation/algorand-typescript'
 import { captureMethodConfig } from './abi-metadata'
 import { DEFAULT_TEMPLATE_VAR_PREFIX } from './constants'
 import { DecodedLogs, LogDecoding } from './decode-logs'
@@ -19,7 +19,7 @@ import { Box, BoxMap, BoxRef, GlobalState, LocalState } from './impl/state'
 import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
-import { DeliberateAny } from './typescript-helpers'
+import { ConstructorFor, DeliberateAny } from './typescript-helpers'
 import { getRandomBytes } from './util'
 import { ValueGenerator } from './value-generators'
 
@@ -31,6 +31,8 @@ export class TestExecutionContext implements internal.ExecutionContext {
   #defaultSender: Account
   #activeLogicSigArgs: bytes[]
   #template_vars: Record<string, DeliberateAny> = {}
+  #compiledApps: Array<[ConstructorFor<BaseContract>, uint64]> = []
+  #compiledLogicSigs: Array<[ConstructorFor<LogicSig>, Account]> = []
 
   constructor(defaultSenderAddress?: bytes) {
     internal.ctxMgr.instance = this
@@ -142,8 +144,34 @@ export class TestExecutionContext implements internal.ExecutionContext {
     }
   }
 
-  setTemplateVar(name: string, value: DeliberateAny) {
-    this.#template_vars[DEFAULT_TEMPLATE_VAR_PREFIX + name] = value
+  setTemplateVar(name: string, value: DeliberateAny, prefix?: string) {
+    this.#template_vars[(prefix ?? DEFAULT_TEMPLATE_VAR_PREFIX) + name] = value
+  }
+
+  getCompiledApp(contract: ConstructorFor<BaseContract>) {
+    return this.#compiledApps.find(([c, _]) => c === contract)
+  }
+
+  setCompiledApp(c: ConstructorFor<BaseContract>, appId: uint64) {
+    const existing = this.getCompiledApp(c)
+    if (existing) {
+      existing[1] = appId
+    } else {
+      this.#compiledApps.push([c, appId])
+    }
+  }
+
+  getCompiledLogicSig(logicsig: ConstructorFor<LogicSig>) {
+    return this.#compiledLogicSigs.find(([c, _]) => c === logicsig)
+  }
+
+  setCompiledLogicSig(c: ConstructorFor<LogicSig>, account: Account) {
+    const existing = this.getCompiledLogicSig(c)
+    if (existing) {
+      existing[1] = account
+    } else {
+      this.#compiledLogicSigs.push([c, account])
+    }
   }
 
   reset() {
@@ -152,6 +180,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
     this.#txnContext = new TransactionContext()
     this.#activeLogicSigArgs = []
     this.#template_vars = {}
+    this.#compiledApps = []
     internal.ctxMgr.reset()
     internal.ctxMgr.instance = this
   }
