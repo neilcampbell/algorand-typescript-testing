@@ -1,4 +1,4 @@
-import { arc4, BigUint, bytes } from '@algorandfoundation/algorand-typescript'
+import { arc4, BigUint, bytes, emit } from '@algorandfoundation/algorand-typescript'
 import { Bool, Byte, Contract, interpretAsArc4, Str, UFixedNxM, UintN } from '@algorandfoundation/algorand-typescript/arc4'
 
 export class Arc4PrimitiveOpsContract extends Contract {
@@ -344,4 +344,62 @@ export class Arc4PrimitiveOpsContract extends Contract {
   public verify_bool_from_log(a: bytes): Bool {
     return interpretAsArc4<Bool>(a, 'log')
   }
+
+  // TODO: recompile when puya-ts is updated
+  @arc4.abimethod()
+  public verify_emit(
+    a: arc4.Str,
+    b: arc4.UintN<512>,
+    c: arc4.UintN64,
+    d: arc4.DynamicBytes,
+    e: arc4.UintN64,
+    f: arc4.Bool,
+    g: arc4.DynamicBytes,
+    h: arc4.Str,
+    m: arc4.UintN<64>,
+    n: arc4.UintN<256>,
+    o: arc4.UFixedNxM<32, 8>,
+    p: arc4.UFixedNxM<256, 16>,
+    q: arc4.Bool,
+    r: bytes,
+    s: bytes,
+    t: bytes,
+  ): void {
+    const arc4_r = interpretAsArc4<arc4.StaticArray<arc4.UintN8, 3>>(r)
+    const arc4_s = interpretAsArc4<arc4.DynamicArray<arc4.UintN16>>(s)
+    const arc4_t = interpretAsArc4<arc4.Tuple<[arc4.UintN32, arc4.UintN64, arc4.Str]>>(t)
+
+    emit(new SwappedArc4({ m, n, o, p, q, r: arc4_r, s: arc4_s, t: arc4_t }))
+    emit('Swapped', a, b, c, d, e, f, g, h, m, n, o, p, q, arc4_r.copy(), arc4_s.copy(), arc4_t)
+    emit(
+      'Swapped(string,uint512,uint64,byte[],uint64,bool,byte[],string,uint64,uint256,ufixed32x8,ufixed256x16,bool,uint8[3],uint16[],(uint32,uint64,string))',
+      a,
+      b,
+      c,
+      d,
+      e,
+      f,
+      g,
+      h,
+      m,
+      n,
+      o,
+      p,
+      q,
+      arc4_r.copy(),
+      arc4_s.copy(),
+      arc4_t,
+    )
+  }
 }
+
+class SwappedArc4 extends arc4.Struct<{
+  m: arc4.UintN<64>
+  n: arc4.UintN<256>
+  o: arc4.UFixedNxM<32, 8>
+  p: arc4.UFixedNxM<256, 16>
+  q: arc4.Bool
+  r: arc4.StaticArray<arc4.UintN8, 3>
+  s: arc4.DynamicArray<arc4.UintN16>
+  t: arc4.Tuple<[arc4.UintN32, arc4.UintN64, arc4.Str]>
+}> {}

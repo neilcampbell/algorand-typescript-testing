@@ -167,13 +167,12 @@ export class UFixedNxMImpl<N extends BitSize, M extends number> extends UFixedNx
 }
 
 export class ByteImpl extends Byte {
+  typeInfo: TypeInfo
   private value: UintNImpl<8>
 
-  constructor(
-    public typeInfo: TypeInfo | string,
-    v?: CompatForArc4Int<8>,
-  ) {
+  constructor(typeInfo: TypeInfo | string, v?: CompatForArc4Int<8>) {
     super(v)
+    this.typeInfo = typeof typeInfo === 'string' ? JSON.parse(typeInfo) : typeInfo
     this.value = new UintNImpl<8>(typeInfo, v)
   }
 
@@ -209,15 +208,14 @@ export class ByteImpl extends Byte {
 }
 
 export class StrImpl extends Str {
+  typeInfo: TypeInfo
   private value: Uint8Array
 
-  constructor(
-    public typeInfo: TypeInfo | string,
-    s?: StringCompat,
-  ) {
+  constructor(typeInfo: TypeInfo | string, s?: StringCompat) {
     super()
     const bytesValue = asBytesCls(s ?? '')
     const bytesLength = encodeLength(bytesValue.length.asNumber())
+    this.typeInfo = typeof typeInfo === 'string' ? JSON.parse(typeInfo) : typeInfo
     this.value = asUint8Array(bytesLength.concat(bytesValue))
   }
   get native(): string {
@@ -255,12 +253,11 @@ const TRUE_BIGINT_VALUE = 128n
 const FALSE_BIGINT_VALUE = 0n
 export class BoolImpl extends Bool {
   private value: Uint8Array
+  typeInfo: TypeInfo
 
-  constructor(
-    public typeInfo: TypeInfo | string,
-    v?: boolean,
-  ) {
+  constructor(typeInfo: TypeInfo | string, v?: boolean) {
     super(v)
+    this.typeInfo = typeof typeInfo === 'string' ? JSON.parse(typeInfo) : typeInfo
     this.value = encodingUtil.bigIntToUint8Array(v ? TRUE_BIGINT_VALUE : FALSE_BIGINT_VALUE, 1)
   }
 
@@ -1154,8 +1151,8 @@ export const arc4Encoders: Record<string, fromBytes<DeliberateAny>> = {
   'UFixedNxM<.*>': UFixedNxMImpl.fromBytesImpl,
   'StaticArray<.*>': StaticArrayImpl.fromBytesImpl,
   'DynamicArray<.*>': DynamicArrayImpl.fromBytesImpl,
-  Tuple: TupleImpl.fromBytesImpl,
-  Struct: StructImpl.fromBytesImpl,
+  'Tuple(<.*>)?': TupleImpl.fromBytesImpl,
+  'Struct(<.*>)?': StructImpl.fromBytesImpl,
   DynamicBytes: DynamicBytesImpl.fromBytesImpl,
   'StaticBytes<.*>': StaticBytesImpl.fromBytesImpl,
 }
@@ -1177,8 +1174,8 @@ export const getArc4TypeName = (typeInfo: TypeInfo): string | undefined => {
     'UFixedNxM<.*>': UFixedNxMImpl.getArc4TypeName,
     'StaticArray<.*>': StaticArrayImpl.getArc4TypeName,
     'DynamicArray<.*>': DynamicArrayImpl.getArc4TypeName,
-    Tuple: TupleImpl.getArc4TypeName,
-    Struct: StructImpl.getArc4TypeName,
+    'Tuple(<.*>)?': TupleImpl.getArc4TypeName,
+    'Struct(<.*>)?': StructImpl.getArc4TypeName,
     DynamicBytes: DynamicBytesImpl.getArc4TypeName,
     'StaticBytes<.*>': StaticBytesImpl.getArc4TypeName,
   }
@@ -1213,7 +1210,7 @@ const getNativeValue = (value: DeliberateAny): DeliberateAny => {
   return native
 }
 
-const getArc4Encoded = (value: DeliberateAny): ARC4Encoded => {
+export const getArc4Encoded = (value: DeliberateAny): ARC4Encoded => {
   if (value instanceof ARC4Encoded) {
     return value
   }
@@ -1263,7 +1260,10 @@ const getArc4Encoded = (value: DeliberateAny): ARC4Encoded => {
       return acc.concat(getArc4Encoded(cur))
     }, [])
     const genericArgs: TypeInfo[] = result.map((x) => (x as DeliberateAny).typeInfo)
-    const typeInfo = { name: 'Struct', genericArgs: Object.fromEntries(Object.keys(value).map((x, i) => [x, genericArgs[i]])) }
+    const typeInfo = {
+      name: `Struct<${value.constructor.name}>`,
+      genericArgs: Object.fromEntries(Object.keys(value).map((x, i) => [x, genericArgs[i]])),
+    }
     return new StructImpl(typeInfo, Object.fromEntries(Object.keys(value).map((x, i) => [x, result[i]])))
   }
 

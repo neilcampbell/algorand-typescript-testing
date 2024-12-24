@@ -103,7 +103,7 @@ const getArc4TypeName = (t: TypeInfo): string => {
     AssetTransferTxn: 'axfer',
     AssetFreezeTxn: 'afrz',
     ApplicationTxn: 'appl',
-    'Tuple<.*>': (t) =>
+    'Tuple(<.*>)?': (t) =>
       `(${Object.values(t.genericArgs as Record<string, TypeInfo>)
         .map(getArc4TypeName)
         .join(',')})`,
