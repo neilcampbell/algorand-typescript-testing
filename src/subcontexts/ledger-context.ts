@@ -1,4 +1,4 @@
-import { Account, Application, Asset, BaseContract, internal, LocalStateForAccount } from '@algorandfoundation/algorand-typescript'
+import { Account, Application, Asset, BaseContract, bytes, internal, LocalStateForAccount } from '@algorandfoundation/algorand-typescript'
 import { AccountMap, Uint64Map } from '../collections/custom-key-map'
 import { MAX_UINT64 } from '../constants'
 import { AccountData, AssetHolding } from '../impl/account'
@@ -50,6 +50,28 @@ export class LedgerContext {
       }
     }
     throw internal.errors.internalError('Unknown contract, check correct testing context is active')
+  }
+
+  getApplicationForApprovalProgram(approvalProgram: bytes | readonly bytes[] | undefined): Application | undefined {
+    if (approvalProgram === undefined) {
+      return undefined
+    }
+    const entries = this.applicationDataMap.entries()
+    let next = entries.next().value
+    let found = false
+    while (next && !found) {
+      found = next[1].application.approvalProgram === approvalProgram
+      if (!found) {
+        next = entries.next().value
+      }
+    }
+    if (found && next) {
+      const appId = asUint64(next[0])
+      if (this.applicationDataMap.has(appId)) {
+        return Application(appId)
+      }
+    }
+    return undefined
   }
 
   /**

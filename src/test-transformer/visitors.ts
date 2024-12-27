@@ -367,7 +367,7 @@ const tryGetStubbedFunctionName = (node: ts.CallExpression, helper: VisitorHelpe
     if (sourceFileName && !algotsModulePaths.some((s) => sourceFileName.includes(s))) return undefined
   }
   const functionName = functionSymbol?.getName() ?? identityExpression.text
-  const stubbedFunctionNames = ['interpretAsArc4', 'decodeArc4', 'encodeArc4', 'TemplateVar', 'ensureBudget', 'emit']
+  const stubbedFunctionNames = ['interpretAsArc4', 'decodeArc4', 'encodeArc4', 'TemplateVar', 'ensureBudget', 'emit', 'compile']
   return stubbedFunctionNames.includes(functionName) ? functionName : undefined
 }
 
