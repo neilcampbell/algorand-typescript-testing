@@ -12,7 +12,9 @@ export { emitImpl } from './impl/emit'
 export * from './impl/encoded-types'
 export { decodeArc4Impl, encodeArc4Impl } from './impl/encoded-types'
 export { ensureBudgetImpl } from './impl/ensure-budget'
+export { assertMatchImpl, matchImpl } from './impl/match'
 export { TemplateVarImpl } from './impl/template-var'
+export { urangeImpl } from './impl/urange'
 
 export function switchableValue(x: unknown): bigint | string | boolean {
   if (typeof x === 'boolean') return x

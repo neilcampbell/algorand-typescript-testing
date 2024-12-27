@@ -27,6 +27,13 @@ export class LedgerContext {
     this.appIdContractMap.set(appId, contract)
   }
 
+  getAccount(address: Account): Account {
+    if (this.accountDataMap.has(address)) {
+      return Account(address.bytes)
+    }
+    throw internal.errors.internalError('Unknown account, check correct testing context is active')
+  }
+
   getAsset(assetId: internal.primitives.StubUint64Compat): Asset {
     if (this.assetDataMap.has(assetId)) {
       return Asset(asUint64(assetId))
@@ -57,16 +64,16 @@ export class LedgerContext {
       return undefined
     }
     const entries = this.applicationDataMap.entries()
-    let next = entries.next().value
+    let next = entries.next()
     let found = false
-    while (next && !found) {
-      found = next[1].application.approvalProgram === approvalProgram
+    while (!next.done && !found) {
+      found = next.value[1].application.approvalProgram === approvalProgram
       if (!found) {
-        next = entries.next().value
+        next = entries.next()
       }
     }
-    if (found && next) {
-      const appId = asUint64(next[0])
+    if (found && next?.value) {
+      const appId = asUint64(next.value[0])
       if (this.applicationDataMap.has(appId)) {
         return Application(appId)
       }
