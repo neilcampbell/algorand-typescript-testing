@@ -1,7 +1,7 @@
 import { Account, Application, arc4, Asset, bytes, internal, itxn, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable } from '../typescript-helpers'
-import { asBytes } from '../util'
+import { asBytes, asNumber } from '../util'
 import { getApp } from './app-params'
 import { getAsset } from './asset-params'
 import { InnerTxn, InnerTxnFields } from './itxn'
@@ -66,12 +66,15 @@ export class AssetConfigInnerTxn extends AssetConfigTransaction implements itxn.
   /* @internal */
   constructor(fields: itxn.AssetConfigFields) {
     const { assetName, unitName, url, ...rest } = mapCommonFields(fields)
-    const createdAsset = lazyContext.any.asset({
-      name: typeof assetName === 'string' ? asBytes(assetName) : assetName,
-      unitName: typeof unitName === 'string' ? asBytes(unitName) : unitName,
-      url: typeof url === 'string' ? asBytes(url) : url,
-      ...rest,
-    })
+    const createdAsset =
+      !rest.configAsset || !asNumber(rest.configAsset.id)
+        ? lazyContext.any.asset({
+            name: typeof assetName === 'string' ? asBytes(assetName) : assetName,
+            unitName: typeof unitName === 'string' ? asBytes(unitName) : unitName,
+            url: typeof url === 'string' ? asBytes(url) : url,
+            ...rest,
+          })
+        : undefined
 
     super({
       assetName: typeof assetName === 'string' ? asBytes(assetName) : assetName,

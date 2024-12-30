@@ -1,10 +1,11 @@
-import { arc4 } from '@algorandfoundation/algorand-typescript'
+import { arc4, Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { afterEach, describe, it } from 'vitest'
-import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_BYTES_SIZE } from '../../src/constants'
-import { asUint64Cls } from '../../src/util'
 import { HelloFactory } from './contract.algo'
 import { Hello, HelloTemplate, HelloTemplateCustomPrefix, LargeProgram, TerribleCustodialAccount } from './precompiled-apps.algo'
+
+const MAX_BYTES_SIZE = 4096
+const ABI_RETURN_VALUE_LOG_PREFIX = Bytes.fromHex('151F7C75')
 
 describe('pre compiled app calls', () => {
   const ctx = new TestExecutionContext()
@@ -58,7 +59,7 @@ describe('pre compiled app calls', () => {
     // Arrange
     const largeProgramApp = ctx.any.application({
       approvalProgram: ctx.any.bytes(20),
-      appLogs: [ABI_RETURN_VALUE_LOG_PREFIX.concat(asUint64Cls(MAX_BYTES_SIZE).toBytes().asAlgoTs())],
+      appLogs: [ABI_RETURN_VALUE_LOG_PREFIX.concat(Bytes(MAX_BYTES_SIZE))],
     })
     ctx.setCompiledApp(LargeProgram, largeProgramApp.id)
 

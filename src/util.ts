@@ -1,5 +1,4 @@
 import { Account, Bytes, bytes, internal } from '@algorandfoundation/algorand-typescript'
-import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { randomBytes } from 'crypto'
 import { sha512_256 as js_sha512_256 } from 'js-sha512'
@@ -15,7 +14,6 @@ import {
   MAX_UINT8,
   UINT512_SIZE,
 } from './constants'
-import { BytesBackedCls, Uint64BackedCls } from './impl/base'
 import { DeliberateAny } from './typescript-helpers'
 
 export const nameOfType = (x: unknown) => {
@@ -58,36 +56,6 @@ export const asBigUint = (val: internal.primitives.StubBigUintCompat) => asBigUi
 export const asBytes = (val: internal.primitives.StubBytesCompat | Uint8Array) => asBytesCls(val).asAlgoTs()
 
 export const asUint8Array = (val: internal.primitives.StubBytesCompat | Uint8Array) => asBytesCls(val).asUint8Array()
-
-export const toBytes = (val: unknown): bytes => {
-  const uint64Val = asMaybeUint64Cls(val)
-  if (uint64Val !== undefined) {
-    return uint64Val.toBytes().asAlgoTs()
-  }
-  const bytesVal = asMaybeBytesCls(val)
-  if (bytesVal !== undefined) {
-    return bytesVal.asAlgoTs()
-  }
-  const bigUintVal = asMaybeBigUintCls(val)
-  if (bigUintVal !== undefined) {
-    return bigUintVal.toBytes().asAlgoTs()
-  }
-  if (val instanceof BytesBackedCls) {
-    return val.bytes
-  }
-  if (val instanceof Uint64BackedCls) {
-    return asUint64Cls(val.uint64).toBytes().asAlgoTs()
-  }
-  if (Array.isArray(val)) {
-    return val.reduce((acc: bytes, cur: unknown) => {
-      return acc.concat(toBytes(cur))
-    }, Bytes())
-  }
-  if (val instanceof ARC4Encoded) {
-    return val.bytes
-  }
-  internal.errors.internalError(`Invalid type for bytes: ${nameOfType(val)}`)
-}
 
 export const asMaybeUint64Cls = (val: DeliberateAny) => {
   try {

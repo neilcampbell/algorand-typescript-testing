@@ -2,8 +2,10 @@ import { Account, Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import algosdk from 'algosdk'
 import { afterEach, describe, expect, it } from 'vitest'
-import { ZERO_ADDRESS } from '../../src/constants'
 import HashedTimeLockedLogicSig from './signature.algo'
+
+const ZERO_ADDRESS_B32 = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5HFKQ'
+const ZERO_ADDRESS = Bytes.fromBase32(ZERO_ADDRESS_B32)
 
 describe('HTLC LogicSig', () => {
   const ctx = new TestExecutionContext()

@@ -33,11 +33,11 @@ export const matchImpl: typeof match = (subject, test): boolean => {
       getBigIntValue(subject.uint64 as unknown as internal.primitives.Uint64Cls) ===
       getBigIntValue((test as unknown as Uint64BackedCls).uint64 as unknown as internal.primitives.Uint64Cls)
     )
-  } else if (subject instanceof ARC4Encoded) {
-    return subject.bytes.equals((test as unknown as ARC4Encoded).bytes)
-  } else if (Array.isArray(subject)) {
-    return (test as []).map((x, i) => matchImpl((subject as DeliberateAny)[i], x as DeliberateAny)).every((x) => x)
-  } else if (typeof subject === 'object') {
+  } else if (test instanceof ARC4Encoded) {
+    return (subject as unknown as ARC4Encoded).bytes.equals(test.bytes)
+  } else if (Array.isArray(test)) {
+    return test.map((x, i) => matchImpl((subject as DeliberateAny)[i], x as DeliberateAny)).every((x) => x)
+  } else if (typeof test === 'object') {
     return Object.entries(test!)
       .map(([k, v]) => matchImpl((subject as DeliberateAny)[k], v as DeliberateAny))
       .every((x) => x)

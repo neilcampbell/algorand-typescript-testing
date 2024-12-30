@@ -36,7 +36,7 @@ type UnaryOps = '~'
 
 function tryGetBigInt(value: unknown): bigint | undefined {
   if (typeof value == 'bigint') return value
-  if (typeof value == 'number') return BigInt(value)
+  if (typeof value == 'number' && Number.isInteger(value)) return BigInt(value)
   if (value instanceof internal.primitives.Uint64Cls) return value.valueOf()
   if (value instanceof internal.primitives.BigUintCls) return value.valueOf()
   return undefined

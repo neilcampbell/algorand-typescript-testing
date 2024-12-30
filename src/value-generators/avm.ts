@@ -37,6 +37,15 @@ export class AvmValueGenerator {
     return Bytes(new Uint8Array(randomBytes(length)))
   }
 
+  string(length = 11): string {
+    const setLength = 11
+    return Array(Math.ceil(length / setLength))
+      .fill(0)
+      .map(() => Math.random().toString(36).substring(2))
+      .join('')
+      .substring(0, length)
+  }
+
   account(input?: AccountContextData): Account {
     const account = input?.address ?? Account(getRandomBytes(32).asAlgoTs())
 

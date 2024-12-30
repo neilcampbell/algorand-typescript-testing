@@ -1,6 +1,7 @@
 import { Application, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
-import { asBytes, toBytes } from '../util'
+import { toBytes } from '../encoders'
+import { asBytes } from '../util'
 import { getApp } from './app-params'
 
 export const AppGlobal: internal.opTypes.AppGlobalType = {

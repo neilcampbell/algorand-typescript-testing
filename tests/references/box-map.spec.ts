@@ -3,8 +3,9 @@ import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-te
 import { ARC4Encoded, DynamicArray, interpretAsArc4, Str, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, test } from 'vitest'
 import { MAX_UINT64 } from '../../src/constants'
+import { toBytes } from '../../src/encoders'
 import { DeliberateAny } from '../../src/typescript-helpers'
-import { asBytes, toBytes } from '../../src/util'
+import { asBytes } from '../../src/util'
 
 const BOX_NOT_CREATED_ERROR = 'Box has not been created'
 
