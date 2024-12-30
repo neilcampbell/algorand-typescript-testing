@@ -88,14 +88,14 @@ export class TransactionContext {
   createScope(group: Array<Transaction | DeferredAppCall<unknown[], unknown>>, activeTransactionIndex?: number): ExecutionScope {
     const transactions = group.map((t) => (t instanceof DeferredAppCall ? t.txns : [t])).flat()
     const transactionGroup = new TransactionGroup(transactions, activeTransactionIndex)
-    const previousGroup = this.#activeGroup
+
     this.#activeGroup = transactionGroup
 
     const scope = ScopeGenerator(() => {
       if (this.#activeGroup?.transactions?.length) {
         this.groups.push(this.#activeGroup)
       }
-      this.#activeGroup = previousGroup
+      this.#activeGroup = undefined
     })
     return {
       execute: <TReturn>(body: () => TReturn) => {
@@ -221,6 +221,9 @@ export class TransactionGroup {
     Object.assign(activeTransaction, filteredFields)
   }
 
+  addInnerTransactionGroup(...itxns: InnerTxn[]) {
+    this.itxnGroups.push(new ItxnGroup(itxns))
+  }
   beginInnerTransactionGroup() {
     if (this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn begin without itxn submit')
@@ -252,6 +255,9 @@ export class TransactionGroup {
     this.constructingItxnGroup = []
   }
 
+  lastItxnGroup() {
+    return this.getItxnGroup()
+  }
   getItxnGroup(index?: internal.primitives.StubUint64Compat): ItxnGroup {
     const i = index !== undefined ? asNumber(index) : undefined
 

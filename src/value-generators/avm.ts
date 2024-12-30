@@ -18,17 +18,19 @@ type AssetContextData = Partial<AssetData> & { assetId?: internal.primitives.Stu
 type ApplicationContextData = Partial<ApplicationData['application']> & { applicationId?: internal.primitives.StubUint64Compat }
 
 export class AvmValueGenerator {
-  uint64(minValue: number | bigint = 0n, maxValue: number | bigint = MAX_UINT64): uint64 {
-    if (maxValue > MAX_UINT64) {
+  uint64(minValue: internal.primitives.StubUint64Compat = 0n, maxValue: internal.primitives.StubUint64Compat = MAX_UINT64): uint64 {
+    const min = asBigInt(minValue)
+    const max = asBigInt(maxValue)
+    if (max > MAX_UINT64) {
       internal.errors.internalError('maxValue must be less than or equal to MAX_UINT64')
     }
-    if (minValue > maxValue) {
+    if (min > max) {
       internal.errors.internalError('minValue must be less than or equal to maxValue')
     }
-    if (minValue < 0n || maxValue < 0n) {
+    if (min < 0n || max < 0n) {
       internal.errors.internalError('minValue and maxValue must be greater than or equal to 0')
     }
-    return Uint64(getRandomBigInt(minValue, maxValue))
+    return Uint64(getRandomBigInt(min, max))
   }
 
   bytes(length = MAX_BYTES_SIZE): bytes {

@@ -3,6 +3,7 @@ import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { MAX_UINT64 } from './constants'
 import type { TypeInfo } from './encoders'
 import { AccountCls } from './impl/account'
+import { Uint64BackedCls } from './impl/base'
 import { DeliberateAny } from './typescript-helpers'
 import { nameOfType } from './util'
 
@@ -47,6 +48,9 @@ export function binaryOp(left: unknown, right: unknown, op: BinaryOps) {
   }
   if (left instanceof AccountCls && right instanceof AccountCls) {
     return accountBinaryOp(left, right, op)
+  }
+  if (left instanceof Uint64BackedCls && right instanceof Uint64BackedCls) {
+    return uint64BackedClsBinaryOp(left, right, op)
   }
   if (left instanceof internal.primitives.BigUintCls || right instanceof internal.primitives.BigUintCls) {
     return bigUintBinaryOp(left, right, op)
@@ -101,6 +105,15 @@ function accountBinaryOp(left: AccountCls, right: AccountCls, op: BinaryOps): De
     case '===':
     case '!==':
       return bytesBinaryOp(left.bytes, right.bytes, op)
+    default:
+      internal.errors.internalError(`Unsupported operator ${op}`)
+  }
+}
+function uint64BackedClsBinaryOp(left: Uint64BackedCls, right: Uint64BackedCls, op: BinaryOps): DeliberateAny {
+  switch (op) {
+    case '===':
+    case '!==':
+      return uint64BinaryOp(left.uint64, right.uint64, op)
     default:
       internal.errors.internalError(`Unsupported operator ${op}`)
   }
