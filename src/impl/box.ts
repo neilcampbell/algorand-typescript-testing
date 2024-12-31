@@ -1,7 +1,8 @@
 import { bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { asBytes, asBytesCls, asNumber, asUint8Array, conactUint8Arrays, toBytes } from '../util'
+import { toBytes } from '../encoders'
+import { asBytes, asBytesCls, asNumber, asUint8Array, conactUint8Arrays } from '../util'
 
 export const Box: internal.opTypes.BoxType = {
   create(a: internal.primitives.StubBytesCompat, b: internal.primitives.StubUint64Compat): boolean {

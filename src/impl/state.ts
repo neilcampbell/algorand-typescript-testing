@@ -17,9 +17,9 @@ import {
 import { AccountMap } from '../collections/custom-key-map'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { getEncoder, TypeInfo } from '../encoders'
+import { getEncoder, toBytes, TypeInfo } from '../encoders'
 import { getGenericTypeInfo } from '../runtime-helpers'
-import { asBytes, asBytesCls, asNumber, asUint8Array, conactUint8Arrays, toBytes } from '../util'
+import { asBytes, asBytesCls, asNumber, asUint8Array, conactUint8Arrays } from '../util'
 
 export class GlobalStateCls<ValueType> {
   private readonly _type: string = GlobalStateCls.name

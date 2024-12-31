@@ -154,7 +154,7 @@ export class VotingRoundApp extends arc4.Contract {
         note: note,
         fee: Global.minTxnFee,
       })
-      .submit().configAsset
+      .submit().createdAsset
   }
 
   @abimethod({ readonly: true })

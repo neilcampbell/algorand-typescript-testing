@@ -1,11 +1,12 @@
 import { biguint, BigUint, bytes, internal, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
-import { OnCompleteAction } from '@algorandfoundation/algorand-typescript/arc4'
+import { ARC4Encoded, OnCompleteAction } from '@algorandfoundation/algorand-typescript/arc4'
 import { AccountCls } from './impl/account'
 import { ApplicationCls } from './impl/application'
 import { AssetCls } from './impl/asset'
-import { arc4Encoders, getArc4Encoder } from './impl/encoded-types'
+import { BytesBackedCls, Uint64BackedCls } from './impl/base'
+import { arc4Encoders, encodeArc4Impl, getArc4Encoder } from './impl/encoded-types'
 import { DeliberateAny } from './typescript-helpers'
-import { asBytes, asUint8Array } from './util'
+import { asBytes, asMaybeBigUintCls, asMaybeBytesCls, asMaybeUint64Cls, asUint64Cls, asUint8Array, nameOfType } from './util'
 
 export type TypeInfo = {
   name: string
@@ -58,4 +59,32 @@ export const encoders: Record<string, fromBytes<DeliberateAny>> = {
 
 export const getEncoder = <T>(typeInfo: TypeInfo): fromBytes<T> => {
   return getArc4Encoder<T>(typeInfo, encoders)
+}
+
+export const toBytes = (val: unknown): bytes => {
+  const uint64Val = asMaybeUint64Cls(val)
+  if (uint64Val !== undefined) {
+    return uint64Val.toBytes().asAlgoTs()
+  }
+  const bytesVal = asMaybeBytesCls(val)
+  if (bytesVal !== undefined) {
+    return bytesVal.asAlgoTs()
+  }
+  const bigUintVal = asMaybeBigUintCls(val)
+  if (bigUintVal !== undefined) {
+    return bigUintVal.toBytes().asAlgoTs()
+  }
+  if (val instanceof BytesBackedCls) {
+    return val.bytes
+  }
+  if (val instanceof Uint64BackedCls) {
+    return asUint64Cls(val.uint64).toBytes().asAlgoTs()
+  }
+  if (val instanceof ARC4Encoded) {
+    return val.bytes
+  }
+  if (Array.isArray(val) || typeof val === 'object') {
+    return encodeArc4Impl('', val)
+  }
+  internal.errors.internalError(`Invalid type for bytes: ${nameOfType(val)}`)
 }

@@ -13,17 +13,9 @@ import {
 } from '@algorandfoundation/algorand-typescript'
 import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_ITEMS_IN_LOG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
+import { toBytes } from '../encoders'
 import { Mutable, ObjectKeys } from '../typescript-helpers'
-import {
-  asBytes,
-  asMaybeBytesCls,
-  asMaybeUint64Cls,
-  asNumber,
-  asUint64Cls,
-  combineIntoMaxBytePages,
-  getRandomBytes,
-  toBytes,
-} from '../util'
+import { asBytes, asMaybeBytesCls, asMaybeUint64Cls, asNumber, asUint64Cls, combineIntoMaxBytePages, getRandomBytes } from '../util'
 
 const baseDefaultFields = () => ({
   sender: lazyContext.defaultSender,

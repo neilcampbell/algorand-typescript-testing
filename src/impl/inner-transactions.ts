@@ -1,7 +1,7 @@
 import { Account, Application, arc4, Asset, bytes, internal, itxn, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { Mutable } from '../typescript-helpers'
-import { asBytes } from '../util'
+import { asBytes, asNumber } from '../util'
 import { getApp } from './app-params'
 import { getAsset } from './asset-params'
 import { InnerTxn, InnerTxnFields } from './itxn'
@@ -66,12 +66,15 @@ export class AssetConfigInnerTxn extends AssetConfigTransaction implements itxn.
   /* @internal */
   constructor(fields: itxn.AssetConfigFields) {
     const { assetName, unitName, url, ...rest } = mapCommonFields(fields)
-    const createdAsset = lazyContext.any.asset({
-      name: typeof assetName === 'string' ? asBytes(assetName) : assetName,
-      unitName: typeof unitName === 'string' ? asBytes(unitName) : unitName,
-      url: typeof url === 'string' ? asBytes(url) : url,
-      ...rest,
-    })
+    const createdAsset =
+      !rest.configAsset || !asNumber(rest.configAsset.id)
+        ? lazyContext.any.asset({
+            name: typeof assetName === 'string' ? asBytes(assetName) : assetName,
+            unitName: typeof unitName === 'string' ? asBytes(unitName) : unitName,
+            url: typeof url === 'string' ? asBytes(url) : url,
+            ...rest,
+          })
+        : undefined
 
     super({
       assetName: typeof assetName === 'string' ? asBytes(assetName) : assetName,
@@ -191,27 +194,21 @@ export function submitGroup<TFields extends itxn.InnerTxnList>(...transactionFie
   return transactionFields.map((f: (typeof transactionFields)[number]) => f.submit()) as itxn.TxnFor<TFields>
 }
 export function payment(fields: itxn.PaymentFields): itxn.PaymentItxnParams {
-  ensureItxnGroupBegin()
   return new ItxnParams<itxn.PaymentFields, itxn.PaymentInnerTxn>(fields, TransactionType.Payment)
 }
 export function keyRegistration(fields: itxn.KeyRegistrationFields): itxn.KeyRegistrationItxnParams {
-  ensureItxnGroupBegin()
   return new ItxnParams<itxn.KeyRegistrationFields, itxn.KeyRegistrationInnerTxn>(fields, TransactionType.KeyRegistration)
 }
 export function assetConfig(fields: itxn.AssetConfigFields): itxn.AssetConfigItxnParams {
-  ensureItxnGroupBegin()
   return new ItxnParams<itxn.AssetConfigFields, itxn.AssetConfigInnerTxn>(fields, TransactionType.AssetConfig)
 }
 export function assetTransfer(fields: itxn.AssetTransferFields): itxn.AssetTransferItxnParams {
-  ensureItxnGroupBegin()
   return new ItxnParams<itxn.AssetTransferFields, itxn.AssetTransferInnerTxn>(fields, TransactionType.AssetTransfer)
 }
 export function assetFreeze(fields: itxn.AssetFreezeFields): itxn.AssetFreezeItxnParams {
-  ensureItxnGroupBegin()
   return new ItxnParams<itxn.AssetFreezeFields, itxn.AssetFreezeInnerTxn>(fields, TransactionType.AssetFreeze)
 }
 export function applicationCall(fields: itxn.ApplicationCallFields): itxn.ApplicationCallItxnParams {
-  ensureItxnGroupBegin()
   return new ItxnParams<itxn.ApplicationCallFields, itxn.ApplicationInnerTxn>(fields, TransactionType.ApplicationCall)
 }
 
@@ -221,7 +218,9 @@ export class ItxnParams<TFields extends InnerTxnFields, TTransaction extends Inn
     this.#fields = { ...fields, type }
   }
   submit(): TTransaction {
-    return createInnerTxn<InnerTxnFields>(this.#fields) as unknown as TTransaction
+    const innerTxn = createInnerTxn<InnerTxnFields>(this.#fields) as unknown as TTransaction
+    lazyContext.txn.activeGroup.addInnerTransactionGroup(innerTxn)
+    return innerTxn
   }
 
   set(p: Partial<TFields>) {
@@ -230,11 +229,5 @@ export class ItxnParams<TFields extends InnerTxnFields, TTransaction extends Inn
 
   copy() {
     return new ItxnParams<TFields, TTransaction>(this.#fields, this.#fields.type)
-  }
-}
-
-const ensureItxnGroupBegin = () => {
-  if (!lazyContext.activeGroup.constructingItxnGroup.length) {
-    lazyContext.activeGroup.beginInnerTransactionGroup()
   }
 }

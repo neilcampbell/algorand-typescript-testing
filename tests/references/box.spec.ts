@@ -3,8 +3,9 @@ import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-te
 import { ARC4Encoded, DynamicArray, interpretAsArc4, Str, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 import { itob } from '@algorandfoundation/algorand-typescript/op'
 import { afterEach, describe, expect, it, test } from 'vitest'
+import { toBytes } from '../../src/encoders'
 import { DeliberateAny } from '../../src/typescript-helpers'
-import { asBytes, toBytes } from '../../src/util'
+import { asBytes } from '../../src/util'
 import { BoxContract } from '../artifacts/box-contract/contract.algo'
 
 const BOX_NOT_CREATED_ERROR = 'Box has not been created'

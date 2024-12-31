@@ -21,7 +21,7 @@ import {
 import { BytesMap } from '../collections/custom-key-map'
 import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
-import type { TypeInfo } from '../encoders'
+import { toBytes, type TypeInfo } from '../encoders'
 import { AccountCls } from '../impl/account'
 import { ApplicationCls } from '../impl/application'
 import { AssetCls } from '../impl/asset'
@@ -37,7 +37,6 @@ import {
 } from '../impl/transactions'
 import { getGenericTypeInfo } from '../runtime-helpers'
 import { DeliberateAny, IConstructor } from '../typescript-helpers'
-import { toBytes } from '../util'
 
 type ContractOptionsParameter = Parameters<typeof contract>[0]
 
