@@ -64,7 +64,6 @@ export class TestExecutionContext implements internal.ExecutionContext {
     this.txn.appendLog(value)
   }
 
-  /* @internal */
   exportLogs<const T extends [...LogDecoding[]]>(appId: uint64, ...decoding: T): DecodedLogs<T> {
     return this.txn.exportLogs(appId, ...decoding)
   }

@@ -90,6 +90,7 @@ class ExpressionVisitor {
     private context: ts.TransformationContext,
     private helper: VisitorHelper,
     private expressionNode: ts.Expression,
+    private stubbedFunctionName?: string,
   ) {}
 
   public result(): ts.Expression {
@@ -104,6 +105,7 @@ class ExpressionVisitor {
       if (type instanceof ptypes.FunctionPType) type = type.returnType
 
       const isGeneric = isGenericType(type)
+      const needsToCaptureTypeInfo = isGeneric && isStateOrBoxType(type)
       const isArc4Encoded = isArc4EncodedType(type)
       const info = isGeneric || isArc4Encoded ? getGenericTypeInfo(type) : undefined
       let updatedNode = node
@@ -113,20 +115,22 @@ class ExpressionVisitor {
           updatedNode = nodeFactory.instantiateARC4EncodedType(updatedNode, info)
         }
       }
+
       if (ts.isCallExpression(updatedNode)) {
-        const stubbedFunctionName = tryGetStubbedFunctionName(updatedNode, this.helper)
-        const infos = [info]
+        const stubbedFunctionName = this.stubbedFunctionName ?? tryGetStubbedFunctionName(updatedNode, this.helper)
+        this.stubbedFunctionName = undefined
+        let infoArg = info
         if (isCallingEmit(stubbedFunctionName)) {
-          infos[0] = this.helper.resolveTypeParameters(updatedNode).map(getGenericTypeInfo)[0]
+          infoArg = this.helper.resolveTypeParameters(updatedNode).map(getGenericTypeInfo)[0]
         }
         if (isCallingDecodeArc4(stubbedFunctionName)) {
           const targetType = ptypes.ptypeToArc4EncodedType(type, this.helper.sourceLocation(node))
           const targetTypeInfo = getGenericTypeInfo(targetType)
-          infos[0] = targetTypeInfo
+          infoArg = targetTypeInfo
         }
-        updatedNode = stubbedFunctionName ? nodeFactory.callStubbedFunction(stubbedFunctionName, updatedNode, ...infos) : updatedNode
+        updatedNode = stubbedFunctionName ? nodeFactory.callStubbedFunction(stubbedFunctionName, updatedNode, infoArg) : updatedNode
       }
-      return isGeneric
+      return needsToCaptureTypeInfo
         ? nodeFactory.captureGenericTypeInfo(ts.visitEachChild(updatedNode, this.visit, this.context), JSON.stringify(info))
         : ts.visitEachChild(updatedNode, this.visit, this.context)
     }
@@ -218,8 +222,11 @@ class FunctionOrMethodVisitor {
     if (ts.isNewExpression(node)) {
       return new ExpressionVisitor(this.context, this.helper, node).result()
     }
-    if (ts.isCallExpression(node) && tryGetStubbedFunctionName(node, this.helper)) {
-      return new ExpressionVisitor(this.context, this.helper, node).result()
+    if (ts.isCallExpression(node)) {
+      const stubbedFunctionName = tryGetStubbedFunctionName(node, this.helper)
+      if (stubbedFunctionName) {
+        return new ExpressionVisitor(this.context, this.helper, node, stubbedFunctionName).result()
+      }
     }
 
     return node
@@ -304,6 +311,9 @@ const isGenericType = (type: ptypes.PType): boolean =>
     ptypes.UintNType,
     ptypes.TuplePType,
   )
+
+const isStateOrBoxType = (type: ptypes.PType): boolean =>
+  instanceOfAny(type, ptypes.BoxMapPType, ptypes.BoxPType, ptypes.GlobalStateType, ptypes.LocalStateType)
 
 const isArc4EncodedType = (type: ptypes.PType): boolean =>
   instanceOfAny(

@@ -94,19 +94,17 @@ export const nodeFactory = {
     )
   },
 
-  callStubbedFunction(functionName: string, node: ts.CallExpression, ...typeInfos: (TypeInfo | undefined)[]) {
-    const infoStringArray = typeInfos.length ? typeInfos.map((typeInfo) => JSON.stringify(typeInfo)) : undefined
+  callStubbedFunction(functionName: string, node: ts.CallExpression, typeInfo?: TypeInfo) {
+    const typeInfoArg = typeInfo ? factory.createStringLiteral(JSON.stringify(typeInfo)) : undefined
     const updatedPropertyAccessExpression = factory.createPropertyAccessExpression(
       factory.createIdentifier('runtimeHelpers'),
       `${functionName}Impl`,
     )
-    const typeInfoArgs = infoStringArray
-      ? infoStringArray?.filter((s) => !!s).map((infoString) => factory.createStringLiteral(infoString))
-      : undefined
+
     return factory.createCallExpression(
       updatedPropertyAccessExpression,
       node.typeArguments,
-      [...(typeInfoArgs ?? []), ...(node.arguments ?? [])].filter((arg) => !!arg),
+      [typeInfoArg, ...(node.arguments ?? [])].filter((arg) => !!arg),
     )
   },
 } satisfies Record<string, (...args: DeliberateAny[]) => ts.Node>
