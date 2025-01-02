@@ -1,6 +1,7 @@
 import { bytes, Contract, internal, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import { AbiMetadata, getContractMethodAbiMetadata } from '../abi-metadata'
 import { TRANSACTION_GROUP_MAX_SIZE } from '../constants'
+import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
 import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
 import { testInvariant } from '../errors'
@@ -49,23 +50,6 @@ interface ExecutionScope {
   execute: <TReturn>(body: () => TReturn) => TReturn
 }
 
-export const checkRoutingConditions = (appId: uint64, metadata: AbiMetadata) => {
-  const appData = lazyContext.getApplicationData(appId)
-  const isCreating = appData.isCreating
-  if (isCreating && metadata.onCreate === 'disallow') {
-    throw new internal.errors.CodeError('method can not be called while creating')
-  }
-  if (!isCreating && metadata.onCreate === 'require') {
-    throw new internal.errors.CodeError('method can only be called while creating')
-  }
-  const txn = lazyContext.activeGroup.activeTransaction
-  if (txn instanceof ApplicationTransaction && metadata.allowActions && !metadata.allowActions.includes(txn.onCompletion)) {
-    throw new internal.errors.CodeError(
-      `method can only be called with one of the following on_completion values: ${metadata.allowActions.join(', ')}`,
-    )
-  }
-}
-
 export class DeferredAppCall<TParams extends unknown[], TReturn> {
   constructor(
     private readonly appId: uint64,
@@ -106,6 +90,7 @@ export class TransactionContext {
     }
   }
 
+  /* internal */
   ensureScope(group: Transaction[], activeTransactionIndex?: number): ExecutionScope {
     if (!this.#activeGroup || !this.#activeGroup.transactions.length) {
       return this.createScope(group, activeTransactionIndex)
@@ -200,6 +185,7 @@ export class TransactionGroup {
     return this.activeTransaction.appId.id
   }
 
+  /* internal */
   get constructingItxn() {
     if (!this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn field without itxn begin')
@@ -221,9 +207,12 @@ export class TransactionGroup {
     Object.assign(activeTransaction, filteredFields)
   }
 
+  /* internal */
   addInnerTransactionGroup(...itxns: InnerTxn[]) {
     this.itxnGroups.push(new ItxnGroup(itxns))
   }
+
+  /* internal */
   beginInnerTransactionGroup() {
     if (this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn begin without itxn submit')
@@ -235,6 +224,7 @@ export class TransactionGroup {
     this.constructingItxnGroup.push({} as InnerTxnFields)
   }
 
+  /* internal */
   appendInnerTransactionGroup() {
     if (!this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn next without itxn begin')
@@ -242,6 +232,7 @@ export class TransactionGroup {
     this.constructingItxnGroup.push({ type: TransactionType.Payment } as InnerTxnFields)
   }
 
+  /* internal */
   submitInnerTransactionGroup() {
     if (!this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn submit without itxn begin')

@@ -44,26 +44,32 @@ export class TestExecutionContext implements internal.ExecutionContext {
     this.#activeLogicSigArgs = []
   }
 
+  /* @internal */
   account(address?: bytes): Account {
     return new AccountCls(address)
   }
 
+  /* @internal */
   application(id?: uint64): Application {
     return new ApplicationCls(id)
   }
 
+  /* @internal */
   asset(id?: uint64): Asset {
     return new AssetCls(id)
   }
 
+  /* @internal */
   log(value: bytes): void {
     this.txn.appendLog(value)
   }
 
+  /* @internal */
   exportLogs<const T extends [...LogDecoding[]]>(appId: uint64, ...decoding: T): DecodedLogs<T> {
     return this.txn.exportLogs(appId, ...decoding)
   }
 
+  /* @internal */
   get op() {
     return ops
   }
@@ -87,12 +93,14 @@ export class TestExecutionContext implements internal.ExecutionContext {
     return this.#defaultSender
   }
 
+  /* @internal */
   get abiMetadata() {
     return {
       captureMethodConfig,
     }
   }
 
+  /* @internal */
   get gtxn() {
     return {
       Transaction: (index: uint64) => this.txn.activeGroup.getTransaction(index),
@@ -105,6 +113,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
     }
   }
 
+  /* @internal */
   get itxn() {
     return {
       submitGroup: itxnSubmitGroup,
@@ -117,6 +126,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
     }
   }
 
+  /* @internal */
   get state() {
     return {
       GlobalState,

@@ -23,6 +23,7 @@ export class LedgerContext {
   blocks = new Uint64Map<BlockData>()
   globalData = new GlobalData()
 
+  /* @internal */
   addAppIdContractMap(appId: internal.primitives.StubUint64Compat, contract: BaseContract): void {
     this.appIdContractMap.set(appId, contract)
   }
