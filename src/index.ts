@@ -1,2 +1,7 @@
+import { internal } from '@algorandfoundation/algorand-typescript'
+
 export { TestExecutionContext } from './test-execution-context'
-export { asUint8Array as bytesToUint8Array } from './util'
+export const encodingUtil = {
+  ...internal.encodingUtil,
+  toExternalValue: internal.primitives.toExternalValue,
+}
