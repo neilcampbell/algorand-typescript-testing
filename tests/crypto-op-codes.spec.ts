@@ -9,10 +9,10 @@ import { afterEach, describe, expect, it, Mock, test, vi } from 'vitest'
 import { TestExecutionContext } from '../src'
 import { LOGIC_DATA_PREFIX, MAX_BYTES_SIZE, PROGRAM_TAG } from '../src/constants'
 import * as op from '../src/impl/crypto'
-import { conactUint8Arrays, decodePublicKey } from '../src/util'
+import { asUint8Array, conactUint8Arrays, decodePublicKey } from '../src/util'
 import appSpecJson from './artifacts/crypto-ops/data/CryptoOpsContract.arc32.json'
 import { generateAVMTestAccount, getAlgorandAppClientWithApp, getAvmResult } from './avm-invoker'
-import { asUint8Array, getPaddedBytes } from './util'
+import { getPaddedBytes } from './util'
 
 const MAX_ARG_LEN = 2048
 const curveMap = {

@@ -1,11 +1,9 @@
 import { Account, Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
-import algosdk from 'algosdk'
 import { afterEach, describe, expect, it } from 'vitest'
 import HashedTimeLockedLogicSig from './signature.algo'
 
-const ZERO_ADDRESS_B32 = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5HFKQ'
-const ZERO_ADDRESS = Bytes.fromBase32(ZERO_ADDRESS_B32)
+const ZERO_ADDRESS = Bytes.fromBase32('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
 
 describe('HTLC LogicSig', () => {
   const ctx = new TestExecutionContext()
@@ -15,7 +13,7 @@ describe('HTLC LogicSig', () => {
   })
 
   it('seller receives payment if correct secret is provided', () => {
-    const receiverAddress = Bytes(algosdk.decodeAddress('6ZHGHH5Z5CTPCF5WCESXMGRSVK7QJETR63M3NY5FJCUYDHO57VTCMJOBGY').publicKey)
+    const receiverAddress = Bytes.fromBase32('6ZHGHH5Z5CTPCF5WCESXMGRSVK7QJETR63M3NY5FJCUYDHO57VTC')
     ctx.txn
       .createScope([
         ctx.any.txn.payment({

@@ -97,6 +97,6 @@ export class AccountCls extends BytesBackedCls implements Account {
     if (assetOrApp instanceof ApplicationCls) {
       return this.data.optedApplications.has(asUint64Cls(assetOrApp.id).asBigInt())
     }
-    throw new internal.errors.InternalError('Invalid argument type. Must be an `algopy.Asset` or `algopy.Application` instance.')
+    throw new internal.errors.InternalError('Invalid argument type. Must be an `Asset` or `Application` instance.')
   }
 }

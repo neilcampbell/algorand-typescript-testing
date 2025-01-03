@@ -28,8 +28,7 @@ export const DEFAULT_GLOBAL_GENESIS_HASH = Bytes(
 )
 
 // algorand encoded address of 32 zero bytes
-export const ZERO_ADDRESS_B32 = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY5HFKQ'
-export const ZERO_ADDRESS = Bytes.fromBase32(ZERO_ADDRESS_B32)
+export const ZERO_ADDRESS = Bytes.fromBase32('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
 
 /**
 "\x09"  # pragma version 9

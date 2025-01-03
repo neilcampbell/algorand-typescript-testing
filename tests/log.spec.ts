@@ -17,11 +17,10 @@ import {
 import { afterEach, describe, expect, it } from 'vitest'
 import { MAX_UINT512, MAX_UINT64 } from '../src/constants'
 import { ApplicationTransaction } from '../src/impl/transactions'
-import { asBigUint, asBigUintCls } from '../src/util'
+import { asBigUint, asBigUintCls, asUint8Array } from '../src/util'
 import { PrimitiveOpsContract } from './artifacts/primitive-ops/contract.algo'
 import appSpecJson from './artifacts/primitive-ops/data/PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResultLog } from './avm-invoker'
-import { asUint8Array } from './util'
 
 describe('log', async () => {
   const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)

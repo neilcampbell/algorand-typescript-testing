@@ -3,9 +3,10 @@ import { bytes, Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { describe, expect, it } from 'vitest'
 import { MAX_BYTES_SIZE } from '../../src/constants'
 import { sha256 } from '../../src/impl'
+import { asUint8Array } from '../../src/util'
 import appSpecJson from '../artifacts/primitive-ops/data/PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult, getAvmResultRaw } from '../avm-invoker'
-import { asUint8Array, getSha256Hash, padUint8Array } from '../util'
+import { getSha256Hash, padUint8Array } from '../util'
 
 describe('Bytes', async () => {
   const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)

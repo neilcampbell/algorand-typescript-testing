@@ -90,7 +90,6 @@ export const generateAVMTestAccount = async (): Promise<ReturnType<algokit.Algor
 }
 
 export const generateTestAccount = async (): Promise<Account> => {
-  // const account = generateAccount()
   const account = await generateAVMTestAccount()
   return Account(Bytes.fromBase32(account.addr.toString()))
 }

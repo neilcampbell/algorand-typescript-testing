@@ -2,8 +2,7 @@ import { Account, Bytes, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../../src'
 import { AssetCls } from '../../src/impl/asset'
-import { asBytes, asUint64 } from '../../src/util'
-import { asUint8Array } from '../util'
+import { asBytes, asUint64, asUint8Array } from '../../src/util'
 
 describe('Asset', () => {
   const ctx = new TestExecutionContext()

@@ -5,12 +5,9 @@ import type { biguint } from '@algorandfoundation/algorand-typescript'
 import { BigUint, Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { describe, expect, it } from 'vitest'
 import { BIGUINT_OVERFLOW_UNDERFLOW_MESSAGE, MAX_UINT512, MAX_UINT64 } from '../../src/constants'
-import { asUint64 } from '../../src/util'
+import { asBigUint, asUint64 } from '../../src/util'
 import appSpecJson from '../artifacts/primitive-ops/data/PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult, getAvmResultRaw } from '../avm-invoker'
-import { abiAsBytes } from '../util'
-
-const asBigUint = (val: bigint | number) => (typeof val === 'bigint' ? BigUint(val) : BigUint(val))
 
 describe('BigUint', async () => {
   const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)
@@ -176,7 +173,7 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_add', bytesA, bytesB)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_add', bytesA, bytesB))
 
       let result = bigUintA + bigUintB
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -200,7 +197,7 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_add', bytesA, bytesB)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_add', bytesA, bytesB))
 
       let result = bigUintA + bigUintB
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -254,7 +251,7 @@ describe('BigUint', async () => {
       const uint64B = Uint64(b)
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_add_uint64', bytesA, b)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_add_uint64', bytesA, b))
 
       let result = bigUintA + BigUint(uint64B)
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -283,7 +280,7 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_sub', bytesA, bytesB)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_sub', bytesA, bytesB))
 
       let result = bigUintA - bigUintB
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -353,7 +350,7 @@ describe('BigUint', async () => {
       const uint64B = Uint64(b)
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_sub_uint64', bytesA, b)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_sub_uint64', bytesA, b))
 
       const result = bigUintA - BigUint(uint64B)
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -378,7 +375,7 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_mul', bytesA, bytesB)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_mul', bytesA, bytesB))
 
       let result = bigUintA * bigUintB
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -406,7 +403,7 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_mul', bytesA, bytesB)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_mul', bytesA, bytesB))
 
       let result = bigUintA * bigUintB
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -461,7 +458,7 @@ describe('BigUint', async () => {
       const uint64B = asUint64(b)
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_mul_uint64', bytesA, b)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_mul_uint64', bytesA, b))
 
       let result = bigUintA * BigUint(uint64B)
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -489,7 +486,7 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_div', bytesA, bytesB)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_div', bytesA, bytesB))
 
       let result = bigUintA / bigUintB
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -562,7 +559,7 @@ describe('BigUint', async () => {
       const uint64B = asUint64(b)
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_div_uint64', bytesA, b)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_div_uint64', bytesA, b))
 
       const result = bigUintA / BigUint(uint64B)
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -587,7 +584,7 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_mod', bytesA, bytesB)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_mod', bytesA, bytesB))
       let result = bigUintA % bigUintB
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
@@ -659,7 +656,7 @@ describe('BigUint', async () => {
       const uint64B = asUint64(b)
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
 
-      const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, 'verify_biguint_mod_uint64', bytesA, b)))
+      const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, 'verify_biguint_mod_uint64', bytesA, b))
       const result = bigUintA % BigUint(uint64B)
       expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
@@ -708,7 +705,7 @@ describe('BigUint', async () => {
       const bytesB = internal.encodingUtil.bigIntToUint8Array(bigUintB.valueOf())
 
       it(`${a} ${operator} ${b}`, async () => {
-        const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, `verify_biguint_${op}`, bytesA, bytesB)))
+        const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, `verify_biguint_${op}`, bytesA, bytesB))
         let result = getStubResult(bigUintA, bigUintB)
         expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
 
@@ -736,7 +733,7 @@ describe('BigUint', async () => {
       const bytesA = internal.encodingUtil.bigIntToUint8Array(bigUintA.valueOf())
 
       it(`${a} ${operator} ${b}`, async () => {
-        const avmResult = BigUint(abiAsBytes(await getAvmResult({ appClient }, `verify_biguint_${op}_uint64`, bytesA, b)))
+        const avmResult = asBigUint(await getAvmResult<Uint8Array>({ appClient }, `verify_biguint_${op}_uint64`, bytesA, b))
         const result = getStubResult(bigUintA, BigUint(uint64B))
         expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
       })

@@ -12,10 +12,10 @@ import {
 import { Address, ARC4Encoded, BitSize, Bool, Byte, DynamicBytes, Str, UintN } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, test } from 'vitest'
 import { DeliberateAny, FunctionKeys } from '../src/typescript-helpers'
+import { asUint8Array } from '../src/util'
 import { GlobalStateContract } from './artifacts/state-ops/contract.algo'
 import arc4AppGlobalAppSpecJson from './artifacts/state-ops/data/GlobalStateContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult, getLocalNetDefaultAccount } from './avm-invoker'
-import { asUint8Array } from './util'
 
 describe('ARC4 AppGlobal values', async () => {
   const appClient = await getAlgorandAppClient(arc4AppGlobalAppSpecJson as AppSpec)

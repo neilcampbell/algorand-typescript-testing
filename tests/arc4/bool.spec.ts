@@ -4,9 +4,9 @@ import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-te
 import { Bool, interpretAsArc4 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, test } from 'vitest'
 import { ABI_RETURN_VALUE_LOG_PREFIX } from '../../src/constants'
+import { asUint8Array } from '../../src/util'
 import appSpecJson from '../artifacts/arc4-primitive-ops/data/Arc4PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult } from '../avm-invoker'
-import { asUint8Array } from '../util'
 
 describe('arc4.Bool', async () => {
   const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)

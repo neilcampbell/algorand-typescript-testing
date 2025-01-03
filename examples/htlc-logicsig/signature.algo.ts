@@ -1,11 +1,10 @@
 import { Account, Bytes, Global, LogicSig, op, TransactionType, Txn, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
-import algosdk from 'algosdk'
 
 export default class HashedTimeLockedLogicSig extends LogicSig {
   program(): boolean | uint64 {
     // Participants
-    const sellerAddress = Bytes(algosdk.decodeAddress('6ZHGHH5Z5CTPCF5WCESXMGRSVK7QJETR63M3NY5FJCUYDHO57VTCMJOBGY').publicKey)
-    const buyerAddress = Bytes(algosdk.decodeAddress('7Z5PWO2C6LFNQFGHWKSK5H47IQP5OJW2M3HA2QPXTY3WTNP5NU2MHBW27M').publicKey)
+    const sellerAddress = Bytes.fromBase32('6ZHGHH5Z5CTPCF5WCESXMGRSVK7QJETR63M3NY5FJCUYDHO57VTC')
+    const buyerAddress = Bytes.fromBase32('7Z5PWO2C6LFNQFGHWKSK5H47IQP5OJW2M3HA2QPXTY3WTNP5NU2M')
     const seller = Account(sellerAddress)
     const buyer = Account(buyerAddress)
 
