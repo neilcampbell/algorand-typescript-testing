@@ -6,14 +6,17 @@ import { puyaTsTransformer } from '../src/test-transformer'
 
 const config: RollupOptions = {
   input: [
+    'examples/auction/contract.algo.ts',
     'examples/calculator/contract.algo.ts',
     'examples/hello-world-abi/contract.algo.ts',
     'examples/hello-world/contract.algo.ts',
-    'examples/auction/contract.algo.ts',
-    'examples/voting/contract.algo.ts',
-    'examples/simple-voting/contract.algo.ts',
-    'examples/zk-whitelist/contract.algo.ts',
+    'examples/htlc-logicsig/signature.algo.ts',
     'examples/precompiled/contract.algo.ts',
+    'examples/scratch-storage/contract.algo.ts',
+    'examples/simple-voting/contract.algo.ts',
+    'examples/tealscript/example.algo.ts',
+    'examples/voting/contract.algo.ts',
+    'examples/zk-whitelist/contract.algo.ts',
   ],
   output: [
     {

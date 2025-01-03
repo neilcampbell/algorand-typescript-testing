@@ -42,7 +42,7 @@ const getGlobalData = (): GlobalData => {
 }
 
 const getMissingValueErrorMessage = (name: keyof GlobalData) =>
-  `'algopy.Global' object has no value set for attribute named '${name}'. Use \`context.ledger.patchGlobalData({${name}: your_value})\` to set the value in your test setup."`
+  `'Global' object has no value set for attribute named '${name}'. Use \`context.ledger.patchGlobalData({${name}: your_value})\` to set the value in your test setup."`
 
 export const Global: internal.opTypes.GlobalType = {
   /**
