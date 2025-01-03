@@ -1,12 +1,10 @@
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { internal, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { describe, expect, it } from 'vitest'
-import { UINT64_OVERFLOW_UNDERFLOW_MESSAGE } from '../../src/constants'
+import { MAX_UINT64, UINT64_OVERFLOW_UNDERFLOW_MESSAGE } from '../../src/constants'
+import { asUint64 } from '../../src/util'
 import appSpecJson from '../artifacts/primitive-ops/data/PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult } from '../avm-invoker'
-
-const MAX_UINT64 = 2n ** 64n - 1n
-const asUint64 = (val: bigint | number) => (typeof val === 'bigint' ? Uint64(val) : Uint64(val))
 
 describe('Unit64', async () => {
   const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)

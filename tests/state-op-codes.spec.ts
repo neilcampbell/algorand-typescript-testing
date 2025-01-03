@@ -52,8 +52,7 @@ describe('State op codes', async () => {
   })
 
   describe('AcctParams', async () => {
-    const appClient = await getAlgorandAppClient(acctParamsAppSpecJson as AppSpec)
-    const dummyAccount = await generateTestAccount()
+    const [appClient, dummyAccount] = await Promise.all([getAlgorandAppClient(acctParamsAppSpecJson as AppSpec), generateTestAccount()])
 
     test.each([
       ['verify_acct_balance', INITIAL_BALANCE_MICRO_ALGOS + 100_000],
@@ -100,8 +99,11 @@ describe('State op codes', async () => {
   })
 
   describe('AppParams', async () => {
-    const [appClient, app] = await getAlgorandAppClientWithApp(appParamsAppSpecJson as AppSpec)
-    const dummyAccount = await getLocalNetDefaultAccount()
+    const [[appClient, app], dummyAccount] = await Promise.all([
+      getAlgorandAppClientWithApp(appParamsAppSpecJson as AppSpec),
+      getLocalNetDefaultAccount(),
+    ])
+
     test.each([
       ['verify_app_params_get_approval_program', undefined],
       ['verify_app_params_get_clear_state_program', undefined],
@@ -142,8 +144,11 @@ describe('State op codes', async () => {
   })
 
   describe('AssetHolding', async () => {
-    const appClient = await getAlgorandAppClient(assetHoldingAppSpecJson as AppSpec)
-    const dummyAccount = await getLocalNetDefaultAccount()
+    const [appClient, dummyAccount] = await Promise.all([
+      getAlgorandAppClient(assetHoldingAppSpecJson as AppSpec),
+      getLocalNetDefaultAccount(),
+    ])
+
     test.each([
       ['verify_asset_holding_get', 100],
       ['verify_asset_frozen_get', false],
@@ -174,8 +179,10 @@ describe('State op codes', async () => {
   })
 
   describe('AssetParams', async () => {
-    const appClient = await getAlgorandAppClient(assetParamsAppSpecJson as AppSpec)
-    const dummyAccount = await getLocalNetDefaultAccount()
+    const [appClient, dummyAccount] = await Promise.all([
+      getAlgorandAppClient(assetParamsAppSpecJson as AppSpec),
+      getLocalNetDefaultAccount(),
+    ])
 
     test.each([
       ['verify_asset_params_get_total', 100n],
@@ -437,8 +444,11 @@ describe('State op codes', async () => {
   })
 
   describe('AppGlobal', async () => {
-    const appClient = await getAlgorandAppClient(appGlobalAppSpecJson as AppSpec)
-    const [_exAppClient, exApp] = await getAlgorandAppClientWithApp(appGlobalExAppSpecJson as AppSpec)
+    const [appClient, [_exAppClient, exApp]] = await Promise.all([
+      getAlgorandAppClient(appGlobalAppSpecJson as AppSpec),
+      getAlgorandAppClientWithApp(appGlobalExAppSpecJson as AppSpec),
+    ])
+
     it('should be able to put, get and delete app global state', async () => {
       const bytesKey = 'global_bytes'
       const uint64Key = 'global_uint64'
@@ -510,10 +520,12 @@ describe('State op codes', async () => {
   })
 
   describe('AppLocal', async () => {
-    const appClient = await getAlgorandAppClient(appLocalAppSpecJson as AppSpec)
-    const [exAppClient, exApp] = await getAlgorandAppClientWithApp(appLocalExAppSpecJson as AppSpec)
-    await tryOptIn(appClient)
-    await tryOptIn(exAppClient)
+    const [appClient, [exAppClient, exApp]] = await Promise.all([
+      getAlgorandAppClient(appLocalAppSpecJson as AppSpec),
+      getAlgorandAppClientWithApp(appLocalExAppSpecJson as AppSpec),
+    ])
+
+    await Promise.all([tryOptIn(appClient), tryOptIn(exAppClient)])
 
     it('should be able to put, get and delete app local state', async () => {
       const localNetAccount = await getLocalNetDefaultAccount()
