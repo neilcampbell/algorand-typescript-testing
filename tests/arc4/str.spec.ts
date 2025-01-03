@@ -5,9 +5,9 @@ import { interpretAsArc4, Str } from '@algorandfoundation/algorand-typescript/ar
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { afterEach, describe, expect, test } from 'vitest'
 import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_LOG_SIZE } from '../../src/constants'
+import { asUint8Array } from '../../src/util'
 import appSpecJson from '../artifacts/arc4-primitive-ops/data/Arc4PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult } from '../avm-invoker'
-import { asUint8Array } from '../util'
 
 describe('arc4.Str', async () => {
   const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)

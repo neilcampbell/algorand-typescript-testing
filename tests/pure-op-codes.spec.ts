@@ -10,10 +10,10 @@ import {
   UINT64_OVERFLOW_UNDERFLOW_MESSAGE,
 } from '../src/constants'
 import * as op from '../src/impl/pure'
-import { asBigUintCls } from '../src/util'
+import { asBigUintCls, asUint8Array } from '../src/util'
 import appSpecJson from './artifacts/miscellaneous-ops/data/MiscellaneousOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult, getAvmResultRaw } from './avm-invoker'
-import { abiAsBytes, asUint8Array, base64Encode, base64UrlEncode, getPaddedBytes, getSha256Hash, intToBytes } from './util'
+import { base64Encode, base64UrlEncode, getPaddedBytes, getSha256Hash, intToBytes } from './util'
 
 const avmIntArgOverflowError = 'is not a non-negative int or too big to fit in size'
 const extractOutOfBoundError = /extraction (start|end) \d+ is beyond length/
@@ -66,7 +66,7 @@ describe('Pure op codes', async () => {
       base64Encode(Bytes([0xff])),
       base64Encode(Bytes(Array(256).fill(0x00).concat([0xff]))),
     ])('should decode standard base64 string', async (a) => {
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_base64_decode_standard', asUint8Array(a)))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_base64_decode_standard', asUint8Array(a)))!
       const result = op.base64Decode(Base64.StdEncoding, a)
       expect(result).toEqual(avmResult)
     })
@@ -89,7 +89,7 @@ describe('Pure op codes', async () => {
       base64UrlEncode(Bytes([0xff])),
       base64UrlEncode(Bytes(Array(256).fill(0x00).concat([0xff]))),
     ])('should decode base64url string', async (a) => {
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_base64_decode_url', asUint8Array(a)))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_base64_decode_url', asUint8Array(a)))!
       const result = op.base64Decode(Base64.URLEncoding, a)
       expect(result).toEqual(avmResult)
     })
@@ -135,7 +135,7 @@ describe('Pure op codes', async () => {
   describe('bsqrt', async () => {
     test.each([0, 1, 2, 9, 13, 144n, MAX_UINT64, MAX_UINT512])('should compute the square root of a big uint', async (a) => {
       const uint8ArrayA = internal.encodingUtil.bigIntToUint8Array(BigInt(a))
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_bsqrt', uint8ArrayA))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_bsqrt', uint8ArrayA))!
 
       const result = op.bsqrt(a)
       const bytesResult = asBigUintCls(result).toBytes()
@@ -174,7 +174,7 @@ describe('Pure op codes', async () => {
 
   describe('bzero', async () => {
     test.each([0, 1, 42, MAX_BYTES_SIZE])('should return a zero filled bytes value of the given size', async (a) => {
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_bzero', a))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_bzero', a))!
       const result = op.bzero(a)
       const resultHash = Bytes(getSha256Hash(asUint8Array(result)))
       expect(resultHash).toEqual(avmResult)
@@ -202,9 +202,14 @@ describe('Pure op codes', async () => {
       ['1', '0', 0, MAX_BYTES_SIZE - 2],
       ['1', '0', MAX_BYTES_SIZE - 2, 0],
     ])('should retrun concatenated bytes', async (a, b, padASize, padBSize) => {
-      const avmResult = abiAsBytes(
-        await getAvmResult({ appClient }, 'verify_concat', asUint8Array(a), asUint8Array(b), padASize, padBSize),
-      )!
+      const avmResult = (await getAvmResult<Uint8Array>(
+        { appClient },
+        'verify_concat',
+        asUint8Array(a),
+        asUint8Array(b),
+        padASize,
+        padBSize,
+      ))!
 
       const paddedA = getPaddedBytes(padASize, a)
       const paddedB = getPaddedBytes(padBSize, b)
@@ -424,7 +429,7 @@ describe('Pure op codes', async () => {
       [256, 3],
     ])(`should extract bytes from the input`, async (b, c) => {
       const a = 'hello, world'.repeat(30)
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_extract', asUint8Array(a), b, c))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_extract', asUint8Array(a), b, c))!
       let result = op.extract(a, Uint64(b), Uint64(c))
       expect(result).toEqual(avmResult)
 
@@ -435,7 +440,7 @@ describe('Pure op codes', async () => {
     })
 
     test.each(['hello, world', 'hi'])('should work to extract bytes from 2 to end for %s', async (a) => {
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_extract_from_2', asUint8Array(a)))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_extract_from_2', asUint8Array(a)))!
       const result = op.extract(a, 2, 0)
       expect(result).toEqual(avmResult)
     })
@@ -661,7 +666,7 @@ describe('Pure op codes', async () => {
 
   describe('itob', async () => {
     test.each([0, 42, 100n, 256, 65535, MAX_UINT64])('should convert uint64 to bytes', async (a) => {
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_itob', a))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_itob', a))!
       const result = op.itob(a)
       expect(result).toEqual(avmResult)
     })
@@ -728,7 +733,7 @@ describe('Pure op codes', async () => {
       ['hello, world.', 0, 'H'],
       ['', 0, ''],
     ])(`should replace bytes in the input`, async (a, b, c) => {
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_replace', asUint8Array(a), b, asUint8Array(c)))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_replace', asUint8Array(a), b, asUint8Array(c)))!
       const result = op.replace(a, b, c)
       expect(result).toEqual(avmResult)
     })
@@ -756,9 +761,13 @@ describe('Pure op codes', async () => {
       [Bytes([0x00, 0x00, 0xff]), Bytes([0xff]), 0n],
       [Bytes([0x00, 0x00, 0xff]), Bytes([0xff]), 1n],
     ])(`should select bytes according to the input`, async (a, b, c) => {
-      const avmResult = abiAsBytes(
-        await getAvmResult({ appClient }, 'verify_select_bytes', asUint8Array(a), asUint8Array(b), c === true ? 1 : c === false ? 0 : c),
-      )!
+      const avmResult = (await getAvmResult<Uint8Array>(
+        { appClient },
+        'verify_select_bytes',
+        asUint8Array(a),
+        asUint8Array(b),
+        c === true ? 1 : c === false ? 0 : c,
+      ))!
       const result = op.select(a, b, c)
       expect(result).toEqual(avmResult)
     })
@@ -809,7 +818,7 @@ describe('Pure op codes', async () => {
       [intToBytes(MAX_UINT64), 0, 0],
       [intToBytes(MAX_UINT512), 0, 0],
     ])(`should set the bit at the given index of bytes value`, async (a, b, c) => {
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_setbit_bytes', asUint8Array(a), b, c))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_setbit_bytes', asUint8Array(a), b, c))!
       const result = op.setBit(a, b, c) as bytes
       expect(result).toEqual(avmResult)
     })
@@ -886,7 +895,7 @@ describe('Pure op codes', async () => {
       [intToBytes(MAX_UINT64), 0, 0],
       [intToBytes(MAX_UINT512), 0, 0],
     ])(`should set bytes in the input`, async (a, b, c) => {
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_setbyte', asUint8Array(a), b, c))!
+      const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_setbyte', asUint8Array(a), b, c))!
       const result = op.setByte(a, b, c)
       expect(result).toEqual(avmResult)
     })
@@ -1007,7 +1016,7 @@ describe('Pure op codes', async () => {
       ['hello, world.', 0, 13],
       ['', 0, 0],
     ])('should extract substring from the input', async (a, b, c) => {
-      const avmResult = abiAsBytes(await getAvmResult({ appClient }, 'verify_substring', asUint8Array(a), b, c))
+      const avmResult = await getAvmResult<Uint8Array>({ appClient }, 'verify_substring', asUint8Array(a), b, c)
       const result = op.substring(a, b, c)
       expect(result).toEqual(avmResult)
     })

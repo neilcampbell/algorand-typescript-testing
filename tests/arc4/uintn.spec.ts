@@ -5,10 +5,9 @@ import { BitSize, interpretAsArc4, UintN, UintN16, UintN256, UintN32, UintN64, U
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_UINT512, MAX_UINT64 } from '../../src/constants'
-import { asBigUintCls } from '../../src/util'
+import { asBigUintCls, asUint8Array } from '../../src/util'
 import appSpecJson from '../artifacts/arc4-primitive-ops/data/Arc4PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult } from '../avm-invoker'
-import { asUint8Array } from '../util'
 
 const invalidBytesLengthError = (length: number) => `byte string must correspond to a uint${length}`
 describe('arc4.UintN', async () => {

@@ -12,7 +12,7 @@ import { AccountCls } from '../src/impl/account'
 import { InnerTxn } from '../src/impl/itxn'
 import { ApplicationTransaction } from '../src/impl/transactions'
 import { DeliberateAny } from '../src/typescript-helpers'
-import { asBigInt, asNumber, asUint64Cls } from '../src/util'
+import { asBigInt, asNumber, asUint64Cls, asUint8Array } from '../src/util'
 import { AppExpectingEffects } from './artifacts/created-app-asset/contract.algo'
 import {
   ItxnDemoContract,
@@ -43,7 +43,6 @@ import {
   getLocalNetDefaultAccount,
   INITIAL_BALANCE_MICRO_ALGOS,
 } from './avm-invoker'
-import { asUint8Array } from './util'
 
 describe('State op codes', async () => {
   const ctx = new TestExecutionContext()

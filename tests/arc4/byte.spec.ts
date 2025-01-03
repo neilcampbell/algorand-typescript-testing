@@ -5,10 +5,9 @@ import { Byte, interpretAsArc4 } from '@algorandfoundation/algorand-typescript/a
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_UINT64 } from '../../src/constants'
-import { asBigUintCls } from '../../src/util'
+import { asBigUintCls, asUint8Array } from '../../src/util'
 import appSpecJson from '../artifacts/arc4-primitive-ops/data/Arc4PrimitiveOpsContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult } from '../avm-invoker'
-import { asUint8Array } from '../util'
 
 const invalidBytesLengthError = 'byte string must be 1 byte long'
 describe('arc4.Byte', async () => {

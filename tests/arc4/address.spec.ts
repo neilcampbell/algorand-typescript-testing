@@ -4,8 +4,7 @@ import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-te
 import { Address, interpretAsArc4 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, test } from 'vitest'
 import { ABI_RETURN_VALUE_LOG_PREFIX } from '../../src/constants'
-import { encodeAddress } from '../../src/util'
-import { asUint8Array } from '../util'
+import { asUint8Array, encodeAddress } from '../../src/util'
 
 const abiTypeString = 'address'
 const testData = [

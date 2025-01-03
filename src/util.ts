@@ -37,21 +37,18 @@ export const asBigInt = (v: internal.primitives.StubUint64Compat): bigint => asU
 
 export const asNumber = (v: internal.primitives.StubUint64Compat): number => asUint64Cls(v).asNumber()
 
-export function extractGenericTypeArgs(t: string): string[] {
-  const match = t.match(/<(.*)>/)
-  if (!match) return []
-  return match[1].split(',').map((x) => x.trim())
-}
-
 export const asUint64Cls = (val: internal.primitives.StubUint64Compat) => internal.primitives.Uint64Cls.fromCompat(val)
 
-export const asBigUintCls = (val: internal.primitives.StubBigUintCompat) => internal.primitives.BigUintCls.fromCompat(val)
+export const asBigUintCls = (val: internal.primitives.StubBigUintCompat | Uint8Array) =>
+  internal.primitives.BigUintCls.fromCompat(
+    val instanceof Uint8Array ? asBytes(val) : Array.isArray(val) ? asBytes(new Uint8Array(val)) : val,
+  )
 
 export const asBytesCls = (val: internal.primitives.StubBytesCompat | Uint8Array) => internal.primitives.BytesCls.fromCompat(val)
 
 export const asUint64 = (val: internal.primitives.StubUint64Compat) => asUint64Cls(val).asAlgoTs()
 
-export const asBigUint = (val: internal.primitives.StubBigUintCompat) => asBigUintCls(val).asAlgoTs()
+export const asBigUint = (val: internal.primitives.StubBigUintCompat | Uint8Array) => asBigUintCls(val).asAlgoTs()
 
 export const asBytes = (val: internal.primitives.StubBytesCompat | Uint8Array) => asBytesCls(val).asAlgoTs()
 
