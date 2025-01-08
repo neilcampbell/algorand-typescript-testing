@@ -1,10 +1,10 @@
 import type {
-  bytes,
-  itxn,
-  uint64,
   Account as AccountType,
   Application as ApplicationType,
   Asset as AssetType,
+  bytes,
+  itxn,
+  uint64,
 } from '@algorandfoundation/algorand-typescript'
 import { arc4, internal, TransactionType } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
@@ -13,7 +13,7 @@ import { asBytes, asNumber } from '../util'
 import { getApp } from './app-params'
 import { getAsset } from './asset-params'
 import type { InnerTxn, InnerTxnFields } from './itxn'
-import { Account, AccountCls } from './reference'
+import { Account, asAccount, asApplication, asAsset } from './reference'
 import {
   ApplicationTransaction,
   AssetConfigTransaction,
@@ -29,10 +29,9 @@ const mapCommonFields = <T extends InnerTxnFields>(
   const { sender, note, rekeyTo, ...rest } = fields
 
   return {
-    sender:
-      sender instanceof AccountCls ? sender : typeof sender === 'string' ? Account(asBytes(sender)) : lazyContext.activeApplication.address,
+    sender: asAccount(sender),
     note: note !== undefined ? asBytes(note) : undefined,
-    rekeyTo: rekeyTo instanceof AccountCls ? rekeyTo : typeof rekeyTo === 'string' ? Account(asBytes(rekeyTo)) : undefined,
+    rekeyTo: asAccount(rekeyTo),
     ...rest,
   }
 }
@@ -46,7 +45,11 @@ export class PaymentInnerTxn extends PaymentTransaction implements itxn.PaymentI
 
   /* @internal */
   constructor(fields: itxn.PaymentFields) {
-    super(mapCommonFields(fields))
+    super({
+      ...mapCommonFields(fields),
+      receiver: asAccount(fields.receiver),
+      closeRemainderTo: asAccount(fields.closeRemainderTo),
+    })
   }
 }
 
@@ -74,13 +77,17 @@ export class AssetConfigInnerTxn extends AssetConfigTransaction implements itxn.
 
   /* @internal */
   constructor(fields: itxn.AssetConfigFields) {
-    const { assetName, unitName, url, ...rest } = mapCommonFields(fields)
+    const { assetName, unitName, url, manager, reserve, freeze, clawback, configAsset, ...rest } = mapCommonFields(fields)
     const createdAsset =
-      !rest.configAsset || !asNumber(rest.configAsset.id)
+      !configAsset || !asNumber(asAsset(configAsset)!.id)
         ? lazyContext.any.asset({
             name: typeof assetName === 'string' ? asBytes(assetName) : assetName,
             unitName: typeof unitName === 'string' ? asBytes(unitName) : unitName,
             url: typeof url === 'string' ? asBytes(url) : url,
+            manager: asAccount(manager),
+            reserve: asAccount(reserve),
+            freeze: asAccount(freeze),
+            clawback: asAccount(clawback),
             ...rest,
           })
         : undefined
@@ -89,6 +96,11 @@ export class AssetConfigInnerTxn extends AssetConfigTransaction implements itxn.
       assetName: typeof assetName === 'string' ? asBytes(assetName) : assetName,
       unitName: typeof unitName === 'string' ? asBytes(unitName) : unitName,
       url: typeof url === 'string' ? asBytes(url) : url,
+      manager: asAccount(manager),
+      reserve: asAccount(reserve),
+      freeze: asAccount(freeze),
+      clawback: asAccount(clawback),
+      configAsset: asAsset(configAsset),
       ...rest,
       createdAsset: createdAsset,
     })
@@ -108,7 +120,13 @@ export class AssetTransferInnerTxn extends AssetTransferTransaction implements i
 
   /* @internal */
   constructor(fields: itxn.AssetTransferFields) {
-    super(mapCommonFields(fields))
+    super({
+      ...mapCommonFields(fields),
+      assetSender: asAccount(fields.assetSender),
+      assetReceiver: asAccount(fields.assetReceiver),
+      assetCloseTo: asAccount(fields.assetCloseTo),
+      xferAsset: asAsset(fields.xferAsset),
+    })
   }
 }
 
@@ -173,9 +191,9 @@ export class ApplicationInnerTxn extends ApplicationTransaction implements itxn.
       clearStateProgram: Array.isArray(clearStateProgram) ? undefined : (clearStateProgram as bytes),
       clearStateProgramPages: Array.isArray(clearStateProgram) ? clearStateProgram : undefined,
       appArgs: appArgs?.map((x) => x),
-      accounts: accounts?.map((x) => x),
-      assets: assets?.map((x) => x),
-      apps: apps?.map((x) => x),
+      accounts: accounts?.map((x) => asAccount(x)!),
+      assets: assets?.map((x) => asAsset(x)!),
+      apps: apps?.map((x) => asApplication(x)!),
       createdApp: compiledApp,
       ...rest,
     })

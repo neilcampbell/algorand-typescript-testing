@@ -112,12 +112,44 @@ function isTransaction(obj: unknown): obj is Transaction {
   )
 }
 
+/**
+ * Provides a context for creating contracts and registering created contract instances
+ * with test execution context.
+ */
 export class ContractContext {
+  /**
+   * Creates a new contract instance and register the created instance with test execution context.
+   *
+   * @template T Type of contract extending BaseContract
+   * @param {IConstructor<T>} type The contract class constructor
+   * @param {...any[]} args Constructor arguments for the contract
+   * @returns {T} Proxied instance of the contract
+   * @example
+   * const ctx = new TestExecutionContext();
+   * const contract = ctx.contract.create(MyContract);
+   */
   create<T extends BaseContract>(type: IConstructor<T>, ...args: DeliberateAny[]): T {
     const proxy = new Proxy(type, this.getContractProxyHandler<T>(this.isArc4(type)))
     return new proxy(...args)
   }
 
+  /**
+   * Creates an array of transactions for calling a contract method.
+   *
+   * @internal
+   * @template TParams Array of parameter types
+   * @param {BaseContract} contract The contract instance
+   * @param {AbiMetadata | undefined} abiMetadata ABI metadata for the method
+   * @param {...TParams} args Method arguments
+   * @returns {Transaction[]} Array of transactions needed to execute the method
+   * @example
+   * const txns = ContractContext.createMethodCallTxns(
+   *   myContract,
+   *   methodAbiMetadata,
+   *   arg1,
+   *   arg2
+   * );
+   */
   static createMethodCallTxns<TParams extends unknown[]>(
     contract: BaseContract,
     abiMetadata: AbiMetadata | undefined,

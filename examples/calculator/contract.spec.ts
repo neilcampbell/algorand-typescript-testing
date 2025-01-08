@@ -14,7 +14,7 @@ describe('Calculator', () => {
       ctx.txn
         .createScope([
           ctx.any.txn.applicationCall({
-            appId: ctx.ledger.getApplicationForContract(contract),
+            appId: contract,
             appArgs: [],
           }),
         ])

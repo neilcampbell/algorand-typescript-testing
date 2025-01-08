@@ -1,10 +1,10 @@
 import type {
-  bytes,
-  LocalState,
-  uint64,
   Account as AccountType,
   Application as ApplicationType,
   Asset as AssetType,
+  bytes,
+  LocalState,
+  uint64,
 } from '@algorandfoundation/algorand-typescript'
 import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
@@ -22,7 +22,7 @@ import {
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import type { Mutable } from '../typescript-helpers'
-import { asBigInt, asUint64, asUint64Cls, asUint8Array, conactUint8Arrays } from '../util'
+import { asBigInt, asBytes, asUint64, asUint64Cls, asUint8Array, conactUint8Arrays } from '../util'
 import { BytesBackedCls, Uint64BackedCls } from './base'
 import type { GlobalStateCls } from './state'
 
@@ -133,11 +133,8 @@ export class ApplicationData {
     localStates: BytesMap<LocalState<unknown>>
     boxes: BytesMap<Uint8Array>
   }
-  isCreating: boolean = false
 
-  get appLogs() {
-    return this.application.appLogs
-  }
+  isCreating: boolean = false
 
   constructor() {
     this.application = {
@@ -203,6 +200,20 @@ export class ApplicationCls extends Uint64BackedCls implements ApplicationType {
 }
 
 export type AssetData = Mutable<Omit<AssetType, 'id' | 'balance' | 'frozen'>>
+export const getDefaultAssetData = (): AssetData => ({
+  total: lazyContext.any.uint64(),
+  decimals: lazyContext.any.uint64(1, 6),
+  defaultFrozen: false,
+  unitName: lazyContext.any.bytes(4),
+  name: lazyContext.any.bytes(32),
+  url: lazyContext.any.bytes(10),
+  metadataHash: lazyContext.any.bytes(32),
+  manager: Account(ZERO_ADDRESS),
+  freeze: Account(ZERO_ADDRESS),
+  clawback: Account(ZERO_ADDRESS),
+  creator: lazyContext.defaultSender,
+  reserve: Account(ZERO_ADDRESS),
+})
 
 export function Asset(id?: uint64): AssetType {
   return new AssetCls(id)
@@ -296,4 +307,22 @@ export const encodeAddress = (address: Uint8Array): string => {
 export const decodePublicKey = (address: string): Uint8Array => {
   const decoded = encodingUtil.base32ToUint8Array(address)
   return decoded.slice(0, ALGORAND_ADDRESS_BYTE_LENGTH - ALGORAND_CHECKSUM_BYTE_LENGTH)
+}
+
+export const asAccount = (val: AccountType | bytes | string | undefined): AccountType | undefined => {
+  return val instanceof AccountCls
+    ? val
+    : typeof val === 'string'
+      ? Account(asBytes(val))
+      : val instanceof internal.primitives.BytesCls
+        ? Account(val.asAlgoTs())
+        : undefined
+}
+
+export const asAsset = (val: AssetType | uint64 | undefined): AssetType | undefined => {
+  return val instanceof internal.primitives.Uint64Cls ? Asset(val.asAlgoTs()) : val instanceof AssetCls ? val : undefined
+}
+
+export const asApplication = (val: ApplicationType | uint64 | undefined): ApplicationType | undefined => {
+  return val instanceof internal.primitives.Uint64Cls ? Application(val.asAlgoTs()) : val instanceof ApplicationCls ? val : undefined
 }

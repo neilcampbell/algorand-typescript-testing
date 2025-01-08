@@ -70,7 +70,7 @@ describe('State op codes', async () => {
       const dummyAccountAddress = await localnetFixture.context.generateAccount({
         initialFunds: AlgoAmount.MicroAlgos(INITIAL_BALANCE_MICRO_ALGOS + 100_000),
       })
-      const dummyAccount = Account(Bytes.fromBase32(dummyAccountAddress.addr.toString()))
+      const dummyAccount = Bytes.fromBase32(dummyAccountAddress.addr.toString())
       const mockAccount = ctx.any.account({
         address: dummyAccount,
         balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100_000),
@@ -90,7 +90,7 @@ describe('State op codes', async () => {
       const avmResult = await getAvmResult(
         { appClient, sendParams: { staticFee: AlgoAmount.Algos(1000) } },
         methodName as string,
-        asUint8Array(dummyAccount.bytes),
+        asUint8Array(mockAccount.bytes),
       )
       testInvariant(avmResult !== undefined, 'There must be an AVM result')
       const mockContract = ctx.contract.create(StateAcctParamsGetContract)
@@ -104,7 +104,7 @@ describe('State op codes', async () => {
       const dummyAccountAddress = await localnetFixture.context.generateAccount({
         initialFunds: AlgoAmount.MicroAlgos(INITIAL_BALANCE_MICRO_ALGOS),
       })
-      const dummyAccount = Account(Bytes.fromBase32(dummyAccountAddress.addr.toString()))
+      const dummyAccount = Bytes.fromBase32(dummyAccountAddress.addr.toString())
       const mockAccount = ctx.any.account({
         address: dummyAccount,
         balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
@@ -116,7 +116,7 @@ describe('State op codes', async () => {
       })
 
       await appClient.algorand.send.onlineKeyRegistration({
-        sender: encodeAddress(asUint8Array(dummyAccount.bytes)),
+        sender: encodeAddress(asUint8Array(dummyAccount)),
         voteKey: getRandomBytes(32).asUint8Array(),
         selectionKey: getRandomBytes(32).asUint8Array(),
         voteFirst: 1n,
@@ -128,7 +128,7 @@ describe('State op codes', async () => {
       const avmResult = await getAvmResult(
         { appClient, sendParams: { staticFee: AlgoAmount.Algos(10) } },
         'verify_acct_incentive_eligible',
-        asUint8Array(dummyAccount.bytes),
+        asUint8Array(mockAccount.bytes),
       )
       expect(avmResult).toEqual(true)
     })
@@ -137,7 +137,7 @@ describe('State op codes', async () => {
       const dummyAccountAddress = await localnetFixture.context.generateAccount({
         initialFunds: AlgoAmount.MicroAlgos(INITIAL_BALANCE_MICRO_ALGOS),
       })
-      const dummyAccount = Account(Bytes.fromBase32(dummyAccountAddress.addr.toString()))
+      const dummyAccount = Bytes.fromBase32(dummyAccountAddress.addr.toString())
       const mockAccount = ctx.any.account({
         address: dummyAccount,
         balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
@@ -154,7 +154,7 @@ describe('State op codes', async () => {
       const dummyAccountAddress = await localnetFixture.context.generateAccount({
         initialFunds: AlgoAmount.MicroAlgos(INITIAL_BALANCE_MICRO_ALGOS),
       })
-      const dummyAccount = Account(Bytes.fromBase32(dummyAccountAddress.addr.toString()))
+      const dummyAccount = Bytes.fromBase32(dummyAccountAddress.addr.toString())
       const mockAccount = ctx.any.account({
         address: dummyAccount,
         balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),

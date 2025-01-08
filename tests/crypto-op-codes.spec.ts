@@ -375,8 +375,8 @@ const generateEcdsaTestData = (v: Ecdsa) => {
 
   return {
     data: internal.primitives.BytesCls.fromCompat(new Uint8Array(messageHash)),
-    r: internal.primitives.BytesCls.fromCompat(new Uint8Array(signature.r.toArray('be'))),
-    s: internal.primitives.BytesCls.fromCompat(new Uint8Array(signature.s.toArray('be'))),
+    r: internal.primitives.BytesCls.fromCompat(new Uint8Array(signature.r.toArray('be', 32))),
+    s: internal.primitives.BytesCls.fromCompat(new Uint8Array(signature.s.toArray('be', 32))),
     recoveryId: internal.primitives.Uint64Cls.fromCompat(recoveryId),
     pubkeyX: internal.primitives.BytesCls.fromCompat(new Uint8Array(pk.slice(0, 32))),
     pubkeyY: internal.primitives.BytesCls.fromCompat(new Uint8Array(pk.slice(32))),

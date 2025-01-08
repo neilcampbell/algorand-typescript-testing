@@ -30,3 +30,5 @@ export function instanceOfAny<T extends Array<{ new (...args: DeliberateAny[]): 
 export interface IConstructor<T> {
   new (...args: DeliberateAny[]): T
 }
+
+export type PickPartial<T, K extends keyof T> = { [P in K]: Partial<T[P]> }

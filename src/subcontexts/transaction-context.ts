@@ -28,7 +28,7 @@ import type {
   PaymentTransaction,
   Transaction,
 } from '../impl/transactions'
-import type { FunctionKeys } from '../typescript-helpers'
+import type { DeliberateAny, FunctionKeys } from '../typescript-helpers'
 import { asBigInt, asNumber, asUint64 } from '../util'
 import { ContractContext } from './contract-context'
 
@@ -53,6 +53,9 @@ interface ExecutionScope {
   execute: <TReturn>(body: () => TReturn) => TReturn
 }
 
+/**
+ * Represents a deferred application call.
+ */
 export class DeferredAppCall<TParams extends unknown[], TReturn> {
   constructor(
     private readonly appId: uint64,
@@ -62,17 +65,33 @@ export class DeferredAppCall<TParams extends unknown[], TReturn> {
     private readonly args: TParams,
   ) {}
 
+  /**
+   * Submits the deferred application call.
+   * @returns The result of the application call.
+   */
   submit(): TReturn {
     checkRoutingConditions(this.appId, this.abiMetadata)
     return this.method(...this.args)
   }
 }
 
+/**
+ * Manages transaction contexts and groups.
+ */
 export class TransactionContext {
   readonly groups: TransactionGroup[] = []
   #activeGroup: TransactionGroup | undefined
 
-  createScope(group: Array<Transaction | DeferredAppCall<unknown[], unknown>>, activeTransactionIndex?: number): ExecutionScope {
+  /**
+   * Creates a new execution scope for a group of transactions.
+   * @param group The group of transactions or deferred application calls.
+   * @param activeTransactionIndex The index of the active transaction.
+   * @returns The execution scope.
+   */
+  createScope(
+    group: Array<Transaction | DeferredAppCall<DeliberateAny[], DeliberateAny>>,
+    activeTransactionIndex?: number,
+  ): ExecutionScope {
     const transactions = group.map((t) => (t instanceof DeferredAppCall ? t.txns : [t])).flat()
     const transactionGroup = new TransactionGroup(transactions, activeTransactionIndex)
 
@@ -93,7 +112,13 @@ export class TransactionContext {
     }
   }
 
-  /* internal */
+  /**
+   * Ensures that a scope is created for the given group of transactions.
+   * @internal
+   * @param group The group of transactions.
+   * @param activeTransactionIndex The index of the active transaction.
+   * @returns The execution scope.
+   */
   ensureScope(group: Transaction[], activeTransactionIndex?: number): ExecutionScope {
     if (!this.#activeGroup || !this.#activeGroup.transactions.length) {
       return this.createScope(group, activeTransactionIndex)
@@ -105,6 +130,11 @@ export class TransactionContext {
     }
   }
 
+  /**
+   * Gets the active transaction group.
+   * @returns The active transaction group.
+   * @throws If there is no active transaction group.
+   */
   get activeGroup(): TransactionGroup {
     if (this.#activeGroup) {
       return this.#activeGroup
@@ -112,6 +142,11 @@ export class TransactionContext {
     throw internal.errors.internalError('no active txn group')
   }
 
+  /**
+   * Gets the last transaction group.
+   * @returns The last transaction group.
+   * @throws If there are no transaction groups.
+   */
   get lastGroup(): TransactionGroup {
     if (this.groups.length === 0) {
       internal.errors.internalError('No group transactions found!')
@@ -119,11 +154,20 @@ export class TransactionContext {
     return this.groups.at(-1)!
   }
 
+  /**
+   * Gets the last active transaction.
+   * @returns The last active transaction.
+   */
   get lastActive(): Transaction {
     return this.lastGroup.activeTransaction
   }
 
-  /* internal */
+  /**
+   * Appends a log to the active transaction.
+   * @internal
+   * @param value The log value.
+   * @throws If the active transaction is not an application call.
+   */
   appendLog(value: internal.primitives.StubBytesCompat): void {
     const activeTransaction = this.activeGroup.activeTransaction
     if (activeTransaction.type !== TransactionType.ApplicationCall) {
@@ -132,6 +176,14 @@ export class TransactionContext {
     activeTransaction.appendLog(value)
   }
 
+  /**
+   * Defers an application call.
+   * @param contract The contract.
+   * @param method The method to call.
+   * @param methodName The name of the method.
+   * @param args The arguments for the method.
+   * @returns The deferred application call.
+   */
   deferAppCall<TContract extends Contract, TParams extends unknown[], TReturn>(
     contract: TContract,
     method: (...args: TParams) => TReturn,
@@ -144,6 +196,12 @@ export class TransactionContext {
     return new DeferredAppCall(appId.id, txns, method, abiMetadata, args)
   }
 
+  /**
+   * Exports logs for the given application ID.
+   * @param appId The application ID.
+   * @param decoding The log decoding.
+   * @returns The decoded logs.
+   */
   exportLogs<const T extends [...LogDecoding[]]>(appId: uint64, ...decoding: T): DecodedLogs<T> {
     const transaction = this.lastGroup.transactions
       .filter((t) => t.type === TransactionType.ApplicationCall)
@@ -152,13 +210,16 @@ export class TransactionContext {
     if (transaction) {
       logs = transaction.appLogs
     } else {
-      logs = lazyContext.getApplicationData(appId).appLogs
+      logs = lazyContext.getApplicationData(appId).application.appLogs
     }
 
     return decodeLogs(logs, decoding)
   }
 }
 
+/**
+ * Represents a group of transactions.
+ */
 export class TransactionGroup {
   activeTransactionIndex: number
   latestTimestamp: number
@@ -176,10 +237,19 @@ export class TransactionGroup {
     this.transactions = transactions
   }
 
+  /**
+   * Gets the active transaction.
+   * @returns The active transaction.
+   */
   get activeTransaction() {
     return this.transactions[this.activeTransactionIndex]
   }
 
+  /**
+   * Gets the active application ID.
+   * @returns The active application ID.
+   * @throws If there are no transactions in the group or the active transaction is not an application call.
+   */
   get activeApplicationId() {
     if (this.transactions.length === 0) {
       internal.errors.internalError('No transactions in the group')
@@ -188,7 +258,7 @@ export class TransactionGroup {
     return this.activeTransaction.appId.id
   }
 
-  /* internal */
+  /* @internal */
   get constructingItxn() {
     if (!this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn field without itxn begin')
@@ -196,26 +266,47 @@ export class TransactionGroup {
     return this.constructingItxnGroup.at(-1)!
   }
 
+  /**
+   * Gets the scratch space of the active transaction.
+   * @returns The scratch space.
+   */
   getScratchSpace() {
     return this.activeTransaction.scratchSpace
   }
 
+  /**
+   * Gets the scratch slot of the active transaction.
+   * @param index The index of the scratch slot.
+   * @returns The scratch slot value.
+   */
   getScratchSlot(index: internal.primitives.StubUint64Compat): bytes | uint64 {
     return this.activeTransaction.getScratchSlot(index)
   }
 
+  /**
+   * Patches the fields of the active transaction.
+   * @param fields The fields to patch.
+   */
   patchActiveTransactionFields(fields: AllTransactionFields) {
     const activeTransaction = this.activeTransaction as unknown as AllTransactionFields
     const filteredFields = Object.fromEntries(Object.entries(fields).filter(([_, value]) => value !== undefined))
     Object.assign(activeTransaction, filteredFields)
   }
 
-  /* internal */
+  /**
+   * Adds a group of inner transactions.
+   * @internal
+   * @param itxns The inner transactions.
+   */
   addInnerTransactionGroup(...itxns: InnerTxn[]) {
     this.itxnGroups.push(new ItxnGroup(itxns))
   }
 
-  /* internal */
+  /**
+   * Begins a new inner transaction group.
+   * @internal
+   * @throws If there is already an inner transaction group being constructed or the active transaction is not an application call.
+   */
   beginInnerTransactionGroup() {
     if (this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn begin without itxn submit')
@@ -227,7 +318,11 @@ export class TransactionGroup {
     this.constructingItxnGroup.push({} as InnerTxnFields)
   }
 
-  /* internal */
+  /**
+   * Appends a new inner transaction to the current group.
+   * @internal
+   * @throws If there is no inner transaction group being constructed.
+   */
   appendInnerTransactionGroup() {
     if (!this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn next without itxn begin')
@@ -235,7 +330,11 @@ export class TransactionGroup {
     this.constructingItxnGroup.push({ type: TransactionType.Payment } as InnerTxnFields)
   }
 
-  /* internal */
+  /**
+   * Submits the current inner transaction group.
+   * @internal
+   * @throws If there is no inner transaction group being constructed or the group exceeds the maximum size.
+   */
   submitInnerTransactionGroup() {
     if (!this.constructingItxnGroup.length) {
       internal.errors.internalError('itxn submit without itxn begin')
@@ -249,9 +348,20 @@ export class TransactionGroup {
     this.constructingItxnGroup = []
   }
 
+  /**
+   * Gets the last inner transaction group.
+   * @returns The last inner transaction group.
+   */
   lastItxnGroup() {
     return this.getItxnGroup()
   }
+
+  /**
+   * Gets an inner transaction group by index.
+   * @param index The index of the group. If not provided, the last group is returned.
+   * @returns The inner transaction group.
+   * @throws If the index is invalid or there are no previous inner transactions.
+   */
   getItxnGroup(index?: internal.primitives.StubUint64Compat): ItxnGroup {
     const i = index !== undefined ? asNumber(index) : undefined
 
@@ -264,24 +374,66 @@ export class TransactionGroup {
 
     return group
   }
+
+  /**
+   * Gets an application transaction by index.
+   * @param index The index of the transaction.
+   * @returns The application transaction.
+   */
   getApplicationTransaction(index?: internal.primitives.StubUint64Compat): ApplicationTransaction {
     return this.getTransactionImpl({ type: TransactionType.ApplicationCall, index }) as ApplicationTransaction
   }
+
+  /**
+   * Gets an asset configuration transaction by index.
+   * @param index The index of the transaction.
+   * @returns The asset configuration transaction.
+   */
   getAssetConfigTransaction(index?: internal.primitives.StubUint64Compat): AssetConfigTransaction {
     return this.getTransactionImpl({ type: TransactionType.AssetConfig, index }) as AssetConfigTransaction
   }
+
+  /**
+   * Gets an asset transfer transaction by index.
+   * @param index The index of the transaction.
+   * @returns The asset transfer transaction.
+   */
   getAssetTransferTransaction(index?: internal.primitives.StubUint64Compat): AssetTransferTransaction {
     return this.getTransactionImpl({ type: TransactionType.AssetTransfer, index }) as AssetTransferTransaction
   }
+
+  /**
+   * Gets an asset freeze transaction by index.
+   * @param index The index of the transaction.
+   * @returns The asset freeze transaction.
+   */
   getAssetFreezeTransaction(index?: internal.primitives.StubUint64Compat): AssetFreezeTransaction {
     return this.getTransactionImpl({ type: TransactionType.AssetFreeze, index }) as AssetFreezeTransaction
   }
+
+  /**
+   * Gets a key registration transaction by index.
+   * @param index The index of the transaction.
+   * @returns The key registration transaction.
+   */
   getKeyRegistrationTransaction(index?: internal.primitives.StubUint64Compat): KeyRegistrationTransaction {
     return this.getTransactionImpl({ type: TransactionType.KeyRegistration, index }) as KeyRegistrationTransaction
   }
+
+  /**
+   * Gets a payment transaction by index.
+   * @param index The index of the transaction.
+   * @returns The payment transaction.
+   */
   getPaymentTransaction(index?: internal.primitives.StubUint64Compat): PaymentTransaction {
     return this.getTransactionImpl({ type: TransactionType.Payment, index }) as PaymentTransaction
   }
+
+  /**
+   * Gets a transaction by index.
+   * @param index The index of the transaction.
+   * @returns The transaction.
+   */
   getTransaction(index?: internal.primitives.StubUint64Compat): Transaction {
     return this.getTransactionImpl({ index })
   }
@@ -316,30 +468,74 @@ export class TransactionGroup {
   }
 }
 
+/**
+ * Represents a group of inner transactions.
+ */
 export class ItxnGroup {
   itxns: InnerTxn[] = []
   constructor(itxns: InnerTxn[]) {
     this.itxns = itxns
   }
 
+  /**
+   * Gets an application inner transaction by index.
+   * @param index The index of the transaction.
+   * @returns The application inner transaction.
+   */
   getApplicationInnerTxn(index?: internal.primitives.StubUint64Compat): ApplicationInnerTxn {
     return this.getInnerTxnImpl({ type: TransactionType.ApplicationCall, index }) as ApplicationInnerTxn
   }
+
+  /**
+   * Gets an asset configuration inner transaction by index.
+   * @param index The index of the transaction.
+   * @returns The asset configuration inner transaction.
+   */
   getAssetConfigInnerTxn(index?: internal.primitives.StubUint64Compat): AssetConfigInnerTxn {
     return this.getInnerTxnImpl({ type: TransactionType.AssetConfig, index }) as AssetConfigInnerTxn
   }
+
+  /**
+   * Gets an asset transfer inner transaction by index.
+   * @param index The index of the transaction.
+   * @returns The asset transfer inner transaction.
+   */
   getAssetTransferInnerTxn(index?: internal.primitives.StubUint64Compat): AssetTransferInnerTxn {
     return this.getInnerTxnImpl({ type: TransactionType.AssetTransfer, index }) as AssetTransferInnerTxn
   }
+
+  /**
+   * Gets an asset freeze inner transaction by index.
+   * @param index The index of the transaction.
+   * @returns The asset freeze inner transaction.
+   */
   getAssetFreezeInnerTxn(index?: internal.primitives.StubUint64Compat): AssetFreezeInnerTxn {
     return this.getInnerTxnImpl({ type: TransactionType.AssetFreeze, index }) as AssetFreezeInnerTxn
   }
+
+  /**
+   * Gets a key registration inner transaction by index.
+   * @param index The index of the transaction.
+   * @returns The key registration inner transaction.
+   */
   getKeyRegistrationInnerTxn(index?: internal.primitives.StubUint64Compat): KeyRegistrationInnerTxn {
     return this.getInnerTxnImpl({ type: TransactionType.KeyRegistration, index }) as KeyRegistrationInnerTxn
   }
+
+  /**
+   * Gets a payment inner transaction by index.
+   * @param index The index of the transaction.
+   * @returns The payment inner transaction.
+   */
   getPaymentInnerTxn(index?: internal.primitives.StubUint64Compat): PaymentInnerTxn {
     return this.getInnerTxnImpl({ type: TransactionType.Payment, index }) as PaymentInnerTxn
   }
+
+  /**
+   * Gets an inner transaction by index.
+   * @param index The index of the transaction.
+   * @returns The inner transaction.
+   */
   getInnerTxn(index?: internal.primitives.StubUint64Compat): InnerTxn {
     return this.getInnerTxnImpl({ index })
   }
