@@ -1,34 +1,33 @@
-#pragma version 10
+#pragma version 11
+#pragma typetrack false
 
-tests/artifacts/state-ops/contract.algo.ts::StateAssetHoldingContract.approvalProgram:
-    intcblock 0 1
+// @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
+main:
+    intcblock 1 0
     bytecblock 0x151f7c75
-    callsub __puya_arc4_router__
-    return
-
-
-// tests/artifacts/state-ops/contract.algo.ts::StateAssetHoldingContract.__puya_arc4_router__() -> uint64:
-__puya_arc4_router__:
-    // tests/artifacts/state-ops/contract.algo.ts:142
+    // tests/artifacts/state-ops/contract.algo.ts:151
     // export class StateAssetHoldingContract extends arc4.Contract {
-    proto 0 1
     txn NumAppArgs
-    bz __puya_arc4_router___bare_routing@6
+    bz main_bare_routing@7
     pushbytess 0x68301476 0x784c64eb // method "verify_asset_holding_get(account,asset)uint64", method "verify_asset_frozen_get(account,asset)bool"
     txna ApplicationArgs 0
-    match __puya_arc4_router___verify_asset_holding_get_route@2 __puya_arc4_router___verify_asset_frozen_get_route@3
-    intc_0 // 0
-    retsub
+    match main_verify_asset_holding_get_route@3 main_verify_asset_frozen_get_route@4
 
-__puya_arc4_router___verify_asset_holding_get_route@2:
-    // tests/artifacts/state-ops/contract.algo.ts:143
+main_after_if_else@11:
+    // tests/artifacts/state-ops/contract.algo.ts:151
+    // export class StateAssetHoldingContract extends arc4.Contract {
+    intc_1 // 0
+    return
+
+main_verify_asset_frozen_get_route@4:
+    // tests/artifacts/state-ops/contract.algo.ts:158
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:142
+    // tests/artifacts/state-ops/contract.algo.ts:151
     // export class StateAssetHoldingContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
@@ -36,7 +35,37 @@ __puya_arc4_router___verify_asset_holding_get_route@2:
     txna ApplicationArgs 2
     btoi
     txnas Assets
-    // tests/artifacts/state-ops/contract.algo.ts:143
+    // tests/artifacts/state-ops/contract.algo.ts:158
+    // @arc4.abimethod()
+    callsub verify_asset_frozen_get
+    pushbytes 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_asset_holding_get_route@3:
+    // tests/artifacts/state-ops/contract.algo.ts:152
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:151
+    // export class StateAssetHoldingContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    txna ApplicationArgs 2
+    btoi
+    txnas Assets
+    // tests/artifacts/state-ops/contract.algo.ts:152
     // @arc4.abimethod()
     callsub verify_asset_holding_get
     itob
@@ -44,86 +73,50 @@ __puya_arc4_router___verify_asset_holding_get_route@2:
     swap
     concat
     log
-    intc_1 // 1
-    retsub
+    intc_0 // 1
+    return
 
-__puya_arc4_router___verify_asset_frozen_get_route@3:
-    // tests/artifacts/state-ops/contract.algo.ts:149
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:142
-    // export class StateAssetHoldingContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    txna ApplicationArgs 2
-    btoi
-    txnas Assets
-    // tests/artifacts/state-ops/contract.algo.ts:149
-    // @arc4.abimethod()
-    callsub verify_asset_frozen_get
-    pushbytes 0x00
-    intc_0 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_1 // 1
-    retsub
-
-__puya_arc4_router___bare_routing@6:
-    // tests/artifacts/state-ops/contract.algo.ts:142
+main_bare_routing@7:
+    // tests/artifacts/state-ops/contract.algo.ts:151
     // export class StateAssetHoldingContract extends arc4.Contract {
     txn OnCompletion
-    bnz __puya_arc4_router___after_if_else@10
+    bnz main_after_if_else@11
     txn ApplicationID
     !
     assert // can only call when creating
-    intc_1 // 1
-    retsub
-
-__puya_arc4_router___after_if_else@10:
-    // tests/artifacts/state-ops/contract.algo.ts:142
-    // export class StateAssetHoldingContract extends arc4.Contract {
-    intc_0 // 0
-    retsub
+    intc_0 // 1
+    return
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAssetHoldingContract.verify_asset_holding_get(a: bytes, b: uint64) -> uint64:
 verify_asset_holding_get:
-    // tests/artifacts/state-ops/contract.algo.ts:143-144
+    // tests/artifacts/state-ops/contract.algo.ts:152-153
     // @arc4.abimethod()
     // public verify_asset_holding_get(a: Account, b: Asset): uint64 {
     proto 2 1
-    // tests/artifacts/state-ops/contract.algo.ts:145
+    // tests/artifacts/state-ops/contract.algo.ts:154
     // const [balance, _val] = op.AssetHolding.assetBalance(a, b)
     frame_dig -2
     frame_dig -1
     asset_holding_get AssetBalance
     pop
-    // tests/artifacts/state-ops/contract.algo.ts:146
+    // tests/artifacts/state-ops/contract.algo.ts:155
     // return balance
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAssetHoldingContract.verify_asset_frozen_get(a: bytes, b: uint64) -> uint64:
 verify_asset_frozen_get:
-    // tests/artifacts/state-ops/contract.algo.ts:149-150
+    // tests/artifacts/state-ops/contract.algo.ts:158-159
     // @arc4.abimethod()
     // public verify_asset_frozen_get(a: Account, b: Asset): boolean {
     proto 2 1
-    // tests/artifacts/state-ops/contract.algo.ts:151
+    // tests/artifacts/state-ops/contract.algo.ts:160
     // const [frozen, _val] = op.AssetHolding.assetFrozen(a, b)
     frame_dig -2
     frame_dig -1
     asset_holding_get AssetFrozen
     pop
-    // tests/artifacts/state-ops/contract.algo.ts:152
+    // tests/artifacts/state-ops/contract.algo.ts:161
     // return frozen
     retsub

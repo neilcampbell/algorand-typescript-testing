@@ -1,7 +1,7 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { Account, arc4, bytes, Bytes, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, arc4, bytes, Bytes, Global, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { DynamicBytes, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
@@ -12,7 +12,7 @@ import { AccountCls } from '../src/impl/account'
 import { InnerTxn } from '../src/impl/itxn'
 import { ApplicationTransaction } from '../src/impl/transactions'
 import { DeliberateAny } from '../src/typescript-helpers'
-import { asBigInt, asNumber, asUint64Cls, asUint8Array } from '../src/util'
+import { asBigInt, asNumber, asUint64Cls, asUint8Array, encodeAddress, getRandomBytes } from '../src/util'
 import { AppExpectingEffects } from './artifacts/created-app-asset/contract.algo'
 import {
   ItxnDemoContract,
@@ -95,6 +95,58 @@ describe('State op codes', async () => {
 
       expect(mockResult).toEqual(avmResult)
       expect(mockResult).toEqual(expectedValue)
+    })
+
+    it('should return true when account is eligible for incentive', async () => {
+      const mockAccount = ctx.any.account({
+        address: dummyAccount,
+        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
+        minBalance: Uint64(100000),
+      })
+      ctx.ledger.patchGlobalData({ payoutsEnabled: true, payoutsGoOnlineFee: 10 })
+      ctx.txn.createScope([ctx.any.txn.keyRegistration({ sender: mockAccount, fee: 10 })]).execute(() => {
+        expect(op.AcctParams.acctIncentiveEligible(mockAccount)).toEqual([true, true])
+      })
+
+      await appClient.algorand.send.onlineKeyRegistration({
+        sender: encodeAddress(asUint8Array(dummyAccount.bytes)),
+        voteKey: getRandomBytes(32).asUint8Array(),
+        selectionKey: getRandomBytes(32).asUint8Array(),
+        voteFirst: 1n,
+        voteLast: 1000000n,
+        voteKeyDilution: 1000000n,
+        stateProofKey: getRandomBytes(64).asUint8Array(),
+        staticFee: AlgoAmount.Algos(10),
+      })
+      const avmResult = await getAvmResult(
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(10) } },
+        'verify_acct_incentive_eligible',
+        asUint8Array(dummyAccount.bytes),
+      )
+      expect(avmResult).toEqual(true)
+    })
+
+    it('should return last round as last proposed and last hearbeat by default', () => {
+      const mockAccount = ctx.any.account({
+        address: dummyAccount,
+        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
+      })
+      const lastProposed = op.AcctParams.acctLastProposed(mockAccount)
+      const lastHeartbeat = op.AcctParams.acctLastHeartbeat(mockAccount)
+      expect(lastProposed).toEqual([Global.round, true])
+      expect(lastHeartbeat).toEqual([Global.round, true])
+    })
+
+    it('should return configured round as last proposed and last hearbeat', () => {
+      const mockAccount = ctx.any.account({
+        address: dummyAccount,
+        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
+      })
+      ctx.ledger.patchAccountData(mockAccount, { lastProposed: 100, lastHeartbeat: 200 })
+      const lastProposed = op.AcctParams.acctLastProposed(mockAccount)
+      const lastHeartbeat = op.AcctParams.acctLastHeartbeat(mockAccount)
+      expect(lastProposed).toEqual([100, true])
+      expect(lastHeartbeat).toEqual([200, true])
     })
   })
 

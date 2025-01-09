@@ -112,6 +112,18 @@ export class LedgerContext {
     }
   }
 
+  patchAccountData(account: Account, data: Partial<AccountData>) {
+    const accountData = this.accountDataMap.get(account) ?? new AccountData()
+    this.accountDataMap.set(account, {
+      ...accountData,
+      ...data,
+      account: {
+        ...accountData?.account,
+        ...data.account,
+      },
+    })
+  }
+
   setBlock(
     index: internal.primitives.StubUint64Compat,
     seed: internal.primitives.StubUint64Compat,

@@ -117,6 +117,12 @@ export class KeyRegistrationTransaction extends TransactionBase implements gtxn.
     this.voteKeyDilution = fields.voteKeyDilution ?? Uint64(0)
     this.nonparticipation = fields.nonparticipation ?? false
     this.stateProofKey = fields.stateProofKey ?? Bytes()
+    const globalData = lazyContext.ledger.globalData
+    if (this.fee >= globalData.payoutsGoOnlineFee && globalData.payoutsEnabled) {
+      lazyContext.ledger.patchAccountData(this.sender, {
+        incentiveEligible: true,
+      })
+    }
   }
 
   readonly voteKey: bytes

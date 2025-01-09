@@ -14,7 +14,11 @@ export type ABIValue = boolean | number | bigint | string | Uint8Array | ABIValu
 
 algokit.Config.configure({ logger: nullLogger })
 
-const algorandClient = Lazy(() => algokit.AlgorandClient.defaultLocalNet())
+const algorandClient = Lazy(() => {
+  const client = algokit.AlgorandClient.defaultLocalNet()
+  client.setDefaultValidityWindow(1000)
+  return client
+})
 
 export const INITIAL_BALANCE_MICRO_ALGOS = Number(20e6)
 

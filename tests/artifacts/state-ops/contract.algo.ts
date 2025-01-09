@@ -137,6 +137,15 @@ export class StateAcctParamsGetContract extends arc4.Contract {
     assert(funded === funded_index, 'expected funded by index to match')
     return value
   }
+
+  @arc4.abimethod()
+  public verify_acct_incentive_eligible(a: Account): boolean {
+    const [value, funded] = op.AcctParams.acctIncentiveEligible(a)
+    const [value_index, funded_index] = op.AcctParams.acctIncentiveEligible(get_1st_ref_index())
+    assert(value === value_index, 'expected value by index to match')
+    assert(funded === funded_index, 'expected funded by index to match')
+    return value
+  }
 }
 
 export class StateAssetHoldingContract extends arc4.Contract {

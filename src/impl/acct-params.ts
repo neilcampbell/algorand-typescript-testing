@@ -2,6 +2,7 @@ import { Account, Application, gtxn, internal, uint64 } from '@algorandfoundatio
 import { lazyContext } from '../context-helpers/internal-context'
 import { asMaybeUint64Cls } from '../util'
 import { getApp } from './app-params'
+import { Global } from './global'
 
 export const getAccount = (acct: Account | internal.primitives.StubUint64Compat): Account => {
   const acctId = asMaybeUint64Cls(acct)
@@ -84,14 +85,19 @@ export const AcctParams: internal.opTypes.AcctParamsType = {
     const acct = getAccount(a)
     return [acct.totalBoxBytes, acct.balance !== 0]
   },
-  // TODO: implement v11 methods
-  acctIncentiveEligible: function (_a: Account | uint64): readonly [boolean, boolean] {
-    throw new Error('Function not implemented.')
+  acctIncentiveEligible: function (a: Account | internal.primitives.StubUint64Compat): readonly [boolean, boolean] {
+    const acct = getAccount(a)
+    const accountData = lazyContext.ledger.accountDataMap.get(acct)
+    return [accountData?.incentiveEligible ?? false, acct.balance !== 0]
   },
-  acctLastProposed: function (_a: Account | uint64): readonly [uint64, boolean] {
-    throw new Error('Function not implemented.')
+  acctLastProposed: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+    const acct = getAccount(a)
+    const accountData = lazyContext.ledger.accountDataMap.get(acct)
+    return [accountData?.lastProposed ?? Global.round, acct.balance !== 0]
   },
-  acctLastHeartbeat: function (_a: Account | uint64): readonly [uint64, boolean] {
-    throw new Error('Function not implemented.')
+  acctLastHeartbeat: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
+    const acct = getAccount(a)
+    const accountData = lazyContext.ledger.accountDataMap.get(acct)
+    return [accountData?.lastHeartbeat ?? Global.round, acct.balance !== 0]
   },
 }

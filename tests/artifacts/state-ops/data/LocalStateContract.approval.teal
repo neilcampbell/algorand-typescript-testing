@@ -1,27 +1,348 @@
-#pragma version 10
+#pragma version 11
+#pragma typetrack false
 
-tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.approvalProgram:
+// @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
+main:
     intcblock 1 0
     bytecblock 0x151f7c75 "implicitKeyArc4UintN64" 0x0000000000000539 "implicitKeyArc4Str" 0x000548656c6c6f "implicitKeyArc4Byte" "implicitKeyArc4Bool" "implicitKeyArc4Address" "implicitKeyArc4UintN128" 0x00000010000000000000000000000000 "implicitKeyArc4DynamicBytes" 0x000d64796e616d6963206279746573 "explicit_key_arc4_uintn64" "explicit_key_arc4_str" "explicit_key_arc4_byte" "explicit_key_arc4_bool" "explicit_key_arc4_address" "explicit_key_arc4_uintn128" "explicit_key_arc4_dynamic_bytes"
-    callsub __puya_arc4_router__
-    return
-
-
-// tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.__puya_arc4_router__() -> uint64:
-__puya_arc4_router__:
-    // tests/artifacts/state-ops/contract.algo.ts:755
+    // tests/artifacts/state-ops/contract.algo.ts:764
     // export class LocalStateContract extends arc4.Contract {
-    proto 0 1
     txn NumAppArgs
-    bz __puya_arc4_router___bare_routing@19
+    bz main_bare_routing@20
     pushbytess 0x30c6d58a 0xeecdf0a0 0x6c6f17da 0xecf633b0 0x3e531223 0x3ed6799d 0x6fecdd80 0x676a87c2 0x1e0f8951 0x42e85fd7 0x6521d49b 0xe07c56cd 0xaa19d2b5 0xb922312d 0xfc0feed9 // method "opt_in()void", method "get_implicit_key_arc4_uintn64(account)uint64", method "get_implicit_key_arc4_str(account)string", method "get_implicit_key_arc4_byte(account)byte", method "get_implicit_key_arc4_bool(account)bool", method "get_implicit_key_arc4_address(account)address", method "get_implicit_key_arc4_uintn128(account)uint128", method "get_implicit_key_arc4_dynamic_bytes(account)byte[]", method "get_arc4_uintn64(account)uint64", method "get_arc4_str(account)string", method "get_arc4_byte(account)byte", method "get_arc4_bool(account)bool", method "get_arc4_address(account)address", method "get_arc4_uintn128(account)uint128", method "get_arc4_dynamic_bytes(account)byte[]"
     txna ApplicationArgs 0
-    match __puya_arc4_router___opt_in_route@2 __puya_arc4_router___get_implicit_key_arc4_uintn64_route@3 __puya_arc4_router___get_implicit_key_arc4_str_route@4 __puya_arc4_router___get_implicit_key_arc4_byte_route@5 __puya_arc4_router___get_implicit_key_arc4_bool_route@6 __puya_arc4_router___get_implicit_key_arc4_address_route@7 __puya_arc4_router___get_implicit_key_arc4_uintn128_route@8 __puya_arc4_router___get_implicit_key_arc4_dynamic_bytes_route@9 __puya_arc4_router___get_arc4_uintn64_route@10 __puya_arc4_router___get_arc4_str_route@11 __puya_arc4_router___get_arc4_byte_route@12 __puya_arc4_router___get_arc4_bool_route@13 __puya_arc4_router___get_arc4_address_route@14 __puya_arc4_router___get_arc4_uintn128_route@15 __puya_arc4_router___get_arc4_dynamic_bytes_route@16
-    intc_1 // 0
-    retsub
+    match main_opt_in_route@3 main_get_implicit_key_arc4_uintn64_route@4 main_get_implicit_key_arc4_str_route@5 main_get_implicit_key_arc4_byte_route@6 main_get_implicit_key_arc4_bool_route@7 main_get_implicit_key_arc4_address_route@8 main_get_implicit_key_arc4_uintn128_route@9 main_get_implicit_key_arc4_dynamic_bytes_route@10 main_get_arc4_uintn64_route@11 main_get_arc4_str_route@12 main_get_arc4_byte_route@13 main_get_arc4_bool_route@14 main_get_arc4_address_route@15 main_get_arc4_uintn128_route@16 main_get_arc4_dynamic_bytes_route@17
 
-__puya_arc4_router___opt_in_route@2:
-    // tests/artifacts/state-ops/contract.algo.ts:774
+main_after_if_else@24:
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    intc_1 // 0
+    return
+
+main_get_arc4_dynamic_bytes_route@17:
+    // tests/artifacts/state-ops/contract.algo.ts:869
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:869
+    // @arc4.abimethod()
+    callsub get_arc4_dynamic_bytes
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_arc4_uintn128_route@16:
+    // tests/artifacts/state-ops/contract.algo.ts:864
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:864
+    // @arc4.abimethod()
+    callsub get_arc4_uintn128
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_arc4_address_route@15:
+    // tests/artifacts/state-ops/contract.algo.ts:859
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:859
+    // @arc4.abimethod()
+    callsub get_arc4_address
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_arc4_bool_route@14:
+    // tests/artifacts/state-ops/contract.algo.ts:854
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:854
+    // @arc4.abimethod()
+    callsub get_arc4_bool
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_arc4_byte_route@13:
+    // tests/artifacts/state-ops/contract.algo.ts:849
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:849
+    // @arc4.abimethod()
+    callsub get_arc4_byte
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_arc4_str_route@12:
+    // tests/artifacts/state-ops/contract.algo.ts:844
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:844
+    // @arc4.abimethod()
+    callsub get_arc4_str
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_arc4_uintn64_route@11:
+    // tests/artifacts/state-ops/contract.algo.ts:839
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:839
+    // @arc4.abimethod()
+    callsub get_arc4_uintn64
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_implicit_key_arc4_dynamic_bytes_route@10:
+    // tests/artifacts/state-ops/contract.algo.ts:833
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:833
+    // @arc4.abimethod()
+    callsub get_implicit_key_arc4_dynamic_bytes
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_implicit_key_arc4_uintn128_route@9:
+    // tests/artifacts/state-ops/contract.algo.ts:828
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:828
+    // @arc4.abimethod()
+    callsub get_implicit_key_arc4_uintn128
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_implicit_key_arc4_address_route@8:
+    // tests/artifacts/state-ops/contract.algo.ts:823
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:823
+    // @arc4.abimethod()
+    callsub get_implicit_key_arc4_address
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_implicit_key_arc4_bool_route@7:
+    // tests/artifacts/state-ops/contract.algo.ts:818
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:818
+    // @arc4.abimethod()
+    callsub get_implicit_key_arc4_bool
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_implicit_key_arc4_byte_route@6:
+    // tests/artifacts/state-ops/contract.algo.ts:813
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:813
+    // @arc4.abimethod()
+    callsub get_implicit_key_arc4_byte
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_implicit_key_arc4_str_route@5:
+    // tests/artifacts/state-ops/contract.algo.ts:808
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:808
+    // @arc4.abimethod()
+    callsub get_implicit_key_arc4_str
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_get_implicit_key_arc4_uintn64_route@4:
+    // tests/artifacts/state-ops/contract.algo.ts:803
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:764
+    // export class LocalStateContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Accounts
+    // tests/artifacts/state-ops/contract.algo.ts:803
+    // @arc4.abimethod()
+    callsub get_implicit_key_arc4_uintn64
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_opt_in_route@3:
+    // tests/artifacts/state-ops/contract.algo.ts:783
     // @arc4.abimethod({ allowActions: ['OptIn'] })
     txn OnCompletion
     intc_0 // OptIn
@@ -31,491 +352,163 @@ __puya_arc4_router___opt_in_route@2:
     assert // can only call when not creating
     callsub opt_in
     intc_0 // 1
-    retsub
+    return
 
-__puya_arc4_router___get_implicit_key_arc4_uintn64_route@3:
-    // tests/artifacts/state-ops/contract.algo.ts:794
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:794
-    // @arc4.abimethod()
-    callsub get_implicit_key_arc4_uintn64
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_implicit_key_arc4_str_route@4:
-    // tests/artifacts/state-ops/contract.algo.ts:799
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:799
-    // @arc4.abimethod()
-    callsub get_implicit_key_arc4_str
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_implicit_key_arc4_byte_route@5:
-    // tests/artifacts/state-ops/contract.algo.ts:804
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:804
-    // @arc4.abimethod()
-    callsub get_implicit_key_arc4_byte
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_implicit_key_arc4_bool_route@6:
-    // tests/artifacts/state-ops/contract.algo.ts:809
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:809
-    // @arc4.abimethod()
-    callsub get_implicit_key_arc4_bool
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_implicit_key_arc4_address_route@7:
-    // tests/artifacts/state-ops/contract.algo.ts:814
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:814
-    // @arc4.abimethod()
-    callsub get_implicit_key_arc4_address
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_implicit_key_arc4_uintn128_route@8:
-    // tests/artifacts/state-ops/contract.algo.ts:819
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:819
-    // @arc4.abimethod()
-    callsub get_implicit_key_arc4_uintn128
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_implicit_key_arc4_dynamic_bytes_route@9:
-    // tests/artifacts/state-ops/contract.algo.ts:824
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:824
-    // @arc4.abimethod()
-    callsub get_implicit_key_arc4_dynamic_bytes
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_arc4_uintn64_route@10:
-    // tests/artifacts/state-ops/contract.algo.ts:830
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:830
-    // @arc4.abimethod()
-    callsub get_arc4_uintn64
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_arc4_str_route@11:
-    // tests/artifacts/state-ops/contract.algo.ts:835
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:835
-    // @arc4.abimethod()
-    callsub get_arc4_str
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_arc4_byte_route@12:
-    // tests/artifacts/state-ops/contract.algo.ts:840
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:840
-    // @arc4.abimethod()
-    callsub get_arc4_byte
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_arc4_bool_route@13:
-    // tests/artifacts/state-ops/contract.algo.ts:845
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:845
-    // @arc4.abimethod()
-    callsub get_arc4_bool
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_arc4_address_route@14:
-    // tests/artifacts/state-ops/contract.algo.ts:850
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:850
-    // @arc4.abimethod()
-    callsub get_arc4_address
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_arc4_uintn128_route@15:
-    // tests/artifacts/state-ops/contract.algo.ts:855
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:855
-    // @arc4.abimethod()
-    callsub get_arc4_uintn128
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___get_arc4_dynamic_bytes_route@16:
-    // tests/artifacts/state-ops/contract.algo.ts:860
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Accounts
-    // tests/artifacts/state-ops/contract.algo.ts:860
-    // @arc4.abimethod()
-    callsub get_arc4_dynamic_bytes
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___bare_routing@19:
-    // tests/artifacts/state-ops/contract.algo.ts:755
+main_bare_routing@20:
+    // tests/artifacts/state-ops/contract.algo.ts:764
     // export class LocalStateContract extends arc4.Contract {
     txn OnCompletion
-    bnz __puya_arc4_router___after_if_else@23
+    bnz main_after_if_else@24
     txn ApplicationID
     !
     assert // can only call when creating
     intc_0 // 1
-    retsub
-
-__puya_arc4_router___after_if_else@23:
-    // tests/artifacts/state-ops/contract.algo.ts:755
-    // export class LocalStateContract extends arc4.Contract {
-    intc_1 // 0
-    retsub
+    return
 
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.opt_in() -> void:
 opt_in:
-    // tests/artifacts/state-ops/contract.algo.ts:774-775
+    // tests/artifacts/state-ops/contract.algo.ts:783-784
     // @arc4.abimethod({ allowActions: ['OptIn'] })
     // opt_in(): void {
     proto 0 0
-    // tests/artifacts/state-ops/contract.algo.ts:776
+    // tests/artifacts/state-ops/contract.algo.ts:785
     // this.implicitKeyArc4UintN64(Global.creatorAddress).value = new UintN64(1337)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:757
+    // tests/artifacts/state-ops/contract.algo.ts:766
     // implicitKeyArc4UintN64 = LocalState<UintN64>()
     bytec_1 // "implicitKeyArc4UintN64"
-    // tests/artifacts/state-ops/contract.algo.ts:776
+    // tests/artifacts/state-ops/contract.algo.ts:785
     // this.implicitKeyArc4UintN64(Global.creatorAddress).value = new UintN64(1337)
     bytec_2 // 0x0000000000000539
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:777
+    // tests/artifacts/state-ops/contract.algo.ts:786
     // this.implicitKeyArc4Str(Global.creatorAddress).value = new Str('Hello')
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:758
+    // tests/artifacts/state-ops/contract.algo.ts:767
     // implicitKeyArc4Str = LocalState<Str>()
     bytec_3 // "implicitKeyArc4Str"
-    // tests/artifacts/state-ops/contract.algo.ts:777
+    // tests/artifacts/state-ops/contract.algo.ts:786
     // this.implicitKeyArc4Str(Global.creatorAddress).value = new Str('Hello')
     bytec 4 // 0x000548656c6c6f
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:778
+    // tests/artifacts/state-ops/contract.algo.ts:787
     // this.implicitKeyArc4Byte(Global.creatorAddress).value = new Byte(0)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:759
+    // tests/artifacts/state-ops/contract.algo.ts:768
     // implicitKeyArc4Byte = LocalState<Byte>()
     bytec 5 // "implicitKeyArc4Byte"
-    // tests/artifacts/state-ops/contract.algo.ts:778
+    // tests/artifacts/state-ops/contract.algo.ts:787
     // this.implicitKeyArc4Byte(Global.creatorAddress).value = new Byte(0)
     pushbytes 0x00
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:779
+    // tests/artifacts/state-ops/contract.algo.ts:788
     // this.implicitKeyArc4Bool(Global.creatorAddress).value = new Bool(true)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:760
+    // tests/artifacts/state-ops/contract.algo.ts:769
     // implicitKeyArc4Bool = LocalState<Bool>()
     bytec 6 // "implicitKeyArc4Bool"
-    // tests/artifacts/state-ops/contract.algo.ts:779
+    // tests/artifacts/state-ops/contract.algo.ts:788
     // this.implicitKeyArc4Bool(Global.creatorAddress).value = new Bool(true)
     pushbytes 0x80
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:780
+    // tests/artifacts/state-ops/contract.algo.ts:789
     // this.implicitKeyArc4Address(Global.creatorAddress).value = new Address(Global.creatorAddress)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:761
+    // tests/artifacts/state-ops/contract.algo.ts:770
     // implicitKeyArc4Address = LocalState<Address>()
     bytec 7 // "implicitKeyArc4Address"
-    // tests/artifacts/state-ops/contract.algo.ts:780
+    // tests/artifacts/state-ops/contract.algo.ts:789
     // this.implicitKeyArc4Address(Global.creatorAddress).value = new Address(Global.creatorAddress)
     global CreatorAddress
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:781
+    // tests/artifacts/state-ops/contract.algo.ts:790
     // this.implicitKeyArc4UintN128(Global.creatorAddress).value = new UintN128(2n ** 100n)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:762
+    // tests/artifacts/state-ops/contract.algo.ts:771
     // implicitKeyArc4UintN128 = LocalState<UintN128>()
     bytec 8 // "implicitKeyArc4UintN128"
-    // tests/artifacts/state-ops/contract.algo.ts:781
+    // tests/artifacts/state-ops/contract.algo.ts:790
     // this.implicitKeyArc4UintN128(Global.creatorAddress).value = new UintN128(2n ** 100n)
     bytec 9 // 0x00000010000000000000000000000000
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:782
+    // tests/artifacts/state-ops/contract.algo.ts:791
     // this.implicitKeyArc4DynamicBytes(Global.creatorAddress).value = new DynamicBytes('dynamic bytes')
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:763
+    // tests/artifacts/state-ops/contract.algo.ts:772
     // implicitKeyArc4DynamicBytes = LocalState<DynamicBytes>()
     bytec 10 // "implicitKeyArc4DynamicBytes"
-    // tests/artifacts/state-ops/contract.algo.ts:782
+    // tests/artifacts/state-ops/contract.algo.ts:791
     // this.implicitKeyArc4DynamicBytes(Global.creatorAddress).value = new DynamicBytes('dynamic bytes')
     bytec 11 // 0x000d64796e616d6963206279746573
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:784
+    // tests/artifacts/state-ops/contract.algo.ts:793
     // this.arc4UintN64(Global.creatorAddress).value = new UintN64(1337)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:766
+    // tests/artifacts/state-ops/contract.algo.ts:775
     // arc4UintN64 = LocalState<UintN64>({ key: 'explicit_key_arc4_uintn64' })
     bytec 12 // "explicit_key_arc4_uintn64"
-    // tests/artifacts/state-ops/contract.algo.ts:784
+    // tests/artifacts/state-ops/contract.algo.ts:793
     // this.arc4UintN64(Global.creatorAddress).value = new UintN64(1337)
     bytec_2 // 0x0000000000000539
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:785
+    // tests/artifacts/state-ops/contract.algo.ts:794
     // this.arc4Str(Global.creatorAddress).value = new Str('Hello')
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:767
+    // tests/artifacts/state-ops/contract.algo.ts:776
     // arc4Str = LocalState<Str>({ key: 'explicit_key_arc4_str' })
     bytec 13 // "explicit_key_arc4_str"
-    // tests/artifacts/state-ops/contract.algo.ts:785
+    // tests/artifacts/state-ops/contract.algo.ts:794
     // this.arc4Str(Global.creatorAddress).value = new Str('Hello')
     bytec 4 // 0x000548656c6c6f
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:786
+    // tests/artifacts/state-ops/contract.algo.ts:795
     // this.arc4Byte(Global.creatorAddress).value = new Byte(0)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:768
+    // tests/artifacts/state-ops/contract.algo.ts:777
     // arc4Byte = LocalState<Byte>({ key: 'explicit_key_arc4_byte' })
     bytec 14 // "explicit_key_arc4_byte"
-    // tests/artifacts/state-ops/contract.algo.ts:786
+    // tests/artifacts/state-ops/contract.algo.ts:795
     // this.arc4Byte(Global.creatorAddress).value = new Byte(0)
     pushbytes 0x00
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:787
+    // tests/artifacts/state-ops/contract.algo.ts:796
     // this.arc4Bool(Global.creatorAddress).value = new Bool(true)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:769
+    // tests/artifacts/state-ops/contract.algo.ts:778
     // arc4Bool = LocalState<Bool>({ key: 'explicit_key_arc4_bool' })
     bytec 15 // "explicit_key_arc4_bool"
-    // tests/artifacts/state-ops/contract.algo.ts:787
+    // tests/artifacts/state-ops/contract.algo.ts:796
     // this.arc4Bool(Global.creatorAddress).value = new Bool(true)
     pushbytes 0x80
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:788
+    // tests/artifacts/state-ops/contract.algo.ts:797
     // this.arc4Address(Global.creatorAddress).value = new Address(Global.creatorAddress)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:770
+    // tests/artifacts/state-ops/contract.algo.ts:779
     // arc4Address = LocalState<Address>({ key: 'explicit_key_arc4_address' })
     bytec 16 // "explicit_key_arc4_address"
-    // tests/artifacts/state-ops/contract.algo.ts:788
+    // tests/artifacts/state-ops/contract.algo.ts:797
     // this.arc4Address(Global.creatorAddress).value = new Address(Global.creatorAddress)
     global CreatorAddress
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:789
+    // tests/artifacts/state-ops/contract.algo.ts:798
     // this.arc4UintN128(Global.creatorAddress).value = new UintN128(2n ** 100n)
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:771
+    // tests/artifacts/state-ops/contract.algo.ts:780
     // arc4UintN128 = LocalState<UintN128>({ key: 'explicit_key_arc4_uintn128' })
     bytec 17 // "explicit_key_arc4_uintn128"
-    // tests/artifacts/state-ops/contract.algo.ts:789
+    // tests/artifacts/state-ops/contract.algo.ts:798
     // this.arc4UintN128(Global.creatorAddress).value = new UintN128(2n ** 100n)
     bytec 9 // 0x00000010000000000000000000000000
     app_local_put
-    // tests/artifacts/state-ops/contract.algo.ts:790
+    // tests/artifacts/state-ops/contract.algo.ts:799
     // this.arc4DynamicBytes(Global.creatorAddress).value = new DynamicBytes('dynamic bytes')
     global CreatorAddress
-    // tests/artifacts/state-ops/contract.algo.ts:772
+    // tests/artifacts/state-ops/contract.algo.ts:781
     // arc4DynamicBytes = LocalState<DynamicBytes>({ key: 'explicit_key_arc4_dynamic_bytes' })
     bytec 18 // "explicit_key_arc4_dynamic_bytes"
-    // tests/artifacts/state-ops/contract.algo.ts:790
+    // tests/artifacts/state-ops/contract.algo.ts:799
     // this.arc4DynamicBytes(Global.creatorAddress).value = new DynamicBytes('dynamic bytes')
     bytec 11 // 0x000d64796e616d6963206279746573
     app_local_put
@@ -524,18 +517,18 @@ opt_in:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_implicit_key_arc4_uintn64(a: bytes) -> bytes:
 get_implicit_key_arc4_uintn64:
-    // tests/artifacts/state-ops/contract.algo.ts:794-795
+    // tests/artifacts/state-ops/contract.algo.ts:803-804
     // @arc4.abimethod()
     // get_implicit_key_arc4_uintn64(a: Account): UintN64 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:796
+    // tests/artifacts/state-ops/contract.algo.ts:805
     // return this.implicitKeyArc4UintN64(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:757
+    // tests/artifacts/state-ops/contract.algo.ts:766
     // implicitKeyArc4UintN64 = LocalState<UintN64>()
     bytec_1 // "implicitKeyArc4UintN64"
-    // tests/artifacts/state-ops/contract.algo.ts:796
+    // tests/artifacts/state-ops/contract.algo.ts:805
     // return this.implicitKeyArc4UintN64(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -544,18 +537,18 @@ get_implicit_key_arc4_uintn64:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_implicit_key_arc4_str(a: bytes) -> bytes:
 get_implicit_key_arc4_str:
-    // tests/artifacts/state-ops/contract.algo.ts:799-800
+    // tests/artifacts/state-ops/contract.algo.ts:808-809
     // @arc4.abimethod()
     // get_implicit_key_arc4_str(a: Account): Str {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:801
+    // tests/artifacts/state-ops/contract.algo.ts:810
     // return this.implicitKeyArc4Str(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:758
+    // tests/artifacts/state-ops/contract.algo.ts:767
     // implicitKeyArc4Str = LocalState<Str>()
     bytec_3 // "implicitKeyArc4Str"
-    // tests/artifacts/state-ops/contract.algo.ts:801
+    // tests/artifacts/state-ops/contract.algo.ts:810
     // return this.implicitKeyArc4Str(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -564,18 +557,18 @@ get_implicit_key_arc4_str:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_implicit_key_arc4_byte(a: bytes) -> bytes:
 get_implicit_key_arc4_byte:
-    // tests/artifacts/state-ops/contract.algo.ts:804-805
+    // tests/artifacts/state-ops/contract.algo.ts:813-814
     // @arc4.abimethod()
     // get_implicit_key_arc4_byte(a: Account): Byte {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:806
+    // tests/artifacts/state-ops/contract.algo.ts:815
     // return this.implicitKeyArc4Byte(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:759
+    // tests/artifacts/state-ops/contract.algo.ts:768
     // implicitKeyArc4Byte = LocalState<Byte>()
     bytec 5 // "implicitKeyArc4Byte"
-    // tests/artifacts/state-ops/contract.algo.ts:806
+    // tests/artifacts/state-ops/contract.algo.ts:815
     // return this.implicitKeyArc4Byte(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -584,18 +577,18 @@ get_implicit_key_arc4_byte:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_implicit_key_arc4_bool(a: bytes) -> bytes:
 get_implicit_key_arc4_bool:
-    // tests/artifacts/state-ops/contract.algo.ts:809-810
+    // tests/artifacts/state-ops/contract.algo.ts:818-819
     // @arc4.abimethod()
     // get_implicit_key_arc4_bool(a: Account): Bool {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:811
+    // tests/artifacts/state-ops/contract.algo.ts:820
     // return this.implicitKeyArc4Bool(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:760
+    // tests/artifacts/state-ops/contract.algo.ts:769
     // implicitKeyArc4Bool = LocalState<Bool>()
     bytec 6 // "implicitKeyArc4Bool"
-    // tests/artifacts/state-ops/contract.algo.ts:811
+    // tests/artifacts/state-ops/contract.algo.ts:820
     // return this.implicitKeyArc4Bool(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -604,18 +597,18 @@ get_implicit_key_arc4_bool:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_implicit_key_arc4_address(a: bytes) -> bytes:
 get_implicit_key_arc4_address:
-    // tests/artifacts/state-ops/contract.algo.ts:814-815
+    // tests/artifacts/state-ops/contract.algo.ts:823-824
     // @arc4.abimethod()
     // get_implicit_key_arc4_address(a: Account): Address {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:816
+    // tests/artifacts/state-ops/contract.algo.ts:825
     // return this.implicitKeyArc4Address(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:761
+    // tests/artifacts/state-ops/contract.algo.ts:770
     // implicitKeyArc4Address = LocalState<Address>()
     bytec 7 // "implicitKeyArc4Address"
-    // tests/artifacts/state-ops/contract.algo.ts:816
+    // tests/artifacts/state-ops/contract.algo.ts:825
     // return this.implicitKeyArc4Address(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -624,18 +617,18 @@ get_implicit_key_arc4_address:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_implicit_key_arc4_uintn128(a: bytes) -> bytes:
 get_implicit_key_arc4_uintn128:
-    // tests/artifacts/state-ops/contract.algo.ts:819-820
+    // tests/artifacts/state-ops/contract.algo.ts:828-829
     // @arc4.abimethod()
     // get_implicit_key_arc4_uintn128(a: Account): UintN128 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:821
+    // tests/artifacts/state-ops/contract.algo.ts:830
     // return this.implicitKeyArc4UintN128(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:762
+    // tests/artifacts/state-ops/contract.algo.ts:771
     // implicitKeyArc4UintN128 = LocalState<UintN128>()
     bytec 8 // "implicitKeyArc4UintN128"
-    // tests/artifacts/state-ops/contract.algo.ts:821
+    // tests/artifacts/state-ops/contract.algo.ts:830
     // return this.implicitKeyArc4UintN128(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -644,18 +637,18 @@ get_implicit_key_arc4_uintn128:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_implicit_key_arc4_dynamic_bytes(a: bytes) -> bytes:
 get_implicit_key_arc4_dynamic_bytes:
-    // tests/artifacts/state-ops/contract.algo.ts:824-825
+    // tests/artifacts/state-ops/contract.algo.ts:833-834
     // @arc4.abimethod()
     // get_implicit_key_arc4_dynamic_bytes(a: Account): DynamicBytes {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:826
+    // tests/artifacts/state-ops/contract.algo.ts:835
     // return this.implicitKeyArc4DynamicBytes(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:763
+    // tests/artifacts/state-ops/contract.algo.ts:772
     // implicitKeyArc4DynamicBytes = LocalState<DynamicBytes>()
     bytec 10 // "implicitKeyArc4DynamicBytes"
-    // tests/artifacts/state-ops/contract.algo.ts:826
+    // tests/artifacts/state-ops/contract.algo.ts:835
     // return this.implicitKeyArc4DynamicBytes(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -664,18 +657,18 @@ get_implicit_key_arc4_dynamic_bytes:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_arc4_uintn64(a: bytes) -> bytes:
 get_arc4_uintn64:
-    // tests/artifacts/state-ops/contract.algo.ts:830-831
+    // tests/artifacts/state-ops/contract.algo.ts:839-840
     // @arc4.abimethod()
     // get_arc4_uintn64(a: Account): arc4.UintN64 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:832
+    // tests/artifacts/state-ops/contract.algo.ts:841
     // return this.arc4UintN64(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:766
+    // tests/artifacts/state-ops/contract.algo.ts:775
     // arc4UintN64 = LocalState<UintN64>({ key: 'explicit_key_arc4_uintn64' })
     bytec 12 // "explicit_key_arc4_uintn64"
-    // tests/artifacts/state-ops/contract.algo.ts:832
+    // tests/artifacts/state-ops/contract.algo.ts:841
     // return this.arc4UintN64(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -684,18 +677,18 @@ get_arc4_uintn64:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_arc4_str(a: bytes) -> bytes:
 get_arc4_str:
-    // tests/artifacts/state-ops/contract.algo.ts:835-836
+    // tests/artifacts/state-ops/contract.algo.ts:844-845
     // @arc4.abimethod()
     // get_arc4_str(a: Account): Str {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:837
+    // tests/artifacts/state-ops/contract.algo.ts:846
     // return this.arc4Str(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:767
+    // tests/artifacts/state-ops/contract.algo.ts:776
     // arc4Str = LocalState<Str>({ key: 'explicit_key_arc4_str' })
     bytec 13 // "explicit_key_arc4_str"
-    // tests/artifacts/state-ops/contract.algo.ts:837
+    // tests/artifacts/state-ops/contract.algo.ts:846
     // return this.arc4Str(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -704,18 +697,18 @@ get_arc4_str:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_arc4_byte(a: bytes) -> bytes:
 get_arc4_byte:
-    // tests/artifacts/state-ops/contract.algo.ts:840-841
+    // tests/artifacts/state-ops/contract.algo.ts:849-850
     // @arc4.abimethod()
     // get_arc4_byte(a: Account): Byte {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:842
+    // tests/artifacts/state-ops/contract.algo.ts:851
     // return this.arc4Byte(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:768
+    // tests/artifacts/state-ops/contract.algo.ts:777
     // arc4Byte = LocalState<Byte>({ key: 'explicit_key_arc4_byte' })
     bytec 14 // "explicit_key_arc4_byte"
-    // tests/artifacts/state-ops/contract.algo.ts:842
+    // tests/artifacts/state-ops/contract.algo.ts:851
     // return this.arc4Byte(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -724,18 +717,18 @@ get_arc4_byte:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_arc4_bool(a: bytes) -> bytes:
 get_arc4_bool:
-    // tests/artifacts/state-ops/contract.algo.ts:845-846
+    // tests/artifacts/state-ops/contract.algo.ts:854-855
     // @arc4.abimethod()
     // get_arc4_bool(a: Account): Bool {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:847
+    // tests/artifacts/state-ops/contract.algo.ts:856
     // return this.arc4Bool(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:769
+    // tests/artifacts/state-ops/contract.algo.ts:778
     // arc4Bool = LocalState<Bool>({ key: 'explicit_key_arc4_bool' })
     bytec 15 // "explicit_key_arc4_bool"
-    // tests/artifacts/state-ops/contract.algo.ts:847
+    // tests/artifacts/state-ops/contract.algo.ts:856
     // return this.arc4Bool(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -744,18 +737,18 @@ get_arc4_bool:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_arc4_address(a: bytes) -> bytes:
 get_arc4_address:
-    // tests/artifacts/state-ops/contract.algo.ts:850-851
+    // tests/artifacts/state-ops/contract.algo.ts:859-860
     // @arc4.abimethod()
     // get_arc4_address(a: Account): Address {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:852
+    // tests/artifacts/state-ops/contract.algo.ts:861
     // return this.arc4Address(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:770
+    // tests/artifacts/state-ops/contract.algo.ts:779
     // arc4Address = LocalState<Address>({ key: 'explicit_key_arc4_address' })
     bytec 16 // "explicit_key_arc4_address"
-    // tests/artifacts/state-ops/contract.algo.ts:852
+    // tests/artifacts/state-ops/contract.algo.ts:861
     // return this.arc4Address(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -764,18 +757,18 @@ get_arc4_address:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_arc4_uintn128(a: bytes) -> bytes:
 get_arc4_uintn128:
-    // tests/artifacts/state-ops/contract.algo.ts:855-856
+    // tests/artifacts/state-ops/contract.algo.ts:864-865
     // @arc4.abimethod()
     // get_arc4_uintn128(a: Account): UintN128 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:857
+    // tests/artifacts/state-ops/contract.algo.ts:866
     // return this.arc4UintN128(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:771
+    // tests/artifacts/state-ops/contract.algo.ts:780
     // arc4UintN128 = LocalState<UintN128>({ key: 'explicit_key_arc4_uintn128' })
     bytec 17 // "explicit_key_arc4_uintn128"
-    // tests/artifacts/state-ops/contract.algo.ts:857
+    // tests/artifacts/state-ops/contract.algo.ts:866
     // return this.arc4UintN128(a).value
     app_local_get_ex
     assert // check LocalState exists
@@ -784,18 +777,18 @@ get_arc4_uintn128:
 
 // tests/artifacts/state-ops/contract.algo.ts::LocalStateContract.get_arc4_dynamic_bytes(a: bytes) -> bytes:
 get_arc4_dynamic_bytes:
-    // tests/artifacts/state-ops/contract.algo.ts:860-861
+    // tests/artifacts/state-ops/contract.algo.ts:869-870
     // @arc4.abimethod()
     // get_arc4_dynamic_bytes(a: Account): DynamicBytes {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:862
+    // tests/artifacts/state-ops/contract.algo.ts:871
     // return this.arc4DynamicBytes(a).value
     frame_dig -1
     intc_1 // 0
-    // tests/artifacts/state-ops/contract.algo.ts:772
+    // tests/artifacts/state-ops/contract.algo.ts:781
     // arc4DynamicBytes = LocalState<DynamicBytes>({ key: 'explicit_key_arc4_dynamic_bytes' })
     bytec 18 // "explicit_key_arc4_dynamic_bytes"
-    // tests/artifacts/state-ops/contract.algo.ts:862
+    // tests/artifacts/state-ops/contract.algo.ts:871
     // return this.arc4DynamicBytes(a).value
     app_local_get_ex
     assert // check LocalState exists
