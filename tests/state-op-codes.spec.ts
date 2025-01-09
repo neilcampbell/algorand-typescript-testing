@@ -272,6 +272,18 @@ describe('State op codes', async () => {
       })
       expect([...asUint8Array(firstGroupId)]).not.toEqual([...asUint8Array(secondGroupId)])
       expect(firstTimestamp.valueOf()).not.toEqual(secondTimestamp.valueOf())
+
+      ctx.ledger.patchGlobalData({
+        payoutsEnabled: true,
+        payoutsGoOnlineFee: 12,
+        payoutsPercent: 2,
+        payoutsMinBalance: 42,
+      })
+
+      expect(op.Global.payoutsEnabled).toEqual(true)
+      expect(op.Global.payoutsGoOnlineFee).toEqual(12)
+      expect(op.Global.payoutsPercent).toEqual(2)
+      expect(op.Global.payoutsMinBalance).toEqual(42)
     })
   })
 

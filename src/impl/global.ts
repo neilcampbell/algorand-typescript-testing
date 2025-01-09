@@ -25,6 +25,10 @@ export class GlobalData {
   assetOptInMinBalance: uint64
   genesisHash: bytes
   opcodeBudget?: uint64
+  payoutsEnabled: boolean
+  payoutsGoOnlineFee: uint64
+  payoutsPercent: uint64
+  payoutsMinBalance: uint64
 
   constructor() {
     this.minTxnFee = Uint64(MIN_TXN_FEE)
@@ -35,6 +39,10 @@ export class GlobalData {
     this.assetCreateMinBalance = Uint64(DEFAULT_ASSET_CREATE_MIN_BALANCE)
     this.assetOptInMinBalance = Uint64(DEFAULT_ASSET_OPT_IN_MIN_BALANCE)
     this.genesisHash = DEFAULT_GLOBAL_GENESIS_HASH
+    this.payoutsEnabled = false
+    this.payoutsGoOnlineFee = Uint64(0)
+    this.payoutsPercent = Uint64(0)
+    this.payoutsMinBalance = Uint64(0)
   }
 }
 const getGlobalData = (): GlobalData => {
@@ -184,10 +192,44 @@ export const Global: internal.opTypes.GlobalType = {
   get genesisHash(): bytes {
     return getGlobalData().genesisHash
   },
-  payoutsEnabled: false,
-  // TODO: implement v11 fields
-  payoutsGoOnlineFee: 0,
-  payoutsPercent: 0,
-  payoutsMinBalance: 0,
-  payoutsMaxBalance: 0,
+
+  /**
+   * Whether block proposal payouts are enabled.
+   * Min AVM version: 11
+   */
+  get payoutsEnabled(): boolean {
+    return getGlobalData().payoutsEnabled
+  },
+
+  /**
+   * The fee required in a keyreg transaction to make an account incentive eligible.
+   * Min AVM version: 11
+   */
+  get payoutsGoOnlineFee(): uint64 {
+    return getGlobalData().payoutsGoOnlineFee
+  },
+
+  /**
+   * The percentage of transaction fees in a block that can be paid to the block proposer.
+   * Min AVM version: 11
+   */
+  get payoutsPercent(): uint64 {
+    return getGlobalData().payoutsPercent
+  },
+
+  /**
+   * The minimum algo balance an account must have in the agreement round to receive block payouts in the proposal round.
+   * Min AVM version: 11
+   */
+  get payoutsMinBalance(): uint64 {
+    return getGlobalData().payoutsMinBalance
+  },
+
+  /**
+   * The maximum algo balance an account can have in the agreement round to receive block payouts in the proposal round.
+   * Min AVM version: 11
+   */
+  get payoutsMaxBalance(): uint64 {
+    return getGlobalData().payoutsMinBalance
+  },
 }
