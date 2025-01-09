@@ -2,6 +2,7 @@ import { Account, BaseContract, internal } from '@algorandfoundation/algorand-ty
 import { AccountData } from '../impl/account'
 import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'
+import { VoterData } from '../impl/voter-params'
 import { TransactionGroup } from '../subcontexts/transaction-context'
 import { TestExecutionContext } from '../test-execution-context'
 
@@ -66,6 +67,14 @@ class InternalContext {
     const data = this.ledger.applicationDataMap.get(uint64Id)
     if (!data) {
       throw internal.errors.internalError('Unknown application, check correct testing context is active')
+    }
+    return data
+  }
+
+  getVoterData(account: Account): VoterData {
+    const data = this.ledger.voterDataMap.get(account)
+    if (!data) {
+      throw internal.errors.internalError('Unknown voter, check correct testing context is active')
     }
     return data
   }

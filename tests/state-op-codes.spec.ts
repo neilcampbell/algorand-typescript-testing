@@ -287,6 +287,17 @@ describe('State op codes', async () => {
     })
   })
 
+  describe('VoterParams', async () => {
+    it('should return the configured balance and incentive eligibility', async () => {
+      const mockAccount = ctx.any.account()
+      ctx.ledger.patchVoterData(mockAccount, { balance: 100, incentiveEligible: true })
+      const balance = op.VoterParams.voterBalance(mockAccount)
+      const incentiveEligible = op.VoterParams.voterIncentiveEligible(mockAccount)
+      expect(balance).toEqual([100, true])
+      expect(incentiveEligible).toEqual([true, true])
+    })
+  })
+
   describe('Global', async () => {
     it('should return the correct global field value', async () => {
       const creator = ctx.any.account()

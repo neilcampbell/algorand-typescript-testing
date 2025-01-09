@@ -7,6 +7,7 @@ import { AssetData } from '../impl/asset'
 import { BlockData } from '../impl/block'
 import { GlobalData } from '../impl/global'
 import { GlobalStateCls } from '../impl/state'
+import { VoterData } from '../impl/voter-params'
 import { asBigInt, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
 
 export class LedgerContext {
@@ -16,6 +17,7 @@ export class LedgerContext {
   appIdContractMap = new Uint64Map<BaseContract>()
   accountDataMap = new AccountMap<AccountData>()
   assetDataMap = new Uint64Map<AssetData>()
+  voterDataMap = new AccountMap<VoterData>()
   blocks = new Uint64Map<BlockData>()
   globalData = new GlobalData()
 
@@ -117,6 +119,14 @@ export class LedgerContext {
         ...accountData?.account,
         ...data.account,
       },
+    })
+  }
+
+  patchVoterData(account: Account, data: Partial<VoterData>) {
+    const voterData = this.voterDataMap.get(account) ?? new VoterData()
+    this.voterDataMap.set(account, {
+      ...voterData,
+      ...data,
     })
   }
 
