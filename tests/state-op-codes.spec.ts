@@ -12,7 +12,7 @@ import { AccountCls } from '../src/impl/account'
 import { InnerTxn } from '../src/impl/itxn'
 import { ApplicationTransaction } from '../src/impl/transactions'
 import { DeliberateAny } from '../src/typescript-helpers'
-import { asBigInt, asNumber, asUint64Cls, asUint8Array, encodeAddress, getRandomBytes } from '../src/util'
+import { asBigInt, asBigUintCls, asNumber, asUint64Cls, asUint8Array, encodeAddress, getRandomBytes } from '../src/util'
 import { AppExpectingEffects } from './artifacts/created-app-asset/contract.algo'
 import {
   ItxnDemoContract,
@@ -491,14 +491,40 @@ describe('State op codes', async () => {
   describe('Block', async () => {
     it('should return the correct field value of the block', async () => {
       const index = 42
-      const seed = 123
+      const seed = asBigUintCls(123n).toBytes().asAlgoTs()
       const timestamp = 1234567890
-      ctx.ledger.setBlock(index, seed, timestamp)
-      const seedResult = op.btoi(Block.blkSeed(Uint64(index)))
-      const timestampResult = Block.blkTimestamp(Uint64(index))
+      const proposer = ctx.any.account()
+      const feesCollected = 1000
+      const bonus = 12
+      const branch = getRandomBytes(32).asAlgoTs()
+      const feeSink = ctx.any.account()
+      const protocol = getRandomBytes(32).asAlgoTs()
+      const txnCounter = 32
+      const proposerPayout = 42
 
-      expect(seedResult).toEqual(Uint64(seed))
-      expect(timestampResult).toEqual(Uint64(timestamp))
+      ctx.ledger.patchBlockData(index, {
+        seed,
+        timestamp,
+        proposer,
+        feesCollected,
+        bonus,
+        branch,
+        feeSink,
+        protocol,
+        txnCounter,
+        proposerPayout,
+      })
+
+      expect(Block.blkSeed(index)).toEqual(seed)
+      expect(Block.blkTimestamp(index)).toEqual(timestamp)
+      expect(Block.blkProposer(index)).toEqual(proposer)
+      expect(Block.blkFeesCollected(index)).toEqual(feesCollected)
+      expect(Block.blkBonus(index)).toEqual(bonus)
+      expect(Block.blkBranch(index)).toEqual(branch)
+      expect(Block.blkFeeSink(index)).toEqual(feeSink)
+      expect(Block.blkProtocol(index)).toEqual(protocol)
+      expect(Block.blkTxnCounter(index)).toEqual(txnCounter)
+      expect(Block.blkProposerPayout(index)).toEqual(proposerPayout)
     })
     it('should throw error if the block is not set', async () => {
       const index = 42

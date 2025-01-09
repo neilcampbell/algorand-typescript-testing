@@ -4,14 +4,10 @@ import { MAX_UINT64 } from '../constants'
 import { AccountData, AssetHolding } from '../impl/account'
 import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'
+import { BlockData } from '../impl/block'
 import { GlobalData } from '../impl/global'
 import { GlobalStateCls } from '../impl/state'
 import { asBigInt, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
-
-interface BlockData {
-  seed: bigint
-  timestamp: bigint
-}
 
 export class LedgerContext {
   appIdIter = iterBigInt(1001n, MAX_UINT64)
@@ -124,19 +120,16 @@ export class LedgerContext {
     })
   }
 
-  setBlock(
-    index: internal.primitives.StubUint64Compat,
-    seed: internal.primitives.StubUint64Compat,
-    timestamp: internal.primitives.StubUint64Compat,
-  ): void {
-    const i = asBigInt(index)
-    const s = asBigInt(seed)
-    const t = asBigInt(timestamp)
-
-    this.blocks.set(i, { seed: s, timestamp: t })
+  patchBlockData(index: internal.primitives.StubUint64Compat, data: Partial<BlockData>): void {
+    const i = asUint64(index)
+    const blockData = this.blocks.get(i) ?? new BlockData()
+    this.blocks.set(i, {
+      ...blockData,
+      ...data,
+    })
   }
 
-  getBlockContent(index: internal.primitives.StubUint64Compat): BlockData {
+  getBlockData(index: internal.primitives.StubUint64Compat): BlockData {
     const i = asBigInt(index)
     if (this.blocks.has(i)) {
       return this.blocks.get(i)!
