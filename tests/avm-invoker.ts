@@ -22,9 +22,23 @@ const algorandClient = Lazy(() => {
 
 export const INITIAL_BALANCE_MICRO_ALGOS = Number(20e6)
 
+export const getAlgorandAppClientV11 = async (appSpec: AppSpec) => {
+  if ((await getAlgodMajorVersion()) < 4) {
+    return undefined
+  }
+  const [appClient, _] = await getAlgorandAppClientWithApp(appSpec)
+  return appClient
+}
+
 export const getAlgorandAppClient = async (appSpec: AppSpec) => {
   const [appClient, _] = await getAlgorandAppClientWithApp(appSpec)
   return appClient
+}
+
+export const getAlgodMajorVersion = async () => {
+  const algorand = algorandClient()
+  const version = await algorand.client.algod.versionsCheck().do()
+  return version.build.major
 }
 
 export const getAlgorandAppClientWithApp = async (appSpec: AppSpec) => {
