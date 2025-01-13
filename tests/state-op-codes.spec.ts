@@ -6,6 +6,7 @@ import { DynamicBytes, UintN64 } from '@algorandfoundation/algorand-typescript/a
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
 import { ABI_RETURN_VALUE_LOG_PREFIX, MIN_TXN_FEE, OnApplicationComplete, ZERO_ADDRESS } from '../src/constants'
+import { lazyContext } from '../src/context-helpers/internal-context'
 import { testInvariant } from '../src/errors'
 import { Block, gloadBytes, gloadUint64 } from '../src/impl'
 import { AccountCls } from '../src/impl/account'
@@ -295,6 +296,14 @@ describe('State op codes', async () => {
       const incentiveEligible = op.VoterParams.voterIncentiveEligible(mockAccount)
       expect(balance).toEqual([100, true])
       expect(incentiveEligible).toEqual([true, true])
+    })
+  })
+
+  describe('onlineStake', async () => {
+    it('should return the configured online stake', async () => {
+      lazyContext.ledger.onlineStake = Uint64(42)
+      const result = op.onlineStake()
+      expect(result).toEqual(42)
     })
   })
 

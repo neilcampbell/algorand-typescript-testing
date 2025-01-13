@@ -20,6 +20,7 @@ export class LedgerContext {
   voterDataMap = new AccountMap<VoterData>()
   blocks = new Uint64Map<BlockData>()
   globalData = new GlobalData()
+  onlineStake = 0
 
   /* @internal */
   addAppIdContractMap(appId: internal.primitives.StubUint64Compat, contract: BaseContract): void {
