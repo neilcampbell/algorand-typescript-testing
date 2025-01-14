@@ -1,7 +1,7 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Bytes, Ec, Ecdsa, internal, uint64, VrfVerify } from '@algorandfoundation/algorand-typescript'
-import { ec } from 'elliptic'
+import elliptic from 'elliptic'
 import { keccak256 as js_keccak256 } from 'js-sha3'
 import { sha512_256 as js_sha512_256 } from 'js-sha512'
 import nacl from 'tweetnacl'
@@ -234,7 +234,7 @@ describe('crypto op codes', async () => {
     it('should be able to decompress k1 public key', async () => {
       const v = Ecdsa.Secp256k1
       const testData = generateEcdsaTestData(v)
-      const ecdsa = new ec(curveMap[v])
+      const ecdsa = new elliptic.ec(curveMap[v])
       const keyPair = ecdsa.keyFromPublic(testData.pubkeyX.concat(testData.pubkeyY).asUint8Array())
       const pubKeyArray = new Uint8Array(keyPair.getPublic(true, 'array'))
       const avmResult = await getAvmResult<uint64[][]>(
@@ -298,7 +298,7 @@ describe('crypto op codes', async () => {
 })
 
 const generateEcdsaTestData = (v: Ecdsa) => {
-  const ecdsa = new ec(curveMap[v])
+  const ecdsa = new elliptic.ec(curveMap[v])
   const keyPair = ecdsa.genKeyPair()
   const pk = keyPair.getPublic('array')
   const data = internal.primitives.BytesCls.fromCompat('test data for ecdsa')
