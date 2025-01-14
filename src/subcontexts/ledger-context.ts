@@ -4,14 +4,11 @@ import { MAX_UINT64 } from '../constants'
 import { AccountData, AssetHolding } from '../impl/account'
 import { ApplicationData } from '../impl/application'
 import { AssetData } from '../impl/asset'
+import { BlockData } from '../impl/block'
 import { GlobalData } from '../impl/global'
 import { GlobalStateCls } from '../impl/state'
+import { VoterData } from '../impl/voter-params'
 import { asBigInt, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
-
-interface BlockData {
-  seed: bigint
-  timestamp: bigint
-}
 
 export class LedgerContext {
   appIdIter = iterBigInt(1001n, MAX_UINT64)
@@ -20,8 +17,10 @@ export class LedgerContext {
   appIdContractMap = new Uint64Map<BaseContract>()
   accountDataMap = new AccountMap<AccountData>()
   assetDataMap = new Uint64Map<AssetData>()
+  voterDataMap = new AccountMap<VoterData>()
   blocks = new Uint64Map<BlockData>()
   globalData = new GlobalData()
+  onlineStake = 0
 
   /* @internal */
   addAppIdContractMap(appId: internal.primitives.StubUint64Compat, contract: BaseContract): void {
@@ -112,19 +111,36 @@ export class LedgerContext {
     }
   }
 
-  setBlock(
-    index: internal.primitives.StubUint64Compat,
-    seed: internal.primitives.StubUint64Compat,
-    timestamp: internal.primitives.StubUint64Compat,
-  ): void {
-    const i = asBigInt(index)
-    const s = asBigInt(seed)
-    const t = asBigInt(timestamp)
-
-    this.blocks.set(i, { seed: s, timestamp: t })
+  patchAccountData(account: Account, data: Partial<AccountData>) {
+    const accountData = this.accountDataMap.get(account) ?? new AccountData()
+    this.accountDataMap.set(account, {
+      ...accountData,
+      ...data,
+      account: {
+        ...accountData?.account,
+        ...data.account,
+      },
+    })
   }
 
-  getBlockContent(index: internal.primitives.StubUint64Compat): BlockData {
+  patchVoterData(account: Account, data: Partial<VoterData>) {
+    const voterData = this.voterDataMap.get(account) ?? new VoterData()
+    this.voterDataMap.set(account, {
+      ...voterData,
+      ...data,
+    })
+  }
+
+  patchBlockData(index: internal.primitives.StubUint64Compat, data: Partial<BlockData>): void {
+    const i = asUint64(index)
+    const blockData = this.blocks.get(i) ?? new BlockData()
+    this.blocks.set(i, {
+      ...blockData,
+      ...data,
+    })
+  }
+
+  getBlockData(index: internal.primitives.StubUint64Compat): BlockData {
     const i = asBigInt(index)
     if (this.blocks.has(i)) {
       return this.blocks.get(i)!

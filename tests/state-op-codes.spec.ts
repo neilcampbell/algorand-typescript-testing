@@ -1,23 +1,23 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { Account, arc4, bytes, Bytes, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, arc4, bytes, Bytes, Global, internal, op, TransactionType, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { DynamicBytes, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
 import { ABI_RETURN_VALUE_LOG_PREFIX, MIN_TXN_FEE, OnApplicationComplete, ZERO_ADDRESS } from '../src/constants'
+import { lazyContext } from '../src/context-helpers/internal-context'
 import { testInvariant } from '../src/errors'
 import { Block, gloadBytes, gloadUint64 } from '../src/impl'
 import { AccountCls } from '../src/impl/account'
 import { InnerTxn } from '../src/impl/itxn'
 import { ApplicationTransaction } from '../src/impl/transactions'
 import { DeliberateAny } from '../src/typescript-helpers'
-import { asBigInt, asNumber, asUint64Cls, asUint8Array } from '../src/util'
+import { asBigInt, asBigUintCls, asNumber, asUint64Cls, asUint8Array, encodeAddress, getRandomBytes } from '../src/util'
 import { AppExpectingEffects } from './artifacts/created-app-asset/contract.algo'
 import {
   ItxnDemoContract,
   ITxnOpsContract,
-  StateAcctParamsGetContract,
   StateAppGlobalContract,
   StateAppGlobalExContract,
   StateAppLocalContract,
@@ -34,10 +34,13 @@ import appLocalExAppSpecJson from './artifacts/state-ops/data/StateAppLocalExCon
 import appParamsAppSpecJson from './artifacts/state-ops/data/StateAppParamsContract.arc32.json'
 import assetHoldingAppSpecJson from './artifacts/state-ops/data/StateAssetHoldingContract.arc32.json'
 import assetParamsAppSpecJson from './artifacts/state-ops/data/StateAssetParamsContract.arc32.json'
+import { StateAcctParamsGetContract } from './artifacts/state-ops/state-acct-params-get-contract.algo'
 import {
   generateTestAccount,
   generateTestAsset,
+  getAlgodMajorVersion,
   getAlgorandAppClient,
+  getAlgorandAppClientV11,
   getAlgorandAppClientWithApp,
   getAvmResult,
   getLocalNetDefaultAccount,
@@ -46,13 +49,15 @@ import {
 
 describe('State op codes', async () => {
   const ctx = new TestExecutionContext()
+  const algodVersion = await getAlgodMajorVersion()
+  const isV11Supported = algodVersion > 4
 
   afterEach(async () => {
     ctx.reset()
   })
 
-  describe('AcctParams', async () => {
-    const [appClient, dummyAccount] = await Promise.all([getAlgorandAppClient(acctParamsAppSpecJson as AppSpec), generateTestAccount()])
+  describe.skipIf(!isV11Supported)('AcctParams', async () => {
+    const [appClient, dummyAccount] = await Promise.all([getAlgorandAppClientV11(acctParamsAppSpecJson as AppSpec), generateTestAccount()])
 
     test.each([
       ['verify_acct_balance', INITIAL_BALANCE_MICRO_ALGOS + 100_000],
@@ -85,7 +90,7 @@ describe('State op codes', async () => {
       })
 
       const avmResult = await getAvmResult(
-        { appClient, sendParams: { staticFee: AlgoAmount.Algos(1000) } },
+        { appClient: appClient!, sendParams: { staticFee: AlgoAmount.Algos(1000) } },
         methodName,
         asUint8Array(dummyAccount.bytes),
       )
@@ -95,6 +100,58 @@ describe('State op codes', async () => {
 
       expect(mockResult).toEqual(avmResult)
       expect(mockResult).toEqual(expectedValue)
+    })
+
+    it('should return true when account is eligible for incentive', async () => {
+      const mockAccount = ctx.any.account({
+        address: dummyAccount,
+        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
+        minBalance: Uint64(100000),
+      })
+      ctx.ledger.patchGlobalData({ payoutsEnabled: true, payoutsGoOnlineFee: 10 })
+      ctx.txn.createScope([ctx.any.txn.keyRegistration({ sender: mockAccount, fee: 10 })]).execute(() => {
+        expect(op.AcctParams.acctIncentiveEligible(mockAccount)).toEqual([true, true])
+      })
+
+      await appClient!.algorand.send.onlineKeyRegistration({
+        sender: encodeAddress(asUint8Array(dummyAccount.bytes)),
+        voteKey: getRandomBytes(32).asUint8Array(),
+        selectionKey: getRandomBytes(32).asUint8Array(),
+        voteFirst: 1n,
+        voteLast: 1000000n,
+        voteKeyDilution: 1000000n,
+        stateProofKey: getRandomBytes(64).asUint8Array(),
+        staticFee: AlgoAmount.Algos(10),
+      })
+      const avmResult = await getAvmResult(
+        { appClient: appClient!, sendParams: { staticFee: AlgoAmount.Algos(10) } },
+        'verify_acct_incentive_eligible',
+        asUint8Array(dummyAccount.bytes),
+      )
+      expect(avmResult).toEqual(true)
+    })
+
+    it('should return last round as last proposed and last hearbeat by default', () => {
+      const mockAccount = ctx.any.account({
+        address: dummyAccount,
+        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
+      })
+      const lastProposed = op.AcctParams.acctLastProposed(mockAccount)
+      const lastHeartbeat = op.AcctParams.acctLastHeartbeat(mockAccount)
+      expect(lastProposed).toEqual([Global.round, true])
+      expect(lastHeartbeat).toEqual([Global.round, true])
+    })
+
+    it('should return configured round as last proposed and last hearbeat', () => {
+      const mockAccount = ctx.any.account({
+        address: dummyAccount,
+        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
+      })
+      ctx.ledger.patchAccountData(mockAccount, { lastProposed: 100, lastHeartbeat: 200 })
+      const lastProposed = op.AcctParams.acctLastProposed(mockAccount)
+      const lastHeartbeat = op.AcctParams.acctLastHeartbeat(mockAccount)
+      expect(lastProposed).toEqual([100, true])
+      expect(lastHeartbeat).toEqual([200, true])
     })
   })
 
@@ -235,6 +292,25 @@ describe('State op codes', async () => {
     })
   })
 
+  describe('VoterParams', async () => {
+    it('should return the configured balance and incentive eligibility', async () => {
+      const mockAccount = ctx.any.account()
+      ctx.ledger.patchVoterData(mockAccount, { balance: 100, incentiveEligible: true })
+      const balance = op.VoterParams.voterBalance(mockAccount)
+      const incentiveEligible = op.VoterParams.voterIncentiveEligible(mockAccount)
+      expect(balance).toEqual([100, true])
+      expect(incentiveEligible).toEqual([true, true])
+    })
+  })
+
+  describe('onlineStake', async () => {
+    it('should return the configured online stake', async () => {
+      lazyContext.ledger.onlineStake = Uint64(42)
+      const result = op.onlineStake()
+      expect(result).toEqual(42)
+    })
+  })
+
   describe('Global', async () => {
     it('should return the correct global field value', async () => {
       const creator = ctx.any.account()
@@ -272,6 +348,18 @@ describe('State op codes', async () => {
       })
       expect([...asUint8Array(firstGroupId)]).not.toEqual([...asUint8Array(secondGroupId)])
       expect(firstTimestamp.valueOf()).not.toEqual(secondTimestamp.valueOf())
+
+      ctx.ledger.patchGlobalData({
+        payoutsEnabled: true,
+        payoutsGoOnlineFee: 12,
+        payoutsPercent: 2,
+        payoutsMinBalance: 42,
+      })
+
+      expect(op.Global.payoutsEnabled).toEqual(true)
+      expect(op.Global.payoutsGoOnlineFee).toEqual(12)
+      expect(op.Global.payoutsPercent).toEqual(2)
+      expect(op.Global.payoutsMinBalance).toEqual(42)
     })
   })
 
@@ -427,14 +515,40 @@ describe('State op codes', async () => {
   describe('Block', async () => {
     it('should return the correct field value of the block', async () => {
       const index = 42
-      const seed = 123
+      const seed = asBigUintCls(123n).toBytes().asAlgoTs()
       const timestamp = 1234567890
-      ctx.ledger.setBlock(index, seed, timestamp)
-      const seedResult = op.btoi(Block.blkSeed(Uint64(index)))
-      const timestampResult = Block.blkTimestamp(Uint64(index))
+      const proposer = ctx.any.account()
+      const feesCollected = 1000
+      const bonus = 12
+      const branch = getRandomBytes(32).asAlgoTs()
+      const feeSink = ctx.any.account()
+      const protocol = getRandomBytes(32).asAlgoTs()
+      const txnCounter = 32
+      const proposerPayout = 42
 
-      expect(seedResult).toEqual(Uint64(seed))
-      expect(timestampResult).toEqual(Uint64(timestamp))
+      ctx.ledger.patchBlockData(index, {
+        seed,
+        timestamp,
+        proposer,
+        feesCollected,
+        bonus,
+        branch,
+        feeSink,
+        protocol,
+        txnCounter,
+        proposerPayout,
+      })
+
+      expect(Block.blkSeed(index)).toEqual(seed)
+      expect(Block.blkTimestamp(index)).toEqual(timestamp)
+      expect(Block.blkProposer(index)).toEqual(proposer)
+      expect(Block.blkFeesCollected(index)).toEqual(feesCollected)
+      expect(Block.blkBonus(index)).toEqual(bonus)
+      expect(Block.blkBranch(index)).toEqual(branch)
+      expect(Block.blkFeeSink(index)).toEqual(feeSink)
+      expect(Block.blkProtocol(index)).toEqual(protocol)
+      expect(Block.blkTxnCounter(index)).toEqual(txnCounter)
+      expect(Block.blkProposerPayout(index)).toEqual(proposerPayout)
     })
     it('should throw error if the block is not set', async () => {
       const index = 42

@@ -20,6 +20,9 @@ export class AssetHolding {
 export class AccountData {
   optedAssets = new Uint64Map<AssetHolding>()
   optedApplications = new Uint64Map<Application>()
+  incentiveEligible = false
+  lastProposed?: uint64
+  lastHeartbeat?: uint64
   account: Mutable<Omit<Account, 'bytes' | 'isOptedIn'>>
 
   constructor() {

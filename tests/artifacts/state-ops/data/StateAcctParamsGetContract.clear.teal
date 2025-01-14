@@ -1,5 +1,7 @@
-#pragma version 10
+#pragma version 11
+#pragma typetrack false
 
-tests/artifacts/state-ops/contract.algo.ts::StateAcctParamsGetContract.clearStateProgram:
+// @algorandfoundation/algorand-typescript/base-contract.d.ts::BaseContract.clearStateProgram() -> uint64:
+main:
     pushint 1 // 1
     return
