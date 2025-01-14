@@ -1,5 +1,5 @@
 import { arc4, bytes, Bytes, Ecdsa, gtxn, internal, VrfVerify } from '@algorandfoundation/algorand-typescript'
-import { ec } from 'elliptic'
+import elliptic from 'elliptic'
 import { sha256 as js_sha256 } from 'js-sha256'
 import { keccak256 as js_keccak256, sha3_256 as js_sha3_256 } from 'js-sha3'
 import { sha512_256 as js_sha512_256 } from 'js-sha512'
@@ -84,7 +84,7 @@ export const ecdsaVerify = (
     .concat(pubkeyXBytes)
     .concat(pubkeyYBytes)
 
-  const ecdsa = new ec(curveMap[v])
+  const ecdsa = new elliptic.ec(curveMap[v])
   const keyPair = ecdsa.keyFromPublic(publicKey.asUint8Array())
   return keyPair.verify(dataBytes.asUint8Array(), { r: sigRBytes.asUint8Array(), s: sigSBytes.asUint8Array() })
 }
@@ -104,7 +104,7 @@ export const ecdsaPkRecover = (
   const sBytes = internal.primitives.BytesCls.fromCompat(d)
   const recoveryId = internal.primitives.Uint64Cls.fromCompat(b)
 
-  const ecdsa = new ec(curveMap[v])
+  const ecdsa = new elliptic.ec(curveMap[v])
   const pubKey = ecdsa.recoverPubKey(
     dataBytes.asUint8Array(),
     { r: rBytes.asUint8Array(), s: sBytes.asUint8Array() },
@@ -119,7 +119,7 @@ export const ecdsaPkRecover = (
 export const ecdsaPkDecompress = (v: Ecdsa, a: internal.primitives.StubBytesCompat): readonly [bytes, bytes] => {
   const bytesA = internal.primitives.BytesCls.fromCompat(a)
 
-  const ecdsa = new ec(curveMap[v])
+  const ecdsa = new elliptic.ec(curveMap[v])
   const keyPair = ecdsa.keyFromPublic(bytesA.asUint8Array())
   const pubKey = keyPair.getPublic()
 
