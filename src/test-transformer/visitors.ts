@@ -325,8 +325,8 @@ const isArc4EncodedType = (type: ptypes.PType): boolean =>
     ptypes.UFixedNxMType,
     ptypes.UintNType,
   ) ||
-  type === ptypes.ARC4StringType ||
-  type === ptypes.ARC4BooleanType
+  type === ptypes.arc4StringType ||
+  type === ptypes.arc4BooleanType
 
 const getGenericTypeInfo = (type: ptypes.PType): TypeInfo => {
   let typeName = type?.name ?? type?.toString() ?? 'unknown'
