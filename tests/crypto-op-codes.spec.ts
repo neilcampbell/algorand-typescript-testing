@@ -2,8 +2,8 @@ import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Bytes, Ec, Ecdsa, internal, uint64, VrfVerify } from '@algorandfoundation/algorand-typescript'
 import elliptic from 'elliptic'
-import { keccak256 as js_keccak256 } from 'js-sha3'
-import { sha512_256 as js_sha512_256 } from 'js-sha512'
+import js_sha3 from 'js-sha3'
+import js_sha512 from 'js-sha512'
 import nacl from 'tweetnacl'
 import { afterEach, describe, expect, it, Mock, test, vi } from 'vitest'
 import { TestExecutionContext } from '../src'
@@ -122,7 +122,7 @@ describe('crypto op codes', async () => {
       const account = await generateAVMTestAccount()
       const publicKey = decodePublicKey(account.addr.toString())
       const logicSig = conactUint8Arrays(asUint8Array(PROGRAM_TAG), approval.compiledBase64ToBytes)
-      const logicSigAddress = js_sha512_256.array(logicSig)
+      const logicSigAddress = js_sha512.sha512_256.array(logicSig)
       const parts = conactUint8Arrays(new Uint8Array(logicSigAddress), asUint8Array(message))
       const toBeSigned = conactUint8Arrays(asUint8Array(LOGIC_DATA_PREFIX), parts)
       const signature = nacl.sign.detached(toBeSigned, account.account.sk)
@@ -302,7 +302,7 @@ const generateEcdsaTestData = (v: Ecdsa) => {
   const keyPair = ecdsa.genKeyPair()
   const pk = keyPair.getPublic('array')
   const data = internal.primitives.BytesCls.fromCompat('test data for ecdsa')
-  const messageHash = js_keccak256.create().update(data.asUint8Array()).digest()
+  const messageHash = js_sha3.keccak256.create().update(data.asUint8Array()).digest()
   const signature = keyPair.sign(messageHash)
   const recoveryId = 0 // Recovery ID is typically 0 or 1
 
