@@ -1,7 +1,7 @@
 import { Account, Bytes, bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { randomBytes } from 'crypto'
-import { sha512_256 as js_sha512_256 } from 'js-sha512'
+import js_sha512 from 'js-sha512'
 import {
   ALGORAND_ADDRESS_BYTE_LENGTH,
   ALGORAND_ADDRESS_LENGTH,
@@ -172,12 +172,12 @@ export const uint8ArrayToNumber = (value: Uint8Array): number => {
 }
 
 export const checksumFromPublicKey = (pk: Uint8Array): Uint8Array => {
-  return Uint8Array.from(js_sha512_256.array(pk).slice(HASH_BYTES_LENGTH - ALGORAND_CHECKSUM_BYTE_LENGTH, HASH_BYTES_LENGTH))
+  return Uint8Array.from(js_sha512.sha512_256.array(pk).slice(HASH_BYTES_LENGTH - ALGORAND_CHECKSUM_BYTE_LENGTH, HASH_BYTES_LENGTH))
 }
 
 export const getApplicationAddress = (appId: internal.primitives.StubUint64Compat): Account => {
   const toBeSigned = conactUint8Arrays(asUint8Array(APP_ID_PREFIX), encodingUtil.bigIntToUint8Array(asBigInt(appId), 8))
-  const appIdHash = js_sha512_256.array(toBeSigned)
+  const appIdHash = js_sha512.sha512_256.array(toBeSigned)
   const publicKey = Uint8Array.from(appIdHash)
   const address = encodeAddress(publicKey)
   return Account(Bytes.fromBase32(address))

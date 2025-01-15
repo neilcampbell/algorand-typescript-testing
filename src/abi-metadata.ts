@@ -1,6 +1,6 @@
 import { BaseContract, Contract } from '@algorandfoundation/algorand-typescript'
 import { AbiMethodConfig, BareMethodConfig, CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
-import { sha512_256 as js_sha512_256 } from 'js-sha512'
+import js_sha512 from 'js-sha512'
 import { TypeInfo } from './encoders'
 import { getArc4TypeName as getArc4TypeNameForARC4Encoded } from './impl/encoded-types'
 import { DeliberateAny } from './typescript-helpers'
@@ -79,7 +79,7 @@ export const getArc4Signature = (metadata: AbiMetadata): string => {
 }
 
 export const getArc4Selector = (metadata: AbiMetadata): Uint8Array => {
-  const hash = js_sha512_256.array(getArc4Signature(metadata))
+  const hash = js_sha512.sha512_256.array(getArc4Signature(metadata))
   return new Uint8Array(hash.slice(0, 4))
 }
 
