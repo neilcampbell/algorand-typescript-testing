@@ -10,6 +10,8 @@ import { asBigInt, asUint64Cls, getRandomBigInt, getRandomBytes } from '../util'
 type AccountContextData = Partial<AccountData['account']> & {
   address?: Account
   incentiveEligible?: boolean
+  lastProposed?: uint64
+  lastHeartbeat?: uint64
   optedAssetBalances?: Map<internal.primitives.StubUint64Compat, internal.primitives.StubUint64Compat>
   optedApplications?: Application[]
 }
@@ -57,8 +59,10 @@ export class AvmValueGenerator {
     }
 
     const data = new AccountData()
-    const { address, optedAssetBalances, optedApplications, incentiveEligible, ...accountData } = input ?? {}
+    const { address, optedAssetBalances, optedApplications, incentiveEligible, lastProposed, lastHeartbeat, ...accountData } = input ?? {}
     data.incentiveEligible = incentiveEligible ?? false
+    data.lastProposed = lastProposed
+    data.lastHeartbeat = lastHeartbeat
     data.account = {
       ...data.account,
       ...accountData,

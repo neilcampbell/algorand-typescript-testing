@@ -136,8 +136,10 @@ describe('State op codes', async () => {
         address: dummyAccount,
         balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
       })
+      const incentiveEligible = op.AcctParams.acctIncentiveEligible(mockAccount)
       const lastProposed = op.AcctParams.acctLastProposed(mockAccount)
       const lastHeartbeat = op.AcctParams.acctLastHeartbeat(mockAccount)
+      expect(incentiveEligible).toEqual([false, true])
       expect(lastProposed).toEqual([Global.round, true])
       expect(lastHeartbeat).toEqual([Global.round, true])
     })
@@ -146,10 +148,14 @@ describe('State op codes', async () => {
       const mockAccount = ctx.any.account({
         address: dummyAccount,
         balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
+        incentiveEligible: true,
+        lastProposed: 100,
+        lastHeartbeat: 200,
       })
-      ctx.ledger.patchAccountData(mockAccount, { lastProposed: 100, lastHeartbeat: 200 })
+      const incentiveEligible = op.AcctParams.acctIncentiveEligible(mockAccount)
       const lastProposed = op.AcctParams.acctLastProposed(mockAccount)
       const lastHeartbeat = op.AcctParams.acctLastHeartbeat(mockAccount)
+      expect(incentiveEligible).toEqual([true, true])
       expect(lastProposed).toEqual([100, true])
       expect(lastHeartbeat).toEqual([200, true])
     })
