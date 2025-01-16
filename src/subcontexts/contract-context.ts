@@ -155,13 +155,20 @@ export class ContractContext {
   }
 
   private isArc4<T extends BaseContract>(type: IConstructor<T>): boolean {
+    // TODO: uncomment the following line once version puya-ts 1.0.0 is released
+    // return (type as DeliberateAny as typeof BaseContract).isArc4 ?? false
+
+    const result = (type as DeliberateAny as typeof BaseContract).isArc4
+    if (result !== undefined && result !== null) {
+      return result
+    }
     const proto = Object.getPrototypeOf(type)
     if (proto === BaseContract) {
       return false
     } else if (proto === Contract) {
       return true
-    } else if (proto === Object) {
-      throw new Error('Cannot create a contract for class as it does not extend Contract or BaseContract')
+    } else if (proto === null) {
+      return false
     }
     return this.isArc4(proto)
   }
