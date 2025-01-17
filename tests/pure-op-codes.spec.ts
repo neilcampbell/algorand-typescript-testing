@@ -441,7 +441,7 @@ describe('Pure op codes', async () => {
 
     test.each(['hello, world', 'hi'])('should work to extract bytes from 2 to end for %s', async (a) => {
       const avmResult = (await getAvmResult<Uint8Array>({ appClient }, 'verify_extract_from_2', asUint8Array(a)))!
-      const result = op.extract(a, 2, 0)
+      const result = op.extract(a, 2)
       expect(result).toEqual(avmResult)
     })
 

@@ -95,10 +95,9 @@ export class MiscellaneousOpsContract extends arc4.Contract {
     return result
   }
 
-  // TODO: recompile to check if this results in correct TEAL code
   @arc4.abimethod()
   public verify_extract_from_2(a: bytes): bytes {
-    const result = op.extract(a, 2, 0)
+    const result = op.extract(a, 2)
     return result
   }
 
