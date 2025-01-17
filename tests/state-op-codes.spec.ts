@@ -38,9 +38,7 @@ import { StateAcctParamsGetContract } from './artifacts/state-ops/state-acct-par
 import {
   generateTestAccount,
   generateTestAsset,
-  getAlgodMajorVersion,
   getAlgorandAppClient,
-  getAlgorandAppClientV11,
   getAlgorandAppClientWithApp,
   getAvmResult,
   getLocalNetDefaultAccount,
@@ -49,15 +47,13 @@ import {
 
 describe('State op codes', async () => {
   const ctx = new TestExecutionContext()
-  const algodVersion = await getAlgodMajorVersion()
-  const isV11Supported = algodVersion > 4
 
   afterEach(() => {
     ctx.reset()
   })
 
-  describe.skipIf(!isV11Supported)('AcctParams', async () => {
-    const [appClient, dummyAccount] = await Promise.all([getAlgorandAppClientV11(acctParamsAppSpecJson as AppSpec), generateTestAccount()])
+  describe('AcctParams', async () => {
+    const [appClient, dummyAccount] = await Promise.all([getAlgorandAppClient(acctParamsAppSpecJson as AppSpec), generateTestAccount()])
 
     test.each([
       ['verify_acct_balance', INITIAL_BALANCE_MICRO_ALGOS + 100_000],
@@ -90,7 +86,7 @@ describe('State op codes', async () => {
       })
 
       const avmResult = await getAvmResult(
-        { appClient: appClient!, sendParams: { staticFee: AlgoAmount.Algos(1000) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(1000) } },
         methodName,
         asUint8Array(dummyAccount.bytes),
       )
@@ -113,7 +109,7 @@ describe('State op codes', async () => {
         expect(op.AcctParams.acctIncentiveEligible(mockAccount)).toEqual([true, true])
       })
 
-      await appClient!.algorand.send.onlineKeyRegistration({
+      await appClient.algorand.send.onlineKeyRegistration({
         sender: encodeAddress(asUint8Array(dummyAccount.bytes)),
         voteKey: getRandomBytes(32).asUint8Array(),
         selectionKey: getRandomBytes(32).asUint8Array(),
@@ -124,7 +120,7 @@ describe('State op codes', async () => {
         staticFee: AlgoAmount.Algos(10),
       })
       const avmResult = await getAvmResult(
-        { appClient: appClient!, sendParams: { staticFee: AlgoAmount.Algos(10) } },
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(10) } },
         'verify_acct_incentive_eligible',
         asUint8Array(dummyAccount.bytes),
       )
