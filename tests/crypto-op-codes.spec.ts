@@ -31,7 +31,7 @@ describe('crypto op codes', async () => {
   const [appClient, app] = await getAlgorandAppClientWithApp(appSpecJson as AppSpec)
   const ctx = new TestExecutionContext()
 
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 

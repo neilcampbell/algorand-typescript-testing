@@ -23,7 +23,7 @@ describe('Pure op codes', async () => {
   const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)
   const ctx = new TestExecutionContext()
 
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 

@@ -12,7 +12,7 @@ describe('arc4.Bool', async () => {
   const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)
   const ctx = new TestExecutionContext()
 
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 
