@@ -25,7 +25,7 @@ describe('ARC4 AppLocal values', async () => {
   const ctx = new TestExecutionContext(defaultSenderAccountAddress)
   await tryOptIn(appClient)
 
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 

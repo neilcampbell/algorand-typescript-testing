@@ -23,7 +23,7 @@ describe('ARC4 AppGlobal values', async () => {
   const defaultSenderAccountAddress = Bytes.fromBase32(localNetAccount.addr.toString())
   const ctx = new TestExecutionContext(defaultSenderAccountAddress)
 
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 

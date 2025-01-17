@@ -52,7 +52,7 @@ describe('State op codes', async () => {
   const algodVersion = await getAlgodMajorVersion()
   const isV11Supported = algodVersion > 4
 
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 

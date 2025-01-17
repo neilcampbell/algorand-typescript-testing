@@ -291,19 +291,19 @@ const testDataWithArray = [
   },
 ]
 
-describe('arc4.Tuple', async () => {
+describe('arc4.Tuple', () => {
   const ctx = new TestExecutionContext()
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 
-  test.each(testData)('should be able to get bytes representation', async (data) => {
+  test.each(testData)('should be able to get bytes representation', (data) => {
     const sdkResult = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const result = data.tuple().bytes
     expect(result).toEqual(Bytes(sdkResult))
   })
 
-  test.each(testData)('should be able to get native representation', async (data) => {
+  test.each(testData)('should be able to get native representation', (data) => {
     const nativeValues = data.nativeValues()
     const result = data.tuple().native
     for (let i = 0; i < nativeValues.length; i++) {
@@ -312,7 +312,7 @@ describe('arc4.Tuple', async () => {
     expect(result.length).toEqual(nativeValues.length)
   })
 
-  test.each(testData)('create tuple from bytes', async (data) => {
+  test.each(testData)('create tuple from bytes', (data) => {
     const nativeValues = data.nativeValues()
     const sdkEncodedBytes = getABIEncodedValue(nativeValues, data.abiTypeString, {})
 
@@ -324,7 +324,7 @@ describe('arc4.Tuple', async () => {
     }
   })
 
-  test.each(testDataWithArray)('update array values in tuple', async (data) => {
+  test.each(testDataWithArray)('update array values in tuple', (data) => {
     const sdkResult = getABIEncodedValue(data.updatedNativeValues(), data.abiTypeString, {})
     const tuple = data.tuple()
     data.update(tuple as DeliberateAny)

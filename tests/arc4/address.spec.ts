@@ -14,31 +14,31 @@ const testData = [
   Bytes.fromHex(`${'00'.repeat(31)}ff`),
 ]
 
-describe('arc4.Address', async () => {
+describe('arc4.Address', () => {
   const ctx = new TestExecutionContext()
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 
-  test.each(testData)('create address from bytes', async (value) => {
+  test.each(testData)('create address from bytes', (value) => {
     const sdkResult = getABIEncodedValue(asUint8Array(value), abiTypeString, {})
     const result = new Address(value)
     expect(result.bytes).toEqual(sdkResult)
   })
-  test.each(testData)('create address from str', async (value) => {
+  test.each(testData)('create address from str', (value) => {
     const stringValue = encodeAddress(asUint8Array(value))
     const sdkResult = getABIEncodedValue(stringValue, abiTypeString, {})
     const result = new Address(stringValue)
     expect(result.bytes).toEqual(sdkResult)
   })
-  test.each(testData)('create address from Account', async (value) => {
+  test.each(testData)('create address from Account', (value) => {
     const accountValue = Account(value)
     const sdkResult = getABIEncodedValue(asUint8Array(accountValue.bytes), abiTypeString, {})
     const result = new Address(accountValue)
     expect(result.bytes).toEqual(sdkResult)
   })
 
-  test.each(testData)('get item from address created from bytes', async (value) => {
+  test.each(testData)('get item from address created from bytes', (value) => {
     const uint8ArrayValue = asUint8Array(value)
     const result = new Address(value)
     let i = 0
@@ -47,7 +47,7 @@ describe('arc4.Address', async () => {
     }
     expect(result.length).toEqual(uint8ArrayValue.length)
   })
-  test.each(testData)('get item from address created from str', async (value) => {
+  test.each(testData)('get item from address created from str', (value) => {
     const uint8ArrayValue = asUint8Array(value)
     const stringValue = encodeAddress(uint8ArrayValue)
     const result = new Address(stringValue)
@@ -57,7 +57,7 @@ describe('arc4.Address', async () => {
     }
     expect(result.length).toEqual(uint8ArrayValue.length)
   })
-  test.each(testData)('get item from address created from Account', async (value) => {
+  test.each(testData)('get item from address created from Account', (value) => {
     const uint8ArrayValue = asUint8Array(value)
     const accountValue = Account(value)
     const result = new Address(accountValue)
@@ -68,13 +68,13 @@ describe('arc4.Address', async () => {
     expect(result.length).toEqual(uint8ArrayValue.length)
   })
 
-  test.each(testData)('fromBytes method', async (value) => {
+  test.each(testData)('fromBytes method', (value) => {
     const sdkResult = getABIEncodedValue(asUint8Array(value), abiTypeString, {})
     const result = interpretAsArc4<Address>(value)
     expect(result.bytes).toEqual(sdkResult)
   })
 
-  test.each(testData)('fromLog method', async (value) => {
+  test.each(testData)('fromLog method', (value) => {
     const sdkResult = getABIEncodedValue(asUint8Array(value), abiTypeString, {})
     const paddedValue = Bytes([...asUint8Array(ABI_RETURN_VALUE_LOG_PREFIX), ...asUint8Array(value)])
     const result = interpretAsArc4<Address>(paddedValue, 'log')

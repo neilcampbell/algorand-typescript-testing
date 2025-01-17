@@ -333,9 +333,9 @@ const structDynamicArray = {
   },
 }
 
-describe('arc4.DynamicArray', async () => {
+describe('arc4.DynamicArray', () => {
   const ctx = new TestExecutionContext()
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 
@@ -353,7 +353,7 @@ describe('arc4.DynamicArray', async () => {
     stringDynamicArrayOfArrayOfArray,
     tupleDynamicArray,
     structDynamicArray,
-  ])('should be able to get bytes representation', async (data) => {
+  ])('should be able to get bytes representation', (data) => {
     const sdkResult = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const result = data.array().bytes
     expect(result).toEqual(sdkResult)
@@ -373,7 +373,7 @@ describe('arc4.DynamicArray', async () => {
     stringDynamicArrayOfArrayOfArray,
     tupleDynamicArray,
     structDynamicArray,
-  ])('copy dynamic array', async (data) => {
+  ])('copy dynamic array', (data) => {
     const sdkResult = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const original = data.array()
     const copy = original.copy()
@@ -396,7 +396,7 @@ describe('arc4.DynamicArray', async () => {
     stringDynamicArrayOfArrayOfArray,
     tupleDynamicArray,
     structDynamicArray,
-  ])('get item from dynamic array', async (data) => {
+  ])('get item from dynamic array', (data) => {
     const dynamicArray = data.array()
     const nativeValues = data.nativeValues()
     for (let i = 0; i < dynamicArray.length; i++) {
@@ -419,7 +419,7 @@ describe('arc4.DynamicArray', async () => {
     stringDynamicArrayOfArrayOfArray,
     tupleDynamicArray,
     structDynamicArray,
-  ])('set item in dynamic array', async (data) => {
+  ])('set item in dynamic array', (data) => {
     const nativeValues = data.nativeValues()
     const nativeValuesCopy = [...nativeValues]
     const nativeTemp = nativeValuesCopy.at(-1)!
@@ -451,7 +451,7 @@ describe('arc4.DynamicArray', async () => {
     stringDynamicArrayOfArrayOfArray,
     tupleDynamicArray,
     structDynamicArray,
-  ])('create dynamic array from bytes', async (data) => {
+  ])('create dynamic array from bytes', (data) => {
     const sdkEncodedBytes = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const result = data.create(Bytes(sdkEncodedBytes))
     const nativeValues = data.nativeValues()
@@ -474,7 +474,7 @@ describe('arc4.DynamicArray', async () => {
     stringDynamicArrayOfArrayOfArray,
     tupleDynamicArray,
     structDynamicArray,
-  ])('push item to dynamic array', async (data) => {
+  ])('push item to dynamic array', (data) => {
     const nativeValues = data.nativeValues()
     const nativeValuesCopy = [...nativeValues]
     nativeValuesCopy.push(nativeValues.at(-1)!)
@@ -503,7 +503,7 @@ describe('arc4.DynamicArray', async () => {
     stringDynamicArrayOfArrayOfArray,
     tupleDynamicArray,
     structDynamicArray,
-  ])('push item to empty dynamic array', async (data) => {
+  ])('push item to empty dynamic array', (data) => {
     const nativeValues = data.nativeValues()
     const sdkResult = getABIEncodedValue(nativeValues, data.abiTypeString, {})
 
@@ -527,7 +527,7 @@ describe('arc4.DynamicArray', async () => {
     stringDynamicArrayOfArrayOfArray,
     tupleDynamicArray,
     structDynamicArray,
-  ])('push item to empty dynamic array created from bytes', async (data) => {
+  ])('push item to empty dynamic array created from bytes', (data) => {
     const nativeValues = data.nativeValues()
     const sdkResult = getABIEncodedValue(nativeValues, data.abiTypeString, {})
 
@@ -551,7 +551,7 @@ describe('arc4.DynamicArray', async () => {
     stringDynamicArrayOfArrayOfArray,
     tupleDynamicArray,
     structDynamicArray,
-  ])('pop item from dynamic array', async (data) => {
+  ])('pop item from dynamic array', (data) => {
     const nativeValues = data.nativeValues()
     const nativeValuesCopy = [...nativeValues]
     const nativeValue1 = nativeValuesCopy.pop()
@@ -570,7 +570,7 @@ describe('arc4.DynamicArray', async () => {
     expect(result).toEqual(Bytes(sdkResult))
   })
 
-  it('set item in nested dynamic array', async () => {
+  it('set item in nested dynamic array', () => {
     const data = stringDynamicArrayOfArrayOfArray
     const nativeValues = data.nativeValues()
     nativeValues[0][0][0] = 'new value'
@@ -583,7 +583,7 @@ describe('arc4.DynamicArray', async () => {
     expect(result).toEqual(Bytes(sdkResult))
   })
 
-  it('set item in nested dynamic array created from bytes', async () => {
+  it('set item in nested dynamic array created from bytes', () => {
     const data = stringDynamicArrayOfArrayOfArray
     const nativeValues = data.nativeValues()
     nativeValues[0][0][0] = 'new value'

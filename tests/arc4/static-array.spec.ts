@@ -320,9 +320,9 @@ const structStaticArray = {
   },
 }
 
-describe('arc4.StaticArray', async () => {
+describe('arc4.StaticArray', () => {
   const ctx = new TestExecutionContext()
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 
@@ -340,7 +340,7 @@ describe('arc4.StaticArray', async () => {
     stringStaticArrayOfArrayOfArray,
     tupleStaticArray,
     structStaticArray,
-  ])('should be able to get bytes representation', async (data) => {
+  ])('should be able to get bytes representation', (data) => {
     const sdkResult = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const result = data.array().bytes
     expect(result).toEqual(Bytes(sdkResult))
@@ -360,7 +360,7 @@ describe('arc4.StaticArray', async () => {
     stringStaticArrayOfArrayOfArray,
     tupleStaticArray,
     structStaticArray,
-  ])('copy static array', async (data) => {
+  ])('copy static array', (data) => {
     const sdkResult = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const original = data.array()
     const copy = original.copy()
@@ -383,7 +383,7 @@ describe('arc4.StaticArray', async () => {
     stringStaticArrayOfArrayOfArray,
     tupleStaticArray,
     structStaticArray,
-  ])('get item from static array', async (data) => {
+  ])('get item from static array', (data) => {
     const staticArray = data.array()
     const nativeValues = data.nativeValues()
     for (let i = 0; i < staticArray.length; i++) {
@@ -406,7 +406,7 @@ describe('arc4.StaticArray', async () => {
     stringStaticArrayOfArrayOfArray,
     tupleStaticArray,
     structStaticArray,
-  ])('set item in static array', async (data) => {
+  ])('set item in static array', (data) => {
     const nativeValues = data.nativeValues()
     const nativeValuesCopy = [...nativeValues]
     const nativeTemp = nativeValuesCopy.at(-1)!
@@ -438,7 +438,7 @@ describe('arc4.StaticArray', async () => {
     stringStaticArrayOfArrayOfArray,
     tupleStaticArray,
     structStaticArray,
-  ])('create static array from bytes', async (data) => {
+  ])('create static array from bytes', (data) => {
     const sdkEncodedBytes = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const result = data.create(Bytes(sdkEncodedBytes))
     const nativeValues = data.nativeValues()
@@ -461,7 +461,7 @@ describe('arc4.StaticArray', async () => {
     stringStaticArrayOfArrayOfArray,
     tupleStaticArray,
     structStaticArray,
-  ])('get item from static array created from bytes', async (data) => {
+  ])('get item from static array created from bytes', (data) => {
     const nativeValues = data.nativeValues()
     const sdkEncodedBytes = getABIEncodedValue(data.nativeValues(), data.abiTypeString, {})
     const staticArray = data.create(Bytes(sdkEncodedBytes))
@@ -485,7 +485,7 @@ describe('arc4.StaticArray', async () => {
     stringStaticArrayOfArrayOfArray,
     tupleStaticArray,
     structStaticArray,
-  ])('set item in static array created from bytes', async (data) => {
+  ])('set item in static array created from bytes', (data) => {
     const nativeValues = data.nativeValues()
     const nativeValuesCopy = [...nativeValues]
     const nativeTemp = nativeValuesCopy.at(-1)!
@@ -504,7 +504,7 @@ describe('arc4.StaticArray', async () => {
     expect(result).toEqual(Bytes(sdkResult))
   })
 
-  it('set item in nested static array', async () => {
+  it('set item in nested static array', () => {
     const data = stringStaticArrayOfArrayOfArray
     const nativeValues = data.nativeValues()
     nativeValues[0][0][0] = 'new value'
@@ -517,7 +517,7 @@ describe('arc4.StaticArray', async () => {
     expect(result).toEqual(Bytes(sdkResult))
   })
 
-  it('set item in nested static array create from bytes', async () => {
+  it('set item in nested static array create from bytes', () => {
     const data = stringStaticArrayOfArrayOfArray
     const nativeValues = data.nativeValues()
     nativeValues[0][0][0] = 'new value'

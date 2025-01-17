@@ -6,7 +6,7 @@ import { StrImpl } from '../src/impl/encoded-types'
 describe('match', () => {
   const ctx = new TestExecutionContext()
 
-  afterEach(async () => {
+  afterEach(() => {
     ctx.reset()
   })
 
