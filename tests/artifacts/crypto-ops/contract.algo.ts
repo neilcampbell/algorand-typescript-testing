@@ -1,4 +1,14 @@
-import { arc4, bytes, Ecdsa, ensureBudget, op, OpUpFeeSource, uint64, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import {
+  arc4,
+  bytes,
+  Ecdsa,
+  ensureBudget,
+  MimcConfigurations,
+  op,
+  OpUpFeeSource,
+  uint64,
+  VrfVerify,
+} from '@algorandfoundation/algorand-typescript'
 import { Bool } from '@algorandfoundation/algorand-typescript/arc4'
 
 export class CryptoOpsContract extends arc4.Contract {
@@ -89,6 +99,13 @@ export class CryptoOpsContract extends arc4.Contract {
   public verify_vrf_verify(a: bytes, b: bytes, c: bytes): readonly [bytes, boolean] {
     ensureBudget(5700, OpUpFeeSource.GroupCredit)
     const result = op.vrfVerify(VrfVerify.VrfAlgorand, a, b, c)
+    return result
+  }
+
+  @arc4.abimethod()
+  public verify_mimc(a: bytes): bytes {
+    ensureBudget(5700, OpUpFeeSource.GroupCredit)
+    const result = op.mimc(MimcConfigurations.BN254Mp110, a)
     return result
   }
 }
