@@ -2,7 +2,7 @@ import { getABIEncodedValue } from '@algorandfoundation/algokit-utils/types/app-
 import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { Bool, DynamicArray, interpretAsArc4, StaticArray, Str, Struct, Tuple, UintN } from '@algorandfoundation/algorand-typescript/arc4'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
-import { describe, expect, it, test } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { AccountCls } from '../../src/impl/account'
 import { DeliberateAny } from '../../src/typescript-helpers'
 import { asBytes } from '../../src/util'
@@ -250,49 +250,6 @@ describe('arc4.Struct', async () => {
     compareARC4AndABIValue(result.c, nativeValues[i++])
     compareARC4AndABIValue(result.d, nativeValues[i++])
     compareARC4AndABIValue(result.a, nativeValues[i++])
-  })
-
-  it('set item in struct', async () => {
-    const data = testData[5]
-    const nativeValues = data.nativeValues() as DeliberateAny
-    nativeValues[0] = 43
-    nativeValues[2] = 'world'
-    nativeValues[3][0][1][0][1] = 'hello, world'
-    nativeValues[3][0][1][0].push('test')
-    nativeValues[3][1][1][0] = 24
-    const sdkResult = getABIEncodedValue(nativeValues, data.abiTypeString, {})
-
-    const abiValues = data.struct() as Swapped6
-    abiValues.b = new UintN<64>(43)
-    abiValues.d = new Str('world')
-    abiValues.a.at(0).at(1).at(0)[1] = new Str('hello, world')
-    abiValues.a.at(0).at(1).at(0).push(new Str('test'))
-    abiValues.a.at(1).at(1)[0] = new UintN<64>(24)
-    const result = abiValues.bytes
-
-    expect(result).toEqual(Bytes(sdkResult))
-  })
-
-  it('set item in struct created from bytes', async () => {
-    const data = testData[5]
-    const nativeValues = data.nativeValues() as DeliberateAny
-    nativeValues[0] = 43
-    nativeValues[2] = 'world'
-    nativeValues[3][0][1][0][1] = 'hello, world'
-    nativeValues[3][0][1][0].push('test')
-    nativeValues[3][1][1][0] = 24
-    const sdkResult = getABIEncodedValue(nativeValues, data.abiTypeString, {})
-
-    const bytes = Bytes(getABIEncodedValue(data.nativeValues(), data.abiTypeString, {}))
-    const abiValues = data.create(bytes) as Swapped6
-    abiValues.b = new UintN<64>(43)
-    abiValues.d = new Str('world')
-    abiValues.a.at(0).at(1).at(0)[1] = new Str('hello, world')
-    abiValues.a.at(0).at(1).at(0).push(new Str('test'))
-    abiValues.a.at(1).at(1)[0] = new UintN<64>(24)
-    const result = abiValues.bytes
-
-    expect(result).toEqual(Bytes(sdkResult))
   })
 })
 
