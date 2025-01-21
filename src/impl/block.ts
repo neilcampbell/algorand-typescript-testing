@@ -1,15 +1,16 @@
-import { Account, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import { type Account as AccountType, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asUint64, getRandomBytes } from '../util'
+import { Account } from './reference'
 
 export class BlockData {
   seed: bytes
   timestamp: uint64
-  proposer: Account
+  proposer: AccountType
   feesCollected: uint64
   bonus: uint64
   branch: bytes
-  feeSink: Account
+  feeSink: AccountType
   protocol: bytes
   txnCounter: uint64
   proposerPayout: uint64
@@ -35,7 +36,7 @@ export const Block: internal.opTypes.BlockType = {
   blkTimestamp: function (a: internal.primitives.StubUint64Compat): uint64 {
     return lazyContext.ledger.getBlockData(a).timestamp
   },
-  blkProposer: function (a: uint64): Account {
+  blkProposer: function (a: uint64): AccountType {
     return lazyContext.ledger.getBlockData(a).proposer
   },
   blkFeesCollected: function (a: uint64): uint64 {
@@ -47,7 +48,7 @@ export const Block: internal.opTypes.BlockType = {
   blkBranch: function (a: uint64): bytes {
     return lazyContext.ledger.getBlockData(a).branch
   },
-  blkFeeSink: function (a: uint64): Account {
+  blkFeeSink: function (a: uint64): AccountType {
     return lazyContext.ledger.getBlockData(a).feeSink
   },
   blkProtocol: function (a: uint64): bytes {

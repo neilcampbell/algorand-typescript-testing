@@ -1,4 +1,4 @@
-import { Account, internal } from '@algorandfoundation/algorand-typescript'
+import { type Account, internal } from '@algorandfoundation/algorand-typescript'
 import { DeliberateAny } from '../typescript-helpers'
 import { asBytesCls, asUint64Cls } from '../util'
 

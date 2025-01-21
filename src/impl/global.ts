@@ -1,4 +1,13 @@
-import { Account, Application, Bytes, bytes, internal, op, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import {
+  type Account as AccountType,
+  type Application as ApplicationType,
+  Bytes,
+  bytes,
+  internal,
+  op,
+  Uint64,
+  uint64,
+} from '@algorandfoundation/algorand-typescript'
 import {
   DEFAULT_ACCOUNT_MIN_BALANCE,
   DEFAULT_ASSET_CREATE_MIN_BALANCE,
@@ -9,13 +18,14 @@ import {
   ZERO_ADDRESS,
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { getApplicationAddress, getObjectReference } from '../util'
+import { getObjectReference } from '../util'
+import { Account, getApplicationAddress } from './reference'
 
 export class GlobalData {
   minTxnFee: uint64
   minBalance: uint64
   maxTxnLife: uint64
-  zeroAddress: Account
+  zeroAddress: AccountType
   logicSigVersion?: uint64
   round?: uint64
   latestTimestamp?: uint64
@@ -77,7 +87,7 @@ export const Global: internal.opTypes.GlobalType = {
   /**
    * 32 byte address of all zero bytes
    */
-  get zeroAddress(): Account {
+  get zeroAddress(): AccountType {
     return getGlobalData().zeroAddress
   },
 
@@ -99,7 +109,7 @@ export const Global: internal.opTypes.GlobalType = {
   },
 
   /**
-   * Current round number. Application mode only.
+   * Current round number. ApplicationType mode only.
    */
   get round(): uint64 {
     const data = getGlobalData()
@@ -108,7 +118,7 @@ export const Global: internal.opTypes.GlobalType = {
   },
 
   /**
-   * Last confirmed block UNIX timestamp. Fails if negative. Application mode only.
+   * Last confirmed block UNIX timestamp. Fails if negative. ApplicationType mode only.
    */
   get latestTimestamp(): uint64 {
     const data = getGlobalData()
@@ -117,24 +127,24 @@ export const Global: internal.opTypes.GlobalType = {
   },
 
   /**
-   * ID of current application executing. Application mode only.
+   * ID of current application executing. ApplicationType mode only.
    */
-  get currentApplicationId(): Application {
+  get currentApplicationId(): ApplicationType {
     return lazyContext.activeApplication
   },
 
   /**
-   * Address of the creator of the current application. Application mode only.
+   * Address of the creator of the current application. ApplicationType mode only.
    */
-  get creatorAddress(): Account {
+  get creatorAddress(): AccountType {
     const app = lazyContext.activeApplication
     return app.creator
   },
 
   /**
-   * Address that the current application controls. Application mode only.
+   * Address that the current application controls. ApplicationType mode only.
    */
-  get currentApplicationAddress(): Account {
+  get currentApplicationAddress(): AccountType {
     return this.currentApplicationId.address
   },
 
@@ -159,16 +169,16 @@ export const Global: internal.opTypes.GlobalType = {
   },
 
   /**
-   * The application ID of the application that called this application. 0 if this application is at the top-level. Application mode only.
+   * The application ID of the application that called this application. 0 if this application is at the top-level. ApplicationType mode only.
    */
   get callerApplicationId(): uint64 {
     return getGlobalData().callerApplicationId
   },
 
   /**
-   * The application address of the application that called this application. ZeroAddress if this application is at the top-level. Application mode only.
+   * The application address of the application that called this application. ZeroAddress if this application is at the top-level. ApplicationType mode only.
    */
-  get callerApplicationAddress(): Account {
+  get callerApplicationAddress(): AccountType {
     return getApplicationAddress(this.callerApplicationId)
   },
 

@@ -2,20 +2,15 @@ import { internal } from '@algorandfoundation/algorand-typescript'
 import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { MAX_UINT64 } from './constants'
 import type { TypeInfo } from './encoders'
-import { AccountCls } from './impl/account'
 import { Uint64BackedCls } from './impl/base'
+import { AccountCls } from './impl/reference'
 import { DeliberateAny } from './typescript-helpers'
 import { nameOfType } from './util'
 
 export { attachAbiMetadata } from './abi-metadata'
-export { compileImpl } from './impl/compiled'
 export { emitImpl } from './impl/emit'
 export * from './impl/encoded-types'
 export { decodeArc4Impl, encodeArc4Impl } from './impl/encoded-types'
-export { ensureBudgetImpl } from './impl/ensure-budget'
-export { assertMatchImpl, matchImpl } from './impl/match'
-export { TemplateVarImpl } from './impl/template-var'
-export { urangeImpl } from './impl/urange'
 
 export function switchableValue(x: unknown): bigint | string | boolean {
   if (typeof x === 'boolean') return x

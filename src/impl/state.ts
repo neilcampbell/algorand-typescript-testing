@@ -1,6 +1,6 @@
 import {
-  Account,
-  Application,
+  type Account,
+  type Application,
   BoxMap as BoxMapType,
   BoxRef as BoxRefType,
   Box as BoxType,

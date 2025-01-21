@@ -1,11 +1,17 @@
-import { Account, Application, Asset, BaseContract, bytes, internal, LocalStateForAccount } from '@algorandfoundation/algorand-typescript'
+import {
+  type Account as AccountType,
+  type Application as ApplicationType,
+  type Asset as AssetType,
+  BaseContract,
+  bytes,
+  internal,
+  LocalStateForAccount,
+} from '@algorandfoundation/algorand-typescript'
 import { AccountMap, Uint64Map } from '../collections/custom-key-map'
 import { MAX_UINT64 } from '../constants'
-import { AccountData, AssetHolding } from '../impl/account'
-import { ApplicationData } from '../impl/application'
-import { AssetData } from '../impl/asset'
 import { BlockData } from '../impl/block'
 import { GlobalData } from '../impl/global'
+import { Account, AccountData, Application, ApplicationData, Asset, AssetData, AssetHolding } from '../impl/reference'
 import { GlobalStateCls } from '../impl/state'
 import { VoterData } from '../impl/voter-params'
 import { asBigInt, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
@@ -27,28 +33,28 @@ export class LedgerContext {
     this.appIdContractMap.set(appId, contract)
   }
 
-  getAccount(address: Account): Account {
+  getAccount(address: AccountType): AccountType {
     if (this.accountDataMap.has(address)) {
       return Account(address.bytes)
     }
     throw internal.errors.internalError('Unknown account, check correct testing context is active')
   }
 
-  getAsset(assetId: internal.primitives.StubUint64Compat): Asset {
+  getAsset(assetId: internal.primitives.StubUint64Compat): AssetType {
     if (this.assetDataMap.has(assetId)) {
       return Asset(asUint64(assetId))
     }
     throw internal.errors.internalError('Unknown asset, check correct testing context is active')
   }
 
-  getApplication(applicationId: internal.primitives.StubUint64Compat): Application {
+  getApplication(applicationId: internal.primitives.StubUint64Compat): ApplicationType {
     if (this.applicationDataMap.has(applicationId)) {
       return Application(asUint64(applicationId))
     }
     throw internal.errors.internalError('Unknown application, check correct testing context is active')
   }
 
-  getApplicationForContract(contract: BaseContract): Application {
+  getApplicationForContract(contract: BaseContract): ApplicationType {
     for (const [appId, c] of this.appIdContractMap) {
       if (c === contract) {
         if (this.applicationDataMap.has(appId)) {
@@ -59,7 +65,7 @@ export class LedgerContext {
     throw internal.errors.internalError('Unknown contract, check correct testing context is active')
   }
 
-  getApplicationForApprovalProgram(approvalProgram: bytes | readonly bytes[] | undefined): Application | undefined {
+  getApplicationForApprovalProgram(approvalProgram: bytes | readonly bytes[] | undefined): ApplicationType | undefined {
     if (approvalProgram === undefined) {
       return undefined
     }
@@ -83,19 +89,19 @@ export class LedgerContext {
 
   /**
    * Update asset holdings for account, only specified values will be updated.
-   * Account will also be opted-in to asset
+   * AccountType will also be opted-in to asset
    * @param account
    * @param assetId
    * @param balance
    * @param frozen
    */
   updateAssetHolding(
-    account: Account,
-    assetId: internal.primitives.StubUint64Compat | Asset,
+    account: AccountType,
+    assetId: internal.primitives.StubUint64Compat | AssetType,
     balance?: internal.primitives.StubUint64Compat,
     frozen?: boolean,
   ): void {
-    const id = asMaybeUint64Cls(assetId) ?? asUint64Cls((assetId as Asset).id)
+    const id = asMaybeUint64Cls(assetId) ?? asUint64Cls((assetId as AssetType).id)
     const accountData = this.accountDataMap.get(account)!
     const asset = this.assetDataMap.get(id)!
     const holding = accountData.optedAssets.get(id) ?? new AssetHolding(0n, asset.defaultFrozen)
@@ -111,7 +117,7 @@ export class LedgerContext {
     }
   }
 
-  patchAccountData(account: Account, data: Partial<AccountData>) {
+  patchAccountData(account: AccountType, data: Partial<AccountData>) {
     const accountData = this.accountDataMap.get(account) ?? new AccountData()
     this.accountDataMap.set(account, {
       ...accountData,
@@ -123,7 +129,7 @@ export class LedgerContext {
     })
   }
 
-  patchVoterData(account: Account, data: Partial<VoterData>) {
+  patchVoterData(account: AccountType, data: Partial<VoterData>) {
     const voterData = this.voterDataMap.get(account) ?? new VoterData()
     this.voterDataMap.set(account, {
       ...voterData,
@@ -148,7 +154,7 @@ export class LedgerContext {
     throw internal.errors.internalError(`Block ${i} not set`)
   }
 
-  getGlobalState(app: Application, key: internal.primitives.StubBytesCompat): [GlobalStateCls<unknown>, true] | [undefined, false] {
+  getGlobalState(app: ApplicationType, key: internal.primitives.StubBytesCompat): [GlobalStateCls<unknown>, true] | [undefined, false] {
     const appData = this.applicationDataMap.get(app.id)
     if (!appData?.application.globalStates.has(key)) {
       return [undefined, false]
@@ -157,7 +163,7 @@ export class LedgerContext {
   }
 
   setGlobalState(
-    app: Application,
+    app: ApplicationType,
     key: internal.primitives.StubBytesCompat,
     value: internal.primitives.StubUint64Compat | internal.primitives.StubBytesCompat | undefined,
   ): void {
@@ -171,8 +177,8 @@ export class LedgerContext {
   }
 
   getLocalState(
-    app: Application,
-    account: Account,
+    app: ApplicationType,
+    account: AccountType,
     key: internal.primitives.StubBytesCompat,
   ): [LocalStateForAccount<unknown>, true] | [undefined, false] {
     const appData = this.applicationDataMap.get(app.id)
@@ -184,8 +190,8 @@ export class LedgerContext {
   }
 
   setLocalState(
-    app: Application,
-    account: Account,
+    app: ApplicationType,
+    account: AccountType,
     key: internal.primitives.StubBytesCompat,
     value: internal.primitives.StubUint64Compat | internal.primitives.StubBytesCompat | undefined,
   ): void {
@@ -199,22 +205,22 @@ export class LedgerContext {
     }
   }
 
-  getBox(app: Application, key: internal.primitives.StubBytesCompat): Uint8Array {
+  getBox(app: ApplicationType, key: internal.primitives.StubBytesCompat): Uint8Array {
     const appData = this.applicationDataMap.getOrFail(app.id)
     return appData.application.boxes.get(key) ?? new Uint8Array()
   }
 
-  setBox(app: Application, key: internal.primitives.StubBytesCompat, value: Uint8Array): void {
+  setBox(app: ApplicationType, key: internal.primitives.StubBytesCompat, value: Uint8Array): void {
     const appData = this.applicationDataMap.getOrFail(app.id)
     appData.application.boxes.set(key, value)
   }
 
-  deleteBox(app: Application, key: internal.primitives.StubBytesCompat): boolean {
+  deleteBox(app: ApplicationType, key: internal.primitives.StubBytesCompat): boolean {
     const appData = this.applicationDataMap.getOrFail(app.id)
     return appData.application.boxes.delete(key)
   }
 
-  boxExists(app: Application, key: internal.primitives.StubBytesCompat): boolean {
+  boxExists(app: ApplicationType, key: internal.primitives.StubBytesCompat): boolean {
     const appData = this.applicationDataMap.getOrFail(app.id)
     return appData.application.boxes.has(key)
   }

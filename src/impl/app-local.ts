@@ -1,4 +1,4 @@
-import { Account, Application, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import { type Account, type Application, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { toBytes } from '../encoders'
 import { asBytes } from '../util'

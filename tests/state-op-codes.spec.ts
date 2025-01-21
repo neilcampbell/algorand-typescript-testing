@@ -9,11 +9,11 @@ import { ABI_RETURN_VALUE_LOG_PREFIX, MIN_TXN_FEE, OnApplicationComplete, ZERO_A
 import { lazyContext } from '../src/context-helpers/internal-context'
 import { testInvariant } from '../src/errors'
 import { Block, gloadBytes, gloadUint64 } from '../src/impl'
-import { AccountCls } from '../src/impl/account'
 import { InnerTxn } from '../src/impl/itxn'
+import { AccountCls, encodeAddress } from '../src/impl/reference'
 import { ApplicationTransaction } from '../src/impl/transactions'
 import { DeliberateAny } from '../src/typescript-helpers'
-import { asBigInt, asBigUintCls, asNumber, asUint64Cls, asUint8Array, encodeAddress, getRandomBytes } from '../src/util'
+import { asBigInt, asBigUintCls, asNumber, asUint64Cls, asUint8Array, getRandomBytes } from '../src/util'
 import { AppExpectingEffects } from './artifacts/created-app-asset/contract.algo'
 import {
   ItxnDemoContract,

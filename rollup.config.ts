@@ -8,6 +8,9 @@ const config: RollupOptions = {
   input: {
     index: 'src/index.ts',
     'runtime-helpers': 'src/runtime-helpers.ts',
+    'internal': 'src/internal.ts',
+    'internal/arc4': 'src/internal-arc4.ts',
+    'internal/op': 'src/internal-op.ts',
     'test-transformer/index': 'src/test-transformer/index.ts',
   },
   output: [

@@ -1,4 +1,4 @@
-import { Account, Application, gtxn, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import { type Account, type Application, gtxn, internal, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asMaybeUint64Cls } from '../util'
 import { getApp } from './app-params'
