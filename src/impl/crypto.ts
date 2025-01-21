@@ -1,4 +1,4 @@
-import { arc4, bytes, Bytes, Ecdsa, gtxn, internal, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import { arc4, bytes, Bytes, Ecdsa, gtxn, internal, MimcConfigurations, VrfVerify } from '@algorandfoundation/algorand-typescript'
 import elliptic from 'elliptic'
 import js_sha256 from 'js-sha256'
 import js_sha3 from 'js-sha3'
@@ -142,6 +142,10 @@ export const EllipticCurve = new Proxy({} as internal.opTypes.EllipticCurveType,
     notImplementedError(`EllipticCurve.${prop.toString()}`)
   },
 })
+
+export const mimc = (_c: MimcConfigurations, _a: internal.primitives.StubBytesCompat): bytes => {
+  notImplementedError('mimc')
+}
 
 const curveMap = {
   [Ecdsa.Secp256k1]: 'secp256k1',

@@ -1,6 +1,7 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { Bytes, Ec, Ecdsa, internal, uint64, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import { Bytes, Ec, Ecdsa, internal, MimcConfigurations, uint64, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import { encodingUtil } from '@algorandfoundation/puya-ts'
 import elliptic from 'elliptic'
 import js_sha3 from 'js-sha3'
 import js_sha512 from 'js-sha512'
@@ -24,7 +25,8 @@ vi.mock('../src/impl/crypto', async (importOriginal) => {
   const mod = await importOriginal<typeof import('../src/impl/crypto')>()
   return {
     ...mod,
-    mockedVrfVerify: vi.fn(),
+    vrfVerify: vi.fn(mod.vrfVerify),
+    mimc: vi.fn(mod.mimc),
   }
 })
 describe('crypto op codes', async () => {
@@ -257,6 +259,9 @@ describe('crypto op codes', async () => {
     const c = internal.primitives.BytesCls.fromHex('3a2740da7a0788ebb12a52154acbcca1813c128ca0b249e93f8eb6563fee418d')
 
     it('should throw not available error', async () => {
+      const mockedVrfVerify = op.vrfVerify as Mock<typeof op.vrfVerify>
+      // restore to original stub implemention which should throw not available error
+      mockedVrfVerify.mockRestore()
       expect(() => op.vrfVerify(VrfVerify.VrfAlgorand, a, b, c)).toThrow('vrfVerify is not available in test context')
     })
 
@@ -268,12 +273,36 @@ describe('crypto op codes', async () => {
         asUint8Array(b),
         asUint8Array(c),
       )
-      const mockedVrfVerify = (op as unknown as { mockedVrfVerify: Mock<typeof op.vrfVerify> }).mockedVrfVerify
+      const mockedVrfVerify = op.vrfVerify as Mock<typeof op.vrfVerify>
       mockedVrfVerify.mockReturnValue([internal.primitives.BytesCls.fromCompat(new Uint8Array(avmResult[0])).asAlgoTs(), avmResult[1]])
-      const result = mockedVrfVerify(VrfVerify.VrfAlgorand, a, b, c)
+      const result = op.vrfVerify(VrfVerify.VrfAlgorand, a, b, c)
 
       expect(asUint8Array(result[0])).toEqual(new Uint8Array(avmResult[0]))
       expect(result[1]).toEqual(avmResult[1])
+    })
+  })
+
+  describe('mimc', async () => {
+    const a = encodingUtil.bigIntToUint8Array(1234567890n, 32)
+
+    it('should throw not available error', async () => {
+      const mockedMimc = op.mimc as Mock<typeof op.mimc>
+      // restore to original stub implemention which should throw not available error
+      mockedMimc.mockRestore()
+      expect(() => op.mimc(MimcConfigurations.BN254Mp110, Bytes(a))).toThrow('mimc is not available in test context')
+    })
+
+    it('should return mocked result', async () => {
+      const avmResult = await getAvmResult<Uint8Array>(
+        { appClient, sendParams: { staticFee: AlgoAmount.Algos(6000) } },
+        'verify_mimc',
+        asUint8Array(a),
+      )
+      const mockedMimc = op.mimc as Mock<typeof op.mimc>
+      mockedMimc.mockReturnValue(Bytes(avmResult))
+      const result = op.mimc(MimcConfigurations.BN254Mp110, Bytes(a))
+
+      expect(result).toEqual(avmResult)
     })
   })
 
