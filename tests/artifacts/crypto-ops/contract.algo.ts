@@ -1,14 +1,5 @@
-import {
-  arc4,
-  bytes,
-  Ecdsa,
-  ensureBudget,
-  MimcConfigurations,
-  op,
-  OpUpFeeSource,
-  uint64,
-  VrfVerify,
-} from '@algorandfoundation/algorand-typescript'
+import type { bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, Ecdsa, ensureBudget, MimcConfigurations, op, OpUpFeeSource, VrfVerify } from '@algorandfoundation/algorand-typescript'
 import { Bool } from '@algorandfoundation/algorand-typescript/arc4'
 
 export class CryptoOpsContract extends arc4.Contract {

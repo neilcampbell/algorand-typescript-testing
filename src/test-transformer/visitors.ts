@@ -3,7 +3,7 @@ import path from 'path'
 import ts from 'typescript'
 import type { TypeInfo } from '../encoders'
 import { instanceOfAny } from '../typescript-helpers'
-import { TransformerConfig } from './index'
+import type { TransformerConfig } from './index'
 import { nodeFactory } from './node-factory'
 import {
   supportedAugmentedAssignmentBinaryOpString,

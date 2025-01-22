@@ -1,4 +1,5 @@
-import { type Account as AccountType, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { bytes, internal, uint64, Account as AccountType } from '@algorandfoundation/algorand-typescript'
+import { Uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asUint64, getRandomBytes } from '../util'
 import { Account } from './reference'

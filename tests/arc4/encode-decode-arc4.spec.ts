@@ -1,8 +1,9 @@
-import { biguint, bytes, Bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { biguint, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Bytes } from '@algorandfoundation/algorand-typescript'
 import { Bool, decodeArc4, DynamicBytes, encodeArc4, Str, Struct, Tuple, UintN } from '@algorandfoundation/algorand-typescript/arc4'
 import { describe, expect, test } from 'vitest'
 import { MAX_UINT128 } from '../../src/constants'
-import { DeliberateAny } from '../../src/typescript-helpers'
+import type { DeliberateAny } from '../../src/typescript-helpers'
 import { asBytes } from '../../src/util'
 
 const nativeString = 'hello'

@@ -1,13 +1,5 @@
-import {
-  type Account as AccountType,
-  type Application as ApplicationType,
-  Bytes,
-  bytes,
-  internal,
-  op,
-  Uint64,
-  uint64,
-} from '@algorandfoundation/algorand-typescript'
+import type { bytes, uint64, Account as AccountType, Application as ApplicationType } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal, op, Uint64 } from '@algorandfoundation/algorand-typescript'
 import {
   DEFAULT_ACCOUNT_MIN_BALANCE,
   DEFAULT_ASSET_CREATE_MIN_BALANCE,

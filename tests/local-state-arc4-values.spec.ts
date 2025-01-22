@@ -1,19 +1,20 @@
-import { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Account, Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
-import {
+import type {
   AddressImpl,
   BoolImpl,
   ByteImpl,
   DynamicBytesImpl,
   StrImpl,
-  UintNImpl,
 } from '@algorandfoundation/algorand-typescript-testing/runtime-helpers'
-import { Address, ARC4Encoded, BitSize, Bool, Byte, DynamicBytes, Str, UintN } from '@algorandfoundation/algorand-typescript/arc4'
+import { UintNImpl } from '@algorandfoundation/algorand-typescript-testing/runtime-helpers'
+import type { ARC4Encoded, BitSize } from '@algorandfoundation/algorand-typescript/arc4'
+import { Address, Bool, Byte, DynamicBytes, Str, UintN } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, test } from 'vitest'
 import { OnApplicationComplete } from '../src/constants'
-import { DeliberateAny } from '../src/typescript-helpers'
+import type { DeliberateAny } from '../src/typescript-helpers'
 import { LocalStateContract } from './artifacts/state-ops/contract.algo'
 import arc4AppLocalAppSpecJson from './artifacts/state-ops/data/LocalStateContract.arc32.json'
 import { getAlgorandAppClient, getAvmResult, getLocalNetDefaultAccount } from './avm-invoker'

@@ -1,4 +1,4 @@
-import { arc4 } from '@algorandfoundation/algorand-typescript'
+import type { arc4 } from '@algorandfoundation/algorand-typescript'
 import { BITS_IN_BYTE, MAX_UINT128, MAX_UINT16, MAX_UINT256, MAX_UINT32, MAX_UINT512, MAX_UINT64, MAX_UINT8 } from '../constants'
 import { AddressImpl, DynamicBytesImpl, StrImpl, UintNImpl } from '../impl/encoded-types'
 import { getRandomBigInt, getRandomBytes, getRandomNumber } from '../util'

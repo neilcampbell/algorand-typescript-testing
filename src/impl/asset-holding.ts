@@ -1,8 +1,9 @@
-import { type Account, type Asset, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { internal, uint64, Account, Asset } from '@algorandfoundation/algorand-typescript'
+import { Uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { getAccount } from './acct-params'
 import { getAsset } from './asset-params'
-import { AssetHolding as AssetHoldingData } from './reference'
+import type { AssetHolding as AssetHoldingData } from './reference'
 
 const getAssetHolding = (
   acctOrIndex: Account | internal.primitives.StubUint64Compat,

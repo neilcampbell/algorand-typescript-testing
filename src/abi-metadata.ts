@@ -1,9 +1,9 @@
-import { BaseContract, Contract } from '@algorandfoundation/algorand-typescript'
-import { AbiMethodConfig, BareMethodConfig, CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
+import type { BaseContract, Contract } from '@algorandfoundation/algorand-typescript'
+import type { AbiMethodConfig, BareMethodConfig, CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
 import js_sha512 from 'js-sha512'
-import { TypeInfo } from './encoders'
+import type { TypeInfo } from './encoders'
 import { getArc4TypeName as getArc4TypeNameForARC4Encoded } from './impl/encoded-types'
-import { DeliberateAny } from './typescript-helpers'
+import type { DeliberateAny } from './typescript-helpers'
 
 export interface AbiMetadata {
   methodName: string

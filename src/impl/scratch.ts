@@ -1,4 +1,5 @@
-import { bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import { internal } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 
 export const gloadUint64: internal.opTypes.GloadUint64Type = (

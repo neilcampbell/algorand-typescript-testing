@@ -1,3 +1,4 @@
+import type { uint64 } from '@algorandfoundation/algorand-typescript'
 import {
   abimethod,
   Account,
@@ -13,7 +14,6 @@ import {
   OpUpFeeSource,
   TemplateVar,
   Txn,
-  uint64,
 } from '@algorandfoundation/algorand-typescript'
 
 const curveMod = 21888242871839275222246405745257275088548364400416034343698204186575808495617n

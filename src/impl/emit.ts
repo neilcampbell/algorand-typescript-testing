@@ -1,5 +1,5 @@
 import { internal } from '@algorandfoundation/algorand-typescript'
-import { DeliberateAny } from '../typescript-helpers'
+import type { DeliberateAny } from '../typescript-helpers'
 import { sha512_256 } from './crypto'
 import { getArc4Encoded, getArc4TypeName } from './encoded-types'
 import { log } from './log'

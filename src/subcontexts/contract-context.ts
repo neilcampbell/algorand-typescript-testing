@@ -1,29 +1,14 @@
-import {
-  type Account,
-  type Application,
-  type Asset,
-  BaseContract,
-  Bytes,
-  bytes,
-  Contract,
-  contract,
-  internal,
-  LocalState,
-} from '@algorandfoundation/algorand-typescript'
-import {
-  AbiMetadata,
-  copyAbiMetadatas,
-  getArc4Selector,
-  getContractAbiMetadata,
-  getContractMethodAbiMetadata,
-  isContractProxy,
-} from '../abi-metadata'
+import type { bytes, contract, LocalState, Account, Application, Asset } from '@algorandfoundation/algorand-typescript'
+import { BaseContract, Bytes, Contract, internal } from '@algorandfoundation/algorand-typescript'
+import type { AbiMetadata } from '../abi-metadata'
+import { copyAbiMetadatas, getArc4Selector, getContractAbiMetadata, getContractMethodAbiMetadata, isContractProxy } from '../abi-metadata'
 import { BytesMap } from '../collections/custom-key-map'
 import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
 import { toBytes, type TypeInfo } from '../encoders'
 import { AccountCls, ApplicationCls, AssetCls } from '../impl/reference'
 import { BoxCls, BoxMapCls, BoxRefCls, GlobalStateCls } from '../impl/state'
+import type { Transaction } from '../impl/transactions'
 import {
   ApplicationTransaction,
   AssetConfigTransaction,
@@ -31,10 +16,9 @@ import {
   AssetTransferTransaction,
   KeyRegistrationTransaction,
   PaymentTransaction,
-  Transaction,
 } from '../impl/transactions'
 import { getGenericTypeInfo } from '../runtime-helpers'
-import { DeliberateAny, IConstructor } from '../typescript-helpers'
+import type { DeliberateAny, IConstructor } from '../typescript-helpers'
 
 type ContractOptionsParameter = Parameters<typeof contract>[0]
 

@@ -1,12 +1,14 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { Bytes, Ec, Ecdsa, internal, MimcConfigurations, uint64, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { uint64 } from '@algorandfoundation/algorand-typescript'
+import { Bytes, Ec, Ecdsa, internal, MimcConfigurations, VrfVerify } from '@algorandfoundation/algorand-typescript'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import elliptic from 'elliptic'
 import js_sha3 from 'js-sha3'
 import js_sha512 from 'js-sha512'
 import nacl from 'tweetnacl'
-import { afterEach, describe, expect, it, Mock, test, vi } from 'vitest'
+import type { Mock } from 'vitest'
+import { afterEach, describe, expect, it, test, vi } from 'vitest'
 import { TestExecutionContext } from '../src'
 import { LOGIC_DATA_PREFIX, MAX_BYTES_SIZE, PROGRAM_TAG } from '../src/constants'
 import * as op from '../src/impl/crypto'
@@ -23,6 +25,7 @@ const curveMap = {
 }
 
 vi.mock('../src/impl/crypto', async (importOriginal) => {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-imports
   const mod = await importOriginal<typeof import('../src/impl/crypto')>()
   return {
     ...mod,

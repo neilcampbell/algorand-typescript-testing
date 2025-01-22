@@ -1,4 +1,4 @@
-import { internal } from '@algorandfoundation/algorand-typescript'
+import type { internal } from '@algorandfoundation/algorand-typescript'
 import { asBigInt, asUint64 } from '../util'
 
 export function* urangeImpl(

@@ -1,6 +1,7 @@
-import { assert, assertMatch, internal, match } from '@algorandfoundation/algorand-typescript'
+import type { assertMatch, match } from '@algorandfoundation/algorand-typescript'
+import { assert, internal } from '@algorandfoundation/algorand-typescript'
 import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
-import { DeliberateAny } from '../typescript-helpers'
+import type { DeliberateAny } from '../typescript-helpers'
 import { asBytes, asMaybeBigUintCls } from '../util'
 import { BytesBackedCls, Uint64BackedCls } from './base'
 

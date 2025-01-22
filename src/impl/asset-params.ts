@@ -1,13 +1,5 @@
-import {
-  type Account as AccountType,
-  type Asset as AssetType,
-  Bytes,
-  bytes,
-  gtxn,
-  internal,
-  Uint64,
-  uint64,
-} from '@algorandfoundation/algorand-typescript'
+import type { bytes, gtxn, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import { type Account as AccountType, type Asset as AssetType, Bytes, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asMaybeUint64Cls, asUint64 } from '../util'
 import { Account } from './reference'

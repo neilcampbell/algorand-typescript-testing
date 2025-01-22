@@ -1,7 +1,8 @@
-import { type Account as AccountType, BaseContract, bytes, internal, LogicSig, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { BaseContract, bytes, LogicSig, uint64, Account as AccountType } from '@algorandfoundation/algorand-typescript'
+import { internal } from '@algorandfoundation/algorand-typescript'
 import { captureMethodConfig } from './abi-metadata'
 import { DEFAULT_TEMPLATE_VAR_PREFIX } from './constants'
-import { DecodedLogs, LogDecoding } from './decode-logs'
+import type { DecodedLogs, LogDecoding } from './decode-logs'
 import * as ops from './impl'
 import {
   applicationCall as itxnApplicationCall,
@@ -17,7 +18,7 @@ import { Box, BoxMap, BoxRef, GlobalState, LocalState } from './impl/state'
 import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
-import { ConstructorFor, DeliberateAny } from './typescript-helpers'
+import type { ConstructorFor, DeliberateAny } from './typescript-helpers'
 import { getRandomBytes } from './util'
 import { ValueGenerator } from './value-generators'
 

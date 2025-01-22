@@ -1,4 +1,5 @@
-import { arc4, bytes, Bytes, Ecdsa, gtxn, internal, MimcConfigurations, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import type { bytes, gtxn, MimcConfigurations, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import { arc4, Bytes, Ecdsa, internal } from '@algorandfoundation/algorand-typescript'
 import elliptic from 'elliptic'
 import js_sha256 from 'js-sha256'
 import js_sha3 from 'js-sha3'

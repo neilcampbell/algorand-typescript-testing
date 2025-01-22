@@ -1,5 +1,6 @@
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { internal, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { uint64 } from '@algorandfoundation/algorand-typescript'
+import { internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { describe, expect, it } from 'vitest'
 import { MAX_UINT64, UINT64_OVERFLOW_UNDERFLOW_MESSAGE } from '../../src/constants'
 import { asUint64 } from '../../src/util'

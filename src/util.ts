@@ -1,7 +1,8 @@
-import { Bytes, bytes, internal } from '@algorandfoundation/algorand-typescript'
+import type { bytes } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { randomBytes } from 'crypto'
 import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT512, MAX_UINT8, UINT512_SIZE } from './constants'
-import { DeliberateAny } from './typescript-helpers'
+import type { DeliberateAny } from './typescript-helpers'
 
 export const nameOfType = (x: unknown) => {
   if (typeof x === 'object') {

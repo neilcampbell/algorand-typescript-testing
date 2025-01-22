@@ -1,17 +1,16 @@
-import {
-  type Account as AccountType,
+import type {
   BigUintCompat,
-  Bytes,
   bytes,
-  internal,
   StringCompat,
   uint64,
   Uint64Compat,
+  Account as AccountType,
 } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
+import type { BitSize } from '@algorandfoundation/algorand-typescript/arc4'
 import {
   Address,
   ARC4Encoded,
-  BitSize,
   Bool,
   Byte,
   DynamicArray,
@@ -34,11 +33,11 @@ import {
   UINT64_SIZE,
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { fromBytes, TypeInfo } from '../encoders'
-import { DeliberateAny } from '../typescript-helpers'
+import type { fromBytes, TypeInfo } from '../encoders'
+import type { DeliberateAny } from '../typescript-helpers'
 import { asBigInt, asBigUint, asBigUintCls, asBytesCls, asUint64, asUint8Array, conactUint8Arrays, uint8ArrayToNumber } from '../util'
 import { Account, AccountCls, ApplicationCls, AssetCls } from './reference'
-import { ApplicationTransaction } from './transactions'
+import type { ApplicationTransaction } from './transactions'
 
 const ABI_LENGTH_SIZE = 2
 const maxBigIntValue = (bitSize: number) => 2n ** BigInt(bitSize) - 1n

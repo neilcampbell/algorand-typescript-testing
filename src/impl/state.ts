@@ -1,23 +1,22 @@
-import {
-  type Account,
-  type Application,
+import type {
   BoxMap as BoxMapType,
   BoxRef as BoxRefType,
   Box as BoxType,
-  Bytes,
   bytes,
   GlobalStateOptions,
   GlobalState as GlobalStateType,
-  internal,
   LocalStateForAccount,
   LocalState as LocalStateType,
   uint64,
-  Uint64,
+  Account,
+  Application,
 } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { AccountMap } from '../collections/custom-key-map'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { getEncoder, toBytes, TypeInfo } from '../encoders'
+import type { TypeInfo } from '../encoders'
+import { getEncoder, toBytes } from '../encoders'
 import { getGenericTypeInfo } from '../runtime-helpers'
 import { asBytes, asBytesCls, asNumber, asUint8Array, conactUint8Arrays } from '../util'
 

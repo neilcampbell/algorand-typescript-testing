@@ -1,13 +1,12 @@
-import {
-  type Account as AccountType,
-  type Application as ApplicationType,
-  type Asset as AssetType,
-  Bytes,
+import type {
   bytes,
-  internal,
   LocalState,
   uint64,
+  Account as AccountType,
+  Application as ApplicationType,
+  Asset as AssetType,
 } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import js_sha512 from 'js-sha512'
 import { BytesMap, Uint64Map } from '../collections/custom-key-map'
@@ -22,10 +21,10 @@ import {
   ZERO_ADDRESS,
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { Mutable } from '../typescript-helpers'
+import type { Mutable } from '../typescript-helpers'
 import { asBigInt, asUint64, asUint64Cls, asUint8Array, conactUint8Arrays } from '../util'
 import { BytesBackedCls, Uint64BackedCls } from './base'
-import { GlobalStateCls } from './state'
+import type { GlobalStateCls } from './state'
 
 export class AssetHolding {
   balance: uint64

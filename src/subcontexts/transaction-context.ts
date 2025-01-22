@@ -1,21 +1,24 @@
-import { bytes, Contract, internal, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
-import { AbiMetadata, getContractMethodAbiMetadata } from '../abi-metadata'
+import type { bytes, Contract, uint64 } from '@algorandfoundation/algorand-typescript'
+import { internal, TransactionType } from '@algorandfoundation/algorand-typescript'
+import type { AbiMetadata } from '../abi-metadata'
+import { getContractMethodAbiMetadata } from '../abi-metadata'
 import { TRANSACTION_GROUP_MAX_SIZE } from '../constants'
 import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
-import { DecodedLogs, decodeLogs, LogDecoding } from '../decode-logs'
+import type { DecodedLogs, LogDecoding } from '../decode-logs'
+import { decodeLogs } from '../decode-logs'
 import { testInvariant } from '../errors'
-import {
+import type {
   ApplicationInnerTxn,
   AssetConfigInnerTxn,
   AssetFreezeInnerTxn,
   AssetTransferInnerTxn,
-  createInnerTxn,
   KeyRegistrationInnerTxn,
   PaymentInnerTxn,
 } from '../impl/inner-transactions'
-import { InnerTxn, InnerTxnFields } from '../impl/itxn'
-import {
+import { createInnerTxn } from '../impl/inner-transactions'
+import type { InnerTxn, InnerTxnFields } from '../impl/itxn'
+import type {
   AllTransactionFields,
   ApplicationTransaction,
   AssetConfigTransaction,
@@ -25,7 +28,7 @@ import {
   PaymentTransaction,
   Transaction,
 } from '../impl/transactions'
-import { FunctionKeys } from '../typescript-helpers'
+import type { FunctionKeys } from '../typescript-helpers'
 import { asBigInt, asNumber, asUint64 } from '../util'
 import { ContractContext } from './contract-context'
 

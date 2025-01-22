@@ -1,12 +1,9 @@
+import type { Account, Application, Asset, bytes, uint64 } from '@algorandfoundation/algorand-typescript'
 import {
-  Account,
-  Application,
   arc4,
   assert,
-  Asset,
   BaseContract,
   Bytes,
-  bytes,
   Global,
   GlobalState,
   itxn,
@@ -15,7 +12,6 @@ import {
   TransactionType,
   Txn,
   Uint64,
-  uint64,
 } from '@algorandfoundation/algorand-typescript'
 import { Address, Bool, Byte, DynamicBytes, Str, UintN128, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 

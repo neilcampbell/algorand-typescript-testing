@@ -1,17 +1,16 @@
-import {
-  type Account as AccountType,
-  type Application as ApplicationType,
-  type Asset as AssetType,
+import type {
   bytes,
-  Bytes,
-  internal,
-  Uint64,
   uint64,
+  Account as AccountType,
+  Application as ApplicationType,
+  Asset as AssetType,
 } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { randomBytes } from 'crypto'
 import { MAX_BYTES_SIZE, MAX_UINT64, ZERO_ADDRESS } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { Account, AccountData, ApplicationCls, ApplicationData, AssetCls, AssetData } from '../impl/reference'
+import type { AssetData } from '../impl/reference'
+import { Account, AccountData, ApplicationCls, ApplicationData, AssetCls } from '../impl/reference'
 import { asBigInt, asUint64Cls, getRandomBigInt, getRandomBytes } from '../util'
 
 type AccountContextData = Partial<AccountData['account']> & {

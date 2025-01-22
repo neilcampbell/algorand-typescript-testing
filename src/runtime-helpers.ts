@@ -4,7 +4,7 @@ import { MAX_UINT64 } from './constants'
 import type { TypeInfo } from './encoders'
 import { Uint64BackedCls } from './impl/base'
 import { AccountCls } from './impl/reference'
-import { DeliberateAny } from './typescript-helpers'
+import type { DeliberateAny } from './typescript-helpers'
 import { nameOfType } from './util'
 
 export { attachAbiMetadata } from './abi-metadata'

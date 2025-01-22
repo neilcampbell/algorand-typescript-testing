@@ -1,4 +1,5 @@
-import { bytes, BytesBacked, internal, StringCompat } from '@algorandfoundation/algorand-typescript'
+import type { bytes, BytesBacked, StringCompat } from '@algorandfoundation/algorand-typescript'
+import { internal } from '@algorandfoundation/algorand-typescript'
 import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { lazyContext } from '../context-helpers/internal-context'
 import { nameOfType } from '../util'

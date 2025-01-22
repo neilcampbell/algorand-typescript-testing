@@ -1,18 +1,19 @@
-import {
-  type Account as AccountType,
-  type Application as ApplicationType,
-  type Asset as AssetType,
+import type {
   BaseContract,
   bytes,
-  internal,
   LocalStateForAccount,
+  Account as AccountType,
+  Application as ApplicationType,
+  Asset as AssetType,
 } from '@algorandfoundation/algorand-typescript'
+import { internal } from '@algorandfoundation/algorand-typescript'
 import { AccountMap, Uint64Map } from '../collections/custom-key-map'
 import { MAX_UINT64 } from '../constants'
 import { BlockData } from '../impl/block'
 import { GlobalData } from '../impl/global'
-import { Account, AccountData, Application, ApplicationData, Asset, AssetData, AssetHolding } from '../impl/reference'
-import { GlobalStateCls } from '../impl/state'
+import type { ApplicationData, AssetData } from '../impl/reference'
+import { Account, AccountData, Application, Asset, AssetHolding } from '../impl/reference'
+import type { GlobalStateCls } from '../impl/state'
 import { VoterData } from '../impl/voter-params'
 import { asBigInt, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, iterBigInt } from '../util'
 

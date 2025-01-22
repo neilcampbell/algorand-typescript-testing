@@ -1,20 +1,18 @@
-import {
-  type Account as AccountType,
-  type Application as ApplicationType,
-  type Asset as AssetType,
-  arc4,
+import type {
   bytes,
-  internal,
   itxn,
-  TransactionType,
   uint64,
+  Account as AccountType,
+  Application as ApplicationType,
+  Asset as AssetType,
 } from '@algorandfoundation/algorand-typescript'
+import { arc4, internal, TransactionType } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
-import { Mutable } from '../typescript-helpers'
+import type { Mutable } from '../typescript-helpers'
 import { asBytes, asNumber } from '../util'
 import { getApp } from './app-params'
 import { getAsset } from './asset-params'
-import { InnerTxn, InnerTxnFields } from './itxn'
+import type { InnerTxn, InnerTxnFields } from './itxn'
 import { Account, AccountCls } from './reference'
 import {
   ApplicationTransaction,

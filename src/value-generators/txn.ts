@@ -1,14 +1,14 @@
-import { gtxn, internal } from '@algorandfoundation/algorand-typescript'
+import type { gtxn } from '@algorandfoundation/algorand-typescript'
+import { internal } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
+import type { ApplicationTransactionFields, TxnFields } from '../impl/transactions'
 import {
   ApplicationTransaction,
-  ApplicationTransactionFields,
   AssetConfigTransaction,
   AssetFreezeTransaction,
   AssetTransferTransaction,
   KeyRegistrationTransaction,
   PaymentTransaction,
-  TxnFields,
 } from '../impl/transactions'
 
 export class TxnValueGenerator {

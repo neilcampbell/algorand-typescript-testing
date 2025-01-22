@@ -1,5 +1,6 @@
-import { type Account, internal } from '@algorandfoundation/algorand-typescript'
-import { DeliberateAny } from '../typescript-helpers'
+import type { Account } from '@algorandfoundation/algorand-typescript'
+import { internal } from '@algorandfoundation/algorand-typescript'
+import type { DeliberateAny } from '../typescript-helpers'
 import { asBytesCls, asUint64Cls } from '../util'
 
 type Primitive = number | bigint | string | boolean
