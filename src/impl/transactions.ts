@@ -1,21 +1,19 @@
-import {
-  Account,
-  Application,
+import type {
   arc4,
-  Asset,
   bytes,
-  Bytes,
   gtxn,
-  internal,
-  TransactionType,
   uint64,
-  Uint64,
+  Account as AccountType,
+  Application as ApplicationType,
+  Asset as AssetType,
 } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal, TransactionType, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_ITEMS_IN_LOG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { toBytes } from '../encoders'
-import { Mutable, ObjectKeys } from '../typescript-helpers'
+import type { Mutable, ObjectKeys } from '../typescript-helpers'
 import { asBytes, asMaybeBytesCls, asMaybeUint64Cls, asNumber, asUint64Cls, combineIntoMaxBytePages, getRandomBytes } from '../util'
+import { Account, Application, Asset } from './reference'
 
 const baseDefaultFields = () => ({
   sender: lazyContext.defaultSender,
@@ -48,7 +46,7 @@ abstract class TransactionBase {
     this.scratchSpace = Array(256).fill(Uint64(0))
   }
 
-  readonly sender: Account
+  readonly sender: AccountType
   readonly fee: uint64
   readonly firstValid: uint64
   readonly firstValidTime: uint64
@@ -57,7 +55,7 @@ abstract class TransactionBase {
   readonly lease: bytes
   readonly groupIndex: uint64
   readonly txnId: bytes
-  readonly rekeyTo: Account
+  readonly rekeyTo: AccountType
   readonly scratchSpace: Array<bytes | uint64>
 
   setScratchSlot(
@@ -95,9 +93,9 @@ export class PaymentTransaction extends TransactionBase implements gtxn.PaymentT
     this.closeRemainderTo = fields.closeRemainderTo ?? Account()
   }
 
-  readonly receiver: Account
+  readonly receiver: AccountType
   readonly amount: uint64
-  readonly closeRemainderTo: Account
+  readonly closeRemainderTo: AccountType
   readonly type: TransactionType.Payment = TransactionType.Payment
   readonly typeBytes: bytes = asUint64Cls(TransactionType.Payment).toBytes().asAlgoTs()
 }
@@ -159,7 +157,7 @@ export class AssetConfigTransaction extends TransactionBase implements gtxn.Asse
     this.createdAsset = fields.createdAsset ?? Asset()
   }
 
-  readonly configAsset: Asset
+  readonly configAsset: AssetType
   readonly total: uint64
   readonly decimals: uint64
   readonly defaultFrozen: boolean
@@ -167,11 +165,11 @@ export class AssetConfigTransaction extends TransactionBase implements gtxn.Asse
   readonly assetName: bytes
   readonly url: bytes
   readonly metadataHash: bytes
-  readonly manager: Account
-  readonly reserve: Account
-  readonly freeze: Account
-  readonly clawback: Account
-  readonly createdAsset: Asset
+  readonly manager: AccountType
+  readonly reserve: AccountType
+  readonly freeze: AccountType
+  readonly clawback: AccountType
+  readonly createdAsset: AssetType
   readonly type: TransactionType.AssetConfig = TransactionType.AssetConfig
   readonly typeBytes: bytes = asUint64Cls(TransactionType.AssetConfig).toBytes().asAlgoTs()
 }
@@ -191,11 +189,11 @@ export class AssetTransferTransaction extends TransactionBase implements gtxn.As
     this.assetCloseTo = fields.assetCloseTo ?? Account()
   }
 
-  readonly xferAsset: Asset
+  readonly xferAsset: AssetType
   readonly assetAmount: uint64
-  readonly assetSender: Account
-  readonly assetReceiver: Account
-  readonly assetCloseTo: Account
+  readonly assetSender: AccountType
+  readonly assetReceiver: AccountType
+  readonly assetCloseTo: AccountType
 
   readonly type: TransactionType.AssetTransfer = TransactionType.AssetTransfer
   readonly typeBytes: bytes = asUint64Cls(TransactionType.AssetTransfer).toBytes().asAlgoTs()
@@ -214,8 +212,8 @@ export class AssetFreezeTransaction extends TransactionBase implements gtxn.Asse
     this.frozen = fields.frozen ?? false
   }
 
-  readonly freezeAsset: Asset
-  readonly freezeAccount: Account
+  readonly freezeAsset: AssetType
+  readonly freezeAccount: AccountType
   readonly frozen: boolean
 
   readonly type: TransactionType.AssetFreeze = TransactionType.AssetFreeze
@@ -225,9 +223,9 @@ export class AssetFreezeTransaction extends TransactionBase implements gtxn.Asse
 export type ApplicationTransactionFields = TxnFields<gtxn.ApplicationTxn> &
   Partial<{
     appArgs: Array<unknown>
-    accounts: Array<Account>
-    assets: Array<Asset>
-    apps: Array<Application>
+    accounts: Array<AccountType>
+    assets: Array<AssetType>
+    apps: Array<ApplicationType>
     approvalProgramPages: Array<bytes>
     clearStateProgramPages: Array<bytes>
     appLogs: Array<bytes>
@@ -240,9 +238,9 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     return new ApplicationTransaction(fields)
   }
   #appArgs: Array<unknown>
-  #accounts: Array<Account>
-  #assets: Array<Asset>
-  #apps: Array<Application>
+  #accounts: Array<AccountType>
+  #assets: Array<AssetType>
+  #apps: Array<ApplicationType>
   #approvalProgramPages: Array<bytes>
   #clearStateProgramPages: Array<bytes>
   #appLogs: Array<bytes>
@@ -267,14 +265,14 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     Object.entries(fields.scratchSpace ?? {}).forEach(([k, v]) => this.setScratchSlot(Number(k), v))
   }
 
-  readonly appId: Application
+  readonly appId: ApplicationType
   readonly onCompletion: arc4.OnCompleteActionStr
   readonly globalNumUint: uint64
   readonly globalNumBytes: uint64
   readonly localNumUint: uint64
   readonly localNumBytes: uint64
   readonly extraProgramPages: uint64
-  readonly createdApp: Application
+  readonly createdApp: ApplicationType
   get approvalProgram() {
     return this.approvalProgramPages(0)
   }
@@ -317,13 +315,13 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
   appArgs(index: internal.primitives.StubUint64Compat): bytes {
     return toBytes(this.#appArgs[asNumber(index)])
   }
-  accounts(index: internal.primitives.StubUint64Compat): Account {
+  accounts(index: internal.primitives.StubUint64Compat): AccountType {
     return this.#accounts[asNumber(index)]
   }
-  assets(index: internal.primitives.StubUint64Compat): Asset {
+  assets(index: internal.primitives.StubUint64Compat): AssetType {
     return this.#assets[asNumber(index)]
   }
-  apps(index: internal.primitives.StubUint64Compat): Application {
+  apps(index: internal.primitives.StubUint64Compat): ApplicationType {
     return this.#apps[asNumber(index)]
   }
   approvalProgramPages(index: internal.primitives.StubUint64Compat): bytes {

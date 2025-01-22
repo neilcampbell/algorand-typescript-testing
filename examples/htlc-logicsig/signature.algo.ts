@@ -1,4 +1,5 @@
-import { Account, Bytes, Global, LogicSig, op, TransactionType, Txn, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, Bytes, Global, LogicSig, op, TransactionType, Txn, Uint64 } from '@algorandfoundation/algorand-typescript'
 
 export default class HashedTimeLockedLogicSig extends LogicSig {
   program(): boolean | uint64 {

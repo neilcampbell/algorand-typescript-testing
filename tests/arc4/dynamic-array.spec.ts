@@ -1,5 +1,6 @@
 import { getABIEncodedValue } from '@algorandfoundation/algokit-utils/types/app-arc56'
-import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
+import type { internal } from '@algorandfoundation/algorand-typescript'
+import { Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import {
   Address,
@@ -15,8 +16,8 @@ import {
 } from '@algorandfoundation/algorand-typescript/arc4'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { afterEach, describe, expect, it, test } from 'vitest'
-import { AccountCls } from '../../src/impl/account'
-import { DeliberateAny } from '../../src/typescript-helpers'
+import { AccountCls } from '../../src/impl/reference'
+import type { DeliberateAny } from '../../src/typescript-helpers'
 import { asBytes, asUint8Array } from '../../src/util'
 
 const addressDynamicArray = {

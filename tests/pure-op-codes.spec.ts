@@ -1,5 +1,6 @@
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { Base64, BigUint, bytes, Bytes, err, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Base64, BigUint, Bytes, err, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import { TestExecutionContext } from '../src'
 import {

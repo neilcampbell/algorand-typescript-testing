@@ -1,5 +1,6 @@
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { bytes, Bytes, internal } from '@algorandfoundation/algorand-typescript'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { bytes } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { describe, expect, it } from 'vitest'
 import { MAX_BYTES_SIZE } from '../../src/constants'
 import { sha256 } from '../../src/impl'

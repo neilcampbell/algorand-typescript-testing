@@ -1,5 +1,6 @@
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { arc4, BigUint, biguint, Bytes, bytes, emit, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { biguint, bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, BigUint, Bytes, emit, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { afterEach, describe, expect, it } from 'vitest'
 import { MAX_UINT512, MAX_UINT64 } from '../../src/constants'

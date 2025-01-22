@@ -1,4 +1,5 @@
-import { bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import { internal } from '@algorandfoundation/algorand-typescript'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { toBytes } from '../encoders'

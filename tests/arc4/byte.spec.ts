@@ -1,4 +1,4 @@
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { Byte, interpretAsArc4 } from '@algorandfoundation/algorand-typescript/arc4'

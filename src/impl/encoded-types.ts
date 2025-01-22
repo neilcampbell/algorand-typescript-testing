@@ -1,8 +1,16 @@
-import { Account, BigUintCompat, Bytes, bytes, internal, StringCompat, uint64, Uint64Compat } from '@algorandfoundation/algorand-typescript'
+import type {
+  BigUintCompat,
+  bytes,
+  StringCompat,
+  uint64,
+  Uint64Compat,
+  Account as AccountType,
+} from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
+import type { BitSize } from '@algorandfoundation/algorand-typescript/arc4'
 import {
   Address,
   ARC4Encoded,
-  BitSize,
   Bool,
   Byte,
   DynamicArray,
@@ -25,13 +33,11 @@ import {
   UINT64_SIZE,
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { fromBytes, TypeInfo } from '../encoders'
-import { DeliberateAny } from '../typescript-helpers'
+import type { fromBytes, TypeInfo } from '../encoders'
+import type { DeliberateAny } from '../typescript-helpers'
 import { asBigInt, asBigUint, asBigUintCls, asBytesCls, asUint64, asUint8Array, conactUint8Arrays, uint8ArrayToNumber } from '../util'
-import { AccountCls } from './account'
-import { ApplicationCls } from './application'
-import { AssetCls } from './asset'
-import { ApplicationTransaction } from './transactions'
+import { Account, AccountCls, ApplicationCls, AssetCls } from './reference'
+import type { ApplicationTransaction } from './transactions'
 
 const ABI_LENGTH_SIZE = 2
 const maxBigIntValue = (bitSize: number) => 2n ** BigInt(bitSize) - 1n
@@ -444,7 +450,7 @@ export class AddressImpl extends Address {
   typeInfo: TypeInfo
   private value: StaticArrayImpl<ByteImpl, 32>
 
-  constructor(typeInfo: TypeInfo | string, value?: Account | string | bytes) {
+  constructor(typeInfo: TypeInfo | string, value?: AccountType | string | bytes) {
     super(value)
     let uint8ArrayValue: Uint8Array
     if (value === undefined) {
@@ -478,7 +484,7 @@ export class AddressImpl extends Address {
     return 32
   }
 
-  get native(): Account {
+  get native(): AccountType {
     return Account(this.value.bytes)
   }
 

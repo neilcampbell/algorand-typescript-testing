@@ -1,5 +1,6 @@
-import { internal, uint64 } from '@algorandfoundation/algorand-typescript'
-import { AbiMetadata } from '../abi-metadata'
+import type { uint64 } from '@algorandfoundation/algorand-typescript'
+import { internal } from '@algorandfoundation/algorand-typescript'
+import type { AbiMetadata } from '../abi-metadata'
 import { ApplicationTransaction } from '../impl/transactions'
 import { lazyContext } from './internal-context'
 

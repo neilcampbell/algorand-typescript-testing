@@ -1,4 +1,5 @@
-import { Bytes, bytes, internal } from '@algorandfoundation/algorand-typescript'
+import type { bytes } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { createHash } from 'crypto'
 import { asUint8Array } from '../src/util'
 

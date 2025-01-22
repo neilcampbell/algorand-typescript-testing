@@ -1,13 +1,15 @@
 import * as algokit from '@algorandfoundation/algokit-utils'
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
-import { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
-import { AssetCreateParams } from '@algorandfoundation/algokit-utils/types/composer'
+import type { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { AssetCreateParams } from '@algorandfoundation/algokit-utils/types/composer'
 import { KmdAccountManager } from '@algorandfoundation/algokit-utils/types/kmd-account-manager'
 import { nullLogger } from '@algorandfoundation/algokit-utils/types/logging'
-import { Account, Bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { uint64, Account as AccountType } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { randomUUID } from 'crypto'
-import { Mutable } from '../src/typescript-helpers'
+import { Account } from '../src/impl/reference'
+import type { Mutable } from '../src/typescript-helpers'
 import { asUint64, getRandomBigInt, getRandomNumber, Lazy } from '../src/util'
 
 export type ABIValue = boolean | number | bigint | string | Uint8Array | ABIValue[]
@@ -99,7 +101,7 @@ export const generateAVMTestAccount = async (): Promise<ReturnType<algokit.Algor
   return account
 }
 
-export const generateTestAccount = async (): Promise<Account> => {
+export const generateTestAccount = async (): Promise<AccountType> => {
   const account = await generateAVMTestAccount()
   return Account(Bytes.fromBase32(account.addr.toString()))
 }

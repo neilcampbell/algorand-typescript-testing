@@ -1,4 +1,5 @@
-import { Account, Application, arc4, Asset, bytes, internal, itxn, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { bytes, internal, itxn, TransactionType, uint64, Account, Application, Asset } from '@algorandfoundation/algorand-typescript'
+import { arc4 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asBytes, asBytesCls, asUint64, asUint64Cls } from '../util'
 import { getApp } from './app-params'

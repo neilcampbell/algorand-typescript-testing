@@ -1,10 +1,9 @@
-import { Account, BaseContract, internal } from '@algorandfoundation/algorand-typescript'
-import { AccountData } from '../impl/account'
-import { ApplicationData } from '../impl/application'
-import { AssetData } from '../impl/asset'
-import { VoterData } from '../impl/voter-params'
-import { TransactionGroup } from '../subcontexts/transaction-context'
-import { TestExecutionContext } from '../test-execution-context'
+import type { Account } from '@algorandfoundation/algorand-typescript'
+import { BaseContract, internal } from '@algorandfoundation/algorand-typescript'
+import type { AccountData, ApplicationData, AssetData } from '../impl/reference'
+import type { VoterData } from '../impl/voter-params'
+import type { TransactionGroup } from '../subcontexts/transaction-context'
+import type { TestExecutionContext } from '../test-execution-context'
 
 /**
  * For accessing implementation specific functions, with a convenient single entry

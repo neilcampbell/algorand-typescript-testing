@@ -10,6 +10,9 @@ const config: TsToolkitConfig = {
     exports: {
       '.': 'index.ts',
       './runtime-helpers': 'runtime-helpers.ts',
+      './internal': 'internal.ts',
+      './internal/arc4': 'internal-arc4.ts',
+      './internal/op': 'internal-op.ts',
       './test-transformer': 'test-transformer/index.ts',
     },
   },

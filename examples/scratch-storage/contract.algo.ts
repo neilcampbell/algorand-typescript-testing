@@ -1,4 +1,5 @@
-import { arc4, assert, BaseContract, Bytes, op, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
+import type { uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, assert, BaseContract, Bytes, op, Uint64 } from '@algorandfoundation/algorand-typescript'
 
 export class ScratchSlotsContract extends arc4.Contract {
   @arc4.abimethod()

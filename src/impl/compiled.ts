@@ -1,5 +1,4 @@
-import {
-  Account,
+import type {
   BaseContract,
   CompileContractOptions,
   CompiledContract,
@@ -7,9 +6,10 @@ import {
   CompileLogicSigOptions,
   LogicSig,
 } from '@algorandfoundation/algorand-typescript'
+import type { Account } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
-import { ConstructorFor } from '../typescript-helpers'
-import { ApplicationData } from './application'
+import type { ConstructorFor } from '../typescript-helpers'
+import type { ApplicationData } from './reference'
 
 export function compileImpl(
   artefact: ConstructorFor<BaseContract> | ConstructorFor<LogicSig>,

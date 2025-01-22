@@ -1,19 +1,25 @@
-import { Account, Application, Asset, bytes, Bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import type {
+  bytes,
+  uint64,
+  Account as AccountType,
+  Application as ApplicationType,
+  Asset as AssetType,
+} from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { randomBytes } from 'crypto'
 import { MAX_BYTES_SIZE, MAX_UINT64, ZERO_ADDRESS } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { AccountData } from '../impl/account'
-import { ApplicationCls, ApplicationData } from '../impl/application'
-import { AssetCls, AssetData } from '../impl/asset'
+import type { AssetData } from '../impl/reference'
+import { Account, AccountData, ApplicationCls, ApplicationData, AssetCls } from '../impl/reference'
 import { asBigInt, asUint64Cls, getRandomBigInt, getRandomBytes } from '../util'
 
 type AccountContextData = Partial<AccountData['account']> & {
-  address?: Account
+  address?: AccountType
   incentiveEligible?: boolean
   lastProposed?: uint64
   lastHeartbeat?: uint64
   optedAssetBalances?: Map<internal.primitives.StubUint64Compat, internal.primitives.StubUint64Compat>
-  optedApplications?: Application[]
+  optedApplications?: ApplicationType[]
 }
 
 type AssetContextData = Partial<AssetData> & { assetId?: internal.primitives.StubUint64Compat }
@@ -49,7 +55,7 @@ export class AvmValueGenerator {
       .substring(0, length)
   }
 
-  account(input?: AccountContextData): Account {
+  account(input?: AccountContextData): AccountType {
     const account = input?.address ?? Account(getRandomBytes(32).asAlgoTs())
 
     if (input?.address && lazyContext.ledger.accountDataMap.has(account)) {
@@ -82,7 +88,7 @@ export class AvmValueGenerator {
     return account
   }
 
-  asset(input?: AssetContextData): Asset {
+  asset(input?: AssetContextData): AssetType {
     const id = input?.assetId
     if (id && lazyContext.ledger.assetDataMap.has(id)) {
       internal.errors.internalError('Asset with such ID already exists in testing context!')
@@ -110,7 +116,7 @@ export class AvmValueGenerator {
     return new AssetCls(assetId.asAlgoTs())
   }
 
-  application(input?: ApplicationContextData): Application {
+  application(input?: ApplicationContextData): ApplicationType {
     const id = input?.applicationId
     if (id && lazyContext.ledger.applicationDataMap.has(id)) {
       internal.errors.internalError('Application with such ID already exists in testing context!')

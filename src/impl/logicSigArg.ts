@@ -1,4 +1,4 @@
-import { bytes, internal } from '@algorandfoundation/algorand-typescript'
+import type { bytes, internal } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asNumber } from '../util'
 

@@ -1,10 +1,19 @@
-import { Account, Application, arc4, Asset, bytes, internal, itxn, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
+import type {
+  bytes,
+  itxn,
+  uint64,
+  Account as AccountType,
+  Application as ApplicationType,
+  Asset as AssetType,
+} from '@algorandfoundation/algorand-typescript'
+import { arc4, internal, TransactionType } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
-import { Mutable } from '../typescript-helpers'
+import type { Mutable } from '../typescript-helpers'
 import { asBytes, asNumber } from '../util'
 import { getApp } from './app-params'
 import { getAsset } from './asset-params'
-import { InnerTxn, InnerTxnFields } from './itxn'
+import type { InnerTxn, InnerTxnFields } from './itxn'
+import { Account, AccountCls } from './reference'
 import {
   ApplicationTransaction,
   AssetConfigTransaction,
@@ -16,14 +25,14 @@ import {
 
 const mapCommonFields = <T extends InnerTxnFields>(
   fields: T,
-): Omit<T, 'sender' | 'note' | 'rekeyTo'> & { sender?: Account; note?: bytes; rekeyTo?: Account } => {
+): Omit<T, 'sender' | 'note' | 'rekeyTo'> & { sender?: AccountType; note?: bytes; rekeyTo?: AccountType } => {
   const { sender, note, rekeyTo, ...rest } = fields
 
   return {
     sender:
-      sender instanceof Account ? sender : typeof sender === 'string' ? Account(asBytes(sender)) : lazyContext.activeApplication.address,
+      sender instanceof AccountCls ? sender : typeof sender === 'string' ? Account(asBytes(sender)) : lazyContext.activeApplication.address,
     note: note !== undefined ? asBytes(note) : undefined,
-    rekeyTo: rekeyTo instanceof Account ? rekeyTo : typeof rekeyTo === 'string' ? Account(asBytes(rekeyTo)) : undefined,
+    rekeyTo: rekeyTo instanceof AccountCls ? rekeyTo : typeof rekeyTo === 'string' ? Account(asBytes(rekeyTo)) : undefined,
     ...rest,
   }
 }
@@ -117,8 +126,10 @@ export class AssetFreezeInnerTxn extends AssetFreezeTransaction implements itxn.
   /* @internal */
   constructor(fields: itxn.AssetFreezeFields) {
     const { freezeAsset, freezeAccount, ...rest } = mapCommonFields(fields)
-    const asset: Asset | undefined = freezeAsset instanceof internal.primitives.Uint64Cls ? getAsset(freezeAsset) : (freezeAsset as Asset)
-    const account: Account | undefined = typeof freezeAccount === 'string' ? Account(asBytes(freezeAccount)) : (freezeAccount as Account)
+    const asset: AssetType | undefined =
+      freezeAsset instanceof internal.primitives.Uint64Cls ? getAsset(freezeAsset) : (freezeAsset as AssetType)
+    const account: AccountType | undefined =
+      typeof freezeAccount === 'string' ? Account(asBytes(freezeAccount)) : (freezeAccount as AccountType)
     super({
       freezeAsset: asset,
       freezeAccount: account,
@@ -150,7 +161,7 @@ export class ApplicationInnerTxn extends ApplicationTransaction implements itxn.
           ? compiledApp
           : appId instanceof internal.primitives.Uint64Cls
             ? getApp(appId)
-            : (appId as Application),
+            : (appId as ApplicationType),
       onCompletion:
         typeof onCompletion === 'string'
           ? (onCompletion as arc4.OnCompleteActionStr)

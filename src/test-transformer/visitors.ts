@@ -3,7 +3,7 @@ import path from 'path'
 import ts from 'typescript'
 import type { TypeInfo } from '../encoders'
 import { instanceOfAny } from '../typescript-helpers'
-import { TransformerConfig } from './index'
+import type { TransformerConfig } from './index'
 import { nodeFactory } from './node-factory'
 import {
   supportedAugmentedAssignmentBinaryOpString,
@@ -13,8 +13,12 @@ import {
 
 const { factory } = ts
 
+const algotsModuleRegExp = new RegExp(/^("|')@algorandfoundation\/algorand-typescript(\/|"|')/)
+const algotsModuleSpecifier = '@algorandfoundation/algorand-typescript'
+const testingInternalModuleSpecifier = (testingPackageName: string) => `${testingPackageName}/internal`
 const algotsModulePaths = [
-  `@algorandfoundation${path.sep}algorand-typescript`,
+  algotsModuleSpecifier,
+  '/puya-ts/packages/algo-ts/',
   `${path.sep}puya-ts${path.sep}packages${path.sep}algo-ts${path.sep}`,
 ]
 
@@ -68,6 +72,9 @@ export class SourceFileVisitor {
   }
 
   private visit = (node: ts.Node): ts.Node => {
+    if (ts.isImportDeclaration(node)) {
+      return new ImportDeclarationVisitor(this.context, this.helper, this.config, node).result()
+    }
     if (ts.isFunctionLike(node)) {
       return new FunctionLikeDecVisitor(this.context, this.helper, node).result()
     }
@@ -82,6 +89,37 @@ export class SourceFileVisitor {
     }
 
     return ts.visitEachChild(node, this.visit, this.context)
+  }
+}
+
+class ImportDeclarationVisitor {
+  constructor(
+    private context: ts.TransformationContext,
+    private helper: VisitorHelper,
+    private config: TransformerConfig,
+    private declarationNode: ts.ImportDeclaration,
+  ) {}
+
+  public result(): ts.ImportDeclaration {
+    const moduleSpecifier = this.declarationNode.moduleSpecifier.getText()
+    if (this.declarationNode.importClause?.isTypeOnly || !algotsModuleRegExp.test(moduleSpecifier)) return this.declarationNode
+
+    const namedBindings = this.declarationNode.importClause?.namedBindings
+    const nonTypeNamedBindings =
+      namedBindings && ts.isNamedImports(namedBindings) ? (namedBindings as ts.NamedImports).elements.filter((e) => !e.isTypeOnly) : []
+    return factory.createImportDeclaration(
+      this.declarationNode.modifiers,
+      nonTypeNamedBindings.length
+        ? factory.createImportClause(false, this.declarationNode.importClause?.name, factory.createNamedImports(nonTypeNamedBindings))
+        : this.declarationNode.importClause,
+      factory.createStringLiteral(
+        moduleSpecifier
+          .replace(algotsModuleSpecifier, testingInternalModuleSpecifier(this.config.testingPackageName))
+          .replace(/^("|')/, '')
+          .replace(/("|')$/, ''),
+      ),
+      this.declarationNode.attributes,
+    )
   }
 }
 
@@ -377,18 +415,7 @@ const tryGetStubbedFunctionName = (node: ts.CallExpression, helper: VisitorHelpe
     if (sourceFileName && !algotsModulePaths.some((s) => sourceFileName.includes(s))) return undefined
   }
   const functionName = functionSymbol?.getName() ?? identityExpression.text
-  const stubbedFunctionNames = [
-    'interpretAsArc4',
-    'decodeArc4',
-    'encodeArc4',
-    'TemplateVar',
-    'ensureBudget',
-    'emit',
-    'compile',
-    'urange',
-    'match',
-    'assertMatch',
-  ]
+  const stubbedFunctionNames = ['interpretAsArc4', 'decodeArc4', 'encodeArc4', 'emit']
   return stubbedFunctionNames.includes(functionName) ? functionName : undefined
 }
 

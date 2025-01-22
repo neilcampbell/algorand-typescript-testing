@@ -1,4 +1,5 @@
-import { bytes, op } from '@algorandfoundation/algorand-typescript'
+import type { bytes } from '@algorandfoundation/algorand-typescript'
+import { op } from '@algorandfoundation/algorand-typescript'
 import { ABI_RETURN_VALUE_LOG_PREFIX } from './constants'
 import { asNumber } from './util'
 

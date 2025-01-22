@@ -1,4 +1,4 @@
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { afterEach } from 'node:test'
 import { describe, expect, it } from 'vitest'

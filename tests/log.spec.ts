@@ -1,4 +1,4 @@
-import { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
+import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Bytes, log, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import {
@@ -16,7 +16,7 @@ import {
 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, describe, expect, it } from 'vitest'
 import { MAX_UINT512, MAX_UINT64 } from '../src/constants'
-import { ApplicationTransaction } from '../src/impl/transactions'
+import type { ApplicationTransaction } from '../src/impl/transactions'
 import { asBigUint, asBigUintCls, asUint8Array } from '../src/util'
 import { PrimitiveOpsContract } from './artifacts/primitive-ops/contract.algo'
 import appSpecJson from './artifacts/primitive-ops/data/PrimitiveOpsContract.arc32.json'

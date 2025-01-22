@@ -1,4 +1,5 @@
-import { Account, arc4, assert, op, Txn, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { Account, uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, assert, op, Txn } from '@algorandfoundation/algorand-typescript'
 import { Address } from '@algorandfoundation/algorand-typescript/arc4'
 
 function get_1st_ref_index(): uint64 {

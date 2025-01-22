@@ -1,4 +1,5 @@
-import { Account, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { Account } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { getAccount } from './acct-params'
 

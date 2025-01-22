@@ -1,11 +1,9 @@
-import { Account, Application, Asset, BaseContract, bytes, internal, LogicSig, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { BaseContract, bytes, LogicSig, uint64, Account as AccountType } from '@algorandfoundation/algorand-typescript'
+import { internal } from '@algorandfoundation/algorand-typescript'
 import { captureMethodConfig } from './abi-metadata'
 import { DEFAULT_TEMPLATE_VAR_PREFIX } from './constants'
-import { DecodedLogs, LogDecoding } from './decode-logs'
+import type { DecodedLogs, LogDecoding } from './decode-logs'
 import * as ops from './impl'
-import { AccountCls } from './impl/account'
-import { ApplicationCls } from './impl/application'
-import { AssetCls } from './impl/asset'
 import {
   applicationCall as itxnApplicationCall,
   assetConfig as itxnAssetConfig,
@@ -15,11 +13,12 @@ import {
   payment as itxnPayment,
   submitGroup as itxnSubmitGroup,
 } from './impl/inner-transactions'
+import { Account } from './impl/reference'
 import { Box, BoxMap, BoxRef, GlobalState, LocalState } from './impl/state'
 import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
-import { ConstructorFor, DeliberateAny } from './typescript-helpers'
+import type { ConstructorFor, DeliberateAny } from './typescript-helpers'
 import { getRandomBytes } from './util'
 import { ValueGenerator } from './value-generators'
 
@@ -28,11 +27,11 @@ export class TestExecutionContext implements internal.ExecutionContext {
   #ledgerContext: LedgerContext
   #txnContext: TransactionContext
   #valueGenerator: ValueGenerator
-  #defaultSender: Account
+  #defaultSender: AccountType
   #activeLogicSigArgs: bytes[]
   #template_vars: Record<string, DeliberateAny> = {}
   #compiledApps: Array<[ConstructorFor<BaseContract>, uint64]> = []
-  #compiledLogicSigs: Array<[ConstructorFor<LogicSig>, Account]> = []
+  #compiledLogicSigs: Array<[ConstructorFor<LogicSig>, AccountType]> = []
 
   constructor(defaultSenderAddress?: bytes) {
     internal.ctxMgr.instance = this
@@ -42,26 +41,6 @@ export class TestExecutionContext implements internal.ExecutionContext {
     this.#valueGenerator = new ValueGenerator()
     this.#defaultSender = Account(defaultSenderAddress ?? getRandomBytes(32).asAlgoTs())
     this.#activeLogicSigArgs = []
-  }
-
-  /* @internal */
-  account(address?: bytes): Account {
-    return new AccountCls(address)
-  }
-
-  /* @internal */
-  application(id?: uint64): Application {
-    return new ApplicationCls(id)
-  }
-
-  /* @internal */
-  asset(id?: uint64): Asset {
-    return new AssetCls(id)
-  }
-
-  /* @internal */
-  log(value: bytes): void {
-    this.txn.appendLog(value)
   }
 
   exportLogs<const T extends [...LogDecoding[]]>(appId: uint64, ...decoding: T): DecodedLogs<T> {
@@ -88,7 +67,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
     return this.#valueGenerator
   }
 
-  get defaultSender(): Account {
+  get defaultSender(): AccountType {
     return this.#defaultSender
   }
 
@@ -174,7 +153,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
     return this.#compiledLogicSigs.find(([c, _]) => c === logicsig)
   }
 
-  setCompiledLogicSig(c: ConstructorFor<LogicSig>, account: Account) {
+  setCompiledLogicSig(c: ConstructorFor<LogicSig>, account: AccountType) {
     const existing = this.getCompiledLogicSig(c)
     if (existing) {
       existing[1] = account

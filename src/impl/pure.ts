@@ -1,4 +1,5 @@
-import { Base64, biguint, Bytes, bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { biguint, bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import { Base64, Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT64, MAX_UINT8, UINT64_SIZE } from '../constants'
 import { notImplementedError, testInvariant } from '../errors'
 import { asBigUint, asBytes, asBytesCls, asMaybeBytesCls, asMaybeUint64Cls, asUint64Cls, binaryStringToBytes } from '../util'

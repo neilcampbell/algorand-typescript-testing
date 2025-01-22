@@ -1,4 +1,5 @@
-import { arc4, Base64, BigUint, Bytes, bytes, err, op, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, Base64, BigUint, Bytes, err, op } from '@algorandfoundation/algorand-typescript'
 
 export class MiscellaneousOpsContract extends arc4.Contract {
   @arc4.abimethod()

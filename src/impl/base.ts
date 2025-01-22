@@ -1,4 +1,5 @@
-import { bytes, internal, Uint64, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import { internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import type { TypeInfo } from '../encoders'
 
