@@ -1,16 +1,21 @@
-import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import type { bytes } from '@algorandfoundation/algorand-typescript'
 import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect } from 'vitest'
 import { MAX_BYTES_SIZE } from '../../src/constants'
 import { sha256 } from '../../src/impl'
 import { asUint8Array } from '../../src/util'
-import appSpecJson from '../artifacts/primitive-ops/data/PrimitiveOpsContract.arc32.json'
-import { getAlgorandAppClient, getAvmResult, getAvmResultRaw } from '../avm-invoker'
+import { getAvmResult, getAvmResultRaw } from '../avm-invoker'
+import { createArc4TestFixture } from '../test-fixture'
 import { getSha256Hash, padUint8Array } from '../util'
 
 describe('Bytes', async () => {
-  const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/primitive-ops/data/PrimitiveOpsContract.arc56.json', {
+    PrimitiveOpsContract: { deployParams: { createParams: { extraProgramPages: undefined } } },
+  })
+
+  beforeAll(async () => {
+    await localnetFixture.newScope()
+  })
 
   describe.each([
     ['', '', 0, 0],
@@ -22,7 +27,7 @@ describe('Bytes', async () => {
     ['1', '0', 0, MAX_BYTES_SIZE - 2],
     ['1', '0', MAX_BYTES_SIZE - 2, 0],
   ])('concat', async (a, b, padASize, padBSize) => {
-    it(`${a} concat ${b}`, async () => {
+    test(`${a} concat ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const uint8ArrayA = internal.encodingUtil.utf8ToUint8Array(a)
       const uint8ArrayB = internal.encodingUtil.utf8ToUint8Array(b)
       const avmResult = (await getAvmResult({ appClient }, `verify_bytes_add`, uint8ArrayA, uint8ArrayB, padASize, padBSize))!
@@ -40,7 +45,7 @@ describe('Bytes', async () => {
     ['1', '', 0, MAX_BYTES_SIZE],
     ['', '', MAX_BYTES_SIZE, MAX_BYTES_SIZE],
   ])('concat overflow', async (a, b, padASize, padBSize) => {
-    it(`${a} concat ${b} overflows`, async () => {
+    test(`${a} concat ${b} overflows`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const uint8ArrayA = internal.encodingUtil.utf8ToUint8Array(a)
       const uint8ArrayB = internal.encodingUtil.utf8ToUint8Array(b)
 
@@ -75,7 +80,7 @@ describe('Bytes', async () => {
       ['11', '001'],
       ['', '11'],
     ])(`bitwise ${op}`, async (a, b) => {
-      it(`${a} bitwise ${op} ${b}`, async () => {
+      test(`${a} bitwise ${op} ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
         const bytesA = Bytes(a)
         const bytesB = Bytes(b)
 
@@ -95,7 +100,7 @@ describe('Bytes', async () => {
     ['11100', MAX_BYTES_SIZE - 5],
     ['', MAX_BYTES_SIZE],
   ])('bitwise invert', async (a, padSize) => {
-    it(`~${a}`, async () => {
+    test(`~${a}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const uint8ArrayA = internal.encodingUtil.utf8ToUint8Array(a)
       const avmResult = (await getAvmResult({ appClient }, `verify_bytes_not`, uint8ArrayA, padSize))!
 
@@ -115,7 +120,7 @@ describe('Bytes', async () => {
     ['11', '001'],
     ['', '00'],
   ])('equals', async (a, b) => {
-    it(`${a} equals ${b}`, async () => {
+    test(`${a} equals ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const bytesA = Bytes(a)
       const bytesB = Bytes(b)
       const uint8ArrayA = internal.encodingUtil.utf8ToUint8Array(a)
@@ -135,7 +140,7 @@ describe('Bytes', async () => {
     ['11', '001'],
     ['', '00'],
   ])('not equals', async (a, b) => {
-    it(`${a} not equals ${b}`, async () => {
+    test(`${a} not equals ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const bytesA = Bytes(a)
       const bytesB = Bytes(b)
       const uint8ArrayA = internal.encodingUtil.utf8ToUint8Array(a)
@@ -148,21 +153,21 @@ describe('Bytes', async () => {
   })
 
   describe('from encoded string', () => {
-    it('hex', () => {
+    test('hex', () => {
       const hex = 'FF'
       const bytes = Bytes.fromHex(hex)
       const resultUint8Array = asUint8Array(bytes)
       expect(resultUint8Array).toEqual(Uint8Array.from([0xff]))
     })
 
-    it('base64', () => {
+    test('base64', () => {
       const base64 = '/w=='
       const bytes = Bytes.fromBase64(base64)
       const resultUint8Array = asUint8Array(bytes)
       expect(resultUint8Array).toEqual(Uint8Array.from([0xff]))
     })
 
-    it('base32', () => {
+    test('base32', () => {
       const base32 = '74======'
       const bytes = Bytes.fromBase32(base32)
       const resultUint8Array = asUint8Array(bytes)
@@ -171,7 +176,7 @@ describe('Bytes', async () => {
   })
 
   describe.each([MAX_BYTES_SIZE + 1, MAX_BYTES_SIZE * 2])('value overflows', (size) => {
-    it(`${size} bytes`, () => {
+    test(`${size} bytes`, () => {
       const a = new Uint8Array(size)
       expect(() => Bytes(a)).toThrow(/Bytes length \d+ exceeds maximum length/)
     })
@@ -182,7 +187,7 @@ describe('Bytes', async () => {
     ['ABC', new Uint8Array([0x41, 0x42, 0x43])],
     [new Uint8Array([0xff, 0x00]), new Uint8Array([0xff, 0x00])],
   ])('fromCompat', (a, b) => {
-    it(`${a} fromCompat`, async () => {
+    test(`${a} fromCompat`, async () => {
       const result = internal.primitives.BytesCls.fromCompat(a)
       expect(result.asUint8Array()).toEqual(b)
     })

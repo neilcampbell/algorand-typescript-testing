@@ -13,7 +13,7 @@ import {
   payment as itxnPayment,
   submitGroup as itxnSubmitGroup,
 } from './impl/inner-transactions'
-import { Account } from './impl/reference'
+import { Account, AccountCls } from './impl/reference'
 import { Box, BoxMap, BoxRef, GlobalState, LocalState } from './impl/state'
 import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
@@ -65,6 +65,10 @@ export class TestExecutionContext implements internal.ExecutionContext {
 
   get defaultSender(): AccountType {
     return this.#defaultSender
+  }
+
+  set defaultSender(val: bytes | AccountType) {
+    this.#defaultSender = val instanceof AccountCls ? val : Account(val as bytes)
   }
 
   /* @internal */

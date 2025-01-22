@@ -1,18 +1,20 @@
-import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { afterEach } from 'node:test'
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect } from 'vitest'
 import { MultiBases } from './artifacts/multi-inheritance/contract.algo'
-import appSpecJson from './artifacts/multi-inheritance/data/MultiBases.arc32.json'
-import { getAlgorandAppClient, getAvmResult } from './avm-invoker'
+import { getAvmResult } from './avm-invoker'
+import { createArc4TestFixture } from './test-fixture'
 
 describe('multi-inheritance', async () => {
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/multi-inheritance/data/MultiBases.arc56.json', { MultiBases: {} })
   const ctx = new TestExecutionContext()
-  const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)
 
+  beforeAll(async () => {
+    await localnetFixture.newScope()
+  })
   afterEach(() => ctx.reset())
 
-  it('should be able to call methods from super classes', async () => {
+  test('should be able to call methods from super classes', async ({ appClientMultiBases: appClient }) => {
     const contract = ctx.contract.create(MultiBases)
 
     const avmMethod1Result = await getAvmResult({ appClient }, 'methodOne')
