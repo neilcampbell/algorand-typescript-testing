@@ -1,4 +1,4 @@
-import type { BaseContract, bytes, LogicSig, uint64, Account as AccountType } from '@algorandfoundation/algorand-typescript'
+import type { Account as AccountType, BaseContract, bytes, LogicSig, uint64 } from '@algorandfoundation/algorand-typescript'
 import { internal } from '@algorandfoundation/algorand-typescript'
 import { captureMethodConfig } from './abi-metadata'
 import { DEFAULT_TEMPLATE_VAR_PREFIX } from './constants'
@@ -51,6 +51,7 @@ export class TestExecutionContext implements internal.ExecutionContext {
   get op() {
     return ops
   }
+
   get contract() {
     return this.#contractContext
   }

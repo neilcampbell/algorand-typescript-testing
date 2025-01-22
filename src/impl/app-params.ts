@@ -1,10 +1,11 @@
 import type {
+  Account as AccountType,
+  Application as ApplicationType,
   bytes,
   gtxn,
   internal,
+  op,
   uint64,
-  Account as AccountType,
-  Application as ApplicationType,
 } from '@algorandfoundation/algorand-typescript'
 import { Bytes, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
@@ -32,7 +33,7 @@ export const getApp = (app: ApplicationType | internal.primitives.StubUint64Comp
   }
 }
 
-export const AppParams: internal.opTypes.AppParamsType = {
+export const AppParams: typeof op.AppParams = {
   appApprovalProgram(a: ApplicationType | internal.primitives.StubUint64Compat): readonly [bytes, boolean] {
     const app = getApp(a)
     return app === undefined ? [Bytes(), false] : [app.approvalProgram, true]

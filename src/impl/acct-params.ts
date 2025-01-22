@@ -1,5 +1,4 @@
-import type { gtxn, internal, uint64 } from '@algorandfoundation/algorand-typescript'
-import type { Account, Application } from '@algorandfoundation/algorand-typescript'
+import type { Account, Application, gtxn, internal, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asMaybeUint64Cls } from '../util'
 import { getApp } from './app-params'
@@ -37,7 +36,7 @@ export const appOptedIn = (
   return account.isOptedIn(app)
 }
 
-export const AcctParams: internal.opTypes.AcctParamsType = {
+export const AcctParams: typeof op.AcctParams = {
   acctBalance(a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const acct = getAccount(a)
     return [acct.balance, acct.balance !== 0]

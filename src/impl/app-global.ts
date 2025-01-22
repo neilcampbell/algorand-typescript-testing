@@ -1,11 +1,11 @@
-import type { Application, bytes, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { Application, bytes, internal, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { Bytes, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { toBytes } from '../encoders'
 import { asBytes } from '../util'
 import { getApp } from './app-params'
 
-export const AppGlobal: internal.opTypes.AppGlobalType = {
+export const AppGlobal: typeof op.AppGlobal = {
   delete(a: internal.primitives.StubBytesCompat): void {
     lazyContext.ledger.setGlobalState(lazyContext.activeApplication, a, undefined)
   },

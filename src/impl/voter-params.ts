@@ -1,5 +1,4 @@
-import type { internal, uint64 } from '@algorandfoundation/algorand-typescript'
-import type { Account } from '@algorandfoundation/algorand-typescript'
+import type { Account, internal, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { getAccount } from './acct-params'
 
@@ -18,7 +17,7 @@ const getVoterData = (a: Account | internal.primitives.StubUint64Compat): VoterD
   return lazyContext.getVoterData(acct)
 }
 
-export const VoterParams: internal.opTypes.VoterParamsType = {
+export const VoterParams: typeof op.VoterParams = {
   voterBalance: function (a: Account | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const data = getVoterData(a)
     return [data.balance, data.balance !== 0]

@@ -1,4 +1,4 @@
-import type { bytes, gtxn, internal, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { bytes, gtxn, internal, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { type Account as AccountType, type Asset as AssetType, Bytes, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asMaybeUint64Cls, asUint64 } from '../util'
@@ -25,7 +25,7 @@ export const getAsset = (asset: AssetType | internal.primitives.StubUint64Compat
   }
 }
 
-export const AssetParams: internal.opTypes.AssetParamsType = {
+export const AssetParams: typeof op.AssetParams = {
   assetTotal(a: AssetType | internal.primitives.StubUint64Compat): readonly [uint64, boolean] {
     const asset = getAsset(a)
     return asset === undefined ? [Uint64(0), false] : [asset.total, true]

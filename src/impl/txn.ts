@@ -1,4 +1,4 @@
-import type { bytes, uint64, Account, Application, Asset } from '@algorandfoundation/algorand-typescript'
+import type { Account, Application, Asset, bytes, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { arc4, internal, TransactionType } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asNumber, asUint64, asUint64Cls } from '../util'
@@ -15,7 +15,7 @@ export const gaid = (a: internal.primitives.StubUint64Compat): uint64 => {
   }
 }
 
-export const Txn: internal.opTypes.TxnType = {
+export const Txn: typeof op.Txn = {
   get sender(): Account {
     return lazyContext.activeGroup.getTransaction().sender
   },
