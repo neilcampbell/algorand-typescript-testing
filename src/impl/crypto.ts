@@ -1,4 +1,4 @@
-import type { bytes, gtxn, MimcConfigurations, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import type { bytes, gtxn, MimcConfigurations, op, VrfVerify } from '@algorandfoundation/algorand-typescript'
 import { arc4, Bytes, Ecdsa, internal } from '@algorandfoundation/algorand-typescript'
 import elliptic from 'elliptic'
 import js_sha256 from 'js-sha256'
@@ -138,7 +138,7 @@ export const vrfVerify = (
   notImplementedError('vrfVerify')
 }
 
-export const EllipticCurve = new Proxy({} as internal.opTypes.EllipticCurveType, {
+export const EllipticCurve = new Proxy({} as typeof op.EllipticCurve, {
   get: (_target, prop) => {
     notImplementedError(`EllipticCurve.${prop.toString()}`)
   },

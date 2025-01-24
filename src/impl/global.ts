@@ -1,5 +1,5 @@
-import type { bytes, uint64, Account as AccountType, Application as ApplicationType } from '@algorandfoundation/algorand-typescript'
-import { Bytes, internal, op, Uint64 } from '@algorandfoundation/algorand-typescript'
+import type { Account as AccountType, Application as ApplicationType, bytes, uint64, op } from '@algorandfoundation/algorand-typescript'
+import { Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import {
   DEFAULT_ACCOUNT_MIN_BALANCE,
   DEFAULT_ASSET_CREATE_MIN_BALANCE,
@@ -11,6 +11,7 @@ import {
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { getObjectReference } from '../util'
+import { sha256 } from './crypto'
 import { Account, getApplicationAddress } from './reference'
 
 export class GlobalData {
@@ -54,7 +55,7 @@ const getGlobalData = (): GlobalData => {
 const getMissingValueErrorMessage = (name: keyof GlobalData) =>
   `'Global' object has no value set for attribute named '${name}'. Use \`context.ledger.patchGlobalData({${name}: your_value})\` to set the value in your test setup."`
 
-export const Global: internal.opTypes.GlobalType = {
+export const Global: typeof op.Global = {
   /**
    * microalgos
    */
@@ -148,7 +149,7 @@ export const Global: internal.opTypes.GlobalType = {
     if (data.groupId !== undefined) return data.groupId
     const reference = getObjectReference(lazyContext.activeGroup)
     const referenceBytes = Bytes(internal.encodingUtil.bigIntToUint8Array(reference))
-    return op.sha256(referenceBytes)
+    return sha256(referenceBytes)
   },
 
   /**

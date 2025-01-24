@@ -1,4 +1,4 @@
-import type { bytes, internal, uint64, Account, Application } from '@algorandfoundation/algorand-typescript'
+import type { Account, Application, bytes, internal, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { Bytes, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { toBytes } from '../encoders'
@@ -6,7 +6,7 @@ import { asBytes } from '../util'
 import { getAccount } from './acct-params'
 import { getApp } from './app-params'
 
-export const AppLocal: internal.opTypes.AppLocalType = {
+export const AppLocal: typeof op.AppLocal = {
   delete: function (a: Account | internal.primitives.StubUint64Compat, b: internal.primitives.StubBytesCompat): void {
     const app = lazyContext.activeApplication
     const account = getAccount(a)

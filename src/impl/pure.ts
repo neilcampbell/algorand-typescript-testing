@@ -1,4 +1,4 @@
-import type { biguint, bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { biguint, bytes, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { Base64, Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { BITS_IN_BYTE, MAX_BYTES_SIZE, MAX_UINT64, MAX_UINT8, UINT64_SIZE } from '../constants'
 import { notImplementedError, testInvariant } from '../errors'
@@ -329,7 +329,7 @@ export const substring = (
   return bytesValue.slice(start, end).asAlgoTs()
 }
 
-export const JsonRef = new Proxy({} as internal.opTypes.JsonRefType, {
+export const JsonRef = new Proxy({} as typeof op.JsonRef, {
   get: (_target, prop) => {
     notImplementedError(`JsonRef.${prop.toString()}`)
   },

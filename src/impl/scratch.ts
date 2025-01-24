@@ -1,8 +1,8 @@
-import type { bytes, uint64 } from '@algorandfoundation/algorand-typescript'
+import type { bytes, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { internal } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 
-export const gloadUint64: internal.opTypes.GloadUint64Type = (
+export const gloadUint64: typeof op.gloadUint64 = (
   a: internal.primitives.StubUint64Compat,
   b: internal.primitives.StubUint64Compat,
 ): uint64 => {
@@ -14,7 +14,7 @@ export const gloadUint64: internal.opTypes.GloadUint64Type = (
   throw new internal.errors.InternalError('invalid scratch slot type')
 }
 
-export const gloadBytes: internal.opTypes.GloadBytesType = (
+export const gloadBytes: typeof op.gloadBytes = (
   a: internal.primitives.StubUint64Compat,
   b: internal.primitives.StubUint64Compat,
 ): bytes => {
@@ -26,7 +26,7 @@ export const gloadBytes: internal.opTypes.GloadBytesType = (
   throw new internal.errors.InternalError('invalid scratch slot type')
 }
 
-export const Scratch: internal.opTypes.ScratchType = {
+export const Scratch: typeof op.Scratch = {
   loadBytes: function (a: internal.primitives.StubUint64Compat): bytes {
     const result = lazyContext.activeGroup.activeTransaction.getScratchSlot(a)
     if (result instanceof internal.primitives.BytesCls) {

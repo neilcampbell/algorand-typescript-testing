@@ -1,4 +1,4 @@
-import type { internal, uint64, Account, Asset } from '@algorandfoundation/algorand-typescript'
+import type { Account, Asset, internal, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { Uint64 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { getAccount } from './acct-params'
@@ -23,7 +23,7 @@ const getAssetHolding = (
   return holding
 }
 
-export const AssetHolding: internal.opTypes.AssetHoldingType = {
+export const AssetHolding: typeof op.AssetHolding = {
   assetBalance(
     a: Account | internal.primitives.StubUint64Compat,
     b: Asset | internal.primitives.StubUint64Compat,

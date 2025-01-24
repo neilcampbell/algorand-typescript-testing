@@ -1,4 +1,14 @@
-import type { bytes, internal, itxn, TransactionType, uint64, Account, Application, Asset } from '@algorandfoundation/algorand-typescript'
+import type {
+  Account,
+  Application,
+  Asset,
+  bytes,
+  internal,
+  itxn,
+  op,
+  TransactionType,
+  uint64,
+} from '@algorandfoundation/algorand-typescript'
 import { arc4 } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asBytes, asBytesCls, asUint64, asUint64Cls } from '../util'
@@ -22,7 +32,7 @@ export type InnerTxnFields = (
   | itxn.ApplicationCallFields
 ) & { type?: TransactionType }
 
-export const GITxn: internal.opTypes.GITxnType = {
+export const GITxn: typeof op.GITxn = {
   sender: function (t: internal.primitives.StubUint64Compat): Account {
     return lazyContext.activeGroup.getItxnGroup().getInnerTxn(t).sender
   },
@@ -229,7 +239,7 @@ export const GITxn: internal.opTypes.GITxnType = {
     return lazyContext.activeGroup.getItxnGroup().getApplicationInnerTxn(t).numClearStateProgramPages
   },
 }
-export const ITxn: internal.opTypes.ITxnType = {
+export const ITxn: typeof op.ITxn = {
   /**
    * 32 byte address
    */
@@ -649,7 +659,7 @@ const getConstructingItxn = <T extends InnerTxnFields>(): T => {
   return lazyContext.activeGroup.constructingItxn as T
 }
 
-export const ITxnCreate: internal.opTypes.ITxnCreateType = {
+export const ITxnCreate: typeof op.ITxnCreate = {
   begin: function (): void {
     lazyContext.activeGroup.beginInnerTransactionGroup()
   },
