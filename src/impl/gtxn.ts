@@ -210,3 +210,11 @@ export const GTxn: typeof op.GTxn = {
     return lazyContext.activeGroup.getApplicationTransaction(t).numClearStateProgramPages
   },
 }
+
+export const Transaction = (index: uint64) => lazyContext.txn.activeGroup.getTransaction(index)
+export const PaymentTxn = (index: uint64) => lazyContext.txn.activeGroup.getPaymentTransaction(index)
+export const KeyRegistrationTxn = (index: uint64) => lazyContext.txn.activeGroup.getKeyRegistrationTransaction(index)
+export const AssetConfigTxn = (index: uint64) => lazyContext.txn.activeGroup.getAssetConfigTransaction(index)
+export const AssetTransferTxn = (index: uint64) => lazyContext.txn.activeGroup.getAssetTransferTransaction(index)
+export const AssetFreezeTxn = (index: uint64) => lazyContext.txn.activeGroup.getAssetFreezeTransaction(index)
+export const ApplicationTxn = (index: uint64) => lazyContext.txn.activeGroup.getApplicationTransaction(index)

@@ -1,5 +1,15 @@
 import type { Account, bytes, uint64 } from '@algorandfoundation/algorand-typescript'
-import { assert, BaseContract, Bytes, GlobalState, LocalState, op, TransactionType, Uint64 } from '@algorandfoundation/algorand-typescript'
+import {
+  assert,
+  BaseContract,
+  Bytes,
+  GlobalState,
+  gtxn,
+  LocalState,
+  op,
+  TransactionType,
+  Uint64,
+} from '@algorandfoundation/algorand-typescript'
 
 const VOTE_PRICE = Uint64(10_000)
 export default class SimpleVotingContract extends BaseContract {
@@ -34,6 +44,7 @@ export default class SimpleVotingContract extends BaseContract {
 
   private vote(voter: Account): boolean {
     assert(op.Global.groupSize === Uint64(2))
+    assert(gtxn.PaymentTxn(1).amount === VOTE_PRICE)
     assert(op.GTxn.amount(1) === VOTE_PRICE)
     assert(op.GTxn.typeEnum(1) === TransactionType.Payment)
 

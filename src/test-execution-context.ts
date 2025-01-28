@@ -3,7 +3,7 @@ import { internal } from '@algorandfoundation/algorand-typescript'
 import { captureMethodConfig } from './abi-metadata'
 import { DEFAULT_TEMPLATE_VAR_PREFIX } from './constants'
 import type { DecodedLogs, LogDecoding } from './decode-logs'
-import * as ops from './impl'
+import { ApplicationTxn, AssetConfigTxn, AssetFreezeTxn, AssetTransferTxn, KeyRegistrationTxn, PaymentTxn, Transaction } from './impl/gtxn'
 import {
   applicationCall as itxnApplicationCall,
   assetConfig as itxnAssetConfig,
@@ -47,11 +47,6 @@ export class TestExecutionContext implements internal.ExecutionContext {
     return this.txn.exportLogs(appId, ...decoding)
   }
 
-  /* @internal */
-  get op() {
-    return ops
-  }
-
   get contract() {
     return this.#contractContext
   }
@@ -82,13 +77,13 @@ export class TestExecutionContext implements internal.ExecutionContext {
   /* @internal */
   get gtxn() {
     return {
-      Transaction: (index: uint64) => this.txn.activeGroup.getTransaction(index),
-      PaymentTxn: (index: uint64) => this.txn.activeGroup.getPaymentTransaction(index),
-      KeyRegistrationTxn: (index: uint64) => this.txn.activeGroup.getKeyRegistrationTransaction(index),
-      AssetConfigTxn: (index: uint64) => this.txn.activeGroup.getAssetConfigTransaction(index),
-      AssetTransferTxn: (index: uint64) => this.txn.activeGroup.getAssetTransferTransaction(index),
-      AssetFreezeTxn: (index: uint64) => this.txn.activeGroup.getAssetFreezeTransaction(index),
-      ApplicationTxn: (index: uint64) => this.txn.activeGroup.getApplicationTransaction(index),
+      Transaction,
+      PaymentTxn,
+      KeyRegistrationTxn,
+      AssetConfigTxn,
+      AssetTransferTxn,
+      AssetFreezeTxn,
+      ApplicationTxn,
     }
   }
 
