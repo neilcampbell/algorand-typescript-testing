@@ -238,16 +238,23 @@ function loadFromPath(pathToLoad: string): Arc56Contract[] {
     const fileContent = fs.readFileSync(pathToLoad, 'utf-8')
     appSpecs.push(JSON.parse(fileContent))
   } else if (isDir) {
-    const dir = fs.opendirSync(pathToLoad)
+    using dirHandle = getDirHandle(pathToLoad)
     let dirent
-    while ((dirent = dir.readSync()) !== null) {
+    while ((dirent = dirHandle.dir.readSync()) !== null) {
       if (dirent.isFile() && dirent.name.endsWith('.arc56.json')) {
         const fullFilePath = path.join(pathToLoad, dirent.name)
         const fileContent = fs.readFileSync(fullFilePath, 'utf-8')
         appSpecs.push(JSON.parse(fileContent))
       }
     }
-    dir.closeSync()
   }
   return appSpecs
+}
+
+const getDirHandle = (path: string) => {
+  const dir = fs.opendirSync(path)
+  return {
+    dir,
+    [Symbol.dispose]: () => dir.closeSync(),
+  }
 }
