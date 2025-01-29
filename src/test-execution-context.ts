@@ -3,18 +3,7 @@ import { internal } from '@algorandfoundation/algorand-typescript'
 import { captureMethodConfig } from './abi-metadata'
 import { DEFAULT_TEMPLATE_VAR_PREFIX } from './constants'
 import type { DecodedLogs, LogDecoding } from './decode-logs'
-import { ApplicationTxn, AssetConfigTxn, AssetFreezeTxn, AssetTransferTxn, KeyRegistrationTxn, PaymentTxn, Transaction } from './impl/gtxn'
-import {
-  applicationCall as itxnApplicationCall,
-  assetConfig as itxnAssetConfig,
-  assetFreeze as itxnAssetFreeze,
-  assetTransfer as itxnAssetTransfer,
-  keyRegistration as itxnKeyRegistration,
-  payment as itxnPayment,
-  submitGroup as itxnSubmitGroup,
-} from './impl/inner-transactions'
 import { Account, AccountCls } from './impl/reference'
-import { Box, BoxMap, BoxRef, GlobalState, LocalState } from './impl/state'
 import { ContractContext } from './subcontexts/contract-context'
 import { LedgerContext } from './subcontexts/ledger-context'
 import { TransactionContext } from './subcontexts/transaction-context'
@@ -75,43 +64,6 @@ export class TestExecutionContext implements internal.ExecutionContext {
   get abiMetadata() {
     return {
       captureMethodConfig,
-    }
-  }
-
-  /* @internal */
-  get gtxn() {
-    return {
-      Transaction,
-      PaymentTxn,
-      KeyRegistrationTxn,
-      AssetConfigTxn,
-      AssetTransferTxn,
-      AssetFreezeTxn,
-      ApplicationTxn,
-    }
-  }
-
-  /* @internal */
-  get itxn() {
-    return {
-      submitGroup: itxnSubmitGroup,
-      payment: itxnPayment,
-      keyRegistration: itxnKeyRegistration,
-      assetConfig: itxnAssetConfig,
-      assetTransfer: itxnAssetTransfer,
-      assetFreeze: itxnAssetFreeze,
-      applicationCall: itxnApplicationCall,
-    }
-  }
-
-  /* @internal */
-  get state() {
-    return {
-      GlobalState,
-      LocalState,
-      Box,
-      BoxMap,
-      BoxRef,
     }
   }
 
