@@ -1,6 +1,10 @@
 import type { bytes } from '@algorandfoundation/algorand-typescript'
 import { Bytes, internal } from '@algorandfoundation/algorand-typescript'
-import { createHash } from 'crypto'
+import { createHash, randomUUID } from 'crypto'
+import fs from 'fs'
+import { globIterateSync } from 'glob'
+import os from 'os'
+import upath from 'upath'
 import { asUint8Array } from '../src/util'
 
 class InvariantError extends Error {}
@@ -32,3 +36,39 @@ export const getPaddedBytes = (padSize: number, value: internal.primitives.StubB
 
 export const intToBytes = (value: internal.primitives.StubBigUintCompat): internal.primitives.BytesCls =>
   internal.primitives.BigUintCls.fromCompat(value).toBytes()
+
+export type TempDir = {
+  readonly dirPath: string
+  files(): IterableIterator<string>
+} & Disposable
+function mkDirIfNotExists(dir: string) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true })
+  }
+}
+function ensureTempDir(): string {
+  const tempDir = upath.join(os.tmpdir(), 'puya-ts')
+  mkDirIfNotExists(tempDir)
+  return tempDir
+}
+
+export function generateTempDir(): TempDir {
+  const dirPath = upath.join(ensureTempDir(), `${randomUUID()}`)
+  mkDirIfNotExists(dirPath)
+
+  return {
+    get dirPath() {
+      return dirPath
+    },
+    *files(): IterableIterator<string> {
+      for (const p of globIterateSync(upath.join(dirPath, '**'), {
+        nodir: true,
+      })) {
+        yield p
+      }
+    },
+    [Symbol.dispose]() {
+      fs.rmSync(dirPath, { recursive: true, force: true })
+    },
+  }
+}

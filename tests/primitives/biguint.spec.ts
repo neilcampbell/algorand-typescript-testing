@@ -9,7 +9,7 @@ import { getAvmResult, getAvmResultRaw } from '../avm-invoker'
 import { createArc4TestFixture } from '../test-fixture'
 
 describe('BigUint', async () => {
-  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/primitive-ops/data/PrimitiveOpsContract.arc56.json', {
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/primitive-ops/contract.algo.ts', {
     PrimitiveOpsContract: { deployParams: { createParams: { extraProgramPages: undefined } } },
   })
   beforeAll(async () => {

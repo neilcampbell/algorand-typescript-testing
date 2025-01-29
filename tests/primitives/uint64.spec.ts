@@ -7,7 +7,7 @@ import { getAvmResult } from '../avm-invoker'
 import { createArc4TestFixture } from '../test-fixture'
 
 describe('Unit64', async () => {
-  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/primitive-ops/data/PrimitiveOpsContract.arc56.json', {
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/primitive-ops/contract.algo.ts', {
     PrimitiveOpsContract: { deployParams: { createParams: { extraProgramPages: undefined } } },
   })
 

@@ -6,6 +6,7 @@ export default defineConfig({
   esbuild: {},
   test: {
     setupFiles: 'vitest.setup.ts',
+    testTimeout: 20_000,
   },
   plugins: [
     typescript({

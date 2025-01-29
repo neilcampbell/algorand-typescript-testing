@@ -11,7 +11,7 @@ import { createArc4TestFixture } from '../test-fixture'
 
 const invalidBytesLengthError = 'byte string must be 1 byte long'
 describe('arc4.Byte', async () => {
-  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/arc4-primitive-ops/data/Arc4PrimitiveOpsContract.arc56.json', {
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/arc4-primitive-ops/contract.algo.ts', {
     Arc4PrimitiveOpsContract: { deployParams: { createParams: { extraProgramPages: undefined } } },
   })
 

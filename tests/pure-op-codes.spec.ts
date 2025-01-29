@@ -20,7 +20,7 @@ const extractOutOfBoundError = /extraction (start|end) \d+ is beyond length/
 const sqrtMaxUint64 = 4294967295n
 
 describe('Pure op codes', async () => {
-  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/miscellaneous-ops/data/MiscellaneousOpsContract.arc56.json', {
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/miscellaneous-ops/contract.algo.ts', {
     MiscellaneousOpsContract: {},
   })
   const ctx = new TestExecutionContext()
