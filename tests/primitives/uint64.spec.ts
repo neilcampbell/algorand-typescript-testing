@@ -1,15 +1,19 @@
-import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import type { uint64 } from '@algorandfoundation/algorand-typescript'
 import { internal, Uint64 } from '@algorandfoundation/algorand-typescript'
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect } from 'vitest'
 import { MAX_UINT64, UINT64_OVERFLOW_UNDERFLOW_MESSAGE } from '../../src/constants'
 import { asUint64 } from '../../src/util'
-import appSpecJson from '../artifacts/primitive-ops/data/PrimitiveOpsContract.arc32.json'
-import { getAlgorandAppClient, getAvmResult } from '../avm-invoker'
+import { getAvmResult } from '../avm-invoker'
+import { createArc4TestFixture } from '../test-fixture'
 
 describe('Unit64', async () => {
-  const appClient = await getAlgorandAppClient(appSpecJson as AppSpec)
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/primitive-ops/data/PrimitiveOpsContract.arc56.json', {
+    PrimitiveOpsContract: { deployParams: { createParams: { extraProgramPages: undefined } } },
+  })
 
+  beforeAll(async () => {
+    await localnetFixture.newScope()
+  })
   describe.each(['eq', 'ne', 'lt', 'le', 'gt', 'ge'])('logical operators', async (op) => {
     const operator = (function () {
       switch (op) {
@@ -60,7 +64,7 @@ describe('Unit64', async () => {
             throw new Error(`Unknown operator: ${op}`)
         }
       }
-      it(`${a} ${operator} ${b}`, async () => {
+      test(`${a} ${operator} ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
         const avmResult = await getAvmResult<boolean>({ appClient }, `verify_uint64_${op}`, a, b)
         let result = getStubResult(uintA, uintB)
         expect(result, `for values: ${a}, ${b}`).toBe(avmResult)
@@ -85,7 +89,7 @@ describe('Unit64', async () => {
     [1, MAX_UINT64 - 1n],
     [MAX_UINT64 - 1n, 1],
   ])('addition', async (a, b) => {
-    it(`${a} + ${b}`, async () => {
+    test(`${a} + ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const avmResult = await getAvmResult<bigint>({ appClient }, 'verify_uint64_add', a, b)
       let result = asUint64(a) + asUint64(b)
       expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResult)
@@ -107,7 +111,7 @@ describe('Unit64', async () => {
     [MAX_UINT64, 1],
     [MAX_UINT64, MAX_UINT64],
   ])('addition overflow', async (a, b) => {
-    it(`${a} + ${b}`, async () => {
+    test(`${a} + ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_add', a, b)).rejects.toThrow('+ overflowed')
 
       expect(() => asUint64(a) + asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
@@ -131,7 +135,7 @@ describe('Unit64', async () => {
     [MAX_UINT64, 1],
     [MAX_UINT64, MAX_UINT64],
   ])('subtraction', async (a, b) => {
-    it(`${a} - ${b}`, async () => {
+    test(`${a} - ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const avmResult = await getAvmResult<bigint>({ appClient }, 'verify_uint64_sub', a, b)
       let result = asUint64(a) - asUint64(b)
       expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResult)
@@ -155,7 +159,7 @@ describe('Unit64', async () => {
     [0, MAX_UINT64],
     [1, MAX_UINT64],
   ])('subtraction underflow', async (a, b) => {
-    it(`${a} - ${b}`, async () => {
+    test(`${a} - ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_sub', a, b)).rejects.toThrow('- would result negative')
 
       expect(() => asUint64(a) - asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
@@ -177,7 +181,7 @@ describe('Unit64', async () => {
     [MAX_UINT64, 0],
     [MAX_UINT64, 1],
   ])('multiplication', async (a, b) => {
-    it(`${a} * ${b}`, async () => {
+    test(`${a} * ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const avmResult = await getAvmResult<bigint>({ appClient }, 'verify_uint64_mul', a, b)
       let result = asUint64(a) * asUint64(b)
       expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResult)
@@ -199,7 +203,7 @@ describe('Unit64', async () => {
     [MAX_UINT64, MAX_UINT64],
     [MAX_UINT64 / 2n, 3],
   ])('multiplication overflow', async (a, b) => {
-    it(`${a} * ${b}`, async () => {
+    test(`${a} * ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_mul', a, b)).rejects.toThrow('* overflowed')
 
       expect(() => asUint64(a) * asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
@@ -222,7 +226,7 @@ describe('Unit64', async () => {
     [1, MAX_UINT64],
     [MAX_UINT64, MAX_UINT64],
   ])('division', async (a, b) => {
-    it(`${a} / ${b}`, async () => {
+    test(`${a} / ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const avmResult = await getAvmResult<bigint>({ appClient }, 'verify_uint64_div', a, b)
       let result = asUint64(a) / asUint64(b)
       expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResult)
@@ -244,7 +248,7 @@ describe('Unit64', async () => {
     [1, 0],
     [MAX_UINT64, 0],
   ])('division by zero', async (a, b) => {
-    it(`${a} / ${b}`, async () => {
+    test(`${a} / ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_div', a, b)).rejects.toThrow('/ 0')
 
       expect(() => asUint64(a) / asUint64(b)).toThrow('Division by zero')
@@ -265,7 +269,7 @@ describe('Unit64', async () => {
     [1, MAX_UINT64],
     [MAX_UINT64, MAX_UINT64],
   ])('modulo', async (a, b) => {
-    it(`${a} % ${b}`, async () => {
+    test(`${a} % ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const avmResult = await getAvmResult<bigint>({ appClient }, 'verify_uint64_mod', a, b)
       let result = asUint64(a) % asUint64(b)
       expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResult)
@@ -287,7 +291,7 @@ describe('Unit64', async () => {
     [1, 0],
     [MAX_UINT64, 0],
   ])('modulo by zero', async (a, b) => {
-    it(`${a} % ${b}`, async () => {
+    test(`${a} % ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_mod', a, b)).rejects.toThrow('% 0')
 
       expect(() => asUint64(a) % asUint64(b)).toThrow('Division by zero')
@@ -310,7 +314,7 @@ describe('Unit64', async () => {
     [MAX_UINT64, 1],
     [2 ** 31, 2],
   ])('pow', async (a, b) => {
-    it(`${a} ** ${b}`, async () => {
+    test(`${a} ** ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const avmResult = await getAvmResult<bigint>({ appClient }, 'verify_uint64_pow', a, b)
       let result = asUint64(a) ** asUint64(b)
       expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResult)
@@ -328,7 +332,7 @@ describe('Unit64', async () => {
   })
 
   describe('pow undefined', async () => {
-    it('0 ** 0', async () => {
+    test('0 ** 0', async ({ appClientPrimitiveOpsContract: appClient }) => {
       const a = 0,
         b = 0
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_pow', a, b)).rejects.toThrow('0^0 is undefined')
@@ -341,7 +345,7 @@ describe('Unit64', async () => {
     [2, 64],
     [2 ** 32, 32],
   ])('pow overflow', async (a, b) => {
-    it(`${a} ** ${b}`, async () => {
+    test(`${a} ** ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_pow', a, b)).rejects.toThrow(/\d+\^\d+ overflow/)
 
       expect(() => asUint64(a) ** asUint64(b)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
@@ -391,7 +395,7 @@ describe('Unit64', async () => {
             throw new Error(`Unknown operator: ${op}`)
         }
       }
-      it(`${a} ${operator} ${b}`, async () => {
+      test(`${a} ${operator} ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
         const avmResult = await getAvmResult<bigint>({ appClient }, `verify_uint64_${op}`, a, b)
         let result = getStubResult(uintA, uintB)
         expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResult)
@@ -410,7 +414,7 @@ describe('Unit64', async () => {
   })
 
   describe.each([0, 1, 42, MAX_UINT64])('bitwise invert', async (a) => {
-    it(`~${a}`, async () => {
+    test(`~${a}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const avmResult = await getAvmResult<bigint>({ appClient }, 'verify_uint64_not', a)
       const result = ~asUint64(a)
       expect(result.valueOf(), `for value: ${a}`).toBe(avmResult)
@@ -429,7 +433,7 @@ describe('Unit64', async () => {
   ])('shift operations', async (a, b) => {
     const uintA = asUint64(a)
     const uintB = asUint64(b)
-    it(`${a} << ${b}`, async () => {
+    test(`${a} << ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const avmResult = await getAvmResult<bigint>({ appClient }, 'verify_uint64_lshift', a, b)
       let result = uintA << uintB
       expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResult)
@@ -445,7 +449,7 @@ describe('Unit64', async () => {
       }
     })
 
-    it(`${a} >> ${b}`, async () => {
+    test(`${a} >> ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const avmResult = await getAvmResult<bigint>({ appClient }, 'verify_uint64_rshift', a, b)
       let result = uintA >> uintB
       expect(result.valueOf(), `for values: ${a}, ${b}`).toBe(avmResult)
@@ -467,7 +471,7 @@ describe('Unit64', async () => {
       b = 64
     const uintA = asUint64(a)
     const uintB = asUint64(b)
-    it('0 << 64', async () => {
+    test('0 << 64', async ({ appClientPrimitiveOpsContract: appClient }) => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_lshift', a, b)).rejects.toThrow('arg too big, (64)')
       expect(() => uintA << uintB).toThrow('expected shift <= 63')
       expect(() => a << uintB).toThrow('expected shift <= 63')
@@ -475,7 +479,7 @@ describe('Unit64', async () => {
       expect(() => Uint64(MAX_UINT64 + 1n) << Uint64(1n)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
     })
 
-    it('0 >> 64', async () => {
+    test('0 >> 64', async ({ appClientPrimitiveOpsContract: appClient }) => {
       await expect(getAvmResult<bigint>({ appClient }, 'verify_uint64_rshift', a, b)).rejects.toThrow('arg too big, (64)')
       expect(() => uintA >> uintB).toThrow('expected shift <= 63')
       expect(() => a >> uintB).toThrow('expected shift <= 63')
@@ -485,13 +489,13 @@ describe('Unit64', async () => {
   })
 
   describe.each([MAX_UINT64 + 1n, MAX_UINT64 * 2n])('value too big', (a) => {
-    it(`${a}`, () => {
+    test(`${a}`, () => {
       expect(() => Uint64(a)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
     })
   })
 
   describe.each([-1, -MAX_UINT64, -MAX_UINT64 * 2n])('value too small', (a) => {
-    it(`${a}`, () => {
+    test(`${a}`, () => {
       expect(() => asUint64(a)).toThrow(UINT64_OVERFLOW_UNDERFLOW_MESSAGE)
     })
   })
@@ -507,7 +511,7 @@ describe('Unit64', async () => {
     [42n, 42n],
     [MAX_UINT64, MAX_UINT64],
   ])('fromCompat', async (a, b) => {
-    it(`${a}`, async () => {
+    test(`${a}`, async () => {
       const result = internal.primitives.Uint64Cls.fromCompat(a)
       expect(result.valueOf(), `for value: ${a}`).toBe(b)
     })

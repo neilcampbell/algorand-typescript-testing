@@ -1,68 +1,204 @@
 #pragma version 10
+#pragma typetrack false
 
-tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.approvalProgram:
-    intcblock 1 0
+// @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
+main:
+    intcblock 1
     bytecblock 0x151f7c75
-    callsub __puya_arc4_router__
-    return
-
-
-// tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.__puya_arc4_router__() -> uint64:
-__puya_arc4_router__:
-    // tests/artifacts/state-ops/contract.algo.ts:266
+    // tests/artifacts/state-ops/contract.algo.ts:273
     // export class StateAppParamsContract extends arc4.Contract {
-    proto 0 1
     txn NumAppArgs
-    bz __puya_arc4_router___bare_routing@13
+    bz main_bare_routing@14
     pushbytess 0x5e7b7d52 0xe29e30ee 0x58819099 0xca77b59b 0x53c0dd9b 0x5f000703 0xd77bd21f 0xa941a746 0xbd3e9eec // method "verify_app_params_get_approval_program(application)byte[]", method "verify_app_params_get_clear_state_program(application)byte[]", method "verify_app_params_get_global_num_uint(application)uint64", method "verify_app_params_get_global_num_byte_slice(application)uint64", method "verify_app_params_get_local_num_uint(application)uint64", method "verify_app_params_get_local_num_byte_slice(application)uint64", method "verify_app_params_get_extra_program_pages(application)uint64", method "verify_app_params_get_creator(application)address", method "verify_app_params_get_address(application)address"
     txna ApplicationArgs 0
-    match __puya_arc4_router___verify_app_params_get_approval_program_route@2 __puya_arc4_router___verify_app_params_get_clear_state_program_route@3 __puya_arc4_router___verify_app_params_get_global_num_uint_route@4 __puya_arc4_router___verify_app_params_get_global_num_byte_slice_route@5 __puya_arc4_router___verify_app_params_get_local_num_uint_route@6 __puya_arc4_router___verify_app_params_get_local_num_byte_slice_route@7 __puya_arc4_router___verify_app_params_get_extra_program_pages_route@8 __puya_arc4_router___verify_app_params_get_creator_route@9 __puya_arc4_router___verify_app_params_get_address_route@10
-    intc_1 // 0
-    retsub
+    match main_verify_app_params_get_approval_program_route@3 main_verify_app_params_get_clear_state_program_route@4 main_verify_app_params_get_global_num_uint_route@5 main_verify_app_params_get_global_num_byte_slice_route@6 main_verify_app_params_get_local_num_uint_route@7 main_verify_app_params_get_local_num_byte_slice_route@8 main_verify_app_params_get_extra_program_pages_route@9 main_verify_app_params_get_creator_route@10 main_verify_app_params_get_address_route@11
 
-__puya_arc4_router___verify_app_params_get_approval_program_route@2:
-    // tests/artifacts/state-ops/contract.algo.ts:267
+main_after_if_else@18:
+    // tests/artifacts/state-ops/contract.algo.ts:273
+    // export class StateAppParamsContract extends arc4.Contract {
+    pushint 0 // 0
+    return
+
+main_verify_app_params_get_address_route@11:
+    // tests/artifacts/state-ops/contract.algo.ts:346
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:266
+    // tests/artifacts/state-ops/contract.algo.ts:273
     // export class StateAppParamsContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
     txnas Applications
-    // tests/artifacts/state-ops/contract.algo.ts:267
+    // tests/artifacts/state-ops/contract.algo.ts:346
     // @arc4.abimethod()
-    callsub verify_app_params_get_approval_program
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
+    callsub verify_app_params_get_address
     bytec_0 // 0x151f7c75
     swap
     concat
     log
     intc_0 // 1
-    retsub
+    return
 
-__puya_arc4_router___verify_app_params_get_clear_state_program_route@3:
-    // tests/artifacts/state-ops/contract.algo.ts:276
+main_verify_app_params_get_creator_route@10:
+    // tests/artifacts/state-ops/contract.algo.ts:337
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:266
+    // tests/artifacts/state-ops/contract.algo.ts:273
     // export class StateAppParamsContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
     txnas Applications
-    // tests/artifacts/state-ops/contract.algo.ts:276
+    // tests/artifacts/state-ops/contract.algo.ts:337
+    // @arc4.abimethod()
+    callsub verify_app_params_get_creator
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_app_params_get_extra_program_pages_route@9:
+    // tests/artifacts/state-ops/contract.algo.ts:328
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:273
+    // export class StateAppParamsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Applications
+    // tests/artifacts/state-ops/contract.algo.ts:328
+    // @arc4.abimethod()
+    callsub verify_app_params_get_extra_program_pages
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_app_params_get_local_num_byte_slice_route@8:
+    // tests/artifacts/state-ops/contract.algo.ts:319
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:273
+    // export class StateAppParamsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Applications
+    // tests/artifacts/state-ops/contract.algo.ts:319
+    // @arc4.abimethod()
+    callsub verify_app_params_get_local_num_byte_slice
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_app_params_get_local_num_uint_route@7:
+    // tests/artifacts/state-ops/contract.algo.ts:310
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:273
+    // export class StateAppParamsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Applications
+    // tests/artifacts/state-ops/contract.algo.ts:310
+    // @arc4.abimethod()
+    callsub verify_app_params_get_local_num_uint
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_app_params_get_global_num_byte_slice_route@6:
+    // tests/artifacts/state-ops/contract.algo.ts:301
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:273
+    // export class StateAppParamsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Applications
+    // tests/artifacts/state-ops/contract.algo.ts:301
+    // @arc4.abimethod()
+    callsub verify_app_params_get_global_num_byte_slice
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_app_params_get_global_num_uint_route@5:
+    // tests/artifacts/state-ops/contract.algo.ts:292
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:273
+    // export class StateAppParamsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Applications
+    // tests/artifacts/state-ops/contract.algo.ts:292
+    // @arc4.abimethod()
+    callsub verify_app_params_get_global_num_uint
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_app_params_get_clear_state_program_route@4:
+    // tests/artifacts/state-ops/contract.algo.ts:283
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:273
+    // export class StateAppParamsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Applications
+    // tests/artifacts/state-ops/contract.algo.ts:283
     // @arc4.abimethod()
     callsub verify_app_params_get_clear_state_program
     dup
@@ -76,461 +212,341 @@ __puya_arc4_router___verify_app_params_get_clear_state_program_route@3:
     concat
     log
     intc_0 // 1
-    retsub
+    return
 
-__puya_arc4_router___verify_app_params_get_global_num_uint_route@4:
-    // tests/artifacts/state-ops/contract.algo.ts:285
+main_verify_app_params_get_approval_program_route@3:
+    // tests/artifacts/state-ops/contract.algo.ts:274
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:266
+    // tests/artifacts/state-ops/contract.algo.ts:273
     // export class StateAppParamsContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
     txnas Applications
-    // tests/artifacts/state-ops/contract.algo.ts:285
+    // tests/artifacts/state-ops/contract.algo.ts:274
     // @arc4.abimethod()
-    callsub verify_app_params_get_global_num_uint
+    callsub verify_app_params_get_approval_program
+    dup
+    len
     itob
+    extract 6 2
+    swap
+    concat
     bytec_0 // 0x151f7c75
     swap
     concat
     log
     intc_0 // 1
-    retsub
+    return
 
-__puya_arc4_router___verify_app_params_get_global_num_byte_slice_route@5:
-    // tests/artifacts/state-ops/contract.algo.ts:294
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:266
-    // export class StateAppParamsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Applications
-    // tests/artifacts/state-ops/contract.algo.ts:294
-    // @arc4.abimethod()
-    callsub verify_app_params_get_global_num_byte_slice
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_app_params_get_local_num_uint_route@6:
-    // tests/artifacts/state-ops/contract.algo.ts:303
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:266
-    // export class StateAppParamsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Applications
-    // tests/artifacts/state-ops/contract.algo.ts:303
-    // @arc4.abimethod()
-    callsub verify_app_params_get_local_num_uint
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_app_params_get_local_num_byte_slice_route@7:
-    // tests/artifacts/state-ops/contract.algo.ts:312
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:266
-    // export class StateAppParamsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Applications
-    // tests/artifacts/state-ops/contract.algo.ts:312
-    // @arc4.abimethod()
-    callsub verify_app_params_get_local_num_byte_slice
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_app_params_get_extra_program_pages_route@8:
-    // tests/artifacts/state-ops/contract.algo.ts:321
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:266
-    // export class StateAppParamsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Applications
-    // tests/artifacts/state-ops/contract.algo.ts:321
-    // @arc4.abimethod()
-    callsub verify_app_params_get_extra_program_pages
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_app_params_get_creator_route@9:
-    // tests/artifacts/state-ops/contract.algo.ts:330
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:266
-    // export class StateAppParamsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Applications
-    // tests/artifacts/state-ops/contract.algo.ts:330
-    // @arc4.abimethod()
-    callsub verify_app_params_get_creator
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_app_params_get_address_route@10:
-    // tests/artifacts/state-ops/contract.algo.ts:339
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:266
-    // export class StateAppParamsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txnas Applications
-    // tests/artifacts/state-ops/contract.algo.ts:339
-    // @arc4.abimethod()
-    callsub verify_app_params_get_address
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___bare_routing@13:
-    // tests/artifacts/state-ops/contract.algo.ts:266
+main_bare_routing@14:
+    // tests/artifacts/state-ops/contract.algo.ts:273
     // export class StateAppParamsContract extends arc4.Contract {
     txn OnCompletion
-    bnz __puya_arc4_router___after_if_else@17
+    bnz main_after_if_else@18
     txn ApplicationID
     !
     assert // can only call when creating
     intc_0 // 1
-    retsub
-
-__puya_arc4_router___after_if_else@17:
-    // tests/artifacts/state-ops/contract.algo.ts:266
-    // export class StateAppParamsContract extends arc4.Contract {
-    intc_1 // 0
-    retsub
+    return
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.verify_app_params_get_approval_program(a: uint64) -> bytes:
 verify_app_params_get_approval_program:
-    // tests/artifacts/state-ops/contract.algo.ts:267-268
+    // tests/artifacts/state-ops/contract.algo.ts:274-275
     // @arc4.abimethod()
     // public verify_app_params_get_approval_program(a: Application): bytes {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:269
+    // tests/artifacts/state-ops/contract.algo.ts:276
     // const [value, exists] = op.AppParams.appApprovalProgram(a)
     frame_dig -1
     app_params_get AppApprovalProgram
-    // tests/artifacts/state-ops/contract.algo.ts:270
+    // tests/artifacts/state-ops/contract.algo.ts:20
+    // return op.btoi(Txn.applicationArgs(1))
+    intc_0 // 1
+    txnas ApplicationArgs
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:277
     // const [value_index, exists_index] = op.AppParams.appApprovalProgram(get_1st_ref_index())
-    callsub get_1st_ref_index
     app_params_get AppApprovalProgram
-    // tests/artifacts/state-ops/contract.algo.ts:271
+    // tests/artifacts/state-ops/contract.algo.ts:278
     // assert(value === value_index, 'expected value by index to match')
     dig 3
     uncover 2
     ==
     assert // expected value by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:272
+    // tests/artifacts/state-ops/contract.algo.ts:279
     // assert(exists === exists_index, 'expected exists by index to match')
     ==
     assert // expected exists by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:273
+    // tests/artifacts/state-ops/contract.algo.ts:280
     // return value
-    retsub
-
-
-// tests/artifacts/state-ops/contract.algo.ts::get_1st_ref_index() -> uint64:
-get_1st_ref_index:
-    // tests/artifacts/state-ops/contract.algo.ts:22
-    // function get_1st_ref_index(): uint64 {
-    proto 0 1
-    // tests/artifacts/state-ops/contract.algo.ts:23
-    // return op.btoi(Txn.applicationArgs(1))
-    intc_0 // 1
-    txnas ApplicationArgs
-    btoi
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.verify_app_params_get_clear_state_program(a: uint64) -> bytes:
 verify_app_params_get_clear_state_program:
-    // tests/artifacts/state-ops/contract.algo.ts:276-277
+    // tests/artifacts/state-ops/contract.algo.ts:283-284
     // @arc4.abimethod()
     // public verify_app_params_get_clear_state_program(a: Application): bytes {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:278
+    // tests/artifacts/state-ops/contract.algo.ts:285
     // const [value, exists] = op.AppParams.appClearStateProgram(a)
     frame_dig -1
     app_params_get AppClearStateProgram
-    // tests/artifacts/state-ops/contract.algo.ts:279
+    // tests/artifacts/state-ops/contract.algo.ts:20
+    // return op.btoi(Txn.applicationArgs(1))
+    intc_0 // 1
+    txnas ApplicationArgs
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:286
     // const [value_index, exists_index] = op.AppParams.appClearStateProgram(get_1st_ref_index())
-    callsub get_1st_ref_index
     app_params_get AppClearStateProgram
-    // tests/artifacts/state-ops/contract.algo.ts:280
+    // tests/artifacts/state-ops/contract.algo.ts:287
     // assert(value === value_index, 'expected value by index to match')
     dig 3
     uncover 2
     ==
     assert // expected value by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:281
+    // tests/artifacts/state-ops/contract.algo.ts:288
     // assert(exists === exists_index, 'expected exists by index to match')
     ==
     assert // expected exists by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:282
+    // tests/artifacts/state-ops/contract.algo.ts:289
     // return value
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.verify_app_params_get_global_num_uint(a: uint64) -> uint64:
 verify_app_params_get_global_num_uint:
-    // tests/artifacts/state-ops/contract.algo.ts:285-286
+    // tests/artifacts/state-ops/contract.algo.ts:292-293
     // @arc4.abimethod()
     // public verify_app_params_get_global_num_uint(a: Application): uint64 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:287
+    // tests/artifacts/state-ops/contract.algo.ts:294
     // const [value, exists] = op.AppParams.appGlobalNumUint(a)
     frame_dig -1
     app_params_get AppGlobalNumUint
-    // tests/artifacts/state-ops/contract.algo.ts:288
+    // tests/artifacts/state-ops/contract.algo.ts:20
+    // return op.btoi(Txn.applicationArgs(1))
+    intc_0 // 1
+    txnas ApplicationArgs
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:295
     // const [value_index, exists_index] = op.AppParams.appGlobalNumUint(get_1st_ref_index())
-    callsub get_1st_ref_index
     app_params_get AppGlobalNumUint
-    // tests/artifacts/state-ops/contract.algo.ts:289
+    // tests/artifacts/state-ops/contract.algo.ts:296
     // assert(value === value_index, 'expected value by index to match')
     dig 3
     uncover 2
     ==
     assert // expected value by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:290
+    // tests/artifacts/state-ops/contract.algo.ts:297
     // assert(exists === exists_index, 'expected exists by index to match')
     ==
     assert // expected exists by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:291
+    // tests/artifacts/state-ops/contract.algo.ts:298
     // return value
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.verify_app_params_get_global_num_byte_slice(a: uint64) -> uint64:
 verify_app_params_get_global_num_byte_slice:
-    // tests/artifacts/state-ops/contract.algo.ts:294-295
+    // tests/artifacts/state-ops/contract.algo.ts:301-302
     // @arc4.abimethod()
     // public verify_app_params_get_global_num_byte_slice(a: Application): uint64 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:296
+    // tests/artifacts/state-ops/contract.algo.ts:303
     // const [value, exists] = op.AppParams.appGlobalNumByteSlice(a)
     frame_dig -1
     app_params_get AppGlobalNumByteSlice
-    // tests/artifacts/state-ops/contract.algo.ts:297
+    // tests/artifacts/state-ops/contract.algo.ts:20
+    // return op.btoi(Txn.applicationArgs(1))
+    intc_0 // 1
+    txnas ApplicationArgs
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:304
     // const [value_index, exists_index] = op.AppParams.appGlobalNumByteSlice(get_1st_ref_index())
-    callsub get_1st_ref_index
     app_params_get AppGlobalNumByteSlice
-    // tests/artifacts/state-ops/contract.algo.ts:298
+    // tests/artifacts/state-ops/contract.algo.ts:305
     // assert(value === value_index, 'expected value by index to match')
     dig 3
     uncover 2
     ==
     assert // expected value by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:299
+    // tests/artifacts/state-ops/contract.algo.ts:306
     // assert(exists === exists_index, 'expected exists by index to match')
     ==
     assert // expected exists by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:300
+    // tests/artifacts/state-ops/contract.algo.ts:307
     // return value
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.verify_app_params_get_local_num_uint(a: uint64) -> uint64:
 verify_app_params_get_local_num_uint:
-    // tests/artifacts/state-ops/contract.algo.ts:303-304
+    // tests/artifacts/state-ops/contract.algo.ts:310-311
     // @arc4.abimethod()
     // public verify_app_params_get_local_num_uint(a: Application): uint64 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:305
+    // tests/artifacts/state-ops/contract.algo.ts:312
     // const [value, exists] = op.AppParams.appLocalNumUint(a)
     frame_dig -1
     app_params_get AppLocalNumUint
-    // tests/artifacts/state-ops/contract.algo.ts:306
+    // tests/artifacts/state-ops/contract.algo.ts:20
+    // return op.btoi(Txn.applicationArgs(1))
+    intc_0 // 1
+    txnas ApplicationArgs
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:313
     // const [value_index, exists_index] = op.AppParams.appLocalNumUint(get_1st_ref_index())
-    callsub get_1st_ref_index
     app_params_get AppLocalNumUint
-    // tests/artifacts/state-ops/contract.algo.ts:307
+    // tests/artifacts/state-ops/contract.algo.ts:314
     // assert(value === value_index, 'expected value by index to match')
     dig 3
     uncover 2
     ==
     assert // expected value by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:308
+    // tests/artifacts/state-ops/contract.algo.ts:315
     // assert(exists === exists_index, 'expected exists by index to match')
     ==
     assert // expected exists by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:309
+    // tests/artifacts/state-ops/contract.algo.ts:316
     // return value
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.verify_app_params_get_local_num_byte_slice(a: uint64) -> uint64:
 verify_app_params_get_local_num_byte_slice:
-    // tests/artifacts/state-ops/contract.algo.ts:312-313
+    // tests/artifacts/state-ops/contract.algo.ts:319-320
     // @arc4.abimethod()
     // public verify_app_params_get_local_num_byte_slice(a: Application): uint64 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:314
+    // tests/artifacts/state-ops/contract.algo.ts:321
     // const [value, exists] = op.AppParams.appLocalNumByteSlice(a)
     frame_dig -1
     app_params_get AppLocalNumByteSlice
-    // tests/artifacts/state-ops/contract.algo.ts:315
+    // tests/artifacts/state-ops/contract.algo.ts:20
+    // return op.btoi(Txn.applicationArgs(1))
+    intc_0 // 1
+    txnas ApplicationArgs
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:322
     // const [value_index, exists_index] = op.AppParams.appLocalNumByteSlice(get_1st_ref_index())
-    callsub get_1st_ref_index
     app_params_get AppLocalNumByteSlice
-    // tests/artifacts/state-ops/contract.algo.ts:316
+    // tests/artifacts/state-ops/contract.algo.ts:323
     // assert(value === value_index, 'expected value by index to match')
     dig 3
     uncover 2
     ==
     assert // expected value by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:317
+    // tests/artifacts/state-ops/contract.algo.ts:324
     // assert(exists === exists_index, 'expected exists by index to match')
     ==
     assert // expected exists by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:318
+    // tests/artifacts/state-ops/contract.algo.ts:325
     // return value
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.verify_app_params_get_extra_program_pages(a: uint64) -> uint64:
 verify_app_params_get_extra_program_pages:
-    // tests/artifacts/state-ops/contract.algo.ts:321-322
+    // tests/artifacts/state-ops/contract.algo.ts:328-329
     // @arc4.abimethod()
     // public verify_app_params_get_extra_program_pages(a: Application): uint64 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:323
+    // tests/artifacts/state-ops/contract.algo.ts:330
     // const [value, exists] = op.AppParams.appExtraProgramPages(a)
     frame_dig -1
     app_params_get AppExtraProgramPages
-    // tests/artifacts/state-ops/contract.algo.ts:324
+    // tests/artifacts/state-ops/contract.algo.ts:20
+    // return op.btoi(Txn.applicationArgs(1))
+    intc_0 // 1
+    txnas ApplicationArgs
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:331
     // const [value_index, exists_index] = op.AppParams.appExtraProgramPages(get_1st_ref_index())
-    callsub get_1st_ref_index
     app_params_get AppExtraProgramPages
-    // tests/artifacts/state-ops/contract.algo.ts:325
+    // tests/artifacts/state-ops/contract.algo.ts:332
     // assert(value === value_index, 'expected value by index to match')
     dig 3
     uncover 2
     ==
     assert // expected value by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:326
+    // tests/artifacts/state-ops/contract.algo.ts:333
     // assert(exists === exists_index, 'expected exists by index to match')
     ==
     assert // expected exists by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:327
+    // tests/artifacts/state-ops/contract.algo.ts:334
     // return value
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.verify_app_params_get_creator(a: uint64) -> bytes:
 verify_app_params_get_creator:
-    // tests/artifacts/state-ops/contract.algo.ts:330-331
+    // tests/artifacts/state-ops/contract.algo.ts:337-338
     // @arc4.abimethod()
     // public verify_app_params_get_creator(a: Application): Address {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:332
+    // tests/artifacts/state-ops/contract.algo.ts:339
     // const [value, exists] = op.AppParams.appCreator(a)
     frame_dig -1
     app_params_get AppCreator
-    // tests/artifacts/state-ops/contract.algo.ts:333
+    // tests/artifacts/state-ops/contract.algo.ts:20
+    // return op.btoi(Txn.applicationArgs(1))
+    intc_0 // 1
+    txnas ApplicationArgs
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:340
     // const [value_index, exists_index] = op.AppParams.appCreator(get_1st_ref_index())
-    callsub get_1st_ref_index
     app_params_get AppCreator
-    // tests/artifacts/state-ops/contract.algo.ts:334
+    // tests/artifacts/state-ops/contract.algo.ts:341
     // assert(value === value_index, 'expected value by index to match')
     dig 3
     uncover 2
     ==
     assert // expected value by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:335
+    // tests/artifacts/state-ops/contract.algo.ts:342
     // assert(exists === exists_index, 'expected exists by index to match')
     ==
     assert // expected exists by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:336
+    // tests/artifacts/state-ops/contract.algo.ts:343
     // return new Address(value)
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppParamsContract.verify_app_params_get_address(a: uint64) -> bytes:
 verify_app_params_get_address:
-    // tests/artifacts/state-ops/contract.algo.ts:339-340
+    // tests/artifacts/state-ops/contract.algo.ts:346-347
     // @arc4.abimethod()
     // public verify_app_params_get_address(a: Application): Address {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:341
+    // tests/artifacts/state-ops/contract.algo.ts:348
     // const [value, exists] = op.AppParams.appAddress(a)
     frame_dig -1
     app_params_get AppAddress
-    // tests/artifacts/state-ops/contract.algo.ts:342
+    // tests/artifacts/state-ops/contract.algo.ts:20
+    // return op.btoi(Txn.applicationArgs(1))
+    intc_0 // 1
+    txnas ApplicationArgs
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:349
     // const [value_index, exists_index] = op.AppParams.appAddress(get_1st_ref_index())
-    callsub get_1st_ref_index
     app_params_get AppAddress
-    // tests/artifacts/state-ops/contract.algo.ts:343
+    // tests/artifacts/state-ops/contract.algo.ts:350
     // assert(value.bytes.toString() === value_index.bytes.toString(), 'expected value by index to match')
     dig 3
     uncover 2
     ==
     assert // expected value by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:344
+    // tests/artifacts/state-ops/contract.algo.ts:351
     // assert(exists === exists_index, 'expected exists by index to match')
     ==
     assert // expected exists by index to match
-    // tests/artifacts/state-ops/contract.algo.ts:345
+    // tests/artifacts/state-ops/contract.algo.ts:352
     // return new Address(value)
     retsub

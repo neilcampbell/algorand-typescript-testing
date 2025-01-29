@@ -1,5 +1,4 @@
 import type { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
-import type { AppSpec } from '@algorandfoundation/algokit-utils/types/app-spec'
 import { Account, Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import type {
@@ -12,19 +11,22 @@ import type {
 import { UintNImpl } from '@algorandfoundation/algorand-typescript-testing/runtime-helpers'
 import type { ARC4Encoded, BitSize } from '@algorandfoundation/algorand-typescript/arc4'
 import { Address, Bool, Byte, DynamicBytes, Str, UintN } from '@algorandfoundation/algorand-typescript/arc4'
-import { afterEach, describe, expect, test } from 'vitest'
+import { afterEach, beforeAll, describe, expect } from 'vitest'
 import { OnApplicationComplete } from '../src/constants'
 import type { DeliberateAny } from '../src/typescript-helpers'
 import { LocalStateContract } from './artifacts/state-ops/contract.algo'
-import arc4AppLocalAppSpecJson from './artifacts/state-ops/data/LocalStateContract.arc32.json'
-import { getAlgorandAppClient, getAvmResult, getLocalNetDefaultAccount } from './avm-invoker'
+import { getAvmResult } from './avm-invoker'
+import { createArc4TestFixture } from './test-fixture'
 
 describe('ARC4 AppLocal values', async () => {
-  const appClient = await getAlgorandAppClient(arc4AppLocalAppSpecJson as AppSpec)
-  const localNetAccount = await getLocalNetDefaultAccount()
-  const defaultSenderAccountAddress = Bytes.fromBase32(localNetAccount.addr.toString())
-  const ctx = new TestExecutionContext(defaultSenderAccountAddress)
-  await tryOptIn(appClient)
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/state-ops/data/LocalStateContract.arc56.json', {
+    LocalStateContract: {},
+  })
+  const ctx = new TestExecutionContext()
+
+  beforeAll(async () => {
+    await localnetFixture.newScope()
+  })
 
   afterEach(() => {
     ctx.reset()
@@ -93,14 +95,19 @@ describe('ARC4 AppLocal values', async () => {
     },
   ])
 
-  test.each(testData)('should be able to get arc4 state values', async (data) => {
-    const avmResult = await getAvmResult({ appClient }, data.methodName, localNetAccount.addr.toString())
+  test.for(testData)('should be able to get arc4 state values', async (data, { appClientLocalStateContract: appClient, testAccount }) => {
+    const defaultSenderAccountAddress = Bytes.fromBase32(testAccount.addr.toString())
+    ctx.defaultSender = defaultSenderAccountAddress
+    await tryOptIn(appClient)
+
+    const avmResult = await getAvmResult({ appClient }, data.methodName, testAccount.addr.toString())
     const contract = ctx.contract.create(LocalStateContract)
     contract.opt_in()
     const result = contract[data.methodName as keyof LocalStateContract](Account(defaultSenderAccountAddress)) as ARC4Encoded
     data.assert(result, avmResult)
   })
 })
+
 const tryOptIn = async (client: AppClient) => {
   try {
     await client.send.call({ method: 'opt_in', args: [], onComplete: OnApplicationComplete.OptInOC })

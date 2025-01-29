@@ -11,7 +11,7 @@ interface ExpectObj {
   addEqualityTesters: (testers: Array<Tester>) => void
 }
 
-function addEqualityTesters(expectObj: ExpectObj) {
+function doAddEqualityTesters(expectObj: ExpectObj) {
   expectObj.addEqualityTesters([
     function IsSamePrimitiveTypeAndValue(this: TesterContext, subject, test, customTesters): boolean | undefined {
       const subjectIsPrimitive = subject instanceof internal.primitives.AlgoTsPrimitiveCls
@@ -44,7 +44,8 @@ function addEqualityTesters(expectObj: ExpectObj) {
     },
     function BytesPrimitiveIsArray(this: TesterContext, subject, test, customTesters): boolean | undefined {
       if (subject instanceof internal.primitives.BytesCls) {
-        const testValue = Array.isArray(test) && test.every((i) => typeof i === 'number') ? new Uint8Array(test) : undefined
+        const testValue =
+          Array.isArray(test) && test.every((i) => typeof i === 'number' && i >= 0 && i < 256) ? new Uint8Array(test) : undefined
         if (testValue !== undefined) return this.equals(subject.asUint8Array(), testValue, customTesters)
         return undefined
       }
@@ -108,6 +109,6 @@ function addEqualityTesters(expectObj: ExpectObj) {
   ])
 }
 
-export function setUpTests({ expect }: { expect: ExpectObj }) {
-  addEqualityTesters(expect)
+export function addEqualityTesters({ expect }: { expect: ExpectObj }) {
+  doAddEqualityTesters(expect)
 }

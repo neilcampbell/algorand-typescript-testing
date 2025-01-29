@@ -1,1577 +1,33 @@
 #pragma version 10
+#pragma typetrack false
 
-tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.approvalProgram:
+// @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
+main:
     intcblock 1 0
     bytecblock 0x151f7c75 0x00
-    callsub __puya_arc4_router__
-    return
-
-
-// tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.__puya_arc4_router__() -> uint64:
-__puya_arc4_router__:
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
     // export class PrimitiveOpsContract extends arc4.Contract {
-    proto 0 1
     txn NumAppArgs
-    bz __puya_arc4_router___bare_routing@60
+    bz main_bare_routing@61
     pushbytess 0x725c692b 0x17314559 0x53f34893 0x88c8b269 0xa464b7ab 0x9c8b11b8 0x6f40654e 0xec9a2974 0xc793708f 0x7ddb7499 0xa21c443d 0x6e7fb212 0xb007fcb0 0x2ebc20d4 0xb0954b66 0xdd140aef 0xace474da 0xba694990 0x6db581c0 0x91c8db89 0xdbe77158 0x9a0f22e1 0x64033d37 0x2a7237c5 0xe3a94458 0x42f87f7d 0x2b5542a4 0x9be2fbe9 0x1cd92515 0x64e1705c 0xf1271c50 0x2ab63b70 0x834bb7d2 0x531620d7 0x3fb9e769 0xfa8db0bc 0xa72ea485 0xb7b0ba19 0x74460c42 0xab320738 0x52ad4654 0x10156399 0x0f075957 0xbd843dff 0xb377d381 0x89767265 0x456b4b23 0x33d1b88c 0x6bf973ea 0x67cd6bb2 0x3f58805a 0x1e130039 0x509dc91d 0xa564a202 0x23650763 0xe007c10b // method "verify_uint64_init(byte[])uint64", method "verify_uint64_add(uint64,uint64)uint64", method "verify_uint64_sub(uint64,uint64)uint64", method "verify_uint64_mul(uint64,uint64)uint64", method "verify_uint64_div(uint64,uint64)uint64", method "verify_uint64_mod(uint64,uint64)uint64", method "verify_uint64_and(uint64,uint64)uint64", method "verify_uint64_or(uint64,uint64)uint64", method "verify_uint64_xor(uint64,uint64)uint64", method "verify_uint64_not(uint64)uint64", method "verify_uint64_lshift(uint64,uint64)uint64", method "verify_uint64_rshift(uint64,uint64)uint64", method "verify_uint64_pow(uint64,uint64)uint64", method "verify_uint64_eq(uint64,uint64)bool", method "verify_uint64_ne(uint64,uint64)bool", method "verify_uint64_lt(uint64,uint64)bool", method "verify_uint64_le(uint64,uint64)bool", method "verify_uint64_gt(uint64,uint64)bool", method "verify_uint64_ge(uint64,uint64)bool", method "verify_bytes_init(uint64)byte[]", method "verify_bytes_add(byte[],byte[],uint64,uint64)byte[]", method "verify_bytes_eq(byte[],byte[])bool", method "verify_bytes_ne(byte[],byte[])bool", method "verify_bytes_and(byte[],byte[])byte[]", method "verify_bytes_or(byte[],byte[])byte[]", method "verify_bytes_xor(byte[],byte[])byte[]", method "verify_bytes_not(byte[],uint64)byte[]", method "verify_biguint_add(byte[],byte[])byte[]", method "verify_biguint_add_uint64(byte[],uint64)byte[]", method "verify_biguint_sub(byte[],byte[])byte[]", method "verify_biguint_sub_uint64(byte[],uint64)byte[]", method "verify_biguint_mul(byte[],byte[])byte[]", method "verify_biguint_mul_uint64(byte[],uint64)byte[]", method "verify_biguint_div(byte[],byte[])byte[]", method "verify_biguint_div_uint64(byte[],uint64)byte[]", method "verify_biguint_mod(byte[],byte[])byte[]", method "verify_biguint_mod_uint64(byte[],uint64)byte[]", method "verify_biguint_and(byte[],byte[])byte[]", method "verify_biguint_and_uint64(byte[],uint64)byte[]", method "verify_biguint_or(byte[],byte[])byte[]", method "verify_biguint_or_uint64(byte[],uint64)byte[]", method "verify_biguint_xor(byte[],byte[])byte[]", method "verify_biguint_xor_uint64(byte[],uint64)byte[]", method "verify_biguint_eq(byte[],byte[])bool", method "verify_biguint_eq_uint64(byte[],uint64)bool", method "verify_biguint_ne(byte[],byte[])bool", method "verify_biguint_ne_uint64(byte[],uint64)bool", method "verify_biguint_lt(byte[],byte[])bool", method "verify_biguint_lt_uint64(byte[],uint64)bool", method "verify_biguint_le(byte[],byte[])bool", method "verify_biguint_le_uint64(byte[],uint64)bool", method "verify_biguint_gt(byte[],byte[])bool", method "verify_biguint_gt_uint64(byte[],uint64)bool", method "verify_biguint_ge(byte[],byte[])bool", method "verify_biguint_ge_uint64(byte[],uint64)bool", method "verify_log(string,uint64,byte[],byte[],bool,string,uint64,uint256,ufixed32x8,ufixed256x16,byte[],byte[],byte[])void"
     txna ApplicationArgs 0
-    match __puya_arc4_router___verify_uint64_init_route@2 __puya_arc4_router___verify_uint64_add_route@3 __puya_arc4_router___verify_uint64_sub_route@4 __puya_arc4_router___verify_uint64_mul_route@5 __puya_arc4_router___verify_uint64_div_route@6 __puya_arc4_router___verify_uint64_mod_route@7 __puya_arc4_router___verify_uint64_and_route@8 __puya_arc4_router___verify_uint64_or_route@9 __puya_arc4_router___verify_uint64_xor_route@10 __puya_arc4_router___verify_uint64_not_route@11 __puya_arc4_router___verify_uint64_lshift_route@12 __puya_arc4_router___verify_uint64_rshift_route@13 __puya_arc4_router___verify_uint64_pow_route@14 __puya_arc4_router___verify_uint64_eq_route@15 __puya_arc4_router___verify_uint64_ne_route@16 __puya_arc4_router___verify_uint64_lt_route@17 __puya_arc4_router___verify_uint64_le_route@18 __puya_arc4_router___verify_uint64_gt_route@19 __puya_arc4_router___verify_uint64_ge_route@20 __puya_arc4_router___verify_bytes_init_route@21 __puya_arc4_router___verify_bytes_add_route@22 __puya_arc4_router___verify_bytes_eq_route@23 __puya_arc4_router___verify_bytes_ne_route@24 __puya_arc4_router___verify_bytes_and_route@25 __puya_arc4_router___verify_bytes_or_route@26 __puya_arc4_router___verify_bytes_xor_route@27 __puya_arc4_router___verify_bytes_not_route@28 __puya_arc4_router___verify_biguint_add_route@29 __puya_arc4_router___verify_biguint_add_uint64_route@30 __puya_arc4_router___verify_biguint_sub_route@31 __puya_arc4_router___verify_biguint_sub_uint64_route@32 __puya_arc4_router___verify_biguint_mul_route@33 __puya_arc4_router___verify_biguint_mul_uint64_route@34 __puya_arc4_router___verify_biguint_div_route@35 __puya_arc4_router___verify_biguint_div_uint64_route@36 __puya_arc4_router___verify_biguint_mod_route@37 __puya_arc4_router___verify_biguint_mod_uint64_route@38 __puya_arc4_router___verify_biguint_and_route@39 __puya_arc4_router___verify_biguint_and_uint64_route@40 __puya_arc4_router___verify_biguint_or_route@41 __puya_arc4_router___verify_biguint_or_uint64_route@42 __puya_arc4_router___verify_biguint_xor_route@43 __puya_arc4_router___verify_biguint_xor_uint64_route@44 __puya_arc4_router___verify_biguint_eq_route@45 __puya_arc4_router___verify_biguint_eq_uint64_route@46 __puya_arc4_router___verify_biguint_ne_route@47 __puya_arc4_router___verify_biguint_ne_uint64_route@48 __puya_arc4_router___verify_biguint_lt_route@49 __puya_arc4_router___verify_biguint_lt_uint64_route@50 __puya_arc4_router___verify_biguint_le_route@51 __puya_arc4_router___verify_biguint_le_uint64_route@52 __puya_arc4_router___verify_biguint_gt_route@53 __puya_arc4_router___verify_biguint_gt_uint64_route@54 __puya_arc4_router___verify_biguint_ge_route@55 __puya_arc4_router___verify_biguint_ge_uint64_route@56 __puya_arc4_router___verify_log_route@57
+    match main_verify_uint64_init_route@3 main_verify_uint64_add_route@4 main_verify_uint64_sub_route@5 main_verify_uint64_mul_route@6 main_verify_uint64_div_route@7 main_verify_uint64_mod_route@8 main_verify_uint64_and_route@9 main_verify_uint64_or_route@10 main_verify_uint64_xor_route@11 main_verify_uint64_not_route@12 main_verify_uint64_lshift_route@13 main_verify_uint64_rshift_route@14 main_verify_uint64_pow_route@15 main_verify_uint64_eq_route@16 main_verify_uint64_ne_route@17 main_verify_uint64_lt_route@18 main_verify_uint64_le_route@19 main_verify_uint64_gt_route@20 main_verify_uint64_ge_route@21 main_verify_bytes_init_route@22 main_verify_bytes_add_route@23 main_verify_bytes_eq_route@24 main_verify_bytes_ne_route@25 main_verify_bytes_and_route@26 main_verify_bytes_or_route@27 main_verify_bytes_xor_route@28 main_verify_bytes_not_route@29 main_verify_biguint_add_route@30 main_verify_biguint_add_uint64_route@31 main_verify_biguint_sub_route@32 main_verify_biguint_sub_uint64_route@33 main_verify_biguint_mul_route@34 main_verify_biguint_mul_uint64_route@35 main_verify_biguint_div_route@36 main_verify_biguint_div_uint64_route@37 main_verify_biguint_mod_route@38 main_verify_biguint_mod_uint64_route@39 main_verify_biguint_and_route@40 main_verify_biguint_and_uint64_route@41 main_verify_biguint_or_route@42 main_verify_biguint_or_uint64_route@43 main_verify_biguint_xor_route@44 main_verify_biguint_xor_uint64_route@45 main_verify_biguint_eq_route@46 main_verify_biguint_eq_uint64_route@47 main_verify_biguint_ne_route@48 main_verify_biguint_ne_uint64_route@49 main_verify_biguint_lt_route@50 main_verify_biguint_lt_uint64_route@51 main_verify_biguint_le_route@52 main_verify_biguint_le_uint64_route@53 main_verify_biguint_gt_route@54 main_verify_biguint_gt_uint64_route@55 main_verify_biguint_ge_route@56 main_verify_biguint_ge_uint64_route@57 main_verify_log_route@58
+
+main_after_if_else@65:
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
     intc_1 // 0
-    retsub
+    return
 
-__puya_arc4_router___verify_uint64_init_route@2:
-    // tests/artifacts/primitive-ops/contract.algo.ts:5
+main_verify_log_route@58:
+    // tests/artifacts/primitive-ops/contract.algo.ts:408
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:5
-    // @arc4.abimethod()
-    callsub verify_uint64_init
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_add_route@3:
-    // tests/artifacts/primitive-ops/contract.algo.ts:11
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:11
-    // @arc4.abimethod()
-    callsub verify_uint64_add
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_sub_route@4:
-    // tests/artifacts/primitive-ops/contract.algo.ts:17
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:17
-    // @arc4.abimethod()
-    callsub verify_uint64_sub
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_mul_route@5:
-    // tests/artifacts/primitive-ops/contract.algo.ts:23
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:23
-    // @arc4.abimethod()
-    callsub verify_uint64_mul
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_div_route@6:
-    // tests/artifacts/primitive-ops/contract.algo.ts:29
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:29
-    // @arc4.abimethod()
-    callsub verify_uint64_div
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_mod_route@7:
-    // tests/artifacts/primitive-ops/contract.algo.ts:35
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:35
-    // @arc4.abimethod()
-    callsub verify_uint64_mod
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_and_route@8:
-    // tests/artifacts/primitive-ops/contract.algo.ts:41
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:41
-    // @arc4.abimethod()
-    callsub verify_uint64_and
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_or_route@9:
-    // tests/artifacts/primitive-ops/contract.algo.ts:47
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:47
-    // @arc4.abimethod()
-    callsub verify_uint64_or
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_xor_route@10:
-    // tests/artifacts/primitive-ops/contract.algo.ts:53
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:53
-    // @arc4.abimethod()
-    callsub verify_uint64_xor
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_not_route@11:
-    // tests/artifacts/primitive-ops/contract.algo.ts:59
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:59
-    // @arc4.abimethod()
-    callsub verify_uint64_not
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_lshift_route@12:
-    // tests/artifacts/primitive-ops/contract.algo.ts:65
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:65
-    // @arc4.abimethod()
-    callsub verify_uint64_lshift
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_rshift_route@13:
-    // tests/artifacts/primitive-ops/contract.algo.ts:71
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:71
-    // @arc4.abimethod()
-    callsub verify_uint64_rshift
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_pow_route@14:
-    // tests/artifacts/primitive-ops/contract.algo.ts:77
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:77
-    // @arc4.abimethod()
-    callsub verify_uint64_pow
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_eq_route@15:
-    // tests/artifacts/primitive-ops/contract.algo.ts:83
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:83
-    // @arc4.abimethod()
-    callsub verify_uint64_eq
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_ne_route@16:
-    // tests/artifacts/primitive-ops/contract.algo.ts:89
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:89
-    // @arc4.abimethod()
-    callsub verify_uint64_ne
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_lt_route@17:
-    // tests/artifacts/primitive-ops/contract.algo.ts:95
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:95
-    // @arc4.abimethod()
-    callsub verify_uint64_lt
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_le_route@18:
-    // tests/artifacts/primitive-ops/contract.algo.ts:101
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:101
-    // @arc4.abimethod()
-    callsub verify_uint64_le
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_gt_route@19:
-    // tests/artifacts/primitive-ops/contract.algo.ts:107
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:107
-    // @arc4.abimethod()
-    callsub verify_uint64_gt
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_uint64_ge_route@20:
-    // tests/artifacts/primitive-ops/contract.algo.ts:113
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:113
-    // @arc4.abimethod()
-    callsub verify_uint64_ge
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_bytes_init_route@21:
-    // tests/artifacts/primitive-ops/contract.algo.ts:119
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:119
-    // @arc4.abimethod()
-    callsub verify_bytes_init
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_bytes_add_route@22:
-    // tests/artifacts/primitive-ops/contract.algo.ts:125
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    txna ApplicationArgs 3
-    btoi
-    txna ApplicationArgs 4
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:125
-    // @arc4.abimethod()
-    callsub verify_bytes_add
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_bytes_eq_route@23:
-    // tests/artifacts/primitive-ops/contract.algo.ts:134
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:134
-    // @arc4.abimethod()
-    callsub verify_bytes_eq
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_bytes_ne_route@24:
-    // tests/artifacts/primitive-ops/contract.algo.ts:140
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:140
-    // @arc4.abimethod()
-    callsub verify_bytes_ne
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_bytes_and_route@25:
-    // tests/artifacts/primitive-ops/contract.algo.ts:146
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:146
-    // @arc4.abimethod()
-    callsub verify_bytes_and
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_bytes_or_route@26:
-    // tests/artifacts/primitive-ops/contract.algo.ts:152
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:152
-    // @arc4.abimethod()
-    callsub verify_bytes_or
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_bytes_xor_route@27:
-    // tests/artifacts/primitive-ops/contract.algo.ts:158
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:158
-    // @arc4.abimethod()
-    callsub verify_bytes_xor
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_bytes_not_route@28:
-    // tests/artifacts/primitive-ops/contract.algo.ts:164
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:164
-    // @arc4.abimethod()
-    callsub verify_bytes_not
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_add_route@29:
-    // tests/artifacts/primitive-ops/contract.algo.ts:172
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:172
-    // @arc4.abimethod()
-    callsub verify_biguint_add
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_add_uint64_route@30:
-    // tests/artifacts/primitive-ops/contract.algo.ts:180
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:180
-    // @arc4.abimethod()
-    callsub verify_biguint_add_uint64
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_sub_route@31:
-    // tests/artifacts/primitive-ops/contract.algo.ts:188
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:188
-    // @arc4.abimethod()
-    callsub verify_biguint_sub
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_sub_uint64_route@32:
-    // tests/artifacts/primitive-ops/contract.algo.ts:196
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:196
-    // @arc4.abimethod()
-    callsub verify_biguint_sub_uint64
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_mul_route@33:
-    // tests/artifacts/primitive-ops/contract.algo.ts:204
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:204
-    // @arc4.abimethod()
-    callsub verify_biguint_mul
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_mul_uint64_route@34:
-    // tests/artifacts/primitive-ops/contract.algo.ts:212
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:212
-    // @arc4.abimethod()
-    callsub verify_biguint_mul_uint64
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_div_route@35:
-    // tests/artifacts/primitive-ops/contract.algo.ts:220
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:220
-    // @arc4.abimethod()
-    callsub verify_biguint_div
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_div_uint64_route@36:
-    // tests/artifacts/primitive-ops/contract.algo.ts:228
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:228
-    // @arc4.abimethod()
-    callsub verify_biguint_div_uint64
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_mod_route@37:
-    // tests/artifacts/primitive-ops/contract.algo.ts:236
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:236
-    // @arc4.abimethod()
-    callsub verify_biguint_mod
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_mod_uint64_route@38:
-    // tests/artifacts/primitive-ops/contract.algo.ts:244
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:244
-    // @arc4.abimethod()
-    callsub verify_biguint_mod_uint64
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_and_route@39:
-    // tests/artifacts/primitive-ops/contract.algo.ts:252
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:252
-    // @arc4.abimethod()
-    callsub verify_biguint_and
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_and_uint64_route@40:
-    // tests/artifacts/primitive-ops/contract.algo.ts:260
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:260
-    // @arc4.abimethod()
-    callsub verify_biguint_and_uint64
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_or_route@41:
-    // tests/artifacts/primitive-ops/contract.algo.ts:268
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:268
-    // @arc4.abimethod()
-    callsub verify_biguint_or
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_or_uint64_route@42:
-    // tests/artifacts/primitive-ops/contract.algo.ts:276
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:276
-    // @arc4.abimethod()
-    callsub verify_biguint_or_uint64
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_xor_route@43:
-    // tests/artifacts/primitive-ops/contract.algo.ts:284
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:284
-    // @arc4.abimethod()
-    callsub verify_biguint_xor
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_xor_uint64_route@44:
-    // tests/artifacts/primitive-ops/contract.algo.ts:292
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:292
-    // @arc4.abimethod()
-    callsub verify_biguint_xor_uint64
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_eq_route@45:
-    // tests/artifacts/primitive-ops/contract.algo.ts:300
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:300
-    // @arc4.abimethod()
-    callsub verify_biguint_eq
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_eq_uint64_route@46:
-    // tests/artifacts/primitive-ops/contract.algo.ts:308
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:308
-    // @arc4.abimethod()
-    callsub verify_biguint_eq_uint64
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_ne_route@47:
-    // tests/artifacts/primitive-ops/contract.algo.ts:315
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:315
-    // @arc4.abimethod()
-    callsub verify_biguint_ne
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_ne_uint64_route@48:
-    // tests/artifacts/primitive-ops/contract.algo.ts:323
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:323
-    // @arc4.abimethod()
-    callsub verify_biguint_ne_uint64
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_lt_route@49:
-    // tests/artifacts/primitive-ops/contract.algo.ts:330
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:330
-    // @arc4.abimethod()
-    callsub verify_biguint_lt
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_lt_uint64_route@50:
-    // tests/artifacts/primitive-ops/contract.algo.ts:338
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:338
-    // @arc4.abimethod()
-    callsub verify_biguint_lt_uint64
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_le_route@51:
-    // tests/artifacts/primitive-ops/contract.algo.ts:346
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:346
-    // @arc4.abimethod()
-    callsub verify_biguint_le
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_le_uint64_route@52:
-    // tests/artifacts/primitive-ops/contract.algo.ts:354
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:354
-    // @arc4.abimethod()
-    callsub verify_biguint_le_uint64
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_gt_route@53:
-    // tests/artifacts/primitive-ops/contract.algo.ts:362
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:362
-    // @arc4.abimethod()
-    callsub verify_biguint_gt
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_gt_uint64_route@54:
-    // tests/artifacts/primitive-ops/contract.algo.ts:370
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:370
-    // @arc4.abimethod()
-    callsub verify_biguint_gt_uint64
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_ge_route@55:
-    // tests/artifacts/primitive-ops/contract.algo.ts:378
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:378
-    // @arc4.abimethod()
-    callsub verify_biguint_ge
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_biguint_ge_uint64_route@56:
-    // tests/artifacts/primitive-ops/contract.algo.ts:386
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:386
-    // @arc4.abimethod()
-    callsub verify_biguint_ge_uint64
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 2
-    setbit
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_log_route@57:
-    // tests/artifacts/primitive-ops/contract.algo.ts:395
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
     // export class PrimitiveOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
@@ -1593,971 +49,2508 @@ __puya_arc4_router___verify_log_route@57:
     extract 2 0
     txna ApplicationArgs 13
     extract 2 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:395
+    // tests/artifacts/primitive-ops/contract.algo.ts:408
     // @arc4.abimethod()
     callsub verify_log
     intc_0 // 1
-    retsub
+    return
 
-__puya_arc4_router___bare_routing@60:
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
+main_verify_biguint_ge_uint64_route@57:
+    // tests/artifacts/primitive-ops/contract.algo.ts:400
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:400
+    // @arc4.abimethod()
+    callsub verify_biguint_ge_uint64
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_ge_route@56:
+    // tests/artifacts/primitive-ops/contract.algo.ts:392
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:392
+    // @arc4.abimethod()
+    callsub verify_biguint_ge
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_gt_uint64_route@55:
+    // tests/artifacts/primitive-ops/contract.algo.ts:384
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:384
+    // @arc4.abimethod()
+    callsub verify_biguint_gt_uint64
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_gt_route@54:
+    // tests/artifacts/primitive-ops/contract.algo.ts:376
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:376
+    // @arc4.abimethod()
+    callsub verify_biguint_gt
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_le_uint64_route@53:
+    // tests/artifacts/primitive-ops/contract.algo.ts:368
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:368
+    // @arc4.abimethod()
+    callsub verify_biguint_le_uint64
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_le_route@52:
+    // tests/artifacts/primitive-ops/contract.algo.ts:360
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:360
+    // @arc4.abimethod()
+    callsub verify_biguint_le
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_lt_uint64_route@51:
+    // tests/artifacts/primitive-ops/contract.algo.ts:352
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:352
+    // @arc4.abimethod()
+    callsub verify_biguint_lt_uint64
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_lt_route@50:
+    // tests/artifacts/primitive-ops/contract.algo.ts:344
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:344
+    // @arc4.abimethod()
+    callsub verify_biguint_lt
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_ne_uint64_route@49:
+    // tests/artifacts/primitive-ops/contract.algo.ts:337
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:337
+    // @arc4.abimethod()
+    callsub verify_biguint_ne_uint64
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_ne_route@48:
+    // tests/artifacts/primitive-ops/contract.algo.ts:329
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:329
+    // @arc4.abimethod()
+    callsub verify_biguint_ne
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_eq_uint64_route@47:
+    // tests/artifacts/primitive-ops/contract.algo.ts:322
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:322
+    // @arc4.abimethod()
+    callsub verify_biguint_eq_uint64
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_eq_route@46:
+    // tests/artifacts/primitive-ops/contract.algo.ts:314
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:314
+    // @arc4.abimethod()
+    callsub verify_biguint_eq
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_xor_uint64_route@45:
+    // tests/artifacts/primitive-ops/contract.algo.ts:306
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:306
+    // @arc4.abimethod()
+    callsub verify_biguint_xor_uint64
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_xor_route@44:
+    // tests/artifacts/primitive-ops/contract.algo.ts:298
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:298
+    // @arc4.abimethod()
+    callsub verify_biguint_xor
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_or_uint64_route@43:
+    // tests/artifacts/primitive-ops/contract.algo.ts:290
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:290
+    // @arc4.abimethod()
+    callsub verify_biguint_or_uint64
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_or_route@42:
+    // tests/artifacts/primitive-ops/contract.algo.ts:282
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:282
+    // @arc4.abimethod()
+    callsub verify_biguint_or
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_and_uint64_route@41:
+    // tests/artifacts/primitive-ops/contract.algo.ts:274
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:274
+    // @arc4.abimethod()
+    callsub verify_biguint_and_uint64
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_and_route@40:
+    // tests/artifacts/primitive-ops/contract.algo.ts:266
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:266
+    // @arc4.abimethod()
+    callsub verify_biguint_and
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_mod_uint64_route@39:
+    // tests/artifacts/primitive-ops/contract.algo.ts:258
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:258
+    // @arc4.abimethod()
+    callsub verify_biguint_mod_uint64
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_mod_route@38:
+    // tests/artifacts/primitive-ops/contract.algo.ts:250
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:250
+    // @arc4.abimethod()
+    callsub verify_biguint_mod
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_div_uint64_route@37:
+    // tests/artifacts/primitive-ops/contract.algo.ts:242
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:242
+    // @arc4.abimethod()
+    callsub verify_biguint_div_uint64
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_div_route@36:
+    // tests/artifacts/primitive-ops/contract.algo.ts:234
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:234
+    // @arc4.abimethod()
+    callsub verify_biguint_div
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_mul_uint64_route@35:
+    // tests/artifacts/primitive-ops/contract.algo.ts:226
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:226
+    // @arc4.abimethod()
+    callsub verify_biguint_mul_uint64
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_mul_route@34:
+    // tests/artifacts/primitive-ops/contract.algo.ts:218
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:218
+    // @arc4.abimethod()
+    callsub verify_biguint_mul
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_sub_uint64_route@33:
+    // tests/artifacts/primitive-ops/contract.algo.ts:210
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:210
+    // @arc4.abimethod()
+    callsub verify_biguint_sub_uint64
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_sub_route@32:
+    // tests/artifacts/primitive-ops/contract.algo.ts:202
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:202
+    // @arc4.abimethod()
+    callsub verify_biguint_sub
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_add_uint64_route@31:
+    // tests/artifacts/primitive-ops/contract.algo.ts:194
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:194
+    // @arc4.abimethod()
+    callsub verify_biguint_add_uint64
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_biguint_add_route@30:
+    // tests/artifacts/primitive-ops/contract.algo.ts:186
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:186
+    // @arc4.abimethod()
+    callsub verify_biguint_add
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_bytes_not_route@29:
+    // tests/artifacts/primitive-ops/contract.algo.ts:178
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:178
+    // @arc4.abimethod()
+    callsub verify_bytes_not
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_bytes_xor_route@28:
+    // tests/artifacts/primitive-ops/contract.algo.ts:172
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:172
+    // @arc4.abimethod()
+    callsub verify_bytes_xor
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_bytes_or_route@27:
+    // tests/artifacts/primitive-ops/contract.algo.ts:166
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:166
+    // @arc4.abimethod()
+    callsub verify_bytes_or
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_bytes_and_route@26:
+    // tests/artifacts/primitive-ops/contract.algo.ts:160
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:160
+    // @arc4.abimethod()
+    callsub verify_bytes_and
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_bytes_ne_route@25:
+    // tests/artifacts/primitive-ops/contract.algo.ts:154
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:154
+    // @arc4.abimethod()
+    callsub verify_bytes_ne
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_bytes_eq_route@24:
+    // tests/artifacts/primitive-ops/contract.algo.ts:148
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:148
+    // @arc4.abimethod()
+    callsub verify_bytes_eq
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_bytes_add_route@23:
+    // tests/artifacts/primitive-ops/contract.algo.ts:139
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    extract 2 0
+    txna ApplicationArgs 3
+    btoi
+    txna ApplicationArgs 4
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:139
+    // @arc4.abimethod()
+    callsub verify_bytes_add
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_bytes_init_route@22:
+    // tests/artifacts/primitive-ops/contract.algo.ts:133
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:133
+    // @arc4.abimethod()
+    callsub verify_bytes_init
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_ge_route@21:
+    // tests/artifacts/primitive-ops/contract.algo.ts:127
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:127
+    // @arc4.abimethod()
+    callsub verify_uint64_ge
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_gt_route@20:
+    // tests/artifacts/primitive-ops/contract.algo.ts:121
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:121
+    // @arc4.abimethod()
+    callsub verify_uint64_gt
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_le_route@19:
+    // tests/artifacts/primitive-ops/contract.algo.ts:115
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:115
+    // @arc4.abimethod()
+    callsub verify_uint64_le
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_lt_route@18:
+    // tests/artifacts/primitive-ops/contract.algo.ts:109
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:109
+    // @arc4.abimethod()
+    callsub verify_uint64_lt
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_ne_route@17:
+    // tests/artifacts/primitive-ops/contract.algo.ts:103
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:103
+    // @arc4.abimethod()
+    callsub verify_uint64_ne
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_eq_route@16:
+    // tests/artifacts/primitive-ops/contract.algo.ts:97
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:97
+    // @arc4.abimethod()
+    callsub verify_uint64_eq
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 2
+    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_pow_route@15:
+    // tests/artifacts/primitive-ops/contract.algo.ts:91
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:91
+    // @arc4.abimethod()
+    callsub verify_uint64_pow
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_rshift_route@14:
+    // tests/artifacts/primitive-ops/contract.algo.ts:85
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:85
+    // @arc4.abimethod()
+    callsub verify_uint64_rshift
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_lshift_route@13:
+    // tests/artifacts/primitive-ops/contract.algo.ts:79
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:79
+    // @arc4.abimethod()
+    callsub verify_uint64_lshift
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_not_route@12:
+    // tests/artifacts/primitive-ops/contract.algo.ts:73
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:73
+    // @arc4.abimethod()
+    callsub verify_uint64_not
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_xor_route@11:
+    // tests/artifacts/primitive-ops/contract.algo.ts:67
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:67
+    // @arc4.abimethod()
+    callsub verify_uint64_xor
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_or_route@10:
+    // tests/artifacts/primitive-ops/contract.algo.ts:61
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:61
+    // @arc4.abimethod()
+    callsub verify_uint64_or
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_and_route@9:
+    // tests/artifacts/primitive-ops/contract.algo.ts:55
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:55
+    // @arc4.abimethod()
+    callsub verify_uint64_and
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_mod_route@8:
+    // tests/artifacts/primitive-ops/contract.algo.ts:49
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:49
+    // @arc4.abimethod()
+    callsub verify_uint64_mod
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_div_route@7:
+    // tests/artifacts/primitive-ops/contract.algo.ts:43
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:43
+    // @arc4.abimethod()
+    callsub verify_uint64_div
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_mul_route@6:
+    // tests/artifacts/primitive-ops/contract.algo.ts:37
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:37
+    // @arc4.abimethod()
+    callsub verify_uint64_mul
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_sub_route@5:
+    // tests/artifacts/primitive-ops/contract.algo.ts:31
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:31
+    // @arc4.abimethod()
+    callsub verify_uint64_sub
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_add_route@4:
+    // tests/artifacts/primitive-ops/contract.algo.ts:25
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/primitive-ops/contract.algo.ts:25
+    // @arc4.abimethod()
+    callsub verify_uint64_add
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_uint64_init_route@3:
+    // tests/artifacts/primitive-ops/contract.algo.ts:19
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
+    // export class PrimitiveOpsContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    // tests/artifacts/primitive-ops/contract.algo.ts:19
+    // @arc4.abimethod()
+    callsub verify_uint64_init
+    itob
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_bare_routing@61:
+    // tests/artifacts/primitive-ops/contract.algo.ts:18
     // export class PrimitiveOpsContract extends arc4.Contract {
     txn OnCompletion
-    bnz __puya_arc4_router___after_if_else@64
+    bnz main_after_if_else@65
     txn ApplicationID
     !
     assert // can only call when creating
     intc_0 // 1
-    retsub
-
-__puya_arc4_router___after_if_else@64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:4
-    // export class PrimitiveOpsContract extends arc4.Contract {
-    intc_1 // 0
-    retsub
+    return
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_init(raw_value: bytes) -> uint64:
 verify_uint64_init:
-    // tests/artifacts/primitive-ops/contract.algo.ts:5-6
+    // tests/artifacts/primitive-ops/contract.algo.ts:19-20
     // @arc4.abimethod()
     // public verify_uint64_init(raw_value: bytes): uint64 {
     proto 1 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:7
+    // tests/artifacts/primitive-ops/contract.algo.ts:21
     // const result = op.btoi(raw_value)
     frame_dig -1
     btoi
-    // tests/artifacts/primitive-ops/contract.algo.ts:8
+    // tests/artifacts/primitive-ops/contract.algo.ts:22
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_add(a: uint64, b: uint64) -> uint64:
 verify_uint64_add:
-    // tests/artifacts/primitive-ops/contract.algo.ts:11-12
+    // tests/artifacts/primitive-ops/contract.algo.ts:25-26
     // @arc4.abimethod()
     // public verify_uint64_add(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:13
+    // tests/artifacts/primitive-ops/contract.algo.ts:27
     // const result: uint64 = a + b
     frame_dig -2
     frame_dig -1
     +
-    // tests/artifacts/primitive-ops/contract.algo.ts:14
+    // tests/artifacts/primitive-ops/contract.algo.ts:28
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_sub(a: uint64, b: uint64) -> uint64:
 verify_uint64_sub:
-    // tests/artifacts/primitive-ops/contract.algo.ts:17-18
+    // tests/artifacts/primitive-ops/contract.algo.ts:31-32
     // @arc4.abimethod()
     // public verify_uint64_sub(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:19
+    // tests/artifacts/primitive-ops/contract.algo.ts:33
     // const result: uint64 = a - b
     frame_dig -2
     frame_dig -1
     -
-    // tests/artifacts/primitive-ops/contract.algo.ts:20
+    // tests/artifacts/primitive-ops/contract.algo.ts:34
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_mul(a: uint64, b: uint64) -> uint64:
 verify_uint64_mul:
-    // tests/artifacts/primitive-ops/contract.algo.ts:23-24
+    // tests/artifacts/primitive-ops/contract.algo.ts:37-38
     // @arc4.abimethod()
     // public verify_uint64_mul(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:25
+    // tests/artifacts/primitive-ops/contract.algo.ts:39
     // const result: uint64 = a * b
     frame_dig -2
     frame_dig -1
     *
-    // tests/artifacts/primitive-ops/contract.algo.ts:26
+    // tests/artifacts/primitive-ops/contract.algo.ts:40
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_div(a: uint64, b: uint64) -> uint64:
 verify_uint64_div:
-    // tests/artifacts/primitive-ops/contract.algo.ts:29-30
+    // tests/artifacts/primitive-ops/contract.algo.ts:43-44
     // @arc4.abimethod()
     // public verify_uint64_div(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:31
+    // tests/artifacts/primitive-ops/contract.algo.ts:45
     // const result: uint64 = a / b
     frame_dig -2
     frame_dig -1
     /
-    // tests/artifacts/primitive-ops/contract.algo.ts:32
+    // tests/artifacts/primitive-ops/contract.algo.ts:46
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_mod(a: uint64, b: uint64) -> uint64:
 verify_uint64_mod:
-    // tests/artifacts/primitive-ops/contract.algo.ts:35-36
+    // tests/artifacts/primitive-ops/contract.algo.ts:49-50
     // @arc4.abimethod()
     // public verify_uint64_mod(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:37
+    // tests/artifacts/primitive-ops/contract.algo.ts:51
     // const result: uint64 = a % b
     frame_dig -2
     frame_dig -1
     %
-    // tests/artifacts/primitive-ops/contract.algo.ts:38
+    // tests/artifacts/primitive-ops/contract.algo.ts:52
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_and(a: uint64, b: uint64) -> uint64:
 verify_uint64_and:
-    // tests/artifacts/primitive-ops/contract.algo.ts:41-42
+    // tests/artifacts/primitive-ops/contract.algo.ts:55-56
     // @arc4.abimethod()
     // public verify_uint64_and(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:43
+    // tests/artifacts/primitive-ops/contract.algo.ts:57
     // const result: uint64 = a & b
     frame_dig -2
     frame_dig -1
     &
-    // tests/artifacts/primitive-ops/contract.algo.ts:44
+    // tests/artifacts/primitive-ops/contract.algo.ts:58
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_or(a: uint64, b: uint64) -> uint64:
 verify_uint64_or:
-    // tests/artifacts/primitive-ops/contract.algo.ts:47-48
+    // tests/artifacts/primitive-ops/contract.algo.ts:61-62
     // @arc4.abimethod()
     // public verify_uint64_or(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:49
+    // tests/artifacts/primitive-ops/contract.algo.ts:63
     // const result: uint64 = a | b
     frame_dig -2
     frame_dig -1
     |
-    // tests/artifacts/primitive-ops/contract.algo.ts:50
+    // tests/artifacts/primitive-ops/contract.algo.ts:64
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_xor(a: uint64, b: uint64) -> uint64:
 verify_uint64_xor:
-    // tests/artifacts/primitive-ops/contract.algo.ts:53-54
+    // tests/artifacts/primitive-ops/contract.algo.ts:67-68
     // @arc4.abimethod()
     // public verify_uint64_xor(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:55
+    // tests/artifacts/primitive-ops/contract.algo.ts:69
     // const result: uint64 = a ^ b
     frame_dig -2
     frame_dig -1
     ^
-    // tests/artifacts/primitive-ops/contract.algo.ts:56
+    // tests/artifacts/primitive-ops/contract.algo.ts:70
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_not(a: uint64) -> uint64:
 verify_uint64_not:
-    // tests/artifacts/primitive-ops/contract.algo.ts:59-60
+    // tests/artifacts/primitive-ops/contract.algo.ts:73-74
     // @arc4.abimethod()
     // public verify_uint64_not(a: uint64): uint64 {
     proto 1 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:61
+    // tests/artifacts/primitive-ops/contract.algo.ts:75
     // const result: uint64 = ~a
     frame_dig -1
     ~
-    // tests/artifacts/primitive-ops/contract.algo.ts:62
+    // tests/artifacts/primitive-ops/contract.algo.ts:76
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_lshift(a: uint64, b: uint64) -> uint64:
 verify_uint64_lshift:
-    // tests/artifacts/primitive-ops/contract.algo.ts:65-66
+    // tests/artifacts/primitive-ops/contract.algo.ts:79-80
     // @arc4.abimethod()
     // public verify_uint64_lshift(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:67
+    // tests/artifacts/primitive-ops/contract.algo.ts:81
     // const result: uint64 = a << b
     frame_dig -2
     frame_dig -1
     shl
-    // tests/artifacts/primitive-ops/contract.algo.ts:68
+    // tests/artifacts/primitive-ops/contract.algo.ts:82
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_rshift(a: uint64, b: uint64) -> uint64:
 verify_uint64_rshift:
-    // tests/artifacts/primitive-ops/contract.algo.ts:71-72
+    // tests/artifacts/primitive-ops/contract.algo.ts:85-86
     // @arc4.abimethod()
     // public verify_uint64_rshift(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:73
+    // tests/artifacts/primitive-ops/contract.algo.ts:87
     // const result: uint64 = a >> b
     frame_dig -2
     frame_dig -1
     shr
-    // tests/artifacts/primitive-ops/contract.algo.ts:74
+    // tests/artifacts/primitive-ops/contract.algo.ts:88
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_pow(a: uint64, b: uint64) -> uint64:
 verify_uint64_pow:
-    // tests/artifacts/primitive-ops/contract.algo.ts:77-78
+    // tests/artifacts/primitive-ops/contract.algo.ts:91-92
     // @arc4.abimethod()
     // public verify_uint64_pow(a: uint64, b: uint64): uint64 {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:79
+    // tests/artifacts/primitive-ops/contract.algo.ts:93
     // const result: uint64 = a ** b
     frame_dig -2
     frame_dig -1
     exp
-    // tests/artifacts/primitive-ops/contract.algo.ts:80
+    // tests/artifacts/primitive-ops/contract.algo.ts:94
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_eq(a: uint64, b: uint64) -> uint64:
 verify_uint64_eq:
-    // tests/artifacts/primitive-ops/contract.algo.ts:83-84
+    // tests/artifacts/primitive-ops/contract.algo.ts:97-98
     // @arc4.abimethod()
     // public verify_uint64_eq(a: uint64, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:85
+    // tests/artifacts/primitive-ops/contract.algo.ts:99
     // const result = a === b
     frame_dig -2
     frame_dig -1
     ==
-    // tests/artifacts/primitive-ops/contract.algo.ts:86
+    // tests/artifacts/primitive-ops/contract.algo.ts:100
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_ne(a: uint64, b: uint64) -> uint64:
 verify_uint64_ne:
-    // tests/artifacts/primitive-ops/contract.algo.ts:89-90
+    // tests/artifacts/primitive-ops/contract.algo.ts:103-104
     // @arc4.abimethod()
     // public verify_uint64_ne(a: uint64, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:91
+    // tests/artifacts/primitive-ops/contract.algo.ts:105
     // const result = a !== b
     frame_dig -2
     frame_dig -1
     !=
-    // tests/artifacts/primitive-ops/contract.algo.ts:92
+    // tests/artifacts/primitive-ops/contract.algo.ts:106
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_lt(a: uint64, b: uint64) -> uint64:
 verify_uint64_lt:
-    // tests/artifacts/primitive-ops/contract.algo.ts:95-96
+    // tests/artifacts/primitive-ops/contract.algo.ts:109-110
     // @arc4.abimethod()
     // public verify_uint64_lt(a: uint64, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:97
+    // tests/artifacts/primitive-ops/contract.algo.ts:111
     // const result = a < b
     frame_dig -2
     frame_dig -1
     <
-    // tests/artifacts/primitive-ops/contract.algo.ts:98
+    // tests/artifacts/primitive-ops/contract.algo.ts:112
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_le(a: uint64, b: uint64) -> uint64:
 verify_uint64_le:
-    // tests/artifacts/primitive-ops/contract.algo.ts:101-102
+    // tests/artifacts/primitive-ops/contract.algo.ts:115-116
     // @arc4.abimethod()
     // public verify_uint64_le(a: uint64, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:103
+    // tests/artifacts/primitive-ops/contract.algo.ts:117
     // const result = a <= b
     frame_dig -2
     frame_dig -1
     <=
-    // tests/artifacts/primitive-ops/contract.algo.ts:104
+    // tests/artifacts/primitive-ops/contract.algo.ts:118
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_gt(a: uint64, b: uint64) -> uint64:
 verify_uint64_gt:
-    // tests/artifacts/primitive-ops/contract.algo.ts:107-108
+    // tests/artifacts/primitive-ops/contract.algo.ts:121-122
     // @arc4.abimethod()
     // public verify_uint64_gt(a: uint64, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:109
+    // tests/artifacts/primitive-ops/contract.algo.ts:123
     // const result = a > b
     frame_dig -2
     frame_dig -1
     >
-    // tests/artifacts/primitive-ops/contract.algo.ts:110
+    // tests/artifacts/primitive-ops/contract.algo.ts:124
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_uint64_ge(a: uint64, b: uint64) -> uint64:
 verify_uint64_ge:
-    // tests/artifacts/primitive-ops/contract.algo.ts:113-114
+    // tests/artifacts/primitive-ops/contract.algo.ts:127-128
     // @arc4.abimethod()
     // public verify_uint64_ge(a: uint64, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:115
+    // tests/artifacts/primitive-ops/contract.algo.ts:129
     // const result = a >= b
     frame_dig -2
     frame_dig -1
     >=
-    // tests/artifacts/primitive-ops/contract.algo.ts:116
+    // tests/artifacts/primitive-ops/contract.algo.ts:130
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_bytes_init(raw_value: uint64) -> bytes:
 verify_bytes_init:
-    // tests/artifacts/primitive-ops/contract.algo.ts:119-120
+    // tests/artifacts/primitive-ops/contract.algo.ts:133-134
     // @arc4.abimethod()
     // public verify_bytes_init(raw_value: uint64): bytes {
     proto 1 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:121
+    // tests/artifacts/primitive-ops/contract.algo.ts:135
     // const result = op.itob(raw_value)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:122
+    // tests/artifacts/primitive-ops/contract.algo.ts:136
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_bytes_add(a: bytes, b: bytes, pad_a_size: uint64, pad_b_size: uint64) -> bytes:
 verify_bytes_add:
-    // tests/artifacts/primitive-ops/contract.algo.ts:125-126
+    // tests/artifacts/primitive-ops/contract.algo.ts:139-140
     // @arc4.abimethod()
     // public verify_bytes_add(a: bytes, b: bytes, pad_a_size: uint64, pad_b_size: uint64): bytes {
     proto 4 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:127
+    // tests/artifacts/primitive-ops/contract.algo.ts:141
     // const paddedA = op.bzero(pad_a_size).concat(a)
     frame_dig -2
     bzero
     frame_dig -4
     concat
-    // tests/artifacts/primitive-ops/contract.algo.ts:128
+    // tests/artifacts/primitive-ops/contract.algo.ts:142
     // const paddedB = op.bzero(pad_b_size).concat(b)
     frame_dig -1
     bzero
     frame_dig -3
     concat
-    // tests/artifacts/primitive-ops/contract.algo.ts:129
+    // tests/artifacts/primitive-ops/contract.algo.ts:143
     // const result = paddedA.concat(paddedB)
     concat
-    // tests/artifacts/primitive-ops/contract.algo.ts:130
+    // tests/artifacts/primitive-ops/contract.algo.ts:144
     // const resultHash = op.sha256(result)
     sha256
-    // tests/artifacts/primitive-ops/contract.algo.ts:131
+    // tests/artifacts/primitive-ops/contract.algo.ts:145
     // return resultHash
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_bytes_eq(a: bytes, b: bytes) -> uint64:
 verify_bytes_eq:
-    // tests/artifacts/primitive-ops/contract.algo.ts:134-135
+    // tests/artifacts/primitive-ops/contract.algo.ts:148-149
     // @arc4.abimethod()
     // public verify_bytes_eq(a: bytes, b: bytes): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:136
+    // tests/artifacts/primitive-ops/contract.algo.ts:150
     // const result = a === b
     frame_dig -2
     frame_dig -1
     ==
-    // tests/artifacts/primitive-ops/contract.algo.ts:137
+    // tests/artifacts/primitive-ops/contract.algo.ts:151
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_bytes_ne(a: bytes, b: bytes) -> uint64:
 verify_bytes_ne:
-    // tests/artifacts/primitive-ops/contract.algo.ts:140-141
+    // tests/artifacts/primitive-ops/contract.algo.ts:154-155
     // @arc4.abimethod()
     // public verify_bytes_ne(a: bytes, b: bytes): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:142
+    // tests/artifacts/primitive-ops/contract.algo.ts:156
     // const result = a !== b
     frame_dig -2
     frame_dig -1
     !=
-    // tests/artifacts/primitive-ops/contract.algo.ts:143
+    // tests/artifacts/primitive-ops/contract.algo.ts:157
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_bytes_and(a: bytes, b: bytes) -> bytes:
 verify_bytes_and:
-    // tests/artifacts/primitive-ops/contract.algo.ts:146-147
+    // tests/artifacts/primitive-ops/contract.algo.ts:160-161
     // @arc4.abimethod()
     // public verify_bytes_and(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:148
+    // tests/artifacts/primitive-ops/contract.algo.ts:162
     // const result = a.bitwiseAnd(b)
     frame_dig -2
     frame_dig -1
     b&
-    // tests/artifacts/primitive-ops/contract.algo.ts:149
+    // tests/artifacts/primitive-ops/contract.algo.ts:163
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_bytes_or(a: bytes, b: bytes) -> bytes:
 verify_bytes_or:
-    // tests/artifacts/primitive-ops/contract.algo.ts:152-153
+    // tests/artifacts/primitive-ops/contract.algo.ts:166-167
     // @arc4.abimethod()
     // public verify_bytes_or(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:154
+    // tests/artifacts/primitive-ops/contract.algo.ts:168
     // const result = a.bitwiseOr(b)
     frame_dig -2
     frame_dig -1
     b|
-    // tests/artifacts/primitive-ops/contract.algo.ts:155
+    // tests/artifacts/primitive-ops/contract.algo.ts:169
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_bytes_xor(a: bytes, b: bytes) -> bytes:
 verify_bytes_xor:
-    // tests/artifacts/primitive-ops/contract.algo.ts:158-159
+    // tests/artifacts/primitive-ops/contract.algo.ts:172-173
     // @arc4.abimethod()
     // public verify_bytes_xor(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:160
+    // tests/artifacts/primitive-ops/contract.algo.ts:174
     // const result = a.bitwiseXor(b)
     frame_dig -2
     frame_dig -1
     b^
-    // tests/artifacts/primitive-ops/contract.algo.ts:161
+    // tests/artifacts/primitive-ops/contract.algo.ts:175
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_bytes_not(a: bytes, pad_size: uint64) -> bytes:
 verify_bytes_not:
-    // tests/artifacts/primitive-ops/contract.algo.ts:164-165
+    // tests/artifacts/primitive-ops/contract.algo.ts:178-179
     // @arc4.abimethod()
     // public verify_bytes_not(a: bytes, pad_size: uint64): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:166
+    // tests/artifacts/primitive-ops/contract.algo.ts:180
     // const paddedA = op.bzero(pad_size).concat(a)
     frame_dig -1
     bzero
     frame_dig -2
     concat
-    // tests/artifacts/primitive-ops/contract.algo.ts:167
+    // tests/artifacts/primitive-ops/contract.algo.ts:181
     // const result = paddedA.bitwiseInvert()
     b~
-    // tests/artifacts/primitive-ops/contract.algo.ts:168
+    // tests/artifacts/primitive-ops/contract.algo.ts:182
     // const resultHash = op.sha256(result)
     sha256
-    // tests/artifacts/primitive-ops/contract.algo.ts:169
+    // tests/artifacts/primitive-ops/contract.algo.ts:183
     // return resultHash
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_add(a: bytes, b: bytes) -> bytes:
 verify_biguint_add:
-    // tests/artifacts/primitive-ops/contract.algo.ts:172-173
+    // tests/artifacts/primitive-ops/contract.algo.ts:186-187
     // @arc4.abimethod()
     // public verify_biguint_add(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:176
+    // tests/artifacts/primitive-ops/contract.algo.ts:190
     // const result: biguint = a_biguint + b_biguint
     frame_dig -2
     frame_dig -1
     b+
-    // tests/artifacts/primitive-ops/contract.algo.ts:177
+    // tests/artifacts/primitive-ops/contract.algo.ts:191
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_add_uint64(a: bytes, b: uint64) -> bytes:
 verify_biguint_add_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:180-181
+    // tests/artifacts/primitive-ops/contract.algo.ts:194-195
     // @arc4.abimethod()
     // public verify_biguint_add_uint64(a: bytes, b: uint64): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:183
+    // tests/artifacts/primitive-ops/contract.algo.ts:197
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:184
+    // tests/artifacts/primitive-ops/contract.algo.ts:198
     // const result: biguint = a_biguint + b_biguint
     frame_dig -2
     b+
-    // tests/artifacts/primitive-ops/contract.algo.ts:185
+    // tests/artifacts/primitive-ops/contract.algo.ts:199
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_sub(a: bytes, b: bytes) -> bytes:
 verify_biguint_sub:
-    // tests/artifacts/primitive-ops/contract.algo.ts:188-189
+    // tests/artifacts/primitive-ops/contract.algo.ts:202-203
     // @arc4.abimethod()
     // public verify_biguint_sub(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:192
+    // tests/artifacts/primitive-ops/contract.algo.ts:206
     // const result: biguint = a_biguint - b_biguint
     frame_dig -2
     frame_dig -1
     b-
-    // tests/artifacts/primitive-ops/contract.algo.ts:193
+    // tests/artifacts/primitive-ops/contract.algo.ts:207
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_sub_uint64(a: bytes, b: uint64) -> bytes:
 verify_biguint_sub_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:196-197
+    // tests/artifacts/primitive-ops/contract.algo.ts:210-211
     // @arc4.abimethod()
     // public verify_biguint_sub_uint64(a: bytes, b: uint64): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:199
+    // tests/artifacts/primitive-ops/contract.algo.ts:213
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:200
+    // tests/artifacts/primitive-ops/contract.algo.ts:214
     // const result: biguint = a_biguint - b_biguint
     frame_dig -2
     swap
     b-
-    // tests/artifacts/primitive-ops/contract.algo.ts:201
+    // tests/artifacts/primitive-ops/contract.algo.ts:215
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_mul(a: bytes, b: bytes) -> bytes:
 verify_biguint_mul:
-    // tests/artifacts/primitive-ops/contract.algo.ts:204-205
+    // tests/artifacts/primitive-ops/contract.algo.ts:218-219
     // @arc4.abimethod()
     // public verify_biguint_mul(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:208
+    // tests/artifacts/primitive-ops/contract.algo.ts:222
     // const result: biguint = a_biguint * b_biguint
     frame_dig -2
     frame_dig -1
     b*
-    // tests/artifacts/primitive-ops/contract.algo.ts:209
+    // tests/artifacts/primitive-ops/contract.algo.ts:223
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_mul_uint64(a: bytes, b: uint64) -> bytes:
 verify_biguint_mul_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:212-213
+    // tests/artifacts/primitive-ops/contract.algo.ts:226-227
     // @arc4.abimethod()
     // public verify_biguint_mul_uint64(a: bytes, b: uint64): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:215
+    // tests/artifacts/primitive-ops/contract.algo.ts:229
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:216
+    // tests/artifacts/primitive-ops/contract.algo.ts:230
     // const result: biguint = a_biguint * b_biguint
     frame_dig -2
     b*
-    // tests/artifacts/primitive-ops/contract.algo.ts:217
+    // tests/artifacts/primitive-ops/contract.algo.ts:231
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_div(a: bytes, b: bytes) -> bytes:
 verify_biguint_div:
-    // tests/artifacts/primitive-ops/contract.algo.ts:220-221
+    // tests/artifacts/primitive-ops/contract.algo.ts:234-235
     // @arc4.abimethod()
     // public verify_biguint_div(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:224
+    // tests/artifacts/primitive-ops/contract.algo.ts:238
     // const result: biguint = a_biguint / b_biguint
     frame_dig -2
     frame_dig -1
     b/
-    // tests/artifacts/primitive-ops/contract.algo.ts:225
+    // tests/artifacts/primitive-ops/contract.algo.ts:239
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_div_uint64(a: bytes, b: uint64) -> bytes:
 verify_biguint_div_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:228-229
+    // tests/artifacts/primitive-ops/contract.algo.ts:242-243
     // @arc4.abimethod()
     // public verify_biguint_div_uint64(a: bytes, b: uint64): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:231
+    // tests/artifacts/primitive-ops/contract.algo.ts:245
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:232
+    // tests/artifacts/primitive-ops/contract.algo.ts:246
     // const result: biguint = a_biguint / b_biguint
     frame_dig -2
     swap
     b/
-    // tests/artifacts/primitive-ops/contract.algo.ts:233
+    // tests/artifacts/primitive-ops/contract.algo.ts:247
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_mod(a: bytes, b: bytes) -> bytes:
 verify_biguint_mod:
-    // tests/artifacts/primitive-ops/contract.algo.ts:236-237
+    // tests/artifacts/primitive-ops/contract.algo.ts:250-251
     // @arc4.abimethod()
     // public verify_biguint_mod(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:240
+    // tests/artifacts/primitive-ops/contract.algo.ts:254
     // const result: biguint = a_biguint % b_biguint
     frame_dig -2
     frame_dig -1
     b%
-    // tests/artifacts/primitive-ops/contract.algo.ts:241
+    // tests/artifacts/primitive-ops/contract.algo.ts:255
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_mod_uint64(a: bytes, b: uint64) -> bytes:
 verify_biguint_mod_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:244-245
+    // tests/artifacts/primitive-ops/contract.algo.ts:258-259
     // @arc4.abimethod()
     // public verify_biguint_mod_uint64(a: bytes, b: uint64): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:247
+    // tests/artifacts/primitive-ops/contract.algo.ts:261
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:248
+    // tests/artifacts/primitive-ops/contract.algo.ts:262
     // const result: biguint = a_biguint % b_biguint
     frame_dig -2
     swap
     b%
-    // tests/artifacts/primitive-ops/contract.algo.ts:249
+    // tests/artifacts/primitive-ops/contract.algo.ts:263
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_and(a: bytes, b: bytes) -> bytes:
 verify_biguint_and:
-    // tests/artifacts/primitive-ops/contract.algo.ts:252-253
+    // tests/artifacts/primitive-ops/contract.algo.ts:266-267
     // @arc4.abimethod()
     // public verify_biguint_and(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:256
+    // tests/artifacts/primitive-ops/contract.algo.ts:270
     // const result: biguint = a_biguint & b_biguint
     frame_dig -2
     frame_dig -1
     b&
-    // tests/artifacts/primitive-ops/contract.algo.ts:257
+    // tests/artifacts/primitive-ops/contract.algo.ts:271
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_and_uint64(a: bytes, b: uint64) -> bytes:
 verify_biguint_and_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:260-261
+    // tests/artifacts/primitive-ops/contract.algo.ts:274-275
     // @arc4.abimethod()
     // public verify_biguint_and_uint64(a: bytes, b: uint64): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:263
+    // tests/artifacts/primitive-ops/contract.algo.ts:277
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:264
+    // tests/artifacts/primitive-ops/contract.algo.ts:278
     // const result: biguint = a_biguint & b_biguint
     frame_dig -2
     b&
-    // tests/artifacts/primitive-ops/contract.algo.ts:265
+    // tests/artifacts/primitive-ops/contract.algo.ts:279
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_or(a: bytes, b: bytes) -> bytes:
 verify_biguint_or:
-    // tests/artifacts/primitive-ops/contract.algo.ts:268-269
+    // tests/artifacts/primitive-ops/contract.algo.ts:282-283
     // @arc4.abimethod()
     // public verify_biguint_or(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:272
+    // tests/artifacts/primitive-ops/contract.algo.ts:286
     // const result: biguint = a_biguint | b_biguint
     frame_dig -2
     frame_dig -1
     b|
-    // tests/artifacts/primitive-ops/contract.algo.ts:273
+    // tests/artifacts/primitive-ops/contract.algo.ts:287
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_or_uint64(a: bytes, b: uint64) -> bytes:
 verify_biguint_or_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:276-277
+    // tests/artifacts/primitive-ops/contract.algo.ts:290-291
     // @arc4.abimethod()
     // public verify_biguint_or_uint64(a: bytes, b: uint64): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:279
+    // tests/artifacts/primitive-ops/contract.algo.ts:293
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:280
+    // tests/artifacts/primitive-ops/contract.algo.ts:294
     // const result: biguint = a_biguint | b_biguint
     frame_dig -2
     b|
-    // tests/artifacts/primitive-ops/contract.algo.ts:281
+    // tests/artifacts/primitive-ops/contract.algo.ts:295
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_xor(a: bytes, b: bytes) -> bytes:
 verify_biguint_xor:
-    // tests/artifacts/primitive-ops/contract.algo.ts:284-285
+    // tests/artifacts/primitive-ops/contract.algo.ts:298-299
     // @arc4.abimethod()
     // public verify_biguint_xor(a: bytes, b: bytes): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:288
+    // tests/artifacts/primitive-ops/contract.algo.ts:302
     // const result: biguint = a_biguint ^ b_biguint
     frame_dig -2
     frame_dig -1
     b^
-    // tests/artifacts/primitive-ops/contract.algo.ts:289
+    // tests/artifacts/primitive-ops/contract.algo.ts:303
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_xor_uint64(a: bytes, b: uint64) -> bytes:
 verify_biguint_xor_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:292-293
+    // tests/artifacts/primitive-ops/contract.algo.ts:306-307
     // @arc4.abimethod()
     // public verify_biguint_xor_uint64(a: bytes, b: uint64): bytes {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:295
+    // tests/artifacts/primitive-ops/contract.algo.ts:309
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:296
+    // tests/artifacts/primitive-ops/contract.algo.ts:310
     // const result: biguint = a_biguint ^ b_biguint
     frame_dig -2
     b^
-    // tests/artifacts/primitive-ops/contract.algo.ts:297
+    // tests/artifacts/primitive-ops/contract.algo.ts:311
     // return Bytes(result)
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_eq(a: bytes, b: bytes) -> uint64:
 verify_biguint_eq:
-    // tests/artifacts/primitive-ops/contract.algo.ts:300-301
+    // tests/artifacts/primitive-ops/contract.algo.ts:314-315
     // @arc4.abimethod()
     // public verify_biguint_eq(a: bytes, b: bytes): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:304
+    // tests/artifacts/primitive-ops/contract.algo.ts:318
     // const result = a_biguint === b_biguint
     frame_dig -2
     frame_dig -1
     b==
-    // tests/artifacts/primitive-ops/contract.algo.ts:305
+    // tests/artifacts/primitive-ops/contract.algo.ts:319
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_eq_uint64(a: bytes, b: uint64) -> uint64:
 verify_biguint_eq_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:308-309
+    // tests/artifacts/primitive-ops/contract.algo.ts:322-323
     // @arc4.abimethod()
     // public verify_biguint_eq_uint64(a: bytes, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:311
+    // tests/artifacts/primitive-ops/contract.algo.ts:325
     // const result = a_biguint === BigUint(b)
     frame_dig -1
     itob
     frame_dig -2
     b==
-    // tests/artifacts/primitive-ops/contract.algo.ts:312
+    // tests/artifacts/primitive-ops/contract.algo.ts:326
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_ne(a: bytes, b: bytes) -> uint64:
 verify_biguint_ne:
-    // tests/artifacts/primitive-ops/contract.algo.ts:315-316
+    // tests/artifacts/primitive-ops/contract.algo.ts:329-330
     // @arc4.abimethod()
     // public verify_biguint_ne(a: bytes, b: bytes): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:319
+    // tests/artifacts/primitive-ops/contract.algo.ts:333
     // const result = a_biguint !== b_biguint
     frame_dig -2
     frame_dig -1
     b!=
-    // tests/artifacts/primitive-ops/contract.algo.ts:320
+    // tests/artifacts/primitive-ops/contract.algo.ts:334
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_ne_uint64(a: bytes, b: uint64) -> uint64:
 verify_biguint_ne_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:323-324
+    // tests/artifacts/primitive-ops/contract.algo.ts:337-338
     // @arc4.abimethod()
     // public verify_biguint_ne_uint64(a: bytes, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:326
+    // tests/artifacts/primitive-ops/contract.algo.ts:340
     // const result = a_biguint !== BigUint(b)
     frame_dig -1
     itob
     frame_dig -2
     b!=
-    // tests/artifacts/primitive-ops/contract.algo.ts:327
+    // tests/artifacts/primitive-ops/contract.algo.ts:341
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_lt(a: bytes, b: bytes) -> uint64:
 verify_biguint_lt:
-    // tests/artifacts/primitive-ops/contract.algo.ts:330-331
+    // tests/artifacts/primitive-ops/contract.algo.ts:344-345
     // @arc4.abimethod()
     // public verify_biguint_lt(a: bytes, b: bytes): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:334
+    // tests/artifacts/primitive-ops/contract.algo.ts:348
     // const result = a_biguint < b_biguint
     frame_dig -2
     frame_dig -1
     b<
-    // tests/artifacts/primitive-ops/contract.algo.ts:335
+    // tests/artifacts/primitive-ops/contract.algo.ts:349
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_lt_uint64(a: bytes, b: uint64) -> uint64:
 verify_biguint_lt_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:338-339
+    // tests/artifacts/primitive-ops/contract.algo.ts:352-353
     // @arc4.abimethod()
     // public verify_biguint_lt_uint64(a: bytes, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:341
+    // tests/artifacts/primitive-ops/contract.algo.ts:355
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:342
+    // tests/artifacts/primitive-ops/contract.algo.ts:356
     // const result = a_biguint < b_biguint
     frame_dig -2
     b>
-    // tests/artifacts/primitive-ops/contract.algo.ts:343
+    // tests/artifacts/primitive-ops/contract.algo.ts:357
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_le(a: bytes, b: bytes) -> uint64:
 verify_biguint_le:
-    // tests/artifacts/primitive-ops/contract.algo.ts:346-347
+    // tests/artifacts/primitive-ops/contract.algo.ts:360-361
     // @arc4.abimethod()
     // public verify_biguint_le(a: bytes, b: bytes): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:350
+    // tests/artifacts/primitive-ops/contract.algo.ts:364
     // const result = a_biguint <= b_biguint
     frame_dig -2
     frame_dig -1
     b<=
-    // tests/artifacts/primitive-ops/contract.algo.ts:351
+    // tests/artifacts/primitive-ops/contract.algo.ts:365
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_le_uint64(a: bytes, b: uint64) -> uint64:
 verify_biguint_le_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:354-355
+    // tests/artifacts/primitive-ops/contract.algo.ts:368-369
     // @arc4.abimethod()
     // public verify_biguint_le_uint64(a: bytes, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:357
+    // tests/artifacts/primitive-ops/contract.algo.ts:371
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:358
+    // tests/artifacts/primitive-ops/contract.algo.ts:372
     // const result = a_biguint <= b_biguint
     frame_dig -2
     b>=
-    // tests/artifacts/primitive-ops/contract.algo.ts:359
+    // tests/artifacts/primitive-ops/contract.algo.ts:373
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_gt(a: bytes, b: bytes) -> uint64:
 verify_biguint_gt:
-    // tests/artifacts/primitive-ops/contract.algo.ts:362-363
+    // tests/artifacts/primitive-ops/contract.algo.ts:376-377
     // @arc4.abimethod()
     // public verify_biguint_gt(a: bytes, b: bytes): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:366
+    // tests/artifacts/primitive-ops/contract.algo.ts:380
     // const result = a_biguint > b_biguint
     frame_dig -2
     frame_dig -1
     b>
-    // tests/artifacts/primitive-ops/contract.algo.ts:367
+    // tests/artifacts/primitive-ops/contract.algo.ts:381
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_gt_uint64(a: bytes, b: uint64) -> uint64:
 verify_biguint_gt_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:370-371
+    // tests/artifacts/primitive-ops/contract.algo.ts:384-385
     // @arc4.abimethod()
     // public verify_biguint_gt_uint64(a: bytes, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:373
+    // tests/artifacts/primitive-ops/contract.algo.ts:387
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:374
+    // tests/artifacts/primitive-ops/contract.algo.ts:388
     // const result = a_biguint > b_biguint
     frame_dig -2
     b<
-    // tests/artifacts/primitive-ops/contract.algo.ts:375
+    // tests/artifacts/primitive-ops/contract.algo.ts:389
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_ge(a: bytes, b: bytes) -> uint64:
 verify_biguint_ge:
-    // tests/artifacts/primitive-ops/contract.algo.ts:378-379
+    // tests/artifacts/primitive-ops/contract.algo.ts:392-393
     // @arc4.abimethod()
     // public verify_biguint_ge(a: bytes, b: bytes): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:382
+    // tests/artifacts/primitive-ops/contract.algo.ts:396
     // const result = a_biguint >= b_biguint
     frame_dig -2
     frame_dig -1
     b>=
-    // tests/artifacts/primitive-ops/contract.algo.ts:383
+    // tests/artifacts/primitive-ops/contract.algo.ts:397
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_biguint_ge_uint64(a: bytes, b: uint64) -> uint64:
 verify_biguint_ge_uint64:
-    // tests/artifacts/primitive-ops/contract.algo.ts:386-387
+    // tests/artifacts/primitive-ops/contract.algo.ts:400-401
     // @arc4.abimethod()
     // public verify_biguint_ge_uint64(a: bytes, b: uint64): boolean {
     proto 2 1
-    // tests/artifacts/primitive-ops/contract.algo.ts:389
+    // tests/artifacts/primitive-ops/contract.algo.ts:403
     // const b_biguint = BigUint(b)
     frame_dig -1
     itob
-    // tests/artifacts/primitive-ops/contract.algo.ts:390
+    // tests/artifacts/primitive-ops/contract.algo.ts:404
     // const result = a_biguint >= b_biguint
     frame_dig -2
     b<=
-    // tests/artifacts/primitive-ops/contract.algo.ts:391
+    // tests/artifacts/primitive-ops/contract.algo.ts:405
     // return result
     retsub
 
 
 // tests/artifacts/primitive-ops/contract.algo.ts::PrimitiveOpsContract.verify_log(a: bytes, b: uint64, c: bytes, d: bytes, e: bytes, f: bytes, g: bytes, h: bytes, i: bytes, j: bytes, k: bytes, m: bytes, n: bytes) -> void:
 verify_log:
-    // tests/artifacts/primitive-ops/contract.algo.ts:395-410
+    // tests/artifacts/primitive-ops/contract.algo.ts:408-423
     // @arc4.abimethod()
     // public verify_log(
     //   a: string,
@@ -2575,7 +2568,7 @@ verify_log:
     //   n: bytes,
     // ) {
     proto 13 0
-    // tests/artifacts/primitive-ops/contract.algo.ts:415
+    // tests/artifacts/primitive-ops/contract.algo.ts:428
     // log(a, b, c, d_biguint, e, f, g, h, i, j, arc4_k, arc4_m, arc4_n)
     frame_dig -12
     itob

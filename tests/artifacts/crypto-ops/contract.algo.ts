@@ -1,7 +1,17 @@
 import type { bytes, uint64 } from '@algorandfoundation/algorand-typescript'
-import { arc4, Ecdsa, ensureBudget, MimcConfigurations, op, OpUpFeeSource, VrfVerify } from '@algorandfoundation/algorand-typescript'
+import {
+  arc4,
+  contract,
+  Ecdsa,
+  ensureBudget,
+  MimcConfigurations,
+  op,
+  OpUpFeeSource,
+  VrfVerify,
+} from '@algorandfoundation/algorand-typescript'
 import { Bool } from '@algorandfoundation/algorand-typescript/arc4'
 
+@contract({ name: 'CryptoOpsContract', avmVersion: 11 })
 export class CryptoOpsContract extends arc4.Contract {
   @arc4.abimethod()
   public verify_sha256(a: bytes, pad_size: uint64): bytes {

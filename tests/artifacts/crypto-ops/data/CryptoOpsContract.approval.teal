@@ -5,7 +5,8 @@
 main:
     intcblock 0 1 4 3000
     bytecblock 0x151f7c75 0x00 0x0004 0x068101
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txn NumAppArgs
     bz main_bare_routing@19
@@ -14,24 +15,26 @@ main:
     match main_verify_sha256_route@3 main_verify_sha3_256_route@4 main_verify_keccak_256_route@5 main_verify_sha512_256_route@6 main_verify_ed25519verify_route@7 main_verify_ed25519verify_bare_route@8 main_verify_ecdsa_verify_k1_route@9 main_verify_ecdsa_verify_r1_route@10 main_verify_ecdsa_recover_k1_route@11 main_verify_ecdsa_recover_r1_route@12 main_verify_ecdsa_decompress_k1_route@13 main_verify_ecdsa_decompress_r1_route@14 main_verify_vrf_verify_route@15 main_verify_mimc_route@16
 
 main_after_if_else@23:
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     intc_0 // 0
     return
 
 main_verify_mimc_route@16:
-    // tests/artifacts/crypto-ops/contract.algo.ts:95
+    // tests/artifacts/crypto-ops/contract.algo.ts:106
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:95
+    // tests/artifacts/crypto-ops/contract.algo.ts:106
     // @arc4.abimethod()
     callsub verify_mimc
     dup
@@ -48,14 +51,15 @@ main_verify_mimc_route@16:
     return
 
 main_verify_vrf_verify_route@15:
-    // tests/artifacts/crypto-ops/contract.algo.ts:88
+    // tests/artifacts/crypto-ops/contract.algo.ts:99
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
@@ -63,7 +67,7 @@ main_verify_vrf_verify_route@15:
     extract 2 0
     txna ApplicationArgs 3
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:88
+    // tests/artifacts/crypto-ops/contract.algo.ts:99
     // @arc4.abimethod()
     callsub verify_vrf_verify
     dig 1
@@ -89,18 +93,19 @@ main_verify_vrf_verify_route@15:
     return
 
 main_verify_ecdsa_decompress_r1_route@14:
-    // tests/artifacts/crypto-ops/contract.algo.ts:82
+    // tests/artifacts/crypto-ops/contract.algo.ts:93
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:82
+    // tests/artifacts/crypto-ops/contract.algo.ts:93
     // @arc4.abimethod()
     callsub verify_ecdsa_decompress_r1
     dig 1
@@ -136,18 +141,19 @@ main_verify_ecdsa_decompress_r1_route@14:
     return
 
 main_verify_ecdsa_decompress_k1_route@13:
-    // tests/artifacts/crypto-ops/contract.algo.ts:76
+    // tests/artifacts/crypto-ops/contract.algo.ts:87
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:76
+    // tests/artifacts/crypto-ops/contract.algo.ts:87
     // @arc4.abimethod()
     callsub verify_ecdsa_decompress_k1
     dig 1
@@ -183,14 +189,15 @@ main_verify_ecdsa_decompress_k1_route@13:
     return
 
 main_verify_ecdsa_recover_r1_route@12:
-    // tests/artifacts/crypto-ops/contract.algo.ts:67
+    // tests/artifacts/crypto-ops/contract.algo.ts:78
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
@@ -200,7 +207,7 @@ main_verify_ecdsa_recover_r1_route@12:
     extract 2 0
     txna ApplicationArgs 4
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:67
+    // tests/artifacts/crypto-ops/contract.algo.ts:78
     // @arc4.abimethod()
     callsub verify_ecdsa_recover_r1
     dig 1
@@ -236,14 +243,15 @@ main_verify_ecdsa_recover_r1_route@12:
     return
 
 main_verify_ecdsa_recover_k1_route@11:
-    // tests/artifacts/crypto-ops/contract.algo.ts:61
+    // tests/artifacts/crypto-ops/contract.algo.ts:72
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
@@ -253,7 +261,7 @@ main_verify_ecdsa_recover_k1_route@11:
     extract 2 0
     txna ApplicationArgs 4
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:61
+    // tests/artifacts/crypto-ops/contract.algo.ts:72
     // @arc4.abimethod()
     callsub verify_ecdsa_recover_k1
     dig 1
@@ -289,14 +297,15 @@ main_verify_ecdsa_recover_k1_route@11:
     return
 
 main_verify_ecdsa_verify_r1_route@10:
-    // tests/artifacts/crypto-ops/contract.algo.ts:54
+    // tests/artifacts/crypto-ops/contract.algo.ts:65
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
@@ -308,7 +317,7 @@ main_verify_ecdsa_verify_r1_route@10:
     extract 2 0
     txna ApplicationArgs 5
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:54
+    // tests/artifacts/crypto-ops/contract.algo.ts:65
     // @arc4.abimethod()
     callsub verify_ecdsa_verify_r1
     bytec_1 // 0x00
@@ -323,14 +332,15 @@ main_verify_ecdsa_verify_r1_route@10:
     return
 
 main_verify_ecdsa_verify_k1_route@9:
-    // tests/artifacts/crypto-ops/contract.algo.ts:47
+    // tests/artifacts/crypto-ops/contract.algo.ts:58
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
@@ -342,7 +352,7 @@ main_verify_ecdsa_verify_k1_route@9:
     extract 2 0
     txna ApplicationArgs 5
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:47
+    // tests/artifacts/crypto-ops/contract.algo.ts:58
     // @arc4.abimethod()
     callsub verify_ecdsa_verify_k1
     bytec_1 // 0x00
@@ -357,14 +367,15 @@ main_verify_ecdsa_verify_k1_route@9:
     return
 
 main_verify_ed25519verify_bare_route@8:
-    // tests/artifacts/crypto-ops/contract.algo.ts:40
+    // tests/artifacts/crypto-ops/contract.algo.ts:51
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
@@ -372,7 +383,7 @@ main_verify_ed25519verify_bare_route@8:
     extract 2 0
     txna ApplicationArgs 3
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:40
+    // tests/artifacts/crypto-ops/contract.algo.ts:51
     // @arc4.abimethod()
     callsub verify_ed25519verify_bare
     bytec_0 // 0x151f7c75
@@ -383,14 +394,15 @@ main_verify_ed25519verify_bare_route@8:
     return
 
 main_verify_ed25519verify_route@7:
-    // tests/artifacts/crypto-ops/contract.algo.ts:33
+    // tests/artifacts/crypto-ops/contract.algo.ts:44
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
@@ -398,7 +410,7 @@ main_verify_ed25519verify_route@7:
     extract 2 0
     txna ApplicationArgs 3
     extract 2 0
-    // tests/artifacts/crypto-ops/contract.algo.ts:33
+    // tests/artifacts/crypto-ops/contract.algo.ts:44
     // @arc4.abimethod()
     callsub verify_ed25519verify
     bytec_0 // 0x151f7c75
@@ -409,20 +421,21 @@ main_verify_ed25519verify_route@7:
     return
 
 main_verify_sha512_256_route@6:
-    // tests/artifacts/crypto-ops/contract.algo.ts:26
+    // tests/artifacts/crypto-ops/contract.algo.ts:37
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/crypto-ops/contract.algo.ts:26
+    // tests/artifacts/crypto-ops/contract.algo.ts:37
     // @arc4.abimethod()
     callsub verify_sha512_256
     dup
@@ -439,20 +452,21 @@ main_verify_sha512_256_route@6:
     return
 
 main_verify_keccak_256_route@5:
-    // tests/artifacts/crypto-ops/contract.algo.ts:19
+    // tests/artifacts/crypto-ops/contract.algo.ts:30
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/crypto-ops/contract.algo.ts:19
+    // tests/artifacts/crypto-ops/contract.algo.ts:30
     // @arc4.abimethod()
     callsub verify_keccak_256
     dup
@@ -469,20 +483,21 @@ main_verify_keccak_256_route@5:
     return
 
 main_verify_sha3_256_route@4:
-    // tests/artifacts/crypto-ops/contract.algo.ts:12
+    // tests/artifacts/crypto-ops/contract.algo.ts:23
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/crypto-ops/contract.algo.ts:12
+    // tests/artifacts/crypto-ops/contract.algo.ts:23
     // @arc4.abimethod()
     callsub verify_sha3_256
     dup
@@ -499,20 +514,21 @@ main_verify_sha3_256_route@4:
     return
 
 main_verify_sha256_route@3:
-    // tests/artifacts/crypto-ops/contract.algo.ts:5
+    // tests/artifacts/crypto-ops/contract.algo.ts:16
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
     txna ApplicationArgs 2
     btoi
-    // tests/artifacts/crypto-ops/contract.algo.ts:5
+    // tests/artifacts/crypto-ops/contract.algo.ts:16
     // @arc4.abimethod()
     callsub verify_sha256
     dup
@@ -529,7 +545,8 @@ main_verify_sha256_route@3:
     return
 
 main_bare_routing@19:
-    // tests/artifacts/crypto-ops/contract.algo.ts:4
+    // tests/artifacts/crypto-ops/contract.algo.ts:14-15
+    // @contract({ name: 'CryptoOpsContract', avmVersion: 11 })
     // export class CryptoOpsContract extends arc4.Contract {
     txn OnCompletion
     bnz main_after_if_else@23
@@ -542,102 +559,102 @@ main_bare_routing@19:
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_sha256(a: bytes, pad_size: uint64) -> bytes:
 verify_sha256:
-    // tests/artifacts/crypto-ops/contract.algo.ts:5-6
+    // tests/artifacts/crypto-ops/contract.algo.ts:16-17
     // @arc4.abimethod()
     // public verify_sha256(a: bytes, pad_size: uint64): bytes {
     proto 2 1
-    // tests/artifacts/crypto-ops/contract.algo.ts:7
+    // tests/artifacts/crypto-ops/contract.algo.ts:18
     // const paddedA = op.bzero(pad_size).concat(a)
     frame_dig -1
     bzero
     frame_dig -2
     concat
-    // tests/artifacts/crypto-ops/contract.algo.ts:8
+    // tests/artifacts/crypto-ops/contract.algo.ts:19
     // const result = op.sha256(paddedA)
     sha256
-    // tests/artifacts/crypto-ops/contract.algo.ts:9
+    // tests/artifacts/crypto-ops/contract.algo.ts:20
     // return result
     retsub
 
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_sha3_256(a: bytes, pad_size: uint64) -> bytes:
 verify_sha3_256:
-    // tests/artifacts/crypto-ops/contract.algo.ts:12-13
+    // tests/artifacts/crypto-ops/contract.algo.ts:23-24
     // @arc4.abimethod()
     // public verify_sha3_256(a: bytes, pad_size: uint64): bytes {
     proto 2 1
-    // tests/artifacts/crypto-ops/contract.algo.ts:14
+    // tests/artifacts/crypto-ops/contract.algo.ts:25
     // const paddedA = op.bzero(pad_size).concat(a)
     frame_dig -1
     bzero
     frame_dig -2
     concat
-    // tests/artifacts/crypto-ops/contract.algo.ts:15
+    // tests/artifacts/crypto-ops/contract.algo.ts:26
     // const result = op.sha3_256(paddedA)
     sha3_256
-    // tests/artifacts/crypto-ops/contract.algo.ts:16
+    // tests/artifacts/crypto-ops/contract.algo.ts:27
     // return result
     retsub
 
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_keccak_256(a: bytes, pad_size: uint64) -> bytes:
 verify_keccak_256:
-    // tests/artifacts/crypto-ops/contract.algo.ts:19-20
+    // tests/artifacts/crypto-ops/contract.algo.ts:30-31
     // @arc4.abimethod()
     // public verify_keccak_256(a: bytes, pad_size: uint64): bytes {
     proto 2 1
-    // tests/artifacts/crypto-ops/contract.algo.ts:21
+    // tests/artifacts/crypto-ops/contract.algo.ts:32
     // const paddedA = op.bzero(pad_size).concat(a)
     frame_dig -1
     bzero
     frame_dig -2
     concat
-    // tests/artifacts/crypto-ops/contract.algo.ts:22
+    // tests/artifacts/crypto-ops/contract.algo.ts:33
     // const result = op.keccak256(paddedA)
     keccak256
-    // tests/artifacts/crypto-ops/contract.algo.ts:23
+    // tests/artifacts/crypto-ops/contract.algo.ts:34
     // return result
     retsub
 
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_sha512_256(a: bytes, pad_size: uint64) -> bytes:
 verify_sha512_256:
-    // tests/artifacts/crypto-ops/contract.algo.ts:26-27
+    // tests/artifacts/crypto-ops/contract.algo.ts:37-38
     // @arc4.abimethod()
     // public verify_sha512_256(a: bytes, pad_size: uint64): bytes {
     proto 2 1
-    // tests/artifacts/crypto-ops/contract.algo.ts:28
+    // tests/artifacts/crypto-ops/contract.algo.ts:39
     // const paddedA = op.bzero(pad_size).concat(a)
     frame_dig -1
     bzero
     frame_dig -2
     concat
-    // tests/artifacts/crypto-ops/contract.algo.ts:29
+    // tests/artifacts/crypto-ops/contract.algo.ts:40
     // const result = op.sha512_256(paddedA)
     sha512_256
-    // tests/artifacts/crypto-ops/contract.algo.ts:30
+    // tests/artifacts/crypto-ops/contract.algo.ts:41
     // return result
     retsub
 
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_ed25519verify(a: bytes, b: bytes, c: bytes) -> bytes:
 verify_ed25519verify:
-    // tests/artifacts/crypto-ops/contract.algo.ts:33-34
+    // tests/artifacts/crypto-ops/contract.algo.ts:44-45
     // @arc4.abimethod()
     // public verify_ed25519verify(a: bytes, b: bytes, c: bytes): Bool {
     proto 3 1
-    // tests/artifacts/crypto-ops/contract.algo.ts:35
+    // tests/artifacts/crypto-ops/contract.algo.ts:46
     // ensureBudget(1900, OpUpFeeSource.GroupCredit)
     pushint 1900 // 1900
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:36
+    // tests/artifacts/crypto-ops/contract.algo.ts:47
     // const result = op.ed25519verify(a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     ed25519verify
-    // tests/artifacts/crypto-ops/contract.algo.ts:37
+    // tests/artifacts/crypto-ops/contract.algo.ts:48
     // return new Bool(result)
     bytec_1 // 0x00
     intc_0 // 0
@@ -648,22 +665,22 @@ verify_ed25519verify:
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_ed25519verify_bare(a: bytes, b: bytes, c: bytes) -> bytes:
 verify_ed25519verify_bare:
-    // tests/artifacts/crypto-ops/contract.algo.ts:40-41
+    // tests/artifacts/crypto-ops/contract.algo.ts:51-52
     // @arc4.abimethod()
     // public verify_ed25519verify_bare(a: bytes, b: bytes, c: bytes): Bool {
     proto 3 1
-    // tests/artifacts/crypto-ops/contract.algo.ts:42
+    // tests/artifacts/crypto-ops/contract.algo.ts:53
     // ensureBudget(1900, OpUpFeeSource.GroupCredit)
     pushint 1900 // 1900
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:43
+    // tests/artifacts/crypto-ops/contract.algo.ts:54
     // const result = op.ed25519verifyBare(a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     ed25519verify_bare
-    // tests/artifacts/crypto-ops/contract.algo.ts:44
+    // tests/artifacts/crypto-ops/contract.algo.ts:55
     // return new Bool(result)
     bytec_1 // 0x00
     intc_0 // 0
@@ -674,16 +691,16 @@ verify_ed25519verify_bare:
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_ecdsa_verify_k1(a: bytes, b: bytes, c: bytes, d: bytes, e: bytes) -> uint64:
 verify_ecdsa_verify_k1:
-    // tests/artifacts/crypto-ops/contract.algo.ts:47-48
+    // tests/artifacts/crypto-ops/contract.algo.ts:58-59
     // @arc4.abimethod()
     // public verify_ecdsa_verify_k1(a: bytes, b: bytes, c: bytes, d: bytes, e: bytes): boolean {
     proto 5 1
-    // tests/artifacts/crypto-ops/contract.algo.ts:49
+    // tests/artifacts/crypto-ops/contract.algo.ts:60
     // ensureBudget(3000, OpUpFeeSource.GroupCredit)
     intc_3 // 3000
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:50
+    // tests/artifacts/crypto-ops/contract.algo.ts:61
     // const result_k1 = op.ecdsaVerify(Ecdsa.Secp256k1, a, b, c, d, e)
     frame_dig -5
     frame_dig -4
@@ -691,23 +708,23 @@ verify_ecdsa_verify_k1:
     frame_dig -2
     frame_dig -1
     ecdsa_verify Secp256k1
-    // tests/artifacts/crypto-ops/contract.algo.ts:51
+    // tests/artifacts/crypto-ops/contract.algo.ts:62
     // return result_k1
     retsub
 
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_ecdsa_verify_r1(a: bytes, b: bytes, c: bytes, d: bytes, e: bytes) -> uint64:
 verify_ecdsa_verify_r1:
-    // tests/artifacts/crypto-ops/contract.algo.ts:54-55
+    // tests/artifacts/crypto-ops/contract.algo.ts:65-66
     // @arc4.abimethod()
     // public verify_ecdsa_verify_r1(a: bytes, b: bytes, c: bytes, d: bytes, e: bytes): boolean {
     proto 5 1
-    // tests/artifacts/crypto-ops/contract.algo.ts:56
+    // tests/artifacts/crypto-ops/contract.algo.ts:67
     // ensureBudget(3000, OpUpFeeSource.GroupCredit)
     intc_3 // 3000
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:57
+    // tests/artifacts/crypto-ops/contract.algo.ts:68
     // const result_r1 = op.ecdsaVerify(Ecdsa.Secp256r1, a, b, c, d, e)
     frame_dig -5
     frame_dig -4
@@ -715,23 +732,23 @@ verify_ecdsa_verify_r1:
     frame_dig -2
     frame_dig -1
     ecdsa_verify Secp256r1
-    // tests/artifacts/crypto-ops/contract.algo.ts:58
+    // tests/artifacts/crypto-ops/contract.algo.ts:69
     // return result_r1
     retsub
 
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_ecdsa_recover_k1(a: bytes, b: uint64, c: bytes, d: bytes) -> bytes, bytes:
 verify_ecdsa_recover_k1:
-    // tests/artifacts/crypto-ops/contract.algo.ts:61-62
+    // tests/artifacts/crypto-ops/contract.algo.ts:72-73
     // @arc4.abimethod()
     // public verify_ecdsa_recover_k1(a: bytes, b: uint64, c: bytes, d: bytes): readonly [bytes, bytes] {
     proto 4 2
-    // tests/artifacts/crypto-ops/contract.algo.ts:63
+    // tests/artifacts/crypto-ops/contract.algo.ts:74
     // ensureBudget(3000, OpUpFeeSource.GroupCredit)
     intc_3 // 3000
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:64
+    // tests/artifacts/crypto-ops/contract.algo.ts:75
     // return op.ecdsaPkRecover(Ecdsa.Secp256k1, a, b, c, d)
     frame_dig -4
     frame_dig -3
@@ -743,16 +760,16 @@ verify_ecdsa_recover_k1:
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_ecdsa_recover_r1(a: bytes, b: uint64, c: bytes, d: bytes) -> bytes, bytes:
 verify_ecdsa_recover_r1:
-    // tests/artifacts/crypto-ops/contract.algo.ts:67-68
+    // tests/artifacts/crypto-ops/contract.algo.ts:78-79
     // @arc4.abimethod()
     // public verify_ecdsa_recover_r1(a: bytes, b: uint64, c: bytes, d: bytes): readonly [bytes, bytes] {
     proto 4 2
-    // tests/artifacts/crypto-ops/contract.algo.ts:72
+    // tests/artifacts/crypto-ops/contract.algo.ts:83
     // ensureBudget(3000, OpUpFeeSource.GroupCredit)
     intc_3 // 3000
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:73
+    // tests/artifacts/crypto-ops/contract.algo.ts:84
     // return op.ecdsaPkRecover(Ecdsa.Secp256r1, a, b, c, d)
     frame_dig -4
     frame_dig -3
@@ -764,16 +781,16 @@ verify_ecdsa_recover_r1:
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_ecdsa_decompress_k1(a: bytes) -> bytes, bytes:
 verify_ecdsa_decompress_k1:
-    // tests/artifacts/crypto-ops/contract.algo.ts:76-77
+    // tests/artifacts/crypto-ops/contract.algo.ts:87-88
     // @arc4.abimethod()
     // public verify_ecdsa_decompress_k1(a: bytes): readonly [bytes, bytes] {
     proto 1 2
-    // tests/artifacts/crypto-ops/contract.algo.ts:78
+    // tests/artifacts/crypto-ops/contract.algo.ts:89
     // ensureBudget(700, OpUpFeeSource.GroupCredit)
     pushint 700 // 700
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:79
+    // tests/artifacts/crypto-ops/contract.algo.ts:90
     // return op.ecdsaPkDecompress(Ecdsa.Secp256k1, a)
     frame_dig -1
     ecdsa_pk_decompress Secp256k1
@@ -782,16 +799,16 @@ verify_ecdsa_decompress_k1:
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_ecdsa_decompress_r1(a: bytes) -> bytes, bytes:
 verify_ecdsa_decompress_r1:
-    // tests/artifacts/crypto-ops/contract.algo.ts:82-83
+    // tests/artifacts/crypto-ops/contract.algo.ts:93-94
     // @arc4.abimethod()
     // public verify_ecdsa_decompress_r1(a: bytes): readonly [bytes, bytes] {
     proto 1 2
-    // tests/artifacts/crypto-ops/contract.algo.ts:84
+    // tests/artifacts/crypto-ops/contract.algo.ts:95
     // ensureBudget(700, OpUpFeeSource.GroupCredit)
     pushint 700 // 700
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:85
+    // tests/artifacts/crypto-ops/contract.algo.ts:96
     // return op.ecdsaPkDecompress(Ecdsa.Secp256r1, a)
     frame_dig -1
     ecdsa_pk_decompress Secp256r1
@@ -800,42 +817,42 @@ verify_ecdsa_decompress_r1:
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_vrf_verify(a: bytes, b: bytes, c: bytes) -> bytes, uint64:
 verify_vrf_verify:
-    // tests/artifacts/crypto-ops/contract.algo.ts:88-89
+    // tests/artifacts/crypto-ops/contract.algo.ts:99-100
     // @arc4.abimethod()
     // public verify_vrf_verify(a: bytes, b: bytes, c: bytes): readonly [bytes, boolean] {
     proto 3 2
-    // tests/artifacts/crypto-ops/contract.algo.ts:90
+    // tests/artifacts/crypto-ops/contract.algo.ts:101
     // ensureBudget(5700, OpUpFeeSource.GroupCredit)
     pushint 5700 // 5700
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:91
+    // tests/artifacts/crypto-ops/contract.algo.ts:102
     // const result = op.vrfVerify(VrfVerify.VrfAlgorand, a, b, c)
     frame_dig -3
     frame_dig -2
     frame_dig -1
     vrf_verify VrfAlgorand
-    // tests/artifacts/crypto-ops/contract.algo.ts:92
+    // tests/artifacts/crypto-ops/contract.algo.ts:103
     // return result
     retsub
 
 
 // tests/artifacts/crypto-ops/contract.algo.ts::CryptoOpsContract.verify_mimc(a: bytes) -> bytes:
 verify_mimc:
-    // tests/artifacts/crypto-ops/contract.algo.ts:95-96
+    // tests/artifacts/crypto-ops/contract.algo.ts:106-107
     // @arc4.abimethod()
     // public verify_mimc(a: bytes): bytes {
     proto 1 1
-    // tests/artifacts/crypto-ops/contract.algo.ts:97
+    // tests/artifacts/crypto-ops/contract.algo.ts:108
     // ensureBudget(5700, OpUpFeeSource.GroupCredit)
     pushint 5700 // 5700
     intc_0 // 0
     callsub ensure_budget
-    // tests/artifacts/crypto-ops/contract.algo.ts:98
+    // tests/artifacts/crypto-ops/contract.algo.ts:109
     // const result = op.mimc(MimcConfigurations.BN254Mp110, a)
     frame_dig -1
     mimc BN254Mp110
-    // tests/artifacts/crypto-ops/contract.algo.ts:99
+    // tests/artifacts/crypto-ops/contract.algo.ts:110
     // return result
     retsub
 

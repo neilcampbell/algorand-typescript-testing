@@ -1,92 +1,130 @@
 #pragma version 10
+#pragma typetrack false
 
-tests/artifacts/state-ops/contract.algo.ts::StateAppGlobalContract.approvalProgram:
+// @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
+main:
     intcblock 1 0
     bytecblock 0x151f7c75 0x00
-    callsub __puya_arc4_router__
-    return
-
-
-// tests/artifacts/state-ops/contract.algo.ts::StateAppGlobalContract.__puya_arc4_router__() -> uint64:
-__puya_arc4_router__:
-    // tests/artifacts/state-ops/contract.algo.ts:358
+    // tests/artifacts/state-ops/contract.algo.ts:365
     // export class StateAppGlobalContract extends arc4.Contract {
-    proto 0 1
     txn NumAppArgs
-    bz __puya_arc4_router___bare_routing@11
+    bz main_bare_routing@12
     pushbytess 0xa997a187 0x4db8aa41 0x6693ab92 0x857fd923 0x36996451 0x3920a57b 0x93a852e1 // method "verify_get_bytes(byte[])byte[]", method "verify_get_uint64(byte[])uint64", method "verify_get_ex_bytes(application,byte[])(byte[],bool)", method "verify_get_ex_uint64(application,byte[])(uint64,bool)", method "verify_put_uint64(byte[],uint64)void", method "verify_put_bytes(byte[],byte[])void", method "verify_delete(byte[])void"
     txna ApplicationArgs 0
-    match __puya_arc4_router___verify_get_bytes_route@2 __puya_arc4_router___verify_get_uint64_route@3 __puya_arc4_router___verify_get_ex_bytes_route@4 __puya_arc4_router___verify_get_ex_uint64_route@5 __puya_arc4_router___verify_put_uint64_route@6 __puya_arc4_router___verify_put_bytes_route@7 __puya_arc4_router___verify_delete_route@8
+    match main_verify_get_bytes_route@3 main_verify_get_uint64_route@4 main_verify_get_ex_bytes_route@5 main_verify_get_ex_uint64_route@6 main_verify_put_uint64_route@7 main_verify_put_bytes_route@8 main_verify_delete_route@9
+
+main_after_if_else@16:
+    // tests/artifacts/state-ops/contract.algo.ts:365
+    // export class StateAppGlobalContract extends arc4.Contract {
     intc_1 // 0
-    retsub
+    return
 
-__puya_arc4_router___verify_get_bytes_route@2:
-    // tests/artifacts/state-ops/contract.algo.ts:362
+main_verify_delete_route@9:
+    // tests/artifacts/state-ops/contract.algo.ts:401
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:358
+    // tests/artifacts/state-ops/contract.algo.ts:365
     // export class StateAppGlobalContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
-    // tests/artifacts/state-ops/contract.algo.ts:362
+    // tests/artifacts/state-ops/contract.algo.ts:401
     // @arc4.abimethod()
-    callsub verify_get_bytes
-    dup
-    len
-    itob
-    extract 6 2
-    swap
-    concat
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
+    callsub verify_delete
     intc_0 // 1
-    retsub
+    return
 
-__puya_arc4_router___verify_get_uint64_route@3:
-    // tests/artifacts/state-ops/contract.algo.ts:368
+main_verify_put_bytes_route@8:
+    // tests/artifacts/state-ops/contract.algo.ts:396
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:358
+    // tests/artifacts/state-ops/contract.algo.ts:365
     // export class StateAppGlobalContract extends arc4.Contract {
     txna ApplicationArgs 1
     extract 2 0
-    // tests/artifacts/state-ops/contract.algo.ts:368
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/state-ops/contract.algo.ts:396
     // @arc4.abimethod()
-    callsub verify_get_uint64
-    itob
-    bytec_0 // 0x151f7c75
-    swap
-    concat
-    log
+    callsub verify_put_bytes
     intc_0 // 1
-    retsub
+    return
 
-__puya_arc4_router___verify_get_ex_bytes_route@4:
-    // tests/artifacts/state-ops/contract.algo.ts:374
+main_verify_put_uint64_route@7:
+    // tests/artifacts/state-ops/contract.algo.ts:391
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:358
+    // tests/artifacts/state-ops/contract.algo.ts:365
+    // export class StateAppGlobalContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    txna ApplicationArgs 2
+    btoi
+    // tests/artifacts/state-ops/contract.algo.ts:391
+    // @arc4.abimethod()
+    callsub verify_put_uint64
+    intc_0 // 1
+    return
+
+main_verify_get_ex_uint64_route@6:
+    // tests/artifacts/state-ops/contract.algo.ts:386
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:365
     // export class StateAppGlobalContract extends arc4.Contract {
     txna ApplicationArgs 1
     btoi
     txnas Applications
     txna ApplicationArgs 2
     extract 2 0
-    // tests/artifacts/state-ops/contract.algo.ts:374
+    // tests/artifacts/state-ops/contract.algo.ts:386
+    // @arc4.abimethod()
+    callsub verify_get_ex_uint64
+    swap
+    itob
+    bytec_1 // 0x00
+    intc_1 // 0
+    uncover 3
+    setbit
+    concat
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_get_ex_bytes_route@5:
+    // tests/artifacts/state-ops/contract.algo.ts:381
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:365
+    // export class StateAppGlobalContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    btoi
+    txnas Applications
+    txna ApplicationArgs 2
+    extract 2 0
+    // tests/artifacts/state-ops/contract.algo.ts:381
     // @arc4.abimethod()
     callsub verify_get_ex_bytes
     dig 1
@@ -109,153 +147,108 @@ __puya_arc4_router___verify_get_ex_bytes_route@4:
     concat
     log
     intc_0 // 1
-    retsub
+    return
 
-__puya_arc4_router___verify_get_ex_uint64_route@5:
-    // tests/artifacts/state-ops/contract.algo.ts:379
+main_verify_get_uint64_route@4:
+    // tests/artifacts/state-ops/contract.algo.ts:375
     // @arc4.abimethod()
     txn OnCompletion
     !
     assert // OnCompletion is not NoOp
     txn ApplicationID
     assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:358
+    // tests/artifacts/state-ops/contract.algo.ts:365
     // export class StateAppGlobalContract extends arc4.Contract {
     txna ApplicationArgs 1
-    btoi
-    txnas Applications
-    txna ApplicationArgs 2
     extract 2 0
-    // tests/artifacts/state-ops/contract.algo.ts:379
+    // tests/artifacts/state-ops/contract.algo.ts:375
     // @arc4.abimethod()
-    callsub verify_get_ex_uint64
-    swap
+    callsub verify_get_uint64
     itob
-    bytec_1 // 0x00
-    intc_1 // 0
-    uncover 3
-    setbit
+    bytec_0 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+main_verify_get_bytes_route@3:
+    // tests/artifacts/state-ops/contract.algo.ts:369
+    // @arc4.abimethod()
+    txn OnCompletion
+    !
+    assert // OnCompletion is not NoOp
+    txn ApplicationID
+    assert // can only call when not creating
+    // tests/artifacts/state-ops/contract.algo.ts:365
+    // export class StateAppGlobalContract extends arc4.Contract {
+    txna ApplicationArgs 1
+    extract 2 0
+    // tests/artifacts/state-ops/contract.algo.ts:369
+    // @arc4.abimethod()
+    callsub verify_get_bytes
+    dup
+    len
+    itob
+    extract 6 2
+    swap
     concat
     bytec_0 // 0x151f7c75
     swap
     concat
     log
     intc_0 // 1
-    retsub
+    return
 
-__puya_arc4_router___verify_put_uint64_route@6:
-    // tests/artifacts/state-ops/contract.algo.ts:384
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:358
-    // export class StateAppGlobalContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    btoi
-    // tests/artifacts/state-ops/contract.algo.ts:384
-    // @arc4.abimethod()
-    callsub verify_put_uint64
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_put_bytes_route@7:
-    // tests/artifacts/state-ops/contract.algo.ts:389
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:358
-    // export class StateAppGlobalContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    txna ApplicationArgs 2
-    extract 2 0
-    // tests/artifacts/state-ops/contract.algo.ts:389
-    // @arc4.abimethod()
-    callsub verify_put_bytes
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___verify_delete_route@8:
-    // tests/artifacts/state-ops/contract.algo.ts:394
-    // @arc4.abimethod()
-    txn OnCompletion
-    !
-    assert // OnCompletion is not NoOp
-    txn ApplicationID
-    assert // can only call when not creating
-    // tests/artifacts/state-ops/contract.algo.ts:358
-    // export class StateAppGlobalContract extends arc4.Contract {
-    txna ApplicationArgs 1
-    extract 2 0
-    // tests/artifacts/state-ops/contract.algo.ts:394
-    // @arc4.abimethod()
-    callsub verify_delete
-    intc_0 // 1
-    retsub
-
-__puya_arc4_router___bare_routing@11:
-    // tests/artifacts/state-ops/contract.algo.ts:358
+main_bare_routing@12:
+    // tests/artifacts/state-ops/contract.algo.ts:365
     // export class StateAppGlobalContract extends arc4.Contract {
     txn OnCompletion
-    bnz __puya_arc4_router___after_if_else@15
+    bnz main_after_if_else@16
     txn ApplicationID
     !
     assert // can only call when creating
     intc_0 // 1
-    retsub
-
-__puya_arc4_router___after_if_else@15:
-    // tests/artifacts/state-ops/contract.algo.ts:358
-    // export class StateAppGlobalContract extends arc4.Contract {
-    intc_1 // 0
-    retsub
+    return
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppGlobalContract.verify_get_bytes(a: bytes) -> bytes:
 verify_get_bytes:
-    // tests/artifacts/state-ops/contract.algo.ts:362-363
+    // tests/artifacts/state-ops/contract.algo.ts:369-370
     // @arc4.abimethod()
     // verify_get_bytes(a: bytes): bytes {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:364
+    // tests/artifacts/state-ops/contract.algo.ts:371
     // const value = op.AppGlobal.getBytes(a)
     frame_dig -1
     app_global_get
-    // tests/artifacts/state-ops/contract.algo.ts:365
+    // tests/artifacts/state-ops/contract.algo.ts:372
     // return value
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppGlobalContract.verify_get_uint64(a: bytes) -> uint64:
 verify_get_uint64:
-    // tests/artifacts/state-ops/contract.algo.ts:368-369
+    // tests/artifacts/state-ops/contract.algo.ts:375-376
     // @arc4.abimethod()
     // verify_get_uint64(a: bytes): uint64 {
     proto 1 1
-    // tests/artifacts/state-ops/contract.algo.ts:370
+    // tests/artifacts/state-ops/contract.algo.ts:377
     // const value = op.AppGlobal.getUint64(a)
     frame_dig -1
     app_global_get
-    // tests/artifacts/state-ops/contract.algo.ts:371
+    // tests/artifacts/state-ops/contract.algo.ts:378
     // return value
     retsub
 
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppGlobalContract.verify_get_ex_bytes(a: uint64, b: bytes) -> bytes, uint64:
 verify_get_ex_bytes:
-    // tests/artifacts/state-ops/contract.algo.ts:374-375
+    // tests/artifacts/state-ops/contract.algo.ts:381-382
     // @arc4.abimethod()
     // verify_get_ex_bytes(a: Application, b: bytes): readonly [bytes, boolean] {
     proto 2 2
-    // tests/artifacts/state-ops/contract.algo.ts:376
+    // tests/artifacts/state-ops/contract.algo.ts:383
     // return op.AppGlobal.getExBytes(a, b)
     frame_dig -2
     frame_dig -1
@@ -265,11 +258,11 @@ verify_get_ex_bytes:
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppGlobalContract.verify_get_ex_uint64(a: uint64, b: bytes) -> uint64, uint64:
 verify_get_ex_uint64:
-    // tests/artifacts/state-ops/contract.algo.ts:379-380
+    // tests/artifacts/state-ops/contract.algo.ts:386-387
     // @arc4.abimethod()
     // verify_get_ex_uint64(a: Application, b: bytes): readonly [uint64, boolean] {
     proto 2 2
-    // tests/artifacts/state-ops/contract.algo.ts:381
+    // tests/artifacts/state-ops/contract.algo.ts:388
     // return op.AppGlobal.getExUint64(a, b)
     frame_dig -2
     frame_dig -1
@@ -279,11 +272,11 @@ verify_get_ex_uint64:
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppGlobalContract.verify_put_uint64(a: bytes, b: uint64) -> void:
 verify_put_uint64:
-    // tests/artifacts/state-ops/contract.algo.ts:384-385
+    // tests/artifacts/state-ops/contract.algo.ts:391-392
     // @arc4.abimethod()
     // verify_put_uint64(a: bytes, b: uint64): void {
     proto 2 0
-    // tests/artifacts/state-ops/contract.algo.ts:386
+    // tests/artifacts/state-ops/contract.algo.ts:393
     // op.AppGlobal.put(a, b)
     frame_dig -2
     frame_dig -1
@@ -293,11 +286,11 @@ verify_put_uint64:
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppGlobalContract.verify_put_bytes(a: bytes, b: bytes) -> void:
 verify_put_bytes:
-    // tests/artifacts/state-ops/contract.algo.ts:389-390
+    // tests/artifacts/state-ops/contract.algo.ts:396-397
     // @arc4.abimethod()
     // verify_put_bytes(a: bytes, b: bytes): void {
     proto 2 0
-    // tests/artifacts/state-ops/contract.algo.ts:391
+    // tests/artifacts/state-ops/contract.algo.ts:398
     // op.AppGlobal.put(a, b)
     frame_dig -2
     frame_dig -1
@@ -307,11 +300,11 @@ verify_put_bytes:
 
 // tests/artifacts/state-ops/contract.algo.ts::StateAppGlobalContract.verify_delete(a: bytes) -> void:
 verify_delete:
-    // tests/artifacts/state-ops/contract.algo.ts:394-395
+    // tests/artifacts/state-ops/contract.algo.ts:401-402
     // @arc4.abimethod()
     // verify_delete(a: bytes): void {
     proto 1 0
-    // tests/artifacts/state-ops/contract.algo.ts:396
+    // tests/artifacts/state-ops/contract.algo.ts:403
     // op.AppGlobal.delete(a)
     frame_dig -1
     app_global_del
