@@ -22,7 +22,8 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:ci": "vitest run --coverage --reporter junit --outputFile test-results.xml",
-    "build-examples": "rollup --config examples/rollup.config.ts --configPlugin typescript"
+    "build-examples": "rollup --config examples/rollup.config.ts --configPlugin typescript",
+    "script:refresh-test-artifacts": "puya-ts build --out-dir data ./tests/artifacts/*/"
   },
   "devDependencies": {
     "@algorandfoundation/algokit-utils": "^8.1.0",
