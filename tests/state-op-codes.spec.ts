@@ -31,7 +31,7 @@ import { generateTestAsset, getAvmResult, INITIAL_BALANCE_MICRO_ALGOS } from './
 import { createArc4TestFixture } from './test-fixture'
 
 describe('State op codes', async () => {
-  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/state-ops/data', {
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/state-ops/contract.algo.ts', {
     ItxnDemoContract: {},
     ITxnOpsContract: {},
     StateAcctParamsGetContract: {},

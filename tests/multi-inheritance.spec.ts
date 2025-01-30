@@ -6,7 +6,7 @@ import { getAvmResult } from './avm-invoker'
 import { createArc4TestFixture } from './test-fixture'
 
 describe('multi-inheritance', async () => {
-  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/multi-inheritance/data/MultiBases.arc56.json', { MultiBases: {} })
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/multi-inheritance/contract.algo.ts', { MultiBases: {} })
   const ctx = new TestExecutionContext()
 
   beforeAll(async () => {

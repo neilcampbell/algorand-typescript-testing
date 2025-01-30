@@ -12,7 +12,7 @@ import { createArc4TestFixture } from '../test-fixture'
 
 const invalidBytesLengthError = (length: number) => `byte string must correspond to a uint${length}`
 describe('arc4.UintN', async () => {
-  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/arc4-primitive-ops/data/Arc4PrimitiveOpsContract.arc56.json', {
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/arc4-primitive-ops/contract.algo.ts', {
     Arc4PrimitiveOpsContract: { deployParams: { createParams: { extraProgramPages: undefined } } },
   })
   const ctx = new TestExecutionContext()

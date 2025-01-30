@@ -18,7 +18,7 @@ import { getAvmResult } from './avm-invoker'
 import { createArc4TestFixture } from './test-fixture'
 
 describe('ARC4 AppGlobal values', async () => {
-  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/state-ops/data/GlobalStateContract.arc56.json', {
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/state-ops/contract.algo.ts', {
     GlobalStateContract: {},
   })
   const ctx = new TestExecutionContext()

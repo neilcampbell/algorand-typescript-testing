@@ -33,7 +33,7 @@ vi.mock('../src/impl/crypto', async (importOriginal) => {
 })
 
 describe('crypto op codes', async () => {
-  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/crypto-ops/data', { CryptoOpsContract: {} })
+  const [test, localnetFixture] = createArc4TestFixture('tests/artifacts/crypto-ops/contract.algo.ts', { CryptoOpsContract: {} })
   const ctx = new TestExecutionContext()
 
   beforeAll(async () => {
