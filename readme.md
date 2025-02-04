@@ -198,9 +198,9 @@ To dig deeper into the capabilities of `algorand-typescript-testing`, continue w
 
 #### Contents
 
-- [Testing Guide](./docs/testing-guide/index)
-- [Examples](./docs/examples)
-- [Coverage](./docs/coverage)
-- [FQA](./docs/faq)
-- [API Reference](./docs/api)
-- [Algorand TypeScript](./docs/algots)
+- [Testing Guide](./docs/testing-guide/index.md)
+- [Examples](./docs/examples.md)
+- [Coverage](./docs/coverage.md)
+- [FQA](./docs/faq.md)
+- [API Reference](./docs/api.md)
+- [Algorand TypeScript](./docs/algots.md)
