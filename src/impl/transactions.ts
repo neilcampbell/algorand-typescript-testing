@@ -1,11 +1,11 @@
 import type {
+  Account as AccountType,
+  Application as ApplicationType,
   arc4,
+  Asset as AssetType,
   bytes,
   gtxn,
   uint64,
-  Account as AccountType,
-  Application as ApplicationType,
-  Asset as AssetType,
 } from '@algorandfoundation/algorand-typescript'
 import { Bytes, internal, TransactionType, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_ITEMS_IN_LOG } from '../constants'
@@ -298,10 +298,10 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     return Uint64(this.clearStateProgramPages.length)
   }
   get numLogs() {
-    return Uint64(this.#appLogs.length || lazyContext.getApplicationData(this.appId.id).appLogs.length)
+    return Uint64(this.#appLogs.length || lazyContext.getApplicationData(this.appId.id).application.appLogs!.length)
   }
   get lastLog() {
-    return this.#appLogs.at(-1) ?? lazyContext.getApplicationData(this.appId.id).appLogs.at(-1) ?? Bytes()
+    return this.#appLogs.at(-1) ?? lazyContext.getApplicationData(this.appId.id).application.appLogs!.at(-1) ?? Bytes()
   }
   get apat() {
     return this.#accounts
@@ -332,7 +332,7 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
   }
   logs(index: internal.primitives.StubUint64Compat): bytes {
     const i = asNumber(index)
-    return this.#appLogs[i] ?? lazyContext.getApplicationData(this.appId.id).appLogs ?? Bytes()
+    return this.#appLogs[i] ?? lazyContext.getApplicationData(this.appId.id).application.appLogs ?? Bytes()
   }
   readonly type: TransactionType.ApplicationCall = TransactionType.ApplicationCall
   readonly typeBytes: bytes = asUint64Cls(TransactionType.ApplicationCall).toBytes().asAlgoTs()

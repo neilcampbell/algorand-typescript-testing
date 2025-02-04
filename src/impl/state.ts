@@ -1,4 +1,6 @@
 import type {
+  Account,
+  Application,
   BoxMap as BoxMapType,
   BoxRef as BoxRefType,
   Box as BoxType,
@@ -8,8 +10,6 @@ import type {
   LocalStateForAccount,
   LocalState as LocalStateType,
   uint64,
-  Account,
-  Application,
 } from '@algorandfoundation/algorand-typescript'
 import { Bytes, internal, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { AccountMap } from '../collections/custom-key-map'
@@ -231,7 +231,7 @@ export class BoxMapCls<TKey, TValue> {
   }
 
   set(key: TKey, value: TValue): void {
-    lazyContext.ledger.setBox(this.#app, this.getFullKey(key), asUint8Array(toBytes(value)))
+    lazyContext.ledger.setBox(this.#app, this.getFullKey(key), toBytes(value))
   }
 
   delete(key: TKey): boolean {

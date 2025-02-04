@@ -61,6 +61,15 @@ function doAddEqualityTesters(expectObj: ExpectObj) {
       // Defer to other testers
       return undefined
     },
+    function Uint8ArrayIsBytesPrimitive(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (subject instanceof Uint8Array) {
+        const testValue = test instanceof internal.primitives.BytesCls ? test : undefined
+        if (testValue !== undefined) return this.equals(subject, testValue.asUint8Array(), customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
     function AccountIsAddressStr(this: TesterContext, subject, test, customTesters): boolean | undefined {
       if (subject instanceof AccountCls) {
         const testValue = typeof test === 'string' ? encodingUtil.base32ToUint8Array(test).slice(0, 32) : undefined
@@ -109,6 +118,26 @@ function doAddEqualityTesters(expectObj: ExpectObj) {
   ])
 }
 
+/**
+ * Adds custom equality testers for Algorand types to vitest's expect function.
+ * This allows vitest to properly compare Algorand types such as uint64, biguint, and bytes
+ * against JS native types such as number, bigint and Uint8Array, in tests.
+ *
+ * @param {Object} params - The parameters object
+ * @param {ExpectObj} params.expect - vitest's expect object to extend with custom equality testers
+ *
+ * @example
+ * ```ts
+ * import { beforeAll, expect } from 'vitest'
+ * import { addEqualityTesters } from '@algorandfoundation/algorand-typescript-testing';
+ *
+ * beforeAll(() => {
+ *   addEqualityTesters({ expect });
+ * });
+ * ```
+ *
+ * @returns {void}
+ */
 export function addEqualityTesters({ expect }: { expect: ExpectObj }) {
   doAddEqualityTesters(expect)
 }

@@ -1,6 +1,7 @@
 import type { uint64 } from '@algorandfoundation/algorand-typescript'
-import { arc4, assert, BaseContract, Bytes, op, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, assert, BaseContract, Bytes, contract, op, Uint64 } from '@algorandfoundation/algorand-typescript'
 
+@contract({ scratchSlots: [1, 2] })
 export class ScratchSlotsContract extends arc4.Contract {
   @arc4.abimethod()
   public storeData(): boolean {
@@ -12,13 +13,14 @@ export class ScratchSlotsContract extends arc4.Contract {
   }
 }
 
+@contract({ scratchSlots: [1, 2] })
 export class SimpleScratchSlotsContract extends BaseContract {
-  approvalProgram(): boolean | uint64 {
+  approvalProgram(): uint64 {
     assert(op.Scratch.loadUint64(1) === Uint64(5))
     assert(op.Scratch.loadBytes(2) === Bytes('Hello World'))
     return Uint64(1)
   }
-  clearStateProgram(): boolean | uint64 {
+  clearStateProgram(): uint64 {
     return Uint64(1)
   }
 }
