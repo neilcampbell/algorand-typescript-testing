@@ -19,15 +19,15 @@ Refers to test implementation of transaction stubs available under `algots.gtxn.
 const payTxn = ctx.any.txn.payment({
   sender: ctx.any.account(), // Optional: Defaults to context's default sender if not provided
   receiver: ctx.any.account(), // Required
-  amount: algots.Uint64(1000000), // Required
+  amount: 1000000, // Required
 })
 
 // Generate a random asset transfer transaction
 const assetTransferTxn = ctx.any.txn.assetTransfer({
   sender: ctx.any.account(), // Optional: Defaults to context's default sender if not provided
   assetReceiver: ctx.any.account(), // Required
-  xferAsset: ctx.any.asset({ assetId: algots.Uint64(1) }), // Required
-  assetAmount: algots.Uint64(1000), // Required
+  xferAsset: ctx.any.asset({ assetId: 1 }), // Required
+  assetAmount: 1000, // Required
 })
 
 // Generate a random application call transaction
@@ -64,9 +64,9 @@ const keyRegTxn = ctx.any.txn.keyRegistration({
   sender: ctx.any.account(), // Optional: Defaults to context's default sender if not provided
   voteKey: algots.Bytes('vote_pk'), // Optional: Defaults to empty bytes if not provided
   selectionKey: algots.Bytes('selection_pk'), // Optional: Defaults to empty bytes if not provided
-  voteFirst: algots.Uint64(1), // Optional: Defaults to 0 if not provided
-  voteLast: algots.Uint64(1000), // Optional: Defaults to 0 if not provided
-  voteKeyDilution: algots.Uint64(10000), // Optional: Defaults to 0 if not provided
+  voteFirst: 1, // Optional: Defaults to 0 if not provided
+  voteLast: 1000, // Optional: Defaults to 0 if not provided
+  voteKeyDilution: 10000, // Optional: Defaults to 0 if not provided
 })
 
 // Generate a random asset freeze transaction
@@ -133,7 +133,7 @@ class MyContract extends arc4.Contract {
     itxn
       .payment({
         receiver: Txn.sender,
-        amount: Uint64(1),
+        amount: 1,
       })
       .submit()
   }

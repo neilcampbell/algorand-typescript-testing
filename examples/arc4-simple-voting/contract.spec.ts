@@ -16,7 +16,7 @@ describe('Voting contract', () => {
     const voter = ctx.defaultSender
     const payment = ctx.any.txn.payment({
       sender: voter,
-      amount: Uint64(10_000),
+      amount: 10_000,
     })
 
     const result = contract.vote(payment)

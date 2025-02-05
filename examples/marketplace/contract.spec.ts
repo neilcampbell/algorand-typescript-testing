@@ -1,4 +1,4 @@
-import { arc4, Bytes, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { arc4, Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { interpretAsArc4 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach } from 'node:test'
@@ -16,7 +16,7 @@ describe('DigitalMarketplace', () => {
 
   test('first deposit', () => {
     const contract = ctx.contract.create(DigitalMarketplace)
-    const testAsset = ctx.any.asset({ decimals: Uint64(TEST_DECIMALS) })
+    const testAsset = ctx.any.asset({ decimals: TEST_DECIMALS })
     const testNonce = ctx.any.arc4.uintN64()
 
     // Arrange
@@ -24,11 +24,11 @@ describe('DigitalMarketplace', () => {
 
     // Act
     contract.firstDeposit(
-      ctx.any.txn.payment({ receiver: testApp.address, amount: Uint64(50500) }),
+      ctx.any.txn.payment({ receiver: testApp.address, amount: 50500 }),
       ctx.any.txn.assetTransfer({
         xferAsset: testAsset,
         assetReceiver: testApp.address,
-        assetAmount: Uint64(10),
+        assetAmount: 10,
       }),
       ctx.any.arc4.uintN64(),
       testNonce,
@@ -46,7 +46,7 @@ describe('DigitalMarketplace', () => {
 
   test('deposit', () => {
     const contract = ctx.contract.create(DigitalMarketplace)
-    const testAsset = ctx.any.asset({ decimals: Uint64(TEST_DECIMALS) })
+    const testAsset = ctx.any.asset({ decimals: TEST_DECIMALS })
     const testNonce = ctx.any.arc4.uintN64()
 
     // Arrange
@@ -72,7 +72,7 @@ describe('DigitalMarketplace', () => {
       ctx.any.txn.assetTransfer({
         xferAsset: testAsset,
         assetReceiver: testApp.address,
-        assetAmount: Uint64(10),
+        assetAmount: 10,
       }),
       testNonce,
     )
@@ -83,7 +83,7 @@ describe('DigitalMarketplace', () => {
 
   test('setPrice', () => {
     const contract = ctx.contract.create(DigitalMarketplace)
-    const testAsset = ctx.any.asset({ decimals: Uint64(TEST_DECIMALS) })
+    const testAsset = ctx.any.asset({ decimals: TEST_DECIMALS })
     const testNonce = ctx.any.arc4.uintN64()
     // Arrange
     const testUnitaryPrice = ctx.any.arc4.uintN64()
@@ -113,7 +113,7 @@ describe('DigitalMarketplace', () => {
 
   test('buy', () => {
     const contract = ctx.contract.create(DigitalMarketplace)
-    const testAsset = ctx.any.asset({ decimals: Uint64(TEST_DECIMALS) })
+    const testAsset = ctx.any.asset({ decimals: TEST_DECIMALS })
     const testNonce = ctx.any.arc4.uintN64()
     // Arrange
     const testOwner = new arc4.Address(ctx.defaultSender)
@@ -153,7 +153,7 @@ describe('DigitalMarketplace', () => {
 
   test('withdraw', () => {
     const contract = ctx.contract.create(DigitalMarketplace)
-    const testAsset = ctx.any.asset({ decimals: Uint64(TEST_DECIMALS) })
+    const testAsset = ctx.any.asset({ decimals: TEST_DECIMALS })
     const testNonce = ctx.any.arc4.uintN64()
 
     // Arrange
@@ -194,7 +194,7 @@ describe('DigitalMarketplace', () => {
 
   test('bid', () => {
     const contract = ctx.contract.create(DigitalMarketplace)
-    const testAsset = ctx.any.asset({ decimals: Uint64(TEST_DECIMALS) })
+    const testAsset = ctx.any.asset({ decimals: TEST_DECIMALS })
     const testNonce = ctx.any.arc4.uintN64()
 
     // Arrange
@@ -245,7 +245,7 @@ describe('DigitalMarketplace', () => {
 
   test('acceptBid', () => {
     const contract = ctx.contract.create(DigitalMarketplace)
-    const testAsset = ctx.any.asset({ decimals: Uint64(TEST_DECIMALS) })
+    const testAsset = ctx.any.asset({ decimals: TEST_DECIMALS })
     const testNonce = ctx.any.arc4.uintN64()
     // Arrange
     const owner = ctx.defaultSender

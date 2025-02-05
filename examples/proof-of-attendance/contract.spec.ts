@@ -1,4 +1,4 @@
-import { Account, Bytes, op, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, Bytes, op } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { afterEach, describe, expect, it, test } from 'vitest'
 import ProofOfAttendance from './contract.algo'
@@ -64,8 +64,8 @@ describe('ProofOfAttendance', () => {
       assetCloseTo: Account(ZERO_ADDRESS),
       rekeyTo: Account(ZERO_ADDRESS),
       xferAsset: dummyPoa,
-      fee: Uint64(0),
-      assetAmount: Uint64(0),
+      fee: 0,
+      assetAmount: 0,
     })
     ctx.ledger.setBox(contract, keyPrefix.concat(ctx.defaultSender.bytes), op.itob(dummyPoa.id))
 

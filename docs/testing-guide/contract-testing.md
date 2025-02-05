@@ -37,7 +37,7 @@ class SimpleVotingContract extends arc4.Contract {
 
   @arc4.abimethod()
   vote(): uint64 {
-    assert(this.voted(Txn.sender).value === Uint64(0), 'Account has already voted')
+    assert(this.voted(Txn.sender).value === 0, 'Account has already voted')
     this.votes.value = this.votes.value + 1
     this.voted(Txn.sender).value = Uint64(1)
     return this.votes.value

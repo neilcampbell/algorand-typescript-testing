@@ -12,8 +12,8 @@ export default class VotingContract extends arc4.Contract {
   }
   @arc4.abimethod()
   public vote(pay: gtxn.PaymentTxn): arc4.Bool {
-    assert(op.Global.groupSize === Uint64(2), 'Expected 2 transactions')
-    assert(pay.amount === Uint64(10_000), 'Incorrect payment amount')
+    assert(op.Global.groupSize === 2, 'Expected 2 transactions')
+    assert(pay.amount === 10_000, 'Incorrect payment amount')
     assert(pay.sender === Txn.sender, 'Payment sender must match transaction sender')
 
     if (this.voted(Txn.sender).hasValue) {

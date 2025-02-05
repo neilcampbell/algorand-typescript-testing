@@ -115,6 +115,24 @@ function doAddEqualityTesters(expectObj: ExpectObj) {
       // Defer to other testers
       return undefined
     },
+    function BigIntIsNumber(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (typeof subject === 'bigint') {
+        const testValue = typeof test === 'number' ? test : undefined
+        if (testValue !== undefined) return this.equals(subject, BigInt(testValue), customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
+    function NumberIsBigInt(this: TesterContext, subject, test, customTesters): boolean | undefined {
+      if (typeof subject === 'number') {
+        const testValue = typeof test === 'bigint' ? test : undefined
+        if (testValue !== undefined) return this.equals(BigInt(subject), testValue, customTesters)
+        return undefined
+      }
+      // Defer to other testers
+      return undefined
+    },
   ])
 }
 

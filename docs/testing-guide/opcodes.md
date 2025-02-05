@@ -89,8 +89,8 @@ class MyContract extends arc4.Contract {
 // Create the context manager for snippets below
 const ctx = new TestExecutionContext()
 ctx.ledger.patchGlobalData({
-  minTxnFee: Uint64(1000),
-  minBalance: Uint64(100000),
+  minTxnFee: 1000,
+  minBalance: 100000,
 })
 
 const contract = ctx.contract.create(MyContract)
@@ -140,7 +140,7 @@ class AssetContract extends arc4.Contract {
 const ctx = new TestExecutionContext()
 
 const contract = ctx.contract.create(AssetContract)
-const asset = ctx.any.asset({ total: Uint64(1000000) })
+const asset = ctx.any.asset({ total: 1000000 })
 const account = ctx.any.account({ optedAssetBalances: new Map([[asset.id, Uint64(5000)]]) })
 
 const result = contract.checkAssetHolding(account, asset)
@@ -215,7 +215,7 @@ class AccountParamsContract extends arc4.Contract {
 const ctx = new TestExecutionContext()
 
 const contract = ctx.contract.create(AccountParamsContract)
-const account = ctx.any.account({ balance: Uint64(1000000) })
+const account = ctx.any.account({ balance: 1000000 })
 
 const balance = contract.getAccountBalance(account)
 expect(balance).toEqual(Uint64(1000000))
@@ -264,7 +264,7 @@ class AssetParamsContract extends arc4.Contract {
 const ctx = new TestExecutionContext()
 
 const contract = ctx.contract.create(AssetParamsContract)
-const asset = ctx.any.asset({ total: Uint64(1000000), decimals: Uint64(6) })
+const asset = ctx.any.asset({ total: 1000000, decimals: 6 })
 const total = contract.getAssetTotal(asset.id)
 expect(total).toEqual(1000000)
 ```

@@ -8,7 +8,7 @@
 
 > **addEqualityTesters**(`params`): `void`
 
-Defined in: [src/set-up.ts:141](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/set-up.ts#L141)
+Defined in: [src/set-up.ts:159](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/set-up.ts#L159)
 
 Adds custom equality testers for Algorand types to vitest's expect function.
 This allows vitest to properly compare Algorand types such as uint64, biguint, and bytes

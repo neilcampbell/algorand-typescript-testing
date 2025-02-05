@@ -156,7 +156,7 @@ export const getBit = (
   if (adjustedIndex < 0 || adjustedIndex >= binaryString.length) {
     internal.errors.codeError(`getBit index ${index} is beyond length`)
   }
-  return binaryString[adjustedIndex] === '1' ? Uint64(1) : Uint64(0)
+  return binaryString[adjustedIndex] === '1' ? 1 : 0
 }
 
 export const getByte = (a: internal.primitives.StubBytesCompat, b: internal.primitives.StubUint64Compat): uint64 => {
