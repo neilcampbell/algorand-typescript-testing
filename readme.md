@@ -42,7 +42,7 @@ npm i @algorandfoundation/algorand-typescript-testing
 
 Let's write a simple contract and test it using the `algorand-typescript-testing` framework.
 
-If you are using [vitest](https://vitest.dev/) with [@rollup/plugin-typescript](https://www.npmjs.com/package/@rollup/plugin-typescript) plugin, configure `puyTsTransformer` as a `before` stage transformer of `typescript` plugin in `vitest.config.mts` file.
+If you are using [vitest](https://vitest.dev/) with [@rollup/plugin-typescript](https://www.npmjs.com/package/@rollup/plugin-typescript) plugin, configure `puyaTsTransformer` as a `before` stage transformer of `typescript` plugin in `vitest.config.mts` file.
 
 ```typescript
 import typescript from '@rollup/plugin-typescript'
