@@ -155,12 +155,42 @@ export const conactUint8Arrays = (...values: Uint8Array[]): Uint8Array => {
   return result
 }
 
+/**
+ * Runtime assertion function that throws if condition is falsy.
+ *
+ * @param {unknown} condition - The condition to assert
+ * @param {string} [message] - Optional error message if assertion fails
+ * @throws {AssertError} Throws if condition is falsy
+ *
+ * @example
+ * ```ts
+ * const value: string | undefined = "test";
+ * assert(value !== undefined);
+ *
+ * assert(false, "This will throw"); // throws AssertError: This will throw
+ * ```
+ */
 export function assert(condition: unknown, message?: string): asserts condition {
   if (!condition) {
     throw new AssertError(message ?? 'Assertion failed')
   }
 }
 
+/**
+ * Simulates Algorand Virtual Machine's 'err' opcode by throwing an error.
+ * Used to halt program execution with an optional error message.
+ *
+ * @param {string} [message] - Optional error message. Defaults to "err opcode executed"
+ * @throws {AvmError} Always throws an AvmError
+ * @returns {never} Function never returns normally
+ *
+ * @example
+ * ```ts
+ * if (amount < 0) {
+ *   err("Invalid amount"); // Throws AvmError: Invalid amount
+ * }
+ * ```
+ */
 export function err(message?: string): never {
   throw new AvmError(message ?? 'err opcode executed')
 }
