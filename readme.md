@@ -87,27 +87,27 @@ export default class VotingContract extends arc4.Contract {
   voted = LocalState<uint64>({ key: Bytes('voted') })
 
   @arc4.abimethod()
-  public setTopic(topic: arc4.Str): void {
-    this.topic.value = topic.bytes
+  public setTopic(topic: string): void {
+    this.topic.value = Bytes(topic)
   }
   @arc4.abimethod()
-  public vote(pay: gtxn.PaymentTxn): arc4.Bool {
+  public vote(pay: gtxn.PaymentTxn): boolean {
     assert(op.Global.groupSize === 2, 'Expected 2 transactions')
     assert(pay.amount === 10_000, 'Incorrect payment amount')
     assert(pay.sender === Txn.sender, 'Payment sender must match transaction sender')
 
     if (this.voted(Txn.sender).hasValue) {
-      return new arc4.Bool(false) // Already voted
+      return false // Already voted
     }
 
     this.votes.value = this.votes.value + 1
     this.voted(Txn.sender).value = 1
-    return new arc4.Bool(true)
+    return true
   }
 
   @arc4.abimethod({ readonly: true })
-  public getVotes(): arc4.UintN64 {
-    return new arc4.UintN64(this.votes.value)
+  public getVotes(): uint64 {
+    return this.votes.value
   }
 
   public clearStateProgram(): boolean {
@@ -141,7 +141,7 @@ describe('Voting contract', () => {
     })
 
     const result = contract.vote(payment)
-    expect(result.native).toEqual(true)
+    expect(result).toEqual(true)
     expect(contract.votes.value).toEqual(1)
     expect(contract.voted(voter).value).toEqual(1)
   })
@@ -150,18 +150,18 @@ describe('Voting contract', () => {
     // Initialize the contract within the testing context
     const contract = ctx.contract.create(VotingContract)
 
-    const newTopic = ctx.any.arc4.str(10)
+    const newTopic = ctx.any.string(10)
     contract.setTopic(newTopic)
-    expect(contract.topic.value).toEqual(newTopic.bytes)
+    expect(contract.topic.value).toEqual(newTopic)
   })
 
   test('getVotes function', () => {
     // Initialize the contract within the testing context
     const contract = ctx.contract.create(VotingContract)
 
-    contract.votes.value = Uint64(5)
+    contract.votes.value = 5
     const votes = contract.getVotes()
-    expect(votes.native).toEqual(5)
+    expect(votes).toEqual(5)
   })
 })
 ```
@@ -172,13 +172,12 @@ This example demonstrates key aspects of testing with `algorand-typescript-testi
 
    - Use of `arc4.Contract` as the base class for the contract.
    - ABI methods defined using the `@arc4.abimethod` decorator.
-   - Use of ARC4-specific types like `arc4.Str`, `arc4.Bool`, and `arc4.UintN64`.
    - Readonly method annotation with `@arc4.abimethod({readonly: true})`.
 
 2. Testing ARC4 Contracts:
 
    - Creation of an `arc4.Contract` instance within the test context.
-   - Use of `ctx.any.arc4` for generating ARC4-specific random test data.
+   - Use of `ctx.any` for generating random test data.
    - Direct invocation of ABI methods on the contract instance.
 
 3. Transaction Handling:
@@ -188,7 +187,7 @@ This example demonstrates key aspects of testing with `algorand-typescript-testi
 
 4. State Verification:
    - Checking global and local state changes after method execution.
-   - Verifying return values from ABI methods using ARC4-specific types.
+   - Verifying return values from ABI methods.
 
 > **NOTE**: Thorough testing is crucial in smart contract development due to their immutable nature post-deployment. Comprehensive unit and integration tests ensure contract validity and reliability. Optimizing for efficiency can significantly improve user experience by reducing transaction fees and simplifying interactions. Investing in robust testing and optimization practices is crucial and offers many benefits in the long run.
 
