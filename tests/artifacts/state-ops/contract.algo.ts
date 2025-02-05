@@ -492,7 +492,7 @@ export class ITxnOpsContract extends arc4.Contract {
     op.ITxnCreate.submit()
 
     assert(op.ITxn.receiver === op.Global.creatorAddress)
-    assert(op.ITxn.amount === Uint64(1000))
+    assert(op.ITxn.amount === 1000)
     assert(op.ITxn.typeEnum === TransactionType.Payment)
 
     assert(op.GITxn.typeEnum(0) === TransactionType.ApplicationCall)

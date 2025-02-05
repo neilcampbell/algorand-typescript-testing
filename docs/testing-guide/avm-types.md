@@ -76,14 +76,14 @@ const asset = algots.Asset(1001)
 const randomAsset = ctx.any.asset({
   clawback: ctx.any.account(), // Optional: Clawback address
   creator: ctx.any.account(), // Optional: Creator account
-  decimals: algots.Uint64(6), // Optional: Number of decimals
+  decimals: 6, // Optional: Number of decimals
   defaultFrozen: false, // Optional: Default frozen state
   freeze: ctx.any.account(), // Optional: Freeze address
   manager: ctx.any.account(), // Optional: Manager address
   metadataHash: ctx.any.bytes(32), // Optional: Metadata hash
   name: algots.Bytes(ctx.any.string()), // Optional: Asset name
   reserve: ctx.any.account(), // Optional: Reserve address
-  total: algots.Uint64(1000000), // Optional: Total supply
+  total: 1000000, // Optional: Total supply
   unitName: algots.Bytes(ctx.any.string()), // Optional: Unit name
   url: algots.Bytes(ctx.any.string()), // Optional: Asset URL
 })
@@ -95,14 +95,14 @@ const asset = ctx.ledger.getAsset(randomAsset.id)
 ctx.ledger.patchAssetData(randomAsset, {
   clawback: ctx.any.account(), // Optional: New clawback address
   creator: ctx.any.account(), // Optional: Creator account
-  decimals: algots.Uint64(6), // Optional: New number of decimals
+  decimals: 6, // Optional: New number of decimals
   defaultFrozen: false, // Optional: Default frozen state
   freeze: ctx.any.account(), // Optional: New freeze address
   manager: ctx.any.account(), // Optional: New manager address
   metadataHash: ctx.any.bytes(32), // Optional: New metadata hash
   name: algots.Bytes(ctx.any.string()), // Optional: New asset name
   reserve: ctx.any.account(), // Optional: New reserve address
-  total: algots.Uint64(1000000), // Optional: New total supply
+  total: 1000000, // Optional: New total supply
   unitName: algots.Bytes(ctx.any.string()), // Optional: Unit name
   url: algots.Bytes(ctx.any.string()), // Optional: New asset URL
 })
@@ -171,11 +171,11 @@ const application = algots.Application()
 const randomApp = ctx.any.application({
   approvalProgram: algots.Bytes(''), // Optional: Specify a custom approval program
   clearStateProgram: algots.Bytes(''), // Optional: Specify a custom clear state program
-  globalNumUint: algots.Uint64(1), // Optional: Number of global uint values
-  globalNumBytes: algots.Uint64(1), // Optional: Number of global byte values
-  localNumUint: algots.Uint64(1), // Optional: Number of local uint values
-  localNumBytes: algots.Uint64(1), // Optional: Number of local byte values
-  extraProgramPages: algots.Uint64(1), // Optional: Number of extra program pages
+  globalNumUint: 1, // Optional: Number of global uint values
+  globalNumBytes: 1, // Optional: Number of global byte values
+  localNumUint: 1, // Optional: Number of local uint values
+  localNumBytes: 1, // Optional: Number of local byte values
+  extraProgramPages: 1, // Optional: Number of extra program pages
   creator: ctx.defaultSender, // Optional: Specify the creator account
 })
 
@@ -187,11 +187,11 @@ ctx.ledger.patchApplicationData(randomApp, {
   application: {
     approvalProgram: algots.Bytes(''), //  Optional: New approval program
     clearStateProgram: algots.Bytes(''), // Optional: New clear state program
-    globalNumUint: algots.Uint64(1), // Optional: New number of global uint values
-    globalNumBytes: algots.Uint64(1), // Optional: New number of global byte values
-    localNumUint: algots.Uint64(1), // Optional: New number of local uint values
-    localNumBytes: algots.Uint64(1), // Optional: New number of local byte values
-    extraProgramPages: algots.Uint64(1), // Optional: New number of extra program pages
+    globalNumUint: 1, // Optional: New number of global uint values
+    globalNumBytes: 1, // Optional: New number of global byte values
+    localNumUint: 1, // Optional: New number of local uint values
+    localNumBytes: 1, // Optional: New number of local byte values
+    extraProgramPages: 1, // Optional: New number of extra program pages
     creator: ctx.defaultSender, // Optional: New creator account
   },
 })

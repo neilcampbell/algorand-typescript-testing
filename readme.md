@@ -42,7 +42,7 @@ npm i @algorandfoundation/algorand-typescript-testing
 
 Let's write a simple contract and test it using the `algorand-typescript-testing` framework.
 
-If you are using [vitest](https://vitest.dev/) with [@rollup/plugin-typescript](https://www.npmjs.com/package/@rollup/plugin-typescript) plugin, configure `puyTsTransformer` as a `before` stage transformer of `typescript` plugin in `vitest.config.mts` file.
+If you are using [vitest](https://vitest.dev/) with [@rollup/plugin-typescript](https://www.npmjs.com/package/@rollup/plugin-typescript) plugin, configure `puyaTsTransformer` as a `before` stage transformer of `typescript` plugin in `vitest.config.mts` file.
 
 ```typescript
 import typescript from '@rollup/plugin-typescript'
@@ -92,8 +92,8 @@ export default class VotingContract extends arc4.Contract {
   }
   @arc4.abimethod()
   public vote(pay: gtxn.PaymentTxn): arc4.Bool {
-    assert(op.Global.groupSize === Uint64(2), 'Expected 2 transactions')
-    assert(pay.amount === Uint64(10_000), 'Incorrect payment amount')
+    assert(op.Global.groupSize === 2, 'Expected 2 transactions')
+    assert(pay.amount === 10_000, 'Incorrect payment amount')
     assert(pay.sender === Txn.sender, 'Payment sender must match transaction sender')
 
     if (this.voted(Txn.sender).hasValue) {
@@ -137,7 +137,7 @@ describe('Voting contract', () => {
     const voter = ctx.defaultSender
     const payment = ctx.any.txn.payment({
       sender: voter,
-      amount: Uint64(10_000),
+      amount: 10_000,
     })
 
     const result = contract.vote(payment)

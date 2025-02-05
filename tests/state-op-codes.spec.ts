@@ -73,18 +73,18 @@ describe('State op codes', async () => {
       const dummyAccount = Bytes.fromBase32(dummyAccountAddress.addr.toString())
       const mockAccount = ctx.any.account({
         address: dummyAccount,
-        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100_000),
-        minBalance: Uint64(100_000),
+        balance: INITIAL_BALANCE_MICRO_ALGOS + 100_000,
+        minBalance: 100_000,
         authAddress: Account(ZERO_ADDRESS),
-        totalNumUint: Uint64(0),
-        totalNumByteSlice: Uint64(0),
-        totalExtraAppPages: Uint64(0),
-        totalAppsCreated: Uint64(0),
-        totalAppsOptedIn: Uint64(0),
-        totalAssetsCreated: Uint64(0),
-        totalAssets: Uint64(0),
-        totalBoxes: Uint64(0),
-        totalBoxBytes: Uint64(0),
+        totalNumUint: 0,
+        totalNumByteSlice: 0,
+        totalExtraAppPages: 0,
+        totalAppsCreated: 0,
+        totalAppsOptedIn: 0,
+        totalAssetsCreated: 0,
+        totalAssets: 0,
+        totalBoxes: 0,
+        totalBoxBytes: 0,
       })
 
       const avmResult = await getAvmResult(
@@ -107,8 +107,8 @@ describe('State op codes', async () => {
       const dummyAccount = Bytes.fromBase32(dummyAccountAddress.addr.toString())
       const mockAccount = ctx.any.account({
         address: dummyAccount,
-        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
-        minBalance: Uint64(100000),
+        balance: INITIAL_BALANCE_MICRO_ALGOS + 100000,
+        minBalance: 100000,
       })
       ctx.ledger.patchGlobalData({ payoutsEnabled: true, payoutsGoOnlineFee: 10 })
       ctx.txn.createScope([ctx.any.txn.keyRegistration({ sender: mockAccount, fee: 10 })]).execute(() => {
@@ -140,7 +140,7 @@ describe('State op codes', async () => {
       const dummyAccount = Bytes.fromBase32(dummyAccountAddress.addr.toString())
       const mockAccount = ctx.any.account({
         address: dummyAccount,
-        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
+        balance: INITIAL_BALANCE_MICRO_ALGOS + 100000,
       })
       const incentiveEligible = op.AcctParams.acctIncentiveEligible(mockAccount)
       const lastProposed = op.AcctParams.acctLastProposed(mockAccount)
@@ -157,7 +157,7 @@ describe('State op codes', async () => {
       const dummyAccount = Bytes.fromBase32(dummyAccountAddress.addr.toString())
       const mockAccount = ctx.any.account({
         address: dummyAccount,
-        balance: Uint64(INITIAL_BALANCE_MICRO_ALGOS + 100000),
+        balance: INITIAL_BALANCE_MICRO_ALGOS + 100000,
         incentiveEligible: true,
         lastProposed: 100,
         lastHeartbeat: 200,
@@ -188,11 +188,11 @@ describe('State op codes', async () => {
         applicationId: app.appId,
         approvalProgram: Bytes(app.compiledApproval!.compiledBase64ToBytes),
         clearStateProgram: Bytes(app.compiledClear!.compiledBase64ToBytes),
-        globalNumUint: Uint64(0),
-        globalNumBytes: Uint64(0),
-        localNumUint: Uint64(0),
-        localNumBytes: Uint64(0),
-        extraProgramPages: Uint64(0),
+        globalNumUint: 0,
+        globalNumBytes: 0,
+        localNumUint: 0,
+        localNumBytes: 0,
+        extraProgramPages: 0,
         creator: Account(Bytes.fromBase32(testAccount.addr.toString())),
       })
       const avmResult = await getAvmResult(
@@ -269,8 +269,8 @@ describe('State op codes', async () => {
         const creator = Account(Bytes.fromBase32(testAccount.addr.toString()))
         const metadataHash = Bytes(`test${' '.repeat(28)}`)
         const mockAsset = ctx.any.asset({
-          total: Uint64(100),
-          decimals: Uint64(0),
+          total: 100,
+          decimals: 0,
           name: Bytes('TEST'),
           unitName: Bytes('UNIT'),
           url: Bytes('https://algorand.co'),

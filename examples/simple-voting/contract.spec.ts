@@ -23,15 +23,15 @@ describe('Simple voting contract', () => {
                 appArgs: [Bytes('set_topic'), topic],
               }),
               ctx.any.txn.payment({
-                amount: Uint64(10_000),
+                amount: 10_000,
               }),
             ],
             0,
           )
           .execute(contract.approvalProgram)
 
-        expect(result).toEqual(Uint64(1))
-        expect(contract.topic.value.toString()).toBe(topic.toString())
+        expect(result).toEqual(1)
+        expect(contract.topic.value).toBe(topic)
       })
     })
   })
@@ -43,9 +43,9 @@ describe('Simple voting contract', () => {
 
       const result = castVote(ctx, contract, voter)
 
-      expect(result).toEqual(Uint64(1))
-      expect(contract.votes.value).toEqual(Uint64(1))
-      expect(contract.voted(voter).value).toEqual(Uint64(1))
+      expect(result).toEqual(1)
+      expect(contract.votes.value).toEqual(1)
+      expect(contract.voted(voter).value).toEqual(1)
     })
     it('ignores subsequent votes from the same voter', async () => {
       const contract = ctx.contract.create(SimpleVotingContract)
@@ -55,9 +55,9 @@ describe('Simple voting contract', () => {
 
       const result = castVote(ctx, contract, voter)
 
-      expect(result).toEqual(Uint64(0))
-      expect(contract.votes.value).toEqual(Uint64(1))
-      expect(contract.voted(voter).value).toEqual(Uint64(1))
+      expect(result).toEqual(0)
+      expect(contract.votes.value).toEqual(1)
+      expect(contract.voted(voter).value).toEqual(1)
     })
   })
   describe('When getting the votes', () => {
@@ -76,14 +76,14 @@ describe('Simple voting contract', () => {
               appArgs: [Bytes('get_votes')],
             }),
             ctx.any.txn.payment({
-              amount: Uint64(10_000),
+              amount: 10_000,
             }),
           ],
           0,
         )
         .execute(contract.approvalProgram)
 
-      expect(result).toEqual(Uint64(2))
+      expect(result).toEqual(2)
     })
   })
 })
@@ -99,7 +99,7 @@ const castVote = (ctx: TestExecutionContext, contract: SimpleVotingContract, vot
         }),
         ctx.any.txn.payment({
           sender: voter,
-          amount: Uint64(10_000),
+          amount: 10_000,
         }),
       ],
       0,
