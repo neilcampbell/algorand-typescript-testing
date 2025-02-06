@@ -2,7 +2,7 @@ import type { bytes, op, uint64 } from '@algorandfoundation/algorand-typescript'
 import { MAX_BOX_SIZE } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { toBytes } from '../encoders'
-import { InternalError } from '../errors'
+import { AvmError, InternalError } from '../errors'
 import { asBytes, asBytesCls, asNumber, asUint8Array, conactUint8Arrays } from '../util'
 import type { StubBytesCompat, StubUint64Compat } from './primitives'
 
@@ -11,7 +11,7 @@ export const Box: typeof op.Box = {
     const name = asBytes(a)
     const size = asNumber(b)
     if (name.length === 0 || size > MAX_BOX_SIZE) {
-      throw new InternalError('Invalid box name or size')
+      throw new AvmError('Invalid box name or size')
     }
     const app = lazyContext.activeApplication
     if (lazyContext.ledger.boxExists(app, name)) {
