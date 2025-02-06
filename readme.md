@@ -82,13 +82,13 @@ beforeAll(() => {
 import { arc4, assert, Bytes, GlobalState, gtxn, LocalState, op, Txn, uint64, Uint64 } from '@algorandfoundation/algorand-typescript'
 
 export default class VotingContract extends arc4.Contract {
-  topic = GlobalState({ initialValue: Bytes('default_topic'), key: Bytes('topic') })
+  topic = GlobalState({ initialValue: 'default_topic', key: Bytes('topic') })
   votes = GlobalState({ initialValue: Uint64(0), key: Bytes('votes') })
   voted = LocalState<uint64>({ key: Bytes('voted') })
 
   @arc4.abimethod()
   public setTopic(topic: string): void {
-    this.topic.value = Bytes(topic)
+    this.topic.value = topic
   }
   @arc4.abimethod()
   public vote(pay: gtxn.PaymentTxn): boolean {
