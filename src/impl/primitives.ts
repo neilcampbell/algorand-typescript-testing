@@ -8,7 +8,7 @@ import {
   uint8ArrayToUtf8,
   utf8ToUint8Array,
 } from '../encoding-util'
-import { avmError, AvmError, avmInvariant, CodeError, internalError } from '../errors'
+import { avmError, AvmError, avmInvariant, CodeError, InternalError } from '../errors'
 import { nameOfType } from '../typescript-helpers'
 import { base32ToUint8Array } from './base-32'
 
@@ -211,7 +211,7 @@ export const getNumber = (v: StubUint64Compat): number => {
     return Number(v)
   }
   if (v instanceof Uint64Cls) return v.asNumber()
-  internalError(`Cannot convert ${v} to number`)
+  throw new InternalError(`Cannot convert ${v} to number`)
 }
 
 export const getUint8Array = (v: StubBytesCompat): Uint8Array => {
@@ -301,7 +301,7 @@ export class Uint64Cls extends AlgoTsPrimitiveCls {
     if (typeof v == 'number') return new Uint64Cls(BigInt(v))
     if (typeof v == 'bigint') return new Uint64Cls(v)
     if (v instanceof Uint64Cls) return v
-    internalError(`Cannot convert ${v} to uint64`)
+    throw new InternalError(`Cannot convert ${v} to uint64`)
   }
 
   valueOf(): bigint {
@@ -374,7 +374,7 @@ export class BigUintCls extends AlgoTsPrimitiveCls {
     if (v instanceof Uint64Cls) return new BigUintCls(v.valueOf())
     if (v instanceof BytesCls) return v.toBigUint()
     if (v instanceof BigUintCls) return v
-    internalError(`Cannot convert ${nameOfType(v)} to BigUint`)
+    throw new InternalError(`Cannot convert ${nameOfType(v)} to BigUint`)
   }
 }
 
@@ -519,7 +519,7 @@ export class BytesCls extends AlgoTsPrimitiveCls {
     if (typeof v === 'string') return new BytesCls(utf8ToUint8Array(v))
     if (v instanceof BytesCls) return v
     if (v instanceof Uint8Array) return new BytesCls(v)
-    internalError(`Cannot convert ${nameOfType(v)} to bytes`)
+    throw new InternalError(`Cannot convert ${nameOfType(v)} to bytes`)
   }
 
   static fromInterpolation(template: TemplateStringsArray, replacements: StubBytesCompat[]) {

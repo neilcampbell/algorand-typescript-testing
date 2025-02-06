@@ -1,6 +1,6 @@
 import type { Application as ApplicationType, gtxn } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
-import { internalError } from '../errors'
+import { InternalError } from '../errors'
 import { BaseContract } from '../impl/base-contract'
 import { ApplicationCls } from '../impl/reference'
 import type { ApplicationTransactionFields, TxnFields } from '../impl/transactions'
@@ -30,7 +30,7 @@ export class TxnValueGenerator {
           ? lazyContext.ledger.getApplicationForContract(params.appId)
           : undefined
     if (appId && !lazyContext.ledger.applicationDataMap.has(appId.id)) {
-      internalError(`Application ID ${appId.id} not found in test context`)
+      throw new InternalError(`Application ID ${appId.id} not found in test context`)
     }
     if (!appId) {
       appId = lazyContext.any.application()

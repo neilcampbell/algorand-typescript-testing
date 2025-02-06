@@ -1,5 +1,5 @@
 import type { Account } from '@algorandfoundation/algorand-typescript'
-import { internalError } from '../errors'
+import { InternalError } from '../errors'
 import { BaseContract } from '../impl/base-contract'
 import type { StubUint64Compat } from '../impl/primitives'
 import { Uint64Cls } from '../impl/primitives'
@@ -50,7 +50,7 @@ class InternalContext {
   getAccountData(account: Account): AccountData {
     const data = this.ledger.accountDataMap.get(account)
     if (!data) {
-      throw internalError('Unknown account, check correct testing context is active')
+      throw new InternalError('Unknown account, check correct testing context is active')
     }
     return data
   }
@@ -59,7 +59,7 @@ class InternalContext {
     const key = Uint64Cls.fromCompat(id)
     const data = this.ledger.assetDataMap.get(key.asBigInt())
     if (!data) {
-      throw internalError('Unknown asset, check correct testing context is active')
+      throw new InternalError('Unknown asset, check correct testing context is active')
     }
     return data
   }
@@ -68,7 +68,7 @@ class InternalContext {
     const uint64Id = id instanceof BaseContract ? this.ledger.getApplicationForContract(id).id : Uint64Cls.fromCompat(id)
     const data = this.ledger.applicationDataMap.get(uint64Id)
     if (!data) {
-      throw internalError('Unknown application, check correct testing context is active')
+      throw new InternalError('Unknown application, check correct testing context is active')
     }
     return data
   }
@@ -76,7 +76,7 @@ class InternalContext {
   getVoterData(account: Account): VoterData {
     const data = this.ledger.voterDataMap.get(account)
     if (!data) {
-      throw internalError('Unknown voter, check correct testing context is active')
+      throw new InternalError('Unknown voter, check correct testing context is active')
     }
     return data
   }

@@ -34,10 +34,6 @@ export class InternalError extends Error {
   }
 }
 
-export function internalError(message: string): never {
-  throw new InternalError(message)
-}
-
 /**
  * Raised when unsupported user code is encountered
  */
@@ -47,18 +43,10 @@ export class CodeError extends Error {
   }
 }
 
-export function codeError(message: string): never {
-  throw new CodeError(message)
-}
-
 export class NotImplementedError extends Error {
   constructor(feature: string) {
     super(`${feature} is not available in test context. Mock using your preferred testing framework.`)
   }
-}
-
-export function notImplementedError(feature: string): never {
-  throw new NotImplementedError(feature)
 }
 
 export function testInvariant(condition: unknown, message: string): asserts condition {

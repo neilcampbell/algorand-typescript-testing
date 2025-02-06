@@ -1,7 +1,7 @@
 import type { bytes, BytesBacked, StringCompat } from '@algorandfoundation/algorand-typescript'
 import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { lazyContext } from '../context-helpers/internal-context'
-import { internalError } from '../errors'
+import { InternalError } from '../errors'
 import { nameOfType } from '../util'
 import type { StubBigUintCompat, StubBytesCompat, StubUint64Compat } from './primitives'
 import { AlgoTsPrimitiveCls, BigUintCls, BytesCls, Uint64Cls } from './primitives'
@@ -18,7 +18,7 @@ const toBytes = (val: unknown): bytes => {
     case 'number':
       return Uint64Cls.fromCompat(val).toBytes().asAlgoTs()
     default:
-      internalError(`Unsupported arg type ${nameOfType(val)}`)
+      throw new InternalError(`Unsupported arg type ${nameOfType(val)}`)
   }
 }
 

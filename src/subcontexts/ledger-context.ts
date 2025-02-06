@@ -9,7 +9,7 @@ import type {
 } from '@algorandfoundation/algorand-typescript'
 import { AccountMap, Uint64Map } from '../collections/custom-key-map'
 import { MAX_UINT64 } from '../constants'
-import { internalError } from '../errors'
+import { InternalError } from '../errors'
 import { BlockData } from '../impl/block'
 import { GlobalData } from '../impl/global'
 import type { StubBytesCompat, StubUint64Compat } from '../impl/primitives'
@@ -61,7 +61,7 @@ export class LedgerContext {
     if (this.accountDataMap.has(address)) {
       return new AccountCls(address.bytes)
     }
-    throw internalError('Unknown account, check correct testing context is active')
+    throw new InternalError('Unknown account, check correct testing context is active')
   }
 
   /**
@@ -74,7 +74,7 @@ export class LedgerContext {
     if (this.assetDataMap.has(assetId)) {
       return Asset(asUint64(assetId))
     }
-    throw internalError('Unknown asset, check correct testing context is active')
+    throw new InternalError('Unknown asset, check correct testing context is active')
   }
 
   /**
@@ -87,7 +87,7 @@ export class LedgerContext {
     if (this.applicationDataMap.has(applicationId)) {
       return Application(asUint64(applicationId))
     }
-    throw internalError('Unknown application, check correct testing context is active')
+    throw new InternalError('Unknown application, check correct testing context is active')
   }
 
   /**
@@ -104,7 +104,7 @@ export class LedgerContext {
         }
       }
     }
-    throw internalError('Unknown contract, check correct testing context is active')
+    throw new InternalError('Unknown contract, check correct testing context is active')
   }
 
   /**
@@ -251,7 +251,7 @@ export class LedgerContext {
     if (this.blocks.has(i)) {
       return this.blocks.get(i)!
     }
-    throw internalError(`Block ${i} not set`)
+    throw new InternalError(`Block ${i} not set`)
   }
 
   /**

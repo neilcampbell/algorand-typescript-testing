@@ -34,7 +34,7 @@ import {
 import { lazyContext } from '../context-helpers/internal-context'
 import type { fromBytes, TypeInfo } from '../encoders'
 import { uint8ArrayToNumber } from '../encoding-util'
-import { avmError, avmInvariant, codeError, CodeError } from '../errors'
+import { AvmError, avmInvariant, CodeError } from '../errors'
 import type { DeliberateAny } from '../typescript-helpers'
 import { asBigInt, asBigUint, asBigUintCls, asBytesCls, asUint64, asUint8Array, conactUint8Arrays } from '../util'
 import type { StubBytesCompat } from './primitives'
@@ -301,7 +301,7 @@ const arrayProxyHandler = <TItem>() => ({
     const idx = prop ? parseInt(prop.toString(), 10) : NaN
     if (!isNaN(idx)) {
       if (idx < target.items.length) return target.items[idx]
-      avmError('Index out of bounds')
+      throw new AvmError('Index out of bounds')
     } else if (prop === Symbol.iterator) {
       return target.items[Symbol.iterator].bind(target.items)
     } else if (prop === 'entries') {
@@ -320,7 +320,7 @@ const arrayProxyHandler = <TItem>() => ({
         target.setItem(idx, value)
         return true
       }
-      avmError('Index out of bounds')
+      throw new AvmError('Index out of bounds')
     }
 
     return Reflect.set(target, prop, value)
@@ -575,7 +575,7 @@ export class DynamicArrayImpl<TItem extends ARC4Encoded> extends DynamicArray<TI
   pop(): TItem {
     const items = this.items
     const popped = items.pop()
-    if (popped === undefined) avmError('The array is empty')
+    if (popped === undefined) throw new AvmError('The array is empty')
     return popped
   }
 
@@ -1255,5 +1255,5 @@ export const getArc4Encoded = (value: DeliberateAny): ARC4Encoded => {
     return new StructImpl(typeInfo, Object.fromEntries(Object.keys(value).map((x, i) => [x, result[i]])))
   }
 
-  throw codeError(`Unsupported type for encoding: ${typeof value}`)
+  throw new CodeError(`Unsupported type for encoding: ${typeof value}`)
 }

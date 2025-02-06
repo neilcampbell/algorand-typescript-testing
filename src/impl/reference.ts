@@ -20,7 +20,7 @@ import {
   ZERO_ADDRESS,
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { AvmError, internalError, InternalError } from '../errors'
+import { AvmError, InternalError } from '../errors'
 import type { Mutable } from '../typescript-helpers'
 import { asBigInt, asBytes, asUint64, asUint64Cls, asUint8Array, conactUint8Arrays } from '../util'
 import { BytesBackedCls, Uint64BackedCls } from './base'
@@ -281,7 +281,7 @@ export class AssetCls extends Uint64BackedCls implements AssetType {
     const accountData = lazyContext.getAccountData(account)
     const assetHolding = accountData.optedAssets.get(this.id)
     if (assetHolding === undefined) {
-      internalError(
+      throw new InternalError(
         'The asset is not opted into the account! Use `ctx.any.account(opted_asset_balances={{ASSET_ID: VALUE}})` to set emulated opted asset into the account.',
       )
     }

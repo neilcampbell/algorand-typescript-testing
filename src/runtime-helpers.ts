@@ -2,7 +2,7 @@ import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { MAX_UINT64 } from './constants'
 import type { TypeInfo } from './encoders'
 import { uint8ArrayToBigInt } from './encoding-util'
-import { avmError, CodeError, codeError, internalError } from './errors'
+import { AvmError, CodeError, InternalError } from './errors'
 import { Uint64BackedCls } from './impl/base'
 import { AlgoTsPrimitiveCls, BigUintCls, BytesCls, checkBigUint, checkBytes, Uint64Cls } from './impl/primitives'
 import { AccountCls } from './impl/reference'
@@ -19,7 +19,7 @@ export function switchableValue(x: unknown): bigint | string | boolean {
   if (typeof x === 'bigint') return x
   if (typeof x === 'string') return x
   if (x instanceof AlgoTsPrimitiveCls) return x.valueOf()
-  internalError(`Cannot convert ${nameOfType(x)} to switchable value`)
+  throw new InternalError(`Cannot convert ${nameOfType(x)} to switchable value`)
 }
 // export function wrapLiteral(x: unknown) {
 //   if (typeof x === 'boolean') return x
@@ -93,7 +93,7 @@ function arc4EncodedOp(left: ARC4Encoded, right: ARC4Encoded, op: BinaryOps): De
     case '!==':
       return !compareEquality(left, right)
     default:
-      internalError(`Unsupported operator ${op}`)
+      throw new InternalError(`Unsupported operator ${op}`)
   }
 }
 
@@ -103,7 +103,7 @@ function accountBinaryOp(left: AccountCls, right: AccountCls, op: BinaryOps): De
     case '!==':
       return bytesBinaryOp(left.bytes, right.bytes, op)
     default:
-      internalError(`Unsupported operator ${op}`)
+      throw new InternalError(`Unsupported operator ${op}`)
   }
 }
 function uint64BackedClsBinaryOp(left: Uint64BackedCls, right: Uint64BackedCls, op: BinaryOps): DeliberateAny {
@@ -112,7 +112,7 @@ function uint64BackedClsBinaryOp(left: Uint64BackedCls, right: Uint64BackedCls, 
     case '!==':
       return uint64BinaryOp(left.uint64, right.uint64, op)
     default:
-      internalError(`Unsupported operator ${op}`)
+      throw new InternalError(`Unsupported operator ${op}`)
   }
 }
 function uint64BinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps): DeliberateAny {
@@ -128,7 +128,7 @@ function uint64BinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps
         return lbi * rbi
       case '**':
         if (lbi === 0n && rbi === 0n) {
-          throw codeError('0 ** 0 is undefined')
+          throw new CodeError('0 ** 0 is undefined')
         }
         return lbi ** rbi
       case '/':
@@ -164,7 +164,7 @@ function uint64BinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps
       case '^':
         return lbi ^ rbi
       default:
-        internalError(`Unsupported operator ${op}`)
+        throw new InternalError(`Unsupported operator ${op}`)
     }
   })()
   return typeof result === 'boolean' ? result : new Uint64Cls(result)
@@ -183,7 +183,7 @@ function bigUintBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOp
         return lbi * rbi
       case '**':
         if (lbi === 0n && rbi === 0n) {
-          throw codeError('0 ** 0 is undefined')
+          throw new CodeError('0 ** 0 is undefined')
         }
         return lbi ** rbi
       case '/':
@@ -213,7 +213,7 @@ function bigUintBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOp
       case '^':
         return lbi ^ rbi
       default:
-        internalError(`Unsupported operator ${op}`)
+        throw new InternalError(`Unsupported operator ${op}`)
     }
   })()
   if (typeof result === 'boolean') {
@@ -221,7 +221,7 @@ function bigUintBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOp
   }
 
   if (result < 0) {
-    avmError('BigUint underflow')
+    throw new AvmError('BigUint underflow')
   }
   return new BigUintCls(result)
 }
@@ -247,7 +247,7 @@ function bytesBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps)
       case '!==':
         return lbi !== rbi
       default:
-        internalError(`Unsupported operator ${op}`)
+        throw new InternalError(`Unsupported operator ${op}`)
     }
   })()
   return result
@@ -305,7 +305,7 @@ function defaultBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOp
     case '^':
       return left ^ right
     default:
-      internalError(`Unsupported operator ${op}`)
+      throw new InternalError(`Unsupported operator ${op}`)
   }
 }
 
@@ -315,12 +315,12 @@ function uint64UnaryOp(operand: DeliberateAny, op: UnaryOps): DeliberateAny {
     case '~':
       return ~obi & MAX_UINT64
     default:
-      internalError(`Unsupported operator ${op}`)
+      throw new InternalError(`Unsupported operator ${op}`)
   }
 }
 
 function defaultUnaryOp(_operand: DeliberateAny, op: UnaryOps): DeliberateAny {
-  internalError(`Unsupported operator ${op}`)
+  throw new InternalError(`Unsupported operator ${op}`)
 }
 
 const genericTypeMap = new WeakMap<DeliberateAny, TypeInfo>()

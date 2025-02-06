@@ -2,7 +2,7 @@ import type { biguint, bytes, TransactionType, uint64 } from '@algorandfoundatio
 import type { OnCompleteAction } from '@algorandfoundation/algorand-typescript/arc4'
 import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { uint8ArrayToBigInt } from './encoding-util'
-import { internalError } from './errors'
+import { InternalError } from './errors'
 import { BytesBackedCls, Uint64BackedCls } from './impl/base'
 import { arc4Encoders, encodeArc4Impl, getArc4Encoder } from './impl/encoded-types'
 import { BigUint, Uint64, type StubBytesCompat } from './impl/primitives'
@@ -88,5 +88,5 @@ export const toBytes = (val: unknown): bytes => {
   if (Array.isArray(val) || typeof val === 'object') {
     return encodeArc4Impl('', val)
   }
-  internalError(`Invalid type for bytes: ${nameOfType(val)}`)
+  throw new InternalError(`Invalid type for bytes: ${nameOfType(val)}`)
 }

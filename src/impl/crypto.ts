@@ -7,7 +7,7 @@ import js_sha512 from 'js-sha512'
 import nacl from 'tweetnacl'
 import { LOGIC_DATA_PREFIX, PROGRAM_TAG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { internalError, notImplementedError } from '../errors'
+import { InternalError, NotImplementedError } from '../errors'
 import { asBytes, asBytesCls, asUint8Array, conactUint8Arrays } from '../util'
 import type { StubBytesCompat, StubUint64Compat } from './primitives'
 import { Bytes, BytesCls, Uint64Cls } from './primitives'
@@ -92,7 +92,7 @@ export const ecdsaPkRecover = (
   d: StubBytesCompat,
 ): readonly [bytes, bytes] => {
   if (v !== Ecdsa.Secp256k1) {
-    internalError(`Unsupported ECDSA curve: ${v}`)
+    throw new InternalError(`Unsupported ECDSA curve: ${v}`)
   }
   const dataBytes = BytesCls.fromCompat(a)
   const rBytes = BytesCls.fromCompat(c)
@@ -124,17 +124,17 @@ export const ecdsaPkDecompress = (v: Ecdsa, a: StubBytesCompat): readonly [bytes
 }
 
 export const vrfVerify = (_s: VrfVerify, _a: StubBytesCompat, _b: StubBytesCompat, _c: StubBytesCompat): readonly [bytes, boolean] => {
-  notImplementedError('vrfVerify')
+  throw new NotImplementedError('vrfVerify')
 }
 
 export const EllipticCurve = new Proxy({} as typeof op.EllipticCurve, {
   get: (_target, prop) => {
-    notImplementedError(`EllipticCurve.${prop.toString()}`)
+    throw new NotImplementedError(`EllipticCurve.${prop.toString()}`)
   },
 })
 
 export const mimc = (_c: MimcConfigurations, _a: StubBytesCompat): bytes => {
-  notImplementedError('mimc')
+  throw new NotImplementedError('mimc')
 }
 
 const curveMap = {

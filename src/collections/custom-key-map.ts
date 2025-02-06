@@ -1,5 +1,5 @@
 import type { Account } from '@algorandfoundation/algorand-typescript'
-import { internalError } from '../errors'
+import { InternalError } from '../errors'
 import type { StubBytesCompat, StubUint64Compat } from '../impl/primitives'
 import type { DeliberateAny } from '../typescript-helpers'
 import { asBytesCls, asUint64Cls } from '../util'
@@ -30,7 +30,7 @@ export abstract class CustomKeyMap<TKey, TValue> implements Map<TKey, TValue> {
   getOrFail(key: TKey): TValue {
     const value = this.get(key)
     if (value === undefined) {
-      throw internalError('Key not found')
+      throw new InternalError('Key not found')
     }
     return value
   }

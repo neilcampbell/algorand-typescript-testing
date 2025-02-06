@@ -7,7 +7,7 @@ import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
 import type { DecodedLogs, LogDecoding } from '../decode-logs'
 import { decodeLogs } from '../decode-logs'
-import { InternalError, internalError, testInvariant } from '../errors'
+import { InternalError, testInvariant } from '../errors'
 import type {
   ApplicationInnerTxn,
   AssetConfigInnerTxn,
@@ -140,7 +140,7 @@ export class TransactionContext {
     if (this.#activeGroup) {
       return this.#activeGroup
     }
-    throw internalError('no active txn group')
+    throw new InternalError('no active txn group')
   }
 
   /**
@@ -150,7 +150,7 @@ export class TransactionContext {
    */
   get lastGroup(): TransactionGroup {
     if (this.groups.length === 0) {
-      internalError('No group transactions found!')
+      throw new InternalError('No group transactions found!')
     }
     return this.groups.at(-1)!
   }
@@ -172,7 +172,7 @@ export class TransactionContext {
   appendLog(value: StubBytesCompat): void {
     const activeTransaction = this.activeGroup.activeTransaction
     if (activeTransaction.type !== TransactionType.ApplicationCall) {
-      throw internalError('Can only add logs to ApplicationCallTransaction!')
+      throw new InternalError('Can only add logs to ApplicationCallTransaction!')
     }
     activeTransaction.appendLog(value)
   }
@@ -231,7 +231,7 @@ export class TransactionGroup {
   constructor(transactions: Transaction[], activeTransactionIndex?: number) {
     this.latestTimestamp = Date.now()
     if (transactions.length > TRANSACTION_GROUP_MAX_SIZE) {
-      internalError(`Transaction group can have at most ${TRANSACTION_GROUP_MAX_SIZE} transactions, as per AVM limits.`)
+      throw new InternalError(`Transaction group can have at most ${TRANSACTION_GROUP_MAX_SIZE} transactions, as per AVM limits.`)
     }
     transactions.forEach((txn, index) => Object.assign(txn, { groupIndex: asUint64(index) }))
     this.activeTransactionIndex = activeTransactionIndex === undefined ? transactions.length - 1 : activeTransactionIndex
@@ -253,7 +253,7 @@ export class TransactionGroup {
    */
   get activeApplicationId() {
     if (this.transactions.length === 0) {
-      internalError('No transactions in the group')
+      throw new InternalError('No transactions in the group')
     }
     testInvariant(this.activeTransaction.type === TransactionType.ApplicationCall, 'No app_id found in the active transaction')
     return this.activeTransaction.appId.id
@@ -262,7 +262,7 @@ export class TransactionGroup {
   /* @internal */
   get constructingItxn() {
     if (!this.constructingItxnGroup.length) {
-      internalError('itxn field without itxn begin')
+      throw new InternalError('itxn field without itxn begin')
     }
     return this.constructingItxnGroup.at(-1)!
   }
@@ -310,11 +310,11 @@ export class TransactionGroup {
    */
   beginInnerTransactionGroup() {
     if (this.constructingItxnGroup.length) {
-      internalError('itxn begin without itxn submit')
+      throw new InternalError('itxn begin without itxn submit')
     }
     testInvariant(this.activeTransaction.type === TransactionType.ApplicationCall, 'No active application call transaction')
     if (this.activeTransaction.onCompletion === 'ClearState') {
-      internalError('Cannot begin inner transaction group in a clear state call')
+      throw new InternalError('Cannot begin inner transaction group in a clear state call')
     }
     this.constructingItxnGroup.push({} as InnerTxnFields)
   }
@@ -326,7 +326,7 @@ export class TransactionGroup {
    */
   appendInnerTransactionGroup() {
     if (!this.constructingItxnGroup.length) {
-      internalError('itxn next without itxn begin')
+      throw new InternalError('itxn next without itxn begin')
     }
     this.constructingItxnGroup.push({ type: TransactionType.Payment } as InnerTxnFields)
   }
@@ -338,10 +338,10 @@ export class TransactionGroup {
    */
   submitInnerTransactionGroup() {
     if (!this.constructingItxnGroup.length) {
-      internalError('itxn submit without itxn begin')
+      throw new InternalError('itxn submit without itxn begin')
     }
     if (this.constructingItxnGroup.length > TRANSACTION_GROUP_MAX_SIZE) {
-      internalError(`Cannot submit more than ${TRANSACTION_GROUP_MAX_SIZE} inner transactions at once`)
+      throw new InternalError(`Cannot submit more than ${TRANSACTION_GROUP_MAX_SIZE} inner transactions at once`)
     }
     const itxns = this.constructingItxnGroup.map((t) => createInnerTxn(t))
     itxns.forEach((itxn, index) => Object.assign(itxn, { groupIndex: asUint64(index) }))

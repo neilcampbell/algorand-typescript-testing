@@ -9,7 +9,7 @@ import type {
 import { randomBytes } from 'crypto'
 import { MAX_BYTES_SIZE, MAX_UINT512, MAX_UINT64 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { internalError } from '../errors'
+import { InternalError } from '../errors'
 import { BigUint, Bytes, Uint64, type StubBigUintCompat, type StubUint64Compat } from '../impl/primitives'
 import type { AssetData } from '../impl/reference'
 import { Account, AccountData, ApplicationCls, ApplicationData, AssetCls, getDefaultAssetData } from '../impl/reference'
@@ -39,13 +39,13 @@ export class AvmValueGenerator {
     const min = asBigInt(minValue)
     const max = asBigInt(maxValue)
     if (max > MAX_UINT64) {
-      internalError('maxValue must be less than or equal to 2n ** 64n - 1n')
+      throw new InternalError('maxValue must be less than or equal to 2n ** 64n - 1n')
     }
     if (min > max) {
-      internalError('minValue must be less than or equal to maxValue')
+      throw new InternalError('minValue must be less than or equal to maxValue')
     }
     if (min < 0n || max < 0n) {
-      internalError('minValue and maxValue must be greater than or equal to 0')
+      throw new InternalError('minValue and maxValue must be greater than or equal to 0')
     }
     return Uint64(getRandomBigInt(min, max))
   }
@@ -58,7 +58,7 @@ export class AvmValueGenerator {
   biguint(minValue: StubBigUintCompat = 0n): biguint {
     const min = asBigUintCls(minValue).asBigInt()
     if (min < 0n) {
-      internalError('minValue must be greater than or equal to 0')
+      throw new InternalError('minValue must be greater than or equal to 0')
     }
 
     return BigUint(getRandomBigInt(min, MAX_UINT512))
@@ -96,7 +96,7 @@ export class AvmValueGenerator {
     const account = input?.address ? Account(input.address) : Account(getRandomBytes(32).asAlgoTs())
 
     if (input?.address && lazyContext.ledger.accountDataMap.has(account)) {
-      internalError(
+      throw new InternalError(
         'Account with such address already exists in testing context. Use `context.ledger.getAccount(address)` to retrieve the existing account.',
       )
     }
@@ -133,7 +133,7 @@ export class AvmValueGenerator {
   asset(input?: AssetContextData): AssetType {
     const id = input?.assetId
     if (id && lazyContext.ledger.assetDataMap.has(id)) {
-      internalError('Asset with such ID already exists in testing context!')
+      throw new InternalError('Asset with such ID already exists in testing context!')
     }
     const assetId = asUint64Cls(id ?? lazyContext.ledger.assetIdIter.next().value)
     const defaultAssetData = getDefaultAssetData()
@@ -153,7 +153,7 @@ export class AvmValueGenerator {
   application(input?: ApplicationContextData): ApplicationType {
     const id = input?.applicationId
     if (id && lazyContext.ledger.applicationDataMap.has(id)) {
-      internalError('Application with such ID already exists in testing context!')
+      throw new InternalError('Application with such ID already exists in testing context!')
     }
     const applicationId = asUint64Cls(id ?? lazyContext.ledger.appIdIter.next().value)
     const data = new ApplicationData()

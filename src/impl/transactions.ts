@@ -11,7 +11,7 @@ import { TransactionType } from '@algorandfoundation/algorand-typescript'
 import { ABI_RETURN_VALUE_LOG_PREFIX, MAX_ITEMS_IN_LOG } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { toBytes } from '../encoders'
-import { internalError } from '../errors'
+import { InternalError } from '../errors'
 import type { Mutable, ObjectKeys } from '../typescript-helpers'
 import { asBytes, asMaybeBytesCls, asMaybeUint64Cls, asNumber, asUint64Cls, combineIntoMaxBytePages, getRandomBytes } from '../util'
 import { Bytes, Uint64, type StubBytesCompat, type StubUint64Compat } from './primitives'
@@ -63,7 +63,7 @@ abstract class TransactionBase {
   setScratchSlot(index: StubUint64Compat, value: StubBytesCompat | StubUint64Compat): void {
     const i = asNumber(index)
     if (i >= this.scratchSpace.length) {
-      throw internalError('invalid scratch slot')
+      throw new InternalError('invalid scratch slot')
     }
     const bytesValue = asMaybeBytesCls(value)
     const uint64Value = asMaybeUint64Cls(value)
@@ -73,7 +73,7 @@ abstract class TransactionBase {
   getScratchSlot(index: StubUint64Compat): bytes | uint64 {
     const i = asNumber(index)
     if (i >= this.scratchSpace.length) {
-      throw internalError('invalid scratch slot')
+      throw new InternalError('invalid scratch slot')
     }
     return this.scratchSpace[i]
   }
@@ -343,7 +343,7 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
   /* @internal */
   appendLog(value: StubBytesCompat): void {
     if (this.#appLogs.length + 1 > MAX_ITEMS_IN_LOG) {
-      throw internalError(`Too many log calls in program, up to ${MAX_ITEMS_IN_LOG} is allowed`)
+      throw new InternalError(`Too many log calls in program, up to ${MAX_ITEMS_IN_LOG} is allowed`)
     }
     this.#appLogs.push(asBytes(value))
   }
