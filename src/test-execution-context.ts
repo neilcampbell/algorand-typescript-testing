@@ -1,6 +1,6 @@
 import type { Account as AccountType, BaseContract, bytes, LogicSig, uint64 } from '@algorandfoundation/algorand-typescript'
 import { DEFAULT_TEMPLATE_VAR_PREFIX } from './constants'
-import { ctxMgr } from './context-helpers/context-manager'
+import { ContextManager } from './context-helpers/context-manager'
 import type { DecodedLogs, LogDecoding } from './decode-logs'
 import { Account, AccountCls } from './impl/reference'
 import { ContractContext } from './subcontexts/contract-context'
@@ -34,7 +34,7 @@ export class TestExecutionContext {
    * @param {bytes} [defaultSenderAddress] - The default sender address.
    */
   constructor(defaultSenderAddress?: bytes) {
-    ctxMgr.instance = this
+    ContextManager.instance = this
     this.#contractContext = new ContractContext()
     this.#ledgerContext = new LedgerContext()
     this.#txnContext = new TransactionContext()
@@ -215,7 +215,7 @@ export class TestExecutionContext {
     this.#activeLogicSigArgs = []
     this.#template_vars = {}
     this.#compiledApps = []
-    ctxMgr.reset()
-    ctxMgr.instance = this
+    ContextManager.reset()
+    ContextManager.instance = this
   }
 }

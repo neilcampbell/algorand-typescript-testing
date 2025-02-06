@@ -7,7 +7,7 @@ import type { AccountData, ApplicationData, AssetData } from '../impl/reference'
 import type { VoterData } from '../impl/voter-params'
 import type { TransactionGroup } from '../subcontexts/transaction-context'
 import type { TestExecutionContext } from '../test-execution-context'
-import { ctxMgr } from './context-manager'
+import { ContextManager } from './context-manager'
 
 /**
  * For accessing implementation specific functions, with a convenient single entry
@@ -16,7 +16,7 @@ import { ctxMgr } from './context-manager'
  */
 class InternalContext {
   get value() {
-    return ctxMgr.instance as TestExecutionContext
+    return ContextManager.instance as TestExecutionContext
   }
 
   get defaultSender() {
