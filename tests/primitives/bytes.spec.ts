@@ -1,8 +1,9 @@
 import type { bytes } from '@algorandfoundation/algorand-typescript'
 import { Bytes } from '@algorandfoundation/algorand-typescript'
+import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { beforeAll, describe, expect } from 'vitest'
 import { MAX_BYTES_SIZE } from '../../src/constants'
-import { utf8ToUint8Array } from '../../src/encoding-util'
+
 import { sha256 } from '../../src/impl'
 import { BytesCls } from '../../src/impl/primitives'
 import { asUint8Array } from '../../src/util'
@@ -30,8 +31,8 @@ describe('Bytes', async () => {
     ['1', '0', MAX_BYTES_SIZE - 2, 0],
   ])('concat', async (a, b, padASize, padBSize) => {
     test(`${a} concat ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
-      const uint8ArrayA = utf8ToUint8Array(a)
-      const uint8ArrayB = utf8ToUint8Array(b)
+      const uint8ArrayA = encodingUtil.utf8ToUint8Array(a)
+      const uint8ArrayB = encodingUtil.utf8ToUint8Array(b)
       const avmResult = (await getAvmResult({ appClient }, `verify_bytes_add`, uint8ArrayA, uint8ArrayB, padASize, padBSize))!
 
       const bytesA = Bytes(padUint8Array(uint8ArrayA, padASize))
@@ -48,8 +49,8 @@ describe('Bytes', async () => {
     ['', '', MAX_BYTES_SIZE, MAX_BYTES_SIZE],
   ])('concat overflow', async (a, b, padASize, padBSize) => {
     test(`${a} concat ${b} overflows`, async ({ appClientPrimitiveOpsContract: appClient }) => {
-      const uint8ArrayA = utf8ToUint8Array(a)
-      const uint8ArrayB = utf8ToUint8Array(b)
+      const uint8ArrayA = encodingUtil.utf8ToUint8Array(a)
+      const uint8ArrayB = encodingUtil.utf8ToUint8Array(b)
 
       await expect(getAvmResultRaw({ appClient }, `verify_bytes_add`, uint8ArrayA, uint8ArrayB, padASize, padBSize)).rejects.toThrow(
         /concat produced a too big \(\d+\) byte-array/,
@@ -86,8 +87,8 @@ describe('Bytes', async () => {
         const bytesA = Bytes(a)
         const bytesB = Bytes(b)
 
-        const uint8ArrayA = utf8ToUint8Array(a)
-        const uint8ArrayB = utf8ToUint8Array(b)
+        const uint8ArrayA = encodingUtil.utf8ToUint8Array(a)
+        const uint8ArrayB = encodingUtil.utf8ToUint8Array(b)
         const avmResult = (await getAvmResult({ appClient }, `verify_bytes_${op}`, uint8ArrayA, uint8ArrayB))!
         const result = getStubResult(bytesA, bytesB)
         expect(result, `for values: ${a}, ${b}`).toEqual(avmResult)
@@ -103,7 +104,7 @@ describe('Bytes', async () => {
     ['', MAX_BYTES_SIZE],
   ])('bitwise invert', async (a, padSize) => {
     test(`~${a}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
-      const uint8ArrayA = utf8ToUint8Array(a)
+      const uint8ArrayA = encodingUtil.utf8ToUint8Array(a)
       const avmResult = (await getAvmResult({ appClient }, `verify_bytes_not`, uint8ArrayA, padSize))!
 
       const bytesA = Bytes(padUint8Array(uint8ArrayA, padSize))
@@ -125,8 +126,8 @@ describe('Bytes', async () => {
     test(`${a} equals ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const bytesA = Bytes(a)
       const bytesB = Bytes(b)
-      const uint8ArrayA = utf8ToUint8Array(a)
-      const uint8ArrayB = utf8ToUint8Array(b)
+      const uint8ArrayA = encodingUtil.utf8ToUint8Array(a)
+      const uint8ArrayB = encodingUtil.utf8ToUint8Array(b)
 
       const avmResult = await getAvmResult<boolean>({ appClient }, `verify_bytes_eq`, uint8ArrayA, uint8ArrayB)
       const result = bytesA.equals(bytesB)
@@ -145,8 +146,8 @@ describe('Bytes', async () => {
     test(`${a} not equals ${b}`, async ({ appClientPrimitiveOpsContract: appClient }) => {
       const bytesA = Bytes(a)
       const bytesB = Bytes(b)
-      const uint8ArrayA = utf8ToUint8Array(a)
-      const uint8ArrayB = utf8ToUint8Array(b)
+      const uint8ArrayA = encodingUtil.utf8ToUint8Array(a)
+      const uint8ArrayB = encodingUtil.utf8ToUint8Array(b)
 
       const avmResult = await getAvmResult<boolean>({ appClient }, `verify_bytes_ne`, uint8ArrayA, uint8ArrayB)
       const result = !bytesA.equals(bytesB)

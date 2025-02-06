@@ -1,6 +1,6 @@
 import type { arc4, bytes } from '@algorandfoundation/algorand-typescript'
+import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { captureMethodConfig } from '../abi-metadata'
-import { utf8ToUint8Array } from '../encoding-util'
 import type { DeliberateAny } from '../typescript-helpers'
 import { BaseContract } from './base-contract'
 import { sha512_256 } from './crypto'
@@ -39,5 +39,5 @@ export function baremethod<TContract extends Contract>(config?: arc4.BareMethodC
 }
 
 export const methodSelector: typeof arc4.methodSelector = (methodSignature: string): bytes => {
-  return sha512_256(Bytes(utf8ToUint8Array(methodSignature))).slice(0, 4)
+  return sha512_256(Bytes(encodingUtil.utf8ToUint8Array(methodSignature))).slice(0, 4)
 }

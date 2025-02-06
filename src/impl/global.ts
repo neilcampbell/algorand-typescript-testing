@@ -1,4 +1,5 @@
 import type { Account as AccountType, Application as ApplicationType, bytes, op, uint64 } from '@algorandfoundation/algorand-typescript'
+import { encodingUtil } from '@algorandfoundation/puya-ts'
 import {
   DEFAULT_ACCOUNT_MIN_BALANCE,
   DEFAULT_ASSET_CREATE_MIN_BALANCE,
@@ -9,7 +10,6 @@ import {
   ZERO_ADDRESS,
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
-import { bigIntToUint8Array } from '../encoding-util'
 import { InternalError } from '../errors'
 import { getObjectReference } from '../util'
 import { sha256 } from './crypto'
@@ -150,7 +150,7 @@ export const Global: typeof op.Global = {
     const data = getGlobalData()
     if (data.groupId !== undefined) return data.groupId
     const reference = getObjectReference(lazyContext.activeGroup)
-    const referenceBytes = Bytes(bigIntToUint8Array(reference))
+    const referenceBytes = Bytes(encodingUtil.bigIntToUint8Array(reference))
     return sha256(referenceBytes)
   },
 

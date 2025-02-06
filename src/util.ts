@@ -155,6 +155,10 @@ export const conactUint8Arrays = (...values: Uint8Array[]): Uint8Array => {
   return result
 }
 
+export const uint8ArrayToNumber = (value: Uint8Array): number => {
+  return value.reduce((acc, x) => acc * 256 + x, 0)
+}
+
 /**
  * Runtime assertion function that throws if condition is falsy.
  *

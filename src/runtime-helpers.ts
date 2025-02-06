@@ -1,7 +1,7 @@
 import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
+import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { MAX_UINT64 } from './constants'
 import type { TypeInfo } from './encoders'
-import { uint8ArrayToBigInt } from './encoding-util'
 import { AvmError, CodeError, InternalError } from './errors'
 import { Uint64BackedCls } from './impl/base'
 import { AlgoTsPrimitiveCls, BigUintCls, BytesCls, checkBigUint, checkBytes, Uint64Cls } from './impl/primitives'
@@ -229,8 +229,8 @@ function bigUintBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOp
 function bytesBinaryOp(left: DeliberateAny, right: DeliberateAny, op: BinaryOps): DeliberateAny {
   const lbb = checkBytes(BytesCls.fromCompat(left).asUint8Array())
   const rbb = checkBytes(BytesCls.fromCompat(right).asUint8Array())
-  const lbi = uint8ArrayToBigInt(lbb)
-  const rbi = uint8ArrayToBigInt(rbb)
+  const lbi = encodingUtil.uint8ArrayToBigInt(lbb)
+  const rbi = encodingUtil.uint8ArrayToBigInt(rbb)
 
   const result = (function () {
     switch (op) {

@@ -1,7 +1,7 @@
 import type { biguint, bytes, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import type { OnCompleteAction } from '@algorandfoundation/algorand-typescript/arc4'
 import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
-import { uint8ArrayToBigInt } from './encoding-util'
+import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { InternalError } from './errors'
 import { BytesBackedCls, Uint64BackedCls } from './impl/base'
 import { arc4Encoders, encodeArc4Impl, getArc4Encoder } from './impl/encoded-types'
@@ -18,11 +18,11 @@ export type TypeInfo = {
 export type fromBytes<T> = (val: Uint8Array | StubBytesCompat, typeInfo: TypeInfo, prefix?: 'none' | 'log') => T
 
 const booleanFromBytes: fromBytes<boolean> = (val) => {
-  return uint8ArrayToBigInt(asUint8Array(val)) > 0n
+  return encodingUtil.uint8ArrayToBigInt(asUint8Array(val)) > 0n
 }
 
 const bigUintFromBytes: fromBytes<biguint> = (val) => {
-  return BigUint(uint8ArrayToBigInt(asUint8Array(val)))
+  return BigUint(encodingUtil.uint8ArrayToBigInt(asUint8Array(val)))
 }
 
 const bytesFromBytes: fromBytes<bytes> = (val) => {
@@ -34,15 +34,15 @@ const stringFromBytes: fromBytes<string> = (val) => {
 }
 
 const uint64FromBytes: fromBytes<uint64> = (val) => {
-  return Uint64(uint8ArrayToBigInt(asUint8Array(val)))
+  return Uint64(encodingUtil.uint8ArrayToBigInt(asUint8Array(val)))
 }
 
 const onCompletionFromBytes: fromBytes<OnCompleteAction> = (val) => {
-  return Uint64(uint8ArrayToBigInt(asUint8Array(val))) as OnCompleteAction
+  return Uint64(encodingUtil.uint8ArrayToBigInt(asUint8Array(val))) as OnCompleteAction
 }
 
 const transactionTypeFromBytes: fromBytes<TransactionType> = (val) => {
-  return Uint64(uint8ArrayToBigInt(asUint8Array(val))) as TransactionType
+  return Uint64(encodingUtil.uint8ArrayToBigInt(asUint8Array(val))) as TransactionType
 }
 
 export const encoders: Record<string, fromBytes<DeliberateAny>> = {

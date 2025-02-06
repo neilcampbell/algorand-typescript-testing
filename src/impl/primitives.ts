@@ -1,13 +1,5 @@
 import type { biguint, BigUintCompat, bytes, BytesCompat, uint64, Uint64Compat } from '@algorandfoundation/algorand-typescript'
-import {
-  base64ToUint8Array,
-  bigIntToUint8Array,
-  hexToUint8Array,
-  uint8ArrayToBigInt,
-  uint8ArrayToHex,
-  uint8ArrayToUtf8,
-  utf8ToUint8Array,
-} from '../encoding-util'
+import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { avmError, AvmError, avmInvariant, CodeError, InternalError } from '../errors'
 import { nameOfType } from '../typescript-helpers'
 import { base32ToUint8Array } from './base-32'
@@ -309,7 +301,7 @@ export class Uint64Cls extends AlgoTsPrimitiveCls {
   }
 
   toBytes(): BytesCls {
-    return new BytesCls(bigIntToUint8Array(this.#value, 8))
+    return new BytesCls(encodingUtil.bigIntToUint8Array(this.#value, 8))
   }
 
   asAlgoTs(): uint64 {
@@ -348,7 +340,7 @@ export class BigUintCls extends AlgoTsPrimitiveCls {
   }
 
   toBytes(): BytesCls {
-    return new BytesCls(bigIntToUint8Array(this.#value))
+    return new BytesCls(encodingUtil.bigIntToUint8Array(this.#value))
   }
 
   asAlgoTs(): biguint {
@@ -435,7 +427,7 @@ export class BytesCls extends AlgoTsPrimitiveCls {
     checkBytes(this.#v)
     // Add an enumerable property for debugging code to show
     Object.defineProperty(this, 'bytes', {
-      value: uint8ArrayToHex(this.#v),
+      value: encodingUtil.uint8ArrayToHex(this.#v),
       writable: false,
       enumerable: true,
     })
@@ -507,7 +499,7 @@ export class BytesCls extends AlgoTsPrimitiveCls {
   }
 
   valueOf(): string {
-    return uint8ArrayToHex(this.#v)
+    return encodingUtil.uint8ArrayToHex(this.#v)
   }
 
   static [Symbol.hasInstance](x: unknown): x is BytesCls {
@@ -516,7 +508,7 @@ export class BytesCls extends AlgoTsPrimitiveCls {
 
   static fromCompat(v: StubBytesCompat | Uint8Array | undefined): BytesCls {
     if (v === undefined) return new BytesCls(new Uint8Array())
-    if (typeof v === 'string') return new BytesCls(utf8ToUint8Array(v))
+    if (typeof v === 'string') return new BytesCls(encodingUtil.utf8ToUint8Array(v))
     if (v instanceof BytesCls) return v
     if (v instanceof Uint8Array) return new BytesCls(v)
     throw new InternalError(`Cannot convert ${nameOfType(v)} to bytes`)
@@ -535,11 +527,11 @@ export class BytesCls extends AlgoTsPrimitiveCls {
   }
 
   static fromHex(hex: string): BytesCls {
-    return new BytesCls(hexToUint8Array(hex))
+    return new BytesCls(encodingUtil.hexToUint8Array(hex))
   }
 
   static fromBase64(b64: string): BytesCls {
-    return new BytesCls(base64ToUint8Array(b64))
+    return new BytesCls(encodingUtil.base64ToUint8Array(b64))
   }
 
   static fromBase32(b32: string): BytesCls {
@@ -547,15 +539,15 @@ export class BytesCls extends AlgoTsPrimitiveCls {
   }
 
   toUint64(): Uint64Cls {
-    return new Uint64Cls(uint8ArrayToBigInt(this.#v))
+    return new Uint64Cls(encodingUtil.uint8ArrayToBigInt(this.#v))
   }
 
   toBigUint(): BigUintCls {
-    return new BigUintCls(uint8ArrayToBigInt(this.#v))
+    return new BigUintCls(encodingUtil.uint8ArrayToBigInt(this.#v))
   }
 
   toString(): string {
-    return uint8ArrayToUtf8(this.#v)
+    return encodingUtil.uint8ArrayToUtf8(this.#v)
   }
 
   asAlgoTs(): bytes {
