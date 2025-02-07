@@ -6,7 +6,7 @@
 
 # Class: NotImplementedError
 
-Defined in: [src/errors.ts:54](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/errors.ts#L54)
+Defined in: [src/errors.ts:46](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/errors.ts#L46)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [src/errors.ts:54](https://github.com/algorandfoundation/algorand-ty
 
 > **new NotImplementedError**(`feature`): [`NotImplementedError`](NotImplementedError.md)
 
-Defined in: [src/errors.ts:55](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/errors.ts#L55)
+Defined in: [src/errors.ts:47](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/errors.ts#L47)
 
 #### Parameters
 
