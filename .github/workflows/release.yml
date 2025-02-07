@@ -22,7 +22,8 @@ jobs:
     with:
       pre-test-script: |
         pipx install algokit
-        algokit localnet start
+        algokit localnet reset --update
+        pipx install puyapy
       node-version: 20.x
       run-build: true
       run-commit-lint: true
