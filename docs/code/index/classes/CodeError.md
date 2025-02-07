@@ -6,7 +6,7 @@
 
 # Class: CodeError
 
-Defined in: [src/errors.ts:44](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/errors.ts#L44)
+Defined in: [src/errors.ts:40](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/errors.ts#L40)
 
 Raised when unsupported user code is encountered
 
@@ -20,7 +20,7 @@ Raised when unsupported user code is encountered
 
 > **new CodeError**(`message`, `options`?): [`CodeError`](CodeError.md)
 
-Defined in: [src/errors.ts:45](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/errors.ts#L45)
+Defined in: [src/errors.ts:41](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/errors.ts#L41)
 
 #### Parameters
 

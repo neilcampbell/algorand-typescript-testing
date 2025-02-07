@@ -10,7 +10,7 @@
 
 > **toExternalValue**(`val`): `bigint`
 
-Defined in: [src/impl/primitives.ts:50](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/impl/primitives.ts#L50)
+Defined in: [src/impl/primitives.ts:42](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/impl/primitives.ts#L42)
 
 Converts internal Algorand type representations to their external primitive values.
 
@@ -48,7 +48,7 @@ toExternalValue(bytesVal) // returns Uint8Array([72, 101, 108, 108, 111])
 
 > **toExternalValue**(`val`): `bigint`
 
-Defined in: [src/impl/primitives.ts:51](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/impl/primitives.ts#L51)
+Defined in: [src/impl/primitives.ts:43](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/impl/primitives.ts#L43)
 
 Converts internal Algorand type representations to their external primitive values.
 
@@ -86,7 +86,7 @@ toExternalValue(bytesVal) // returns Uint8Array([72, 101, 108, 108, 111])
 
 > **toExternalValue**(`val`): `Uint8Array`
 
-Defined in: [src/impl/primitives.ts:52](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/impl/primitives.ts#L52)
+Defined in: [src/impl/primitives.ts:44](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/impl/primitives.ts#L44)
 
 Converts internal Algorand type representations to their external primitive values.
 
@@ -124,7 +124,7 @@ toExternalValue(bytesVal) // returns Uint8Array([72, 101, 108, 108, 111])
 
 > **toExternalValue**(`val`): `string`
 
-Defined in: [src/impl/primitives.ts:53](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/impl/primitives.ts#L53)
+Defined in: [src/impl/primitives.ts:45](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/impl/primitives.ts#L45)
 
 Converts internal Algorand type representations to their external primitive values.
 
