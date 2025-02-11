@@ -67,3 +67,9 @@ programTransformer.factory = createProgramFactory(defaultTransformerConfig)
  */
 export const puyaTsTransformer: ts.TransformerFactory<ts.SourceFile> &
   ((config: Partial<TransformerConfig>) => ts.TransformerFactory<ts.SourceFile>) = programTransformer as DeliberateAny
+
+// exporting values needed by ts-jest for a transformer to work
+// https://github.com/kulshekhar/ts-jest/tree/main/src/transformers
+export const name = 'puyaTsTransformer'
+export const version = '0.1.0'
+export const factory = createProgramFactory(defaultTransformerConfig)
