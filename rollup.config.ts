@@ -11,7 +11,8 @@ const config: RollupOptions = {
     'internal': 'src/internal.ts',
     'internal/arc4': 'src/internal-arc4.ts',
     'internal/op': 'src/internal-op.ts',
-    'test-transformer/index': 'src/test-transformer/index.ts',
+    'test-transformer/vitest-transformer': 'src/test-transformer/vitest-transformer.ts',
+    'test-transformer/jest-transformer': 'src/test-transformer/jest-transformer.ts',
   },
   output: [
     {

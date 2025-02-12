@@ -2,10 +2,9 @@ import { LoggingContext, ptypes, SourceLocation, TypeResolver } from '@algorandf
 import path from 'path'
 import ts from 'typescript'
 import type { TypeInfo } from '../encoders'
-import type { DeliberateAny } from '../typescript-helpers'
 import { instanceOfAny } from '../typescript-helpers'
-import type { TransformerConfig } from './index'
 import { nodeFactory } from './node-factory'
+import type { TransformerConfig } from './program-factory'
 import {
   supportedAugmentedAssignmentBinaryOpString,
   supportedBinaryOpString,
@@ -40,11 +39,9 @@ export class SourceFileVisitor {
     program: ts.Program,
     private config: TransformerConfig,
   ) {
-    // ts-jest would pass a TsCompilerInstance as program parameter whereas rollup-plugin-typescript would pass a ts.Program
-    const programInstance = (Object.hasOwn(program, 'program') ? (program as DeliberateAny).program : program) as ts.Program
-    const typeChecker = programInstance.getTypeChecker()
+    const typeChecker = program.getTypeChecker()
     const loggingContext = LoggingContext.create()
-    const typeResolver = new TypeResolver(typeChecker, programInstance.getCurrentDirectory())
+    const typeResolver = new TypeResolver(typeChecker, program.getCurrentDirectory())
     this.helper = {
       additionalStatements: [],
       resolveType(node: ts.Node): ptypes.PType {
@@ -62,7 +59,7 @@ export class SourceFileVisitor {
         return s && s.flags & ts.SymbolFlags.Alias ? typeChecker.getAliasedSymbol(s) : s
       },
       sourceLocation(node: ts.Node): SourceLocation {
-        return SourceLocation.fromNode(node, programInstance.getCurrentDirectory())
+        return SourceLocation.fromNode(node, program.getCurrentDirectory())
       },
     }
   }

@@ -1,6 +1,6 @@
 import typescript from '@rollup/plugin-typescript'
 import { defineConfig } from 'vitest/config'
-import { puyaTsTransformer } from './src/test-transformer'
+import { puyaTsTransformer } from './src/test-transformer/vitest-transformer'
 
 export default defineConfig({
   esbuild: {},

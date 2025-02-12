@@ -13,7 +13,8 @@ const config: TsToolkitConfig = {
       './internal': 'internal.ts',
       './internal/arc4': 'internal-arc4.ts',
       './internal/op': 'internal-op.ts',
-      './test-transformer': 'test-transformer/index.ts',
+      './vitest-transformer': 'test-transformer/vitest-transformer.ts',
+      './jest-transformer': 'test-transformer/jest-transformer.ts',
     },
   },
 }
