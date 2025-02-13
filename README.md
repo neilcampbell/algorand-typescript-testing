@@ -42,12 +42,14 @@ npm i @algorandfoundation/algorand-typescript-testing
 
 Let's write a simple contract and test it using the `algorand-typescript-testing` framework.
 
+#### Configuring vitest
+
 If you are using [vitest](https://vitest.dev/) with [@rollup/plugin-typescript](https://www.npmjs.com/package/@rollup/plugin-typescript) plugin, configure `puyaTsTransformer` as a `before` stage transformer of `typescript` plugin in `vitest.config.mts` file.
 
 ```typescript
 import typescript from '@rollup/plugin-typescript'
 import { defineConfig } from 'vitest/config'
-import { puyaTsTransformer } from '@algorandfoundation/algorand-typescript-testing/test-transformer'
+import { puyaTsTransformer } from '@algorandfoundation/algorand-typescript-testing/vitest-transformer'
 
 export default defineConfig({
   esbuild: {},
@@ -56,7 +58,6 @@ export default defineConfig({
   },
   plugins: [
     typescript({
-      tsconfig: './tsconfig.json',
       transformers: {
         before: [puyaTsTransformer],
       },
@@ -75,6 +76,82 @@ beforeAll(() => {
   addEqualityTesters({ expect })
 })
 ```
+
+#### Configuring jest
+
+If you are using [jest](https://jestjs.io/) with [ts-jest](https://www.npmjs.com/package/ts-jest), [@jest/globals](https://www.npmjs.com/package/@jest/globals) and [ts-node](https://www.npmjs.com/package/ts-node) plugins, configure `puyaTsTransformer` as a `before` stage transformer of `typescript` plugin in `jest.config.ts` file.
+
+```typescript
+import { createDefaultEsmPreset, type JestConfigWithTsJest } from 'ts-jest'
+
+const presetConfig = createDefaultEsmPreset({})
+const jestConfig: JestConfigWithTsJest = {
+  ...presetConfig,
+  testMatch: ['**/*.test.ts'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  transform: {
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        useESM: true,
+        astTransformers: {
+          before: ['node_modules/@algorandfoundation/algorand-typescript-testing/test-transformer/jest-transformer.mjs'],
+        },
+      },
+    ],
+  },
+  extensionsToTreatAsEsm: ['.ts'],
+}
+export default jestConfig
+```
+
+`algorand-typescript-testing` package also exposes additional equality testers which enables the smart contract developers to write terser test by avoiding type casting in assertions. It can setup in `beforeAll` hook point in the setup file, `jest.setup.ts`.
+
+```typescript
+import { beforeAll, expect } from '@jest/globals'
+import { addEqualityTesters } from '@algorandfoundation/algorand-typescript-testing'
+
+beforeAll(() => {
+  addEqualityTesters({ expect })
+})
+```
+
+It is also handy to add in a script to run `jest` with `--experimental-vm-modules` flag in `package.json`.
+
+```json
+{
+  "name": "puya-ts-demo",
+  "scripts": {
+    "test:jest": "tsc && node --experimental-vm-modules node_modules/jest/bin/jest"
+  }
+}
+```
+
+There is also a patch file `ts-jest+29.2.5.patch` that needs to be applied to `ts-jest` package to for the `puyaTsTransformer` to work with the test files.
+
+1. Place the file in `<rootDir>\patches` folder.
+1. Install [patch-package](https://www.npmjs.com/package/patch-package) package as a dev dependency.
+1. Add `"postinstall": "patch-package",` script in `package.json` file.
+   The patch will then be applied with every `npm install` call.
+
+```patch
+diff --git a/node_modules/ts-jest/dist/legacy/compiler/ts-compiler.js b/node_modules/ts-jest/dist/legacy/compiler/ts-compiler.js
+index 5198f8f..addb47c 100644
+--- a/node_modules/ts-jest/dist/legacy/compiler/ts-compiler.js
++++ b/node_modules/ts-jest/dist/legacy/compiler/ts-compiler.js
+@@ -234,7 +234,7 @@ var TsCompiler = /** @class */ (function () {
+         var _a;
+         // Initialize memory cache for typescript compiler
+         this._parsedTsConfig.fileNames
+-            .filter(function (fileName) { return constants_1.TS_TSX_REGEX.test(fileName) && !_this.configSet.isTestFile(fileName); })
++            .filter(function (fileName) { return constants_1.TS_TSX_REGEX.test(fileName); })
+             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+             .forEach(function (fileName) { return _this._fileVersionCache.set(fileName, 0); });
+         /* istanbul ignore next */
+
+```
+
+After the setup, the examples provided using `vitest` can be converted to work with `jest` by simply swapping the `import {...} from 'vitest'` with `import {...} from '@jest/globals'`.
 
 #### Contract Definition
 
