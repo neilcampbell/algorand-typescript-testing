@@ -11,9 +11,9 @@
     "paths": {
       "@algorandfoundation/algorand-typescript-testing": ["./src/index.ts"],
       "@algorandfoundation/algorand-typescript-testing/runtime-helpers": ["./src/runtime-helpers.ts"],
-      "@algorandfoundation/algorand-typescript-testing/internal": ["./src/internal.ts"],
-      "@algorandfoundation/algorand-typescript-testing/internal/arc4": ["./src/internal-arc4.ts"],
-      "@algorandfoundation/algorand-typescript-testing/internal/op": ["./src/internal-op.ts"]
+      "@algorandfoundation/algorand-typescript-testing/internal": ["./src/internal/index.ts"],
+      "@algorandfoundation/algorand-typescript-testing/internal/arc4": ["./src/internal/arc4.ts"],
+      "@algorandfoundation/algorand-typescript-testing/internal/op": ["./src/internal/op.ts"]
     }
   },
   "include": [

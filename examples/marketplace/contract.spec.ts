@@ -1,8 +1,7 @@
 import { arc4, Bytes } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { interpretAsArc4 } from '@algorandfoundation/algorand-typescript/arc4'
-import { afterEach } from 'node:test'
-import { describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, test } from 'vitest'
 import DigitalMarketplace, { ListingKey, ListingValue } from './contract.algo'
 
 const TEST_DECIMALS = 6
