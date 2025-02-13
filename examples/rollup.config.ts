@@ -1,6 +1,6 @@
 import typescript from '@rollup/plugin-typescript'
 import type { RollupOptions } from 'rollup'
-import { puyaTsTransformer } from '../src/test-transformer'
+import { puyaTsTransformer } from '../src/test-transformer/vitest-transformer'
 
 // This config allows you to build the example contracts with the test transformer applied to verify the output statically
 

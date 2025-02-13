@@ -1,28 +1,12 @@
-import { registerPTypes, typeRegistry } from '@algorandfoundation/puya-ts'
 import type ts from 'typescript'
 import type { DeliberateAny } from '../typescript-helpers'
-import { SourceFileVisitor } from './visitors'
-
-export interface TransformerConfig {
-  includeExt: string[]
-  testingPackageName: string
-}
-const defaultTransformerConfig: TransformerConfig = {
-  includeExt: ['.algo.ts', '.spec.ts'],
-  testingPackageName: '@algorandfoundation/algorand-typescript-testing',
-}
+import type { TransformerConfig } from './program-factory'
+import { defaultTransformerConfig, programFactory } from './program-factory'
 
 const createProgramFactory = (config: TransformerConfig) => {
-  function programFactory(program: ts.Program): ts.TransformerFactory<ts.SourceFile> {
-    registerPTypes(typeRegistry)
-    return (context) => {
-      return (sourceFile) => {
-        if (!config.includeExt.some((i) => sourceFile.fileName.endsWith(i))) return sourceFile
-        return new SourceFileVisitor(context, sourceFile, program, config).result()
-      }
-    }
+  return (program: ts.Program): ts.TransformerFactory<ts.SourceFile> => {
+    return programFactory(config, program)
   }
-  return programFactory
 }
 
 // Typescript.d.ts typings require a TransformerFactory however rollup plugin supports a program transformer
@@ -48,10 +32,11 @@ programTransformer.factory = createProgramFactory(defaultTransformerConfig)
  * @param {string} [config.testingPackageName='@algorandfoundation/algorand-typescript-testing'] Package name for testing imports
  *
  * @example
- * // Use as factory function with custom config in vitest.config.mts
+ * ```ts
+ * // Use as before stage transformer with custom config in vitest.config.mts
  * import typescript from '@rollup/plugin-typescript'
  * import { defineConfig } from 'vitest/config'
- * import { puyaTsTransformer } from '@algorandfoundation/algorand-typescript-testing/test-transformer'
+ * import { puyaTsTransformer } from '@algorandfoundation/algorand-typescript-testing/vitest-transformer'
  *
  * export default defineConfig({
  *   esbuild: {},
@@ -64,12 +49,7 @@ programTransformer.factory = createProgramFactory(defaultTransformerConfig)
  *     }),
  *   ],
  * })
+ * ```
  */
 export const puyaTsTransformer: ts.TransformerFactory<ts.SourceFile> &
   ((config: Partial<TransformerConfig>) => ts.TransformerFactory<ts.SourceFile>) = programTransformer as DeliberateAny
-
-// exporting values needed by ts-jest for a transformer to work
-// https://github.com/kulshekhar/ts-jest/tree/main/src/transformers
-export const name = 'puyaTsTransformer'
-export const version = '0.1.0'
-export const factory = createProgramFactory(defaultTransformerConfig)
