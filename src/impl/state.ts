@@ -91,13 +91,27 @@ export class LocalStateCls<ValueType> {
 }
 
 export class LocalStateMapCls<ValueType> {
-  #value = new AccountMap<LocalStateCls<ValueType>>()
+  private applicationId: uint64
 
-  getValue(account: Account): LocalStateCls<ValueType> {
-    if (!this.#value.has(account)) {
-      this.#value.set(account, new LocalStateCls<ValueType>())
+  constructor() {
+    this.applicationId = lazyContext.activeGroup.activeApplicationId
+  }
+
+  getValue(key: string | bytes | undefined, account: Account): LocalStateCls<ValueType> {
+    const bytesKey = key === undefined ? Bytes() : asBytes(key)
+    const localStateMap = this.ensureApplicationLocalStateMap(bytesKey)
+    if (!localStateMap.has(account)) {
+      localStateMap.set(account, new LocalStateCls())
     }
-    return this.#value.getOrFail(account)!
+    return localStateMap.getOrFail(account) as LocalStateCls<ValueType>
+  }
+
+  private ensureApplicationLocalStateMap(key: bytes | string) {
+    const applicationData = lazyContext.ledger.applicationDataMap.getOrFail(this.applicationId)!.application
+    if (!applicationData.localStateMaps.has(key)) {
+      applicationData.localStateMaps.set(key, new AccountMap<LocalStateCls<ValueType>>())
+    }
+    return applicationData.localStateMaps.getOrFail(key)
   }
 }
 
@@ -107,7 +121,7 @@ export function GlobalState<ValueType>(options?: GlobalStateOptions<ValueType>):
 
 export function LocalState<ValueType>(options?: { key?: bytes | string }): LocalStateType<ValueType> {
   function localStateInternal(account: Account): LocalStateForAccount<ValueType> {
-    return localStateInternal.map.getValue(account)
+    return localStateInternal.map.getValue(localStateInternal.key, account)
   }
   localStateInternal.key = options?.key
   localStateInternal.hasKey = options?.key !== undefined && options.key.length > 0

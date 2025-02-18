@@ -12,7 +12,7 @@ import { MAX_UINT64 } from '../constants'
 import { InternalError } from '../errors'
 import { BlockData } from '../impl/block'
 import { GlobalData } from '../impl/global'
-import type { StubBytesCompat, StubUint64Compat } from '../impl/primitives'
+import { Uint64Cls, type StubBytesCompat, type StubUint64Compat } from '../impl/primitives'
 import type { AssetData } from '../impl/reference'
 import {
   AccountCls,
@@ -24,7 +24,7 @@ import {
   AssetHolding,
   getDefaultAssetData,
 } from '../impl/reference'
-import { GlobalStateCls } from '../impl/state'
+import { GlobalStateCls, LocalStateCls } from '../impl/state'
 import { VoterData } from '../impl/voter-params'
 import type { PickPartial } from '../typescript-helpers'
 import { asBigInt, asBytes, asMaybeBytesCls, asMaybeUint64Cls, asUint64, asUint64Cls, asUint8Array, iterBigInt } from '../util'
@@ -296,17 +296,18 @@ export class LedgerContext {
    * @returns The local state and a boolean indicating if it was found.
    */
   getLocalState(
-    app: ApplicationType | BaseContract,
+    app: ApplicationType | BaseContract | uint64,
     account: AccountType,
     key: StubBytesCompat,
   ): [LocalStateForAccount<unknown>, true] | [undefined, false] {
-    const appId = this.getAppId(app)
+    const appId = app instanceof Uint64Cls ? app : this.getAppId(app as ApplicationType | BaseContract)
     const appData = this.applicationDataMap.get(appId)
     if (!appData?.application.localStates.has(key)) {
       return [undefined, false]
     }
-    const localState = appData.application.localStates.getOrFail(key)
-    return [localState(account), true]
+    const localState = appData.application.localStateMaps.getOrFail(key)
+    const accountLocalState = localState.get(account)
+    return [accountLocalState as LocalStateForAccount<unknown>, true]
   }
 
   /**
@@ -316,16 +317,17 @@ export class LedgerContext {
    * @param key - The key.
    * @param value - The value (optional).
    */
-  setLocalState(
-    app: ApplicationType | BaseContract,
-    account: AccountType,
-    key: StubBytesCompat,
-    value: StubUint64Compat | StubBytesCompat | undefined,
-  ): void {
-    const appId = this.getAppId(app)
+  setLocalState<T>(app: ApplicationType | BaseContract | uint64, account: AccountType, key: StubBytesCompat, value: T | undefined): void {
+    const appId = app instanceof Uint64Cls ? app : this.getAppId(app as ApplicationType | BaseContract)
     const appData = this.applicationDataMap.getOrFail(appId)
-    const localState = appData.application.localStates.getOrFail(key)
-    const accountLocalState = localState(account)
+    if (!appData.application.localStateMaps.has(key)) {
+      appData.application.localStateMaps.set(key, new AccountMap())
+    }
+    const localState = appData.application.localStateMaps.getOrFail(key)
+    if (!localState.has(account)) {
+      localState.set(account, new LocalStateCls())
+    }
+    const accountLocalState = localState.getOrFail(account)
     if (value === undefined) {
       accountLocalState.delete()
     } else {

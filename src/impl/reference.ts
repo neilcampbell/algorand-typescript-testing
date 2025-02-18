@@ -8,6 +8,7 @@ import type {
 } from '@algorandfoundation/algorand-typescript'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import js_sha512 from 'js-sha512'
+import type { AccountMap } from '../collections/custom-key-map'
 import { BytesMap, Uint64Map } from '../collections/custom-key-map'
 import {
   ALGORAND_ADDRESS_BYTE_LENGTH,
@@ -26,7 +27,7 @@ import { asBigInt, asBytes, asUint64, asUint64Cls, asUint8Array, conactUint8Arra
 import { BytesBackedCls, Uint64BackedCls } from './base'
 import type { StubUint64Compat } from './primitives'
 import { Bytes, BytesCls, Uint64Cls } from './primitives'
-import type { GlobalStateCls } from './state'
+import type { GlobalStateCls, LocalStateCls } from './state'
 
 export class AssetHolding {
   balance: uint64
@@ -133,6 +134,7 @@ export class ApplicationData {
     appLogs: bytes[]
     globalStates: BytesMap<GlobalStateCls<unknown>>
     localStates: BytesMap<LocalState<unknown>>
+    localStateMaps: BytesMap<AccountMap<LocalStateCls<unknown>>>
     boxes: BytesMap<Uint8Array>
   }
 
@@ -151,6 +153,7 @@ export class ApplicationData {
       appLogs: [],
       globalStates: new BytesMap(),
       localStates: new BytesMap(),
+      localStateMaps: new BytesMap(),
       boxes: new BytesMap(),
     }
   }
