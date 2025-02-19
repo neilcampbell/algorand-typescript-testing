@@ -39,7 +39,7 @@ export class TestExecutionContext {
     this.#ledgerContext = new LedgerContext()
     this.#txnContext = new TransactionContext()
     this.#valueGenerator = new ValueGenerator()
-    this.#defaultSender = Account(defaultSenderAddress ?? getRandomBytes(32).asAlgoTs())
+    this.#defaultSender = this.any.account({ address: defaultSenderAddress ?? getRandomBytes(32).asAlgoTs() })
     this.#activeLogicSigArgs = []
   }
 
