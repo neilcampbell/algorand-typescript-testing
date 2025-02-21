@@ -6,7 +6,6 @@ import { Hello, HelloTemplate, HelloTemplateCustomPrefix, LargeProgram, Terrible
 export class HelloFactory extends Contract {
   test_compile_contract() {
     const compiled = compile(Hello)
-
     const helloApp = itxn
       .applicationCall({
         appArgs: [methodSelector(Hello.prototype.create), encodeArc4('hello')],
