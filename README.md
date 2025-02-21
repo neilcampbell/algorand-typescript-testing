@@ -44,7 +44,7 @@ Let's write a simple contract and test it using the `algorand-typescript-testing
 
 #### Configuring vitest
 
-If you are using [vitest](https://vitest.dev/) with [@rollup/plugin-typescript](https://www.npmjs.com/package/@rollup/plugin-typescript) plugin, configure `puyaTsTransformer` as a `before` stage transformer of `typescript` plugin in `vitest.config.mts` file.
+If you are using [vitest](https://vitest.dev/) with [@rollup/plugin-typescript](https://www.npmjs.com/package/@rollup/plugin-typescript) plugin, configure `puyaTsTransformer` as a `before` stage transformer of the `typescript` plugin in `vitest.config.mts` file.
 
 ```typescript
 import typescript from '@rollup/plugin-typescript'
@@ -79,7 +79,7 @@ beforeAll(() => {
 
 #### Configuring jest
 
-If you are using [jest](https://jestjs.io/) with [ts-jest](https://www.npmjs.com/package/ts-jest), [@jest/globals](https://www.npmjs.com/package/@jest/globals) and [ts-node](https://www.npmjs.com/package/ts-node) plugins, configure `puyaTsTransformer` as a `before` stage transformer of `typescript` plugin in `jest.config.ts` file.
+If you are using [jest](https://jestjs.io/) with [ts-jest](https://www.npmjs.com/package/ts-jest), [@jest/globals](https://www.npmjs.com/package/@jest/globals) and [ts-node](https://www.npmjs.com/package/ts-node) plugins, configure `puyaTsTransformer` as a `before` stage transformer of the `typescript` plugin in `jest.config.ts` file.
 
 ```typescript
 import { createDefaultEsmPreset, type JestConfigWithTsJest } from 'ts-jest'
@@ -116,13 +116,16 @@ beforeAll(() => {
 })
 ```
 
-It is also handy to add in a script to run `jest` with `--experimental-vm-modules` flag in `package.json`.
+You'll also need to run `jest` with the `--experimental-vm-modules` and `--experimental-require-module` flags in the `package.json`. This requires node 20.17 or greater.
 
 ```json
 {
   "name": "puya-ts-demo",
   "scripts": {
-    "test:jest": "tsc && node --experimental-vm-modules node_modules/jest/bin/jest"
+    "test:jest": "tsc && node --experimental-vm-modules --experimental-require-module node_modules/jest/bin/jest"
+  },
+  "engines": {
+    "node": ">=20.17"
   }
 }
 ```
