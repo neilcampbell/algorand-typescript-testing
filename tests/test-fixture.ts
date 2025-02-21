@@ -248,10 +248,9 @@ async function compilePath(
       outputDestructuredIr: false,
       outputMemoryIr: false,
 
-      matchAlgodBytecode: false,
       debugLevel: 1,
       targetAvmVersion: 10,
-      cliTemplateDefinitions: [],
+      cliTemplateDefinitions: {},
       templateVarsPrefix: 'TMPL_',
       localsCoalescingStrategy: 'root_operand' as Parameters<typeof compile>[0]['localsCoalescingStrategy'],
 
