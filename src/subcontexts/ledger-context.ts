@@ -55,13 +55,9 @@ export class LedgerContext {
    * Retrieves an account by address.
    * @param address - The account address.
    * @returns The account.
-   * @throws If the account is unknown.
    */
-  getAccount(address: AccountType): AccountType {
-    if (this.accountDataMap.has(address)) {
-      return new AccountCls(address.bytes)
-    }
-    throw new InternalError('Unknown account, check correct testing context is active')
+  getAccount(address: AccountType | StubBytesCompat): AccountType {
+    return new AccountCls(address instanceof AccountCls ? address.bytes : asBytes(address as StubBytesCompat))
   }
 
   /**

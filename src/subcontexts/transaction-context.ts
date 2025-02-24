@@ -93,8 +93,18 @@ export class TransactionContext {
     group: Array<Transaction | DeferredAppCall<DeliberateAny[], DeliberateAny>>,
     activeTransactionIndex?: number,
   ): ExecutionScope {
+    let activeIndex = activeTransactionIndex
     const transactions = group.map((t) => (t instanceof DeferredAppCall ? t.txns : [t])).flat()
-    const transactionGroup = new TransactionGroup(transactions, activeTransactionIndex)
+    if (activeIndex === undefined) {
+      const lastAppCall = group
+        .filter((t) => t instanceof DeferredAppCall)
+        .at(-1)
+        ?.txns.at(-1)
+      if (lastAppCall) {
+        activeIndex = transactions.indexOf(lastAppCall)
+      }
+    }
+    const transactionGroup = new TransactionGroup(transactions, activeIndex)
 
     this.#activeGroup = transactionGroup
 
@@ -252,11 +262,12 @@ export class TransactionGroup {
    * @throws If there are no transactions in the group or the active transaction is not an application call.
    */
   get activeApplicationId() {
+    // this should return the true app_id and not 0 if the app is in the creation phase
     if (this.transactions.length === 0) {
       throw new InternalError('No transactions in the group')
     }
     testInvariant(this.activeTransaction.type === TransactionType.ApplicationCall, 'No app_id found in the active transaction')
-    return this.activeTransaction.appId.id
+    return (this.activeTransaction as ApplicationTransaction).backingAppId.id
   }
 
   /* @internal */
