@@ -1,7 +1,6 @@
 import type { bytes, Contract, uint64 } from '@algorandfoundation/algorand-typescript'
 import { TransactionType } from '@algorandfoundation/algorand-typescript'
-import type { AbiMetadata } from '../abi-metadata'
-import { getContractMethodAbiMetadata } from '../abi-metadata'
+import { AbiMetaSymbol, type AbiMetadata } from '../abi-metadata'
 import { TRANSACTION_GROUP_MAX_SIZE } from '../constants'
 import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
@@ -202,7 +201,7 @@ export class TransactionContext {
     ...args: TParams
   ): DeferredAppCall<TParams, TReturn> {
     const appId = lazyContext.ledger.getApplicationForContract(contract)
-    const abiMetadata = getContractMethodAbiMetadata(contract, methodName as string)
+    const abiMetadata = (contract as DeliberateAny)[AbiMetaSymbol]?.[methodName]
     const txns = ContractContext.createMethodCallTxns(contract, abiMetadata, ...args)
     return new DeferredAppCall(appId.id, txns, method, abiMetadata, args)
   }

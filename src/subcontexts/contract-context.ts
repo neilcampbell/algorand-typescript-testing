@@ -1,7 +1,7 @@
 import type { Account, Application, Asset, contract, LocalState } from '@algorandfoundation/algorand-typescript'
 import type { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import type { AbiMetadata } from '../abi-metadata'
-import { copyAbiMetadatas, getArc4Selector, getContractAbiMetadata, getContractMethodAbiMetadata, isContractProxy } from '../abi-metadata'
+import { AbiMetaSymbol, getArc4Selector, getContractAbiMetadata, getContractMethodAbiMetadata, isContractProxy } from '../abi-metadata'
 import { BytesMap } from '../collections/custom-key-map'
 import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
@@ -235,8 +235,11 @@ export class ContractContext {
             if (prop === isContractProxy) {
               return true
             }
-            const orig = Reflect.get(target, prop, receiver)
+            if (prop === AbiMetaSymbol) {
+              return isArc4 ? getContractAbiMetadata(target as Contract) : undefined
+            }
             const abiMetadata = isArc4 ? getContractMethodAbiMetadata(target as Contract, prop as string) : undefined
+            const orig = Reflect.get(target, prop, receiver)
             const isProgramMethod = prop === 'approvalProgram' || prop === 'clearStateProgram'
             const isAbiMethod = isArc4 && abiMetadata
             if (isAbiMethod || isProgramMethod) {
@@ -260,10 +263,6 @@ export class ContractContext {
         })
 
         onConstructed(application, instance, getContractOptions(t!))
-
-        if (isArc4) {
-          copyAbiMetadatas(t! as Contract, instance as Contract)
-        }
 
         return instance
       },
