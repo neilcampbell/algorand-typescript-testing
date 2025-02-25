@@ -1,4 +1,5 @@
 import type { arc4 } from '@algorandfoundation/algorand-typescript'
+import type { OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
 import type { DeliberateAny } from '../typescript-helpers'
 import { BaseContract } from './base-contract'
 
@@ -10,18 +11,29 @@ export class Contract extends BaseContract {
   }
 }
 
-export function abimethod<TContract extends Contract>(_config?: arc4.AbiMethodConfig<TContract>) {
+export const Arc4MethodConfigSymbol = Symbol('Arc4MethodConfig')
+export function abimethod<TContract extends Contract>(config?: arc4.AbiMethodConfig<TContract>) {
   return function <TArgs extends DeliberateAny[], TReturn>(
     target: (this: TContract, ...args: TArgs) => TReturn,
   ): (this: TContract, ...args: TArgs) => TReturn {
+    ;(target as DeliberateAny)[Arc4MethodConfigSymbol] = {
+      ...config,
+      onCreate: config?.onCreate ?? 'disallow',
+      allowActions: ([] as OnCompleteActionStr[]).concat(config?.allowActions ?? 'NoOp'),
+    }
     return target
   }
 }
 
-export function baremethod<TContract extends Contract>(_config?: arc4.BareMethodConfig) {
+export function baremethod<TContract extends Contract>(config?: arc4.BareMethodConfig) {
   return function <TArgs extends DeliberateAny[], TReturn>(
     target: (this: TContract, ...args: TArgs) => TReturn,
   ): (this: TContract, ...args: TArgs) => TReturn {
+    ;(target as DeliberateAny)[Arc4MethodConfigSymbol] = {
+      ...config,
+      onCreate: config?.onCreate ?? 'disallow',
+      allowActions: ([] as OnCompleteActionStr[]).concat(config?.allowActions ?? 'NoOp'),
+    }
     return target
   }
 }

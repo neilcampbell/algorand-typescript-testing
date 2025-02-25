@@ -1,7 +1,7 @@
 import type { Account, Application, Asset, contract, LocalState } from '@algorandfoundation/algorand-typescript'
 import type { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import type { AbiMetadata } from '../abi-metadata'
-import { AbiMetaSymbol, getArc4Selector, getContractAbiMetadata, getContractMethodAbiMetadata, isContractProxy } from '../abi-metadata'
+import { getArc4Selector, getContractAbiMetadata, getContractMethodAbiMetadata } from '../abi-metadata'
 import { BytesMap } from '../collections/custom-key-map'
 import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
@@ -232,14 +232,9 @@ export class ContractContext {
         appData.isCreating = isArc4 && hasCreateMethods(t! as Contract)
         const instance = new Proxy(t!, {
           get(target, prop, receiver) {
-            if (prop === isContractProxy) {
-              return true
-            }
-            if (prop === AbiMetaSymbol) {
-              return isArc4 ? getContractAbiMetadata(target as Contract) : undefined
-            }
-            const abiMetadata = isArc4 ? getContractMethodAbiMetadata(target as Contract, prop as string) : undefined
             const orig = Reflect.get(target, prop, receiver)
+            const abiMetadata =
+              isArc4 && typeof orig === 'function' ? getContractMethodAbiMetadata(target as Contract, orig.name) : undefined
             const isProgramMethod = prop === 'approvalProgram' || prop === 'clearStateProgram'
             const isAbiMethod = isArc4 && abiMetadata
             if (isAbiMethod || isProgramMethod) {

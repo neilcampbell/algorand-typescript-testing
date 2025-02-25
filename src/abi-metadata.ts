@@ -1,8 +1,9 @@
-import type { AbiMethodConfig, BareMethodConfig, CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
+import type { CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
 import js_sha512 from 'js-sha512'
 import type { TypeInfo } from './encoders'
-import { Contract } from './impl/contract'
+import { Arc4MethodConfigSymbol, Contract } from './impl/contract'
 import { getArc4TypeName as getArc4TypeNameForARC4Encoded } from './impl/encoded-types'
+import type { DeliberateAny } from './typescript-helpers'
 
 export interface AbiMetadata {
   methodName: string
@@ -13,26 +14,14 @@ export interface AbiMetadata {
   onCreate?: CreateOptions
   allowActions?: OnCompleteActionStr[]
 }
-export const AbiMetaSymbol = Symbol('AbiMetadata')
-export const isContractProxy = Symbol('isContractProxy')
-const metadataStore: Map<{ new (): Contract }, Record<string, AbiMetadata>> = new Map()
+
+const metadataStore: WeakMap<{ new (): Contract }, Record<string, AbiMetadata>> = new WeakMap()
 export const attachAbiMetadata = (contract: { new (): Contract }, methodName: string, metadata: AbiMetadata): void => {
   if (!metadataStore.has(contract)) {
     metadataStore.set(contract, {})
   }
   const metadatas: Record<string, AbiMetadata> = metadataStore.get(contract) as Record<string, AbiMetadata>
   metadatas[methodName] = metadata
-}
-
-export const captureMethodConfig = <T extends Contract>(
-  contract: T,
-  methodName: string,
-  config?: AbiMethodConfig<T> | BareMethodConfig,
-): void => {
-  const metadata = getContractMethodAbiMetadata(contract, methodName)
-  metadata.name = (config as AbiMethodConfig<T>)?.name ?? methodName
-  metadata.onCreate = config?.onCreate ?? 'disallow'
-  metadata.allowActions = ([] as OnCompleteActionStr[]).concat(config?.allowActions ?? 'NoOp')
 }
 
 export const getContractAbiMetadata = <T extends Contract>(contract: T | { new (): T }): Record<string, AbiMetadata> => {
@@ -52,7 +41,10 @@ export const getContractAbiMetadata = <T extends Contract>(contract: T | { new (
       const classMetadata = currentMetadata
       for (const [methodName, metadata] of Object.entries(classMetadata)) {
         if (!(methodName in result)) {
-          result[methodName] = metadata
+          result[methodName] = {
+            ...metadata,
+            ...(currentClass.prototype as DeliberateAny)?.[methodName]?.[Arc4MethodConfigSymbol],
+          }
         }
       }
     }

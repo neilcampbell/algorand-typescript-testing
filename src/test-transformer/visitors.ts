@@ -131,8 +131,6 @@ class ExpressionVisitor {
     private helper: VisitorHelper,
     private expressionNode: ts.Expression,
     private stubbedFunctionName?: string,
-    private className?: ts.Identifier,
-    private methodNode?: ts.MethodDeclaration,
   ) {}
 
   public result(): ts.Expression {
@@ -168,16 +166,12 @@ class ExpressionVisitor {
           const targetType = ptypes.ptypeToArc4EncodedType(type, this.helper.sourceLocation(node))
           const targetTypeInfo = getGenericTypeInfo(targetType)
           infoArg = targetTypeInfo
-        } else if (isCallingDecoratorMethod(stubbedFunctionName)) {
-          this.helper.additionalStatements.push(nodeFactory.captureMethodConfig(this.className!, this.methodNode!, updatedNode))
         }
 
         updatedNode = stubbedFunctionName
           ? isCallingMethodSelector(stubbedFunctionName)
             ? nodeFactory.callMethodSelectorFunction(updatedNode)
-            : isCallingDecoratorMethod(stubbedFunctionName)
-              ? updatedNode
-              : nodeFactory.callStubbedFunction(stubbedFunctionName, updatedNode, infoArg)
+            : nodeFactory.callStubbedFunction(stubbedFunctionName, updatedNode, infoArg)
           : updatedNode
       }
       return needsToCaptureTypeInfo
@@ -214,8 +208,6 @@ class FunctionOrMethodVisitor {
   constructor(
     protected context: ts.TransformationContext,
     protected helper: VisitorHelper,
-    protected className?: ts.Identifier,
-    protected methodNode?: ts.MethodDeclaration,
   ) {}
   protected visit = (node: ts.Node): ts.Node => {
     return ts.visitEachChild(this.updateNode(node), this.visit, this.context)
@@ -276,7 +268,7 @@ class FunctionOrMethodVisitor {
     if (ts.isCallExpression(node)) {
       const stubbedFunctionName = tryGetStubbedFunctionName(node, this.helper)
       if (stubbedFunctionName) {
-        return new ExpressionVisitor(this.context, this.helper, node, stubbedFunctionName, this.className, this.methodNode).result()
+        return new ExpressionVisitor(this.context, this.helper, node, stubbedFunctionName).result()
       }
     }
 
@@ -301,10 +293,9 @@ class MethodDecVisitor extends FunctionOrMethodVisitor {
   constructor(
     context: ts.TransformationContext,
     helper: VisitorHelper,
-    methodNode: ts.MethodDeclaration,
-    className: ts.Identifier | undefined,
+    private methodNode: ts.MethodDeclaration,
   ) {
-    super(context, helper, className, methodNode)
+    super(context, helper)
   }
 
   public result(): ts.MethodDeclaration {
@@ -338,7 +329,7 @@ class ClassVisitor {
         }
       }
 
-      return new MethodDecVisitor(this.context, this.helper, node, this.classDec.name).result()
+      return new MethodDecVisitor(this.context, this.helper, node).result()
     }
 
     if (ts.isCallExpression(node)) {
@@ -429,11 +420,10 @@ const tryGetStubbedFunctionName = (node: ts.CallExpression, helper: VisitorHelpe
     if (sourceFileName && !algotsModulePaths.some((s) => sourceFileName.includes(s))) return undefined
   }
   const functionName = functionSymbol?.getName() ?? identityExpression.text
-  const stubbedFunctionNames = ['interpretAsArc4', 'decodeArc4', 'encodeArc4', 'emit', 'methodSelector', 'abimethod', 'baremethod']
+  const stubbedFunctionNames = ['interpretAsArc4', 'decodeArc4', 'encodeArc4', 'emit', 'methodSelector']
   return stubbedFunctionNames.includes(functionName) ? functionName : undefined
 }
 
 const isCallingDecodeArc4 = (functionName: string | undefined): boolean => ['decodeArc4', 'encodeArc4'].includes(functionName ?? '')
 const isCallingEmit = (functionName: string | undefined): boolean => 'emit' === (functionName ?? '')
 const isCallingMethodSelector = (functionName: string | undefined): boolean => 'methodSelector' === (functionName ?? '')
-const isCallingDecoratorMethod = (functionName: string | undefined): boolean => ['abimethod', 'baremethod'].includes(functionName ?? '')

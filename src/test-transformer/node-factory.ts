@@ -73,17 +73,6 @@ export const nodeFactory = {
     )
   },
 
-  captureMethodConfig(classIdentifier: ts.Identifier, method: ts.MethodDeclaration, callExpression: ts.CallExpression) {
-    const methodName = getPropertyNameAsString(method.name)
-    return factory.createExpressionStatement(
-      factory.createCallExpression(
-        factory.createPropertyAccessExpression(factory.createIdentifier('runtimeHelpers'), factory.createIdentifier('captureMethodConfig')),
-        undefined,
-        [classIdentifier, methodName, ...callExpression.arguments],
-      ),
-    )
-  },
-
   captureGenericTypeInfo(x: ts.Expression, info: string) {
     return factory.createCallExpression(
       factory.createPropertyAccessExpression(
@@ -129,9 +118,5 @@ export const nodeFactory = {
       return factory.updateCallExpression(node, node.expression, node.typeArguments, [...node.arguments, contractIdenifier])
     }
     return node
-  },
-
-  callDecoratorMethod(node: ts.CallExpression, className: ts.Identifier) {
-    return factory.updateCallExpression(node, node.expression, node.typeArguments, [className, ...node.arguments])
   },
 } satisfies Record<string, (...args: DeliberateAny[]) => ts.Node>
