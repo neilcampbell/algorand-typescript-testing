@@ -6,7 +6,7 @@
 
 # Class: TransactionContext
 
-Defined in: [src/subcontexts/transaction-context.ts:82](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L82)
+Defined in: [src/subcontexts/transaction-context.ts:81](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L81)
 
 Manages transaction contexts and groups.
 
@@ -26,7 +26,7 @@ Manages transaction contexts and groups.
 
 > `readonly` **groups**: [`TransactionGroup`](TransactionGroup.md)[] = `[]`
 
-Defined in: [src/subcontexts/transaction-context.ts:83](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L83)
+Defined in: [src/subcontexts/transaction-context.ts:82](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L82)
 
 ## Accessors
 
@@ -36,7 +36,7 @@ Defined in: [src/subcontexts/transaction-context.ts:83](https://github.com/algor
 
 > **get** **activeGroup**(): [`TransactionGroup`](TransactionGroup.md)
 
-Defined in: [src/subcontexts/transaction-context.ts:139](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L139)
+Defined in: [src/subcontexts/transaction-context.ts:148](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L148)
 
 Gets the active transaction group.
 
@@ -58,7 +58,7 @@ The active transaction group.
 
 > **get** **lastActive**(): `Transaction`
 
-Defined in: [src/subcontexts/transaction-context.ts:162](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L162)
+Defined in: [src/subcontexts/transaction-context.ts:171](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L171)
 
 Gets the last active transaction.
 
@@ -76,7 +76,7 @@ The last active transaction.
 
 > **get** **lastGroup**(): [`TransactionGroup`](TransactionGroup.md)
 
-Defined in: [src/subcontexts/transaction-context.ts:151](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L151)
+Defined in: [src/subcontexts/transaction-context.ts:160](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L160)
 
 Gets the last transaction group.
 
@@ -96,7 +96,7 @@ The last transaction group.
 
 > **appendLog**(`value`): `void`
 
-Defined in: [src/subcontexts/transaction-context.ts:172](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L172)
+Defined in: [src/subcontexts/transaction-context.ts:181](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L181)
 
 **`Internal`**
 
@@ -124,7 +124,7 @@ If the active transaction is not an application call.
 
 > **createScope**(`group`, `activeTransactionIndex`?): `ExecutionScope`
 
-Defined in: [src/subcontexts/transaction-context.ts:92](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L92)
+Defined in: [src/subcontexts/transaction-context.ts:91](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L91)
 
 Creates a new execution scope for a group of transactions.
 
@@ -154,7 +154,7 @@ The execution scope.
 
 > **deferAppCall**\<`TContract`, `TParams`, `TReturn`\>(`contract`, `method`, `methodName`, ...`args`): [`DeferredAppCall`](DeferredAppCall.md)\<`TParams`, `TReturn`\>
 
-Defined in: [src/subcontexts/transaction-context.ts:188](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L188)
+Defined in: [src/subcontexts/transaction-context.ts:197](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L197)
 
 Defers an application call.
 
@@ -204,7 +204,7 @@ The deferred application call.
 
 > **ensureScope**(`group`, `activeTransactionIndex`?): `ExecutionScope`
 
-Defined in: [src/subcontexts/transaction-context.ts:123](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L123)
+Defined in: [src/subcontexts/transaction-context.ts:132](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L132)
 
 **`Internal`**
 
@@ -236,7 +236,7 @@ The execution scope.
 
 > **exportLogs**\<`T`\>(`appId`, ...`decoding`): `DecodedLogs`\<`T`\>
 
-Defined in: [src/subcontexts/transaction-context.ts:206](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L206)
+Defined in: [src/subcontexts/transaction-context.ts:215](https://github.com/algorandfoundation/algorand-typescript-testing/blob/main/src/subcontexts/transaction-context.ts#L215)
 
 Exports logs for the given application ID.
 
