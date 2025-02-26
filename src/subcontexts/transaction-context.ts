@@ -1,7 +1,6 @@
 import type { bytes, Contract, uint64 } from '@algorandfoundation/algorand-typescript'
 import { TransactionType } from '@algorandfoundation/algorand-typescript'
-import type { AbiMetadata } from '../abi-metadata'
-import { getContractMethodAbiMetadata } from '../abi-metadata'
+import { getContractAbiMetadata, type AbiMetadata } from '../abi-metadata'
 import { TRANSACTION_GROUP_MAX_SIZE } from '../constants'
 import { checkRoutingConditions } from '../context-helpers/context-util'
 import { lazyContext } from '../context-helpers/internal-context'
@@ -93,8 +92,18 @@ export class TransactionContext {
     group: Array<Transaction | DeferredAppCall<DeliberateAny[], DeliberateAny>>,
     activeTransactionIndex?: number,
   ): ExecutionScope {
+    let activeIndex = activeTransactionIndex
     const transactions = group.map((t) => (t instanceof DeferredAppCall ? t.txns : [t])).flat()
-    const transactionGroup = new TransactionGroup(transactions, activeTransactionIndex)
+    if (activeIndex === undefined) {
+      const lastAppCall = group
+        .filter((t) => t instanceof DeferredAppCall)
+        .at(-1)
+        ?.txns.at(-1)
+      if (lastAppCall) {
+        activeIndex = transactions.indexOf(lastAppCall)
+      }
+    }
+    const transactionGroup = new TransactionGroup(transactions, activeIndex)
 
     this.#activeGroup = transactionGroup
 
@@ -192,7 +201,7 @@ export class TransactionContext {
     ...args: TParams
   ): DeferredAppCall<TParams, TReturn> {
     const appId = lazyContext.ledger.getApplicationForContract(contract)
-    const abiMetadata = getContractMethodAbiMetadata(contract, methodName as string)
+    const abiMetadata = getContractAbiMetadata(contract)[methodName as string]
     const txns = ContractContext.createMethodCallTxns(contract, abiMetadata, ...args)
     return new DeferredAppCall(appId.id, txns, method, abiMetadata, args)
   }
@@ -252,11 +261,12 @@ export class TransactionGroup {
    * @throws If there are no transactions in the group or the active transaction is not an application call.
    */
   get activeApplicationId() {
+    // this should return the true app_id and not 0 if the app is in the creation phase
     if (this.transactions.length === 0) {
       throw new InternalError('No transactions in the group')
     }
     testInvariant(this.activeTransaction.type === TransactionType.ApplicationCall, 'No app_id found in the active transaction')
-    return this.activeTransaction.appId.id
+    return (this.activeTransaction as ApplicationTransaction).backingAppId.id
   }
 
   /* @internal */

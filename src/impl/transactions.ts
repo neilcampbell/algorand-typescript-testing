@@ -243,10 +243,11 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
   #approvalProgramPages: Array<bytes>
   #clearStateProgramPages: Array<bytes>
   #appLogs: Array<bytes>
+  #appId: ApplicationType
 
   protected constructor(fields: ApplicationTransactionFields) {
     super(fields)
-    this.appId = fields.appId ?? Application()
+    this.#appId = fields.appId ?? Application()
     this.onCompletion = fields.onCompletion ?? 'NoOp'
     this.globalNumUint = fields.globalNumUint ?? Uint64(0)
     this.globalNumBytes = fields.globalNumBytes ?? Uint64(0)
@@ -264,7 +265,20 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     Object.entries(fields.scratchSpace ?? {}).forEach(([k, v]) => this.setScratchSlot(Number(k), v))
   }
 
-  readonly appId: ApplicationType
+  get backingAppId(): ApplicationType {
+    return this.#appId
+  }
+
+  get appId(): ApplicationType {
+    if (asNumber(this.#appId.id) === 0) {
+      return this.#appId
+    }
+    const appData = lazyContext.getApplicationData(this.#appId.id)
+    if (appData && appData.isCreating) {
+      return Application(0)
+    }
+    return this.#appId
+  }
   readonly onCompletion: arc4.OnCompleteActionStr
   readonly globalNumUint: uint64
   readonly globalNumBytes: uint64

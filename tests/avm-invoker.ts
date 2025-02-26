@@ -8,11 +8,13 @@ export type ABIValue = boolean | number | bigint | string | Uint8Array | ABIValu
 
 export const INITIAL_BALANCE_MICRO_ALGOS = Number(20e6)
 
+type MethodArgs = Exclude<Parameters<typeof AppClient.prototype.send.call>[0]['args'], undefined>
+
 const invokeMethod = async (
   appClient: AppClient,
   method: string,
   sendParams?: Partial<Parameters<AppClient['send']['call']>[0]>,
-  ...methodArgs: ABIValue[]
+  ...methodArgs: MethodArgs
 ): ReturnType<AppClient['send']['call']> => {
   const response = await appClient.send.call({ method, args: methodArgs, note: randomUUID(), ...sendParams })
   return response
@@ -21,7 +23,7 @@ const invokeMethod = async (
 export const getAvmResult = async <TResult extends ABIValue>(
   { appClient, sendParams }: { appClient: AppClient; sendParams?: Partial<Parameters<AppClient['send']['call']>[0]> },
   method: string,
-  ...methodArgs: ABIValue[]
+  ...methodArgs: MethodArgs
 ): Promise<TResult> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
   if (result.returns?.at(-1)?.decodeError) {
@@ -33,7 +35,7 @@ export const getAvmResult = async <TResult extends ABIValue>(
 export const getAvmResultLog = async (
   { appClient, sendParams }: { appClient: AppClient; sendParams?: Partial<Parameters<AppClient['send']['call']>[0]> },
   method: string,
-  ...methodArgs: ABIValue[]
+  ...methodArgs: MethodArgs
 ): Promise<Uint8Array[] | undefined> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
   return result?.confirmation?.logs
@@ -42,7 +44,7 @@ export const getAvmResultLog = async (
 export const getAvmResultRaw = async (
   { appClient, sendParams }: { appClient: AppClient; sendParams?: Partial<Parameters<AppClient['send']['call']>[0]> },
   method: string,
-  ...methodArgs: ABIValue[]
+  ...methodArgs: MethodArgs
 ): Promise<Uint8Array | undefined> => {
   const result = await invokeMethod(appClient, method, sendParams, ...methodArgs)
   return result?.returns?.at(-1)?.rawReturnValue

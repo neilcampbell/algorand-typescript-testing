@@ -458,10 +458,10 @@ describe('State op codes', async () => {
 
     test('should be able to invoke demo contract', async () => {
       const contract = ctx.contract.create(ItxnDemoContract)
-      ctx.txn.createScope([ctx.any.txn.applicationCall({ appArgs: [Bytes('test1')] })]).execute(() => {
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ appId: contract, appArgs: [Bytes('test1')] })]).execute(() => {
         contract.approvalProgram()
       })
-      ctx.txn.createScope([ctx.any.txn.applicationCall({ appArgs: [Bytes('test2')] })]).execute(() => {
+      ctx.txn.createScope([ctx.any.txn.applicationCall({ appId: contract, appArgs: [Bytes('test2')] })]).execute(() => {
         contract.approvalProgram()
       })
     })
