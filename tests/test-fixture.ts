@@ -9,7 +9,7 @@ import type { AppFactory, AppFactoryDeployParams } from '@algorandfoundation/alg
 import type { AssetCreateParams } from '@algorandfoundation/algokit-utils/types/composer'
 import { nullLogger } from '@algorandfoundation/algokit-utils/types/logging'
 import type { AlgorandFixture } from '@algorandfoundation/algokit-utils/types/testing'
-import { compile, LoggingContext } from '@algorandfoundation/puya-ts'
+import { compile, CompileOptions, LoggingContext, processInputPaths } from '@algorandfoundation/puya-ts'
 import type { Use } from '@vitest/runner/types'
 import { OnApplicationComplete } from 'algosdk'
 import fs from 'fs'
@@ -51,12 +51,12 @@ type ProgramInvokeOptions = {
 
   clearStateProgram?: Uint8Array
   onComplete?:
-    | OnApplicationComplete.NoOpOC
-    | OnApplicationComplete.OptInOC
-    | OnApplicationComplete.CloseOutOC
-    | OnApplicationComplete.ClearStateOC
-    | OnApplicationComplete.UpdateApplicationOC
-    | OnApplicationComplete.DeleteApplicationOC
+  | OnApplicationComplete.NoOpOC
+  | OnApplicationComplete.OptInOC
+  | OnApplicationComplete.CloseOutOC
+  | OnApplicationComplete.ClearStateOC
+  | OnApplicationComplete.UpdateApplicationOC
+  | OnApplicationComplete.DeleteApplicationOC
   schema?: {
     /** The number of integers saved in global state. */
     globalInts?: number
@@ -237,32 +237,33 @@ async function compilePath(
   const logCtx = LoggingContext.create()
 
   return await logCtx.run(async () => {
-    await compile({
-      outputAwstJson: false,
-      outputAwst: false,
-      paths: [path],
-      outDir: tempDir.dirPath,
-      dryRun: false,
-      logLevel: 'error' as Parameters<typeof compile>[0]['logLevel'],
-      skipVersionCheck: true,
+    await compile(
+      new CompileOptions({
+        outputAwstJson: false,
+        outputAwst: false,
+        filePaths: processInputPaths({ paths: [path], outDir: tempDir.dirPath }),
+        dryRun: false,
+        logLevel: 'error' as Parameters<typeof compile>[0]['logLevel'],
+        skipVersionCheck: true,
 
-      outputSsaIr: false,
-      outputOptimizationIr: false,
-      outputDestructuredIr: false,
-      outputMemoryIr: false,
+        outputSsaIr: false,
+        outputOptimizationIr: false,
+        outputDestructuredIr: false,
+        outputMemoryIr: false,
 
-      debugLevel: 1,
-      targetAvmVersion: 10,
-      cliTemplateDefinitions: {},
-      templateVarsPrefix: 'TMPL_',
-      localsCoalescingStrategy: 'root_operand' as Parameters<typeof compile>[0]['localsCoalescingStrategy'],
+        debugLevel: 1,
+        targetAvmVersion: 10,
+        cliTemplateDefinitions: {},
+        templateVarsPrefix: 'TMPL_',
+        localsCoalescingStrategy: 'root_operand' as Parameters<typeof compile>[0]['localsCoalescingStrategy'],
 
-      outputArc32: false,
-      outputTeal: false,
-      outputSourceMap: true,
-      optimizationLevel: 0,
-      ...options,
-    })
+        outputArc32: false,
+        outputTeal: false,
+        outputSourceMap: true,
+        optimizationLevel: 0,
+        ...options,
+      }),
+    )
     for (const log of logCtx.logEvents) {
       switch (log.level) {
         case 'error':
