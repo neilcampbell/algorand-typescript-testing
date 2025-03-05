@@ -72,7 +72,7 @@
   },
   "dependencies": {
     "@algorandfoundation/algorand-typescript": "^1.0.0-beta.20",
-    "@algorandfoundation/puya-ts": "^1.0.0-beta.30",
+    "@algorandfoundation/puya-ts": "^1.0.0-beta.34",
     "elliptic": "^6.5.7",
     "js-sha256": "^0.11.0",
     "js-sha3": "^0.9.3",
