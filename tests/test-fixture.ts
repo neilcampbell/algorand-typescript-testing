@@ -51,12 +51,12 @@ type ProgramInvokeOptions = {
 
   clearStateProgram?: Uint8Array
   onComplete?:
-  | OnApplicationComplete.NoOpOC
-  | OnApplicationComplete.OptInOC
-  | OnApplicationComplete.CloseOutOC
-  | OnApplicationComplete.ClearStateOC
-  | OnApplicationComplete.UpdateApplicationOC
-  | OnApplicationComplete.DeleteApplicationOC
+    | OnApplicationComplete.NoOpOC
+    | OnApplicationComplete.OptInOC
+    | OnApplicationComplete.CloseOutOC
+    | OnApplicationComplete.ClearStateOC
+    | OnApplicationComplete.UpdateApplicationOC
+    | OnApplicationComplete.DeleteApplicationOC
   schema?: {
     /** The number of integers saved in global state. */
     globalInts?: number
