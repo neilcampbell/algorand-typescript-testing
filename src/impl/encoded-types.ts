@@ -29,6 +29,7 @@ import {
   ALGORAND_ADDRESS_BYTE_LENGTH,
   ALGORAND_CHECKSUM_BYTE_LENGTH,
   BITS_IN_BYTE,
+  UINT512_SIZE,
   UINT64_SIZE,
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
@@ -441,7 +442,7 @@ export class StaticArrayImpl<TItem extends ARC4Encoded, TLength extends number> 
     const childTypes = Array(arraySize).fill(genericArgs.elementType)
     let i = 0
     let size = 0
-    if (genericArgs.elementType.name === 'Bool') {
+    if (['Bool', 'boolean'].includes(genericArgs.elementType.name)) {
       while (i < childTypes.length) {
         const after = findBoolTypes(childTypes, i, 1)
         const boolNum = after + 1
@@ -716,7 +717,7 @@ export class TupleImpl<TTuple extends [ARC4Encoded, ...ARC4Encoded[]]> extends T
 
     while (i < genericArgs.length) {
       const childType = genericArgs[i]
-      if (childType.name === 'Bool') {
+      if (['Bool', 'boolean'].includes(childType.name)) {
         const after = findBoolTypes(genericArgs, i, 1)
         const boolNum = after + 1
         size += Math.floor(boolNum / BITS_IN_BYTE)
@@ -820,6 +821,27 @@ export class StructImpl<T extends StructConstraint> extends (Struct<StructConstr
   static getArc4TypeName = (t: TypeInfo): string => {
     const genericArgs = Object.values(t.genericArgs as Record<string, TypeInfo>)
     return `(${genericArgs.map(getArc4TypeName).join(',')})`
+  }
+
+  static getMaxBytesLength(typeInfo: TypeInfo): number {
+    const genericArgs = Object.values(typeInfo.genericArgs as Record<string, TypeInfo>)
+    let i = 0
+    let size = 0
+
+    while (i < genericArgs.length) {
+      const childType = genericArgs[i]
+      if (['Bool', 'boolean'].includes(childType.name)) {
+        const after = findBoolTypes(genericArgs, i, 1)
+        const boolNum = after + 1
+        size += Math.floor(boolNum / BITS_IN_BYTE)
+        size += boolNum % BITS_IN_BYTE ? 1 : 0
+        i += after
+      } else {
+        size += getMaxLengthOfStaticContentType(childType)
+      }
+      i += 1
+    }
+    return size
   }
 }
 
@@ -981,7 +1003,7 @@ const decode = (value: Uint8Array, childTypes: TypeInfo[]) => {
       dynamicSegments.push([dynamicIndex, -1])
       valuePartitions.push(new Uint8Array())
       arrayIndex += ABI_LENGTH_SIZE
-    } else if (childType.name === 'Bool') {
+    } else if (['Bool', 'boolean'].includes(childType.name)) {
       const before = findBoolTypes(childTypes, i, -1)
       let after = findBoolTypes(childTypes, i, 1)
 
@@ -1043,7 +1065,7 @@ const findBoolTypes = (values: TypeInfo[], index: number, delta: number): number
   const length = values.length
   while (true) {
     const curr = index + delta * until
-    if (values[curr].name === 'Bool') {
+    if (['Bool', 'boolean'].includes(values[curr].name)) {
       if ((curr != length - 1 && delta > 0) || (curr > 0 && delta < 0)) {
         until += 1
       } else {
@@ -1059,6 +1081,12 @@ const findBoolTypes = (values: TypeInfo[], index: number, delta: number): number
 
 const getMaxLengthOfStaticContentType = (type: TypeInfo): number => {
   switch (trimGenericTypeName(type.name)) {
+    case 'uint64':
+      return UINT64_SIZE / BITS_IN_BYTE
+    case 'biguint':
+      return UINT512_SIZE / BITS_IN_BYTE
+    case 'boolean':
+      return 1
     case 'Address':
       return AddressImpl.getMaxBytesLength(type)
     case 'Byte':
@@ -1073,6 +1101,8 @@ const getMaxLengthOfStaticContentType = (type: TypeInfo): number => {
       return StaticBytesImpl.getMaxBytesLength(type)
     case 'Tuple':
       return TupleImpl.getMaxBytesLength(type)
+    case 'Struct':
+      return StructImpl.getMaxBytesLength(type)
   }
   throw new CodeError(`unsupported type ${type.name}`)
 }
@@ -1323,4 +1353,9 @@ export const getArc4Encoded = (value: DeliberateAny): ARC4Encoded => {
   }
 
   throw new CodeError(`Unsupported type for encoding: ${typeof value}`)
+}
+
+export const arc4EncodedLengthImpl = (typeInfoString: string): uint64 => {
+  const typeInfo = JSON.parse(typeInfoString)
+  return getMaxLengthOfStaticContentType(typeInfo)
 }
