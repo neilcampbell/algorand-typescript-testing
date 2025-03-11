@@ -4,9 +4,10 @@ import type {
   Asset as AssetType,
   bytes,
   itxn,
+  OnCompleteActionStr,
   uint64,
 } from '@algorandfoundation/algorand-typescript'
-import { arc4, TransactionType } from '@algorandfoundation/algorand-typescript'
+import { OnCompleteAction, TransactionType } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { InternalError } from '../errors'
 import type { Mutable } from '../typescript-helpers'
@@ -162,7 +163,7 @@ export class ApplicationInnerTxn extends ApplicationTransaction implements itxn.
 
   /* @internal */
   static create(
-    fields: Omit<itxn.ApplicationCallFields, 'onCompletion'> & { onCompletion?: arc4.OnCompleteAction | uint64 | arc4.OnCompleteActionStr },
+    fields: Omit<itxn.ApplicationCallFields, 'onCompletion'> & { onCompletion?: OnCompleteAction | uint64 | OnCompleteActionStr },
   ) {
     return new ApplicationInnerTxn(fields as itxn.ApplicationCallFields)
   }
@@ -178,9 +179,9 @@ export class ApplicationInnerTxn extends ApplicationTransaction implements itxn.
       appId: appId === undefined && compiledApp ? compiledApp : appId instanceof Uint64Cls ? getApp(appId) : (appId as ApplicationType),
       onCompletion:
         typeof onCompletion === 'string'
-          ? (onCompletion as arc4.OnCompleteActionStr)
+          ? (onCompletion as OnCompleteActionStr)
           : onCompletion !== undefined
-            ? (arc4.OnCompleteAction[onCompletion] as arc4.OnCompleteActionStr)
+            ? (OnCompleteAction[onCompletion] as OnCompleteActionStr)
             : undefined,
       approvalProgram: Array.isArray(approvalProgram) ? undefined : (approvalProgram as bytes),
       approvalProgramPages: Array.isArray(approvalProgram) ? approvalProgram : undefined,

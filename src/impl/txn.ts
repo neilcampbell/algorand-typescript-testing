@@ -1,5 +1,5 @@
 import type { Account, Application, Asset, bytes, op, uint64 } from '@algorandfoundation/algorand-typescript'
-import { arc4, TransactionType } from '@algorandfoundation/algorand-typescript'
+import { OnCompleteAction, TransactionType } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { InternalError } from '../errors'
 import { asNumber, asUint64, asUint64Cls } from '../util'
@@ -195,7 +195,7 @@ export const Txn: typeof op.Txn = {
    */
   get onCompletion(): uint64 {
     const onCompletionStr = lazyContext.activeGroup.getApplicationTransaction().onCompletion
-    return asUint64(arc4.OnCompleteAction[onCompletionStr])
+    return asUint64(OnCompleteAction[onCompletionStr])
   },
 
   /**

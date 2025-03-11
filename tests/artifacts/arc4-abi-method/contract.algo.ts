@@ -99,6 +99,6 @@ export class SignaturesContract extends arc4.Contract {
     assert(acc.balance === acc.minBalance + 1234)
     assert(five[0].native === 5)
 
-    return [struct1.anotherStruct, struct1]
+    return [struct1.anotherStruct.copy(), struct1.copy()]
   }
 }

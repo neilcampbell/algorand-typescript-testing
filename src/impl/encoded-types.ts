@@ -788,6 +788,10 @@ export class StructImpl<T extends StructConstraint> extends (Struct<StructConstr
     return this.items
   }
 
+  copy(): StructImpl<T> {
+    return StructImpl.fromBytesImpl(this.bytes, JSON.stringify(this.typeInfo)) as StructImpl<T>
+  }
+
   private decodeAsProperties() {
     if (this.uint8ArrayValue) {
       const values = decode(this.uint8ArrayValue, Object.values(this.genericArgs))

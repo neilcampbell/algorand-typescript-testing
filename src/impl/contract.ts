@@ -1,5 +1,4 @@
-import type { arc4 } from '@algorandfoundation/algorand-typescript'
-import type { OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
+import type { arc4, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript'
 import type { DeliberateAny } from '../typescript-helpers'
 import { BaseContract } from './base-contract'
 

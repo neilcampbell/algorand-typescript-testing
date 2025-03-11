@@ -55,16 +55,13 @@ describe('DigitalMarketplace', () => {
       asset: new arc4.UintN64(testAsset.id),
       nonce: testNonce,
     })
-    contract.listings.set(
-      listingKey,
-      new ListingValue({
-        deposited: new arc4.UintN64(10),
-        unitaryPrice: new arc4.UintN64(10),
-        bidder: new arc4.Address(ctx.defaultSender),
-        bid: new arc4.UintN64(10),
-        bidUnitaryPrice: new arc4.UintN64(10),
-      }),
-    )
+    contract.listings(listingKey).value = new ListingValue({
+      deposited: new arc4.UintN64(10),
+      unitaryPrice: new arc4.UintN64(10),
+      bidder: new arc4.Address(ctx.defaultSender),
+      bid: new arc4.UintN64(10),
+      bidUnitaryPrice: new arc4.UintN64(10),
+    })
 
     // Act
     contract.deposit(
@@ -91,16 +88,13 @@ describe('DigitalMarketplace', () => {
       asset: new arc4.UintN64(testAsset.id),
       nonce: testNonce,
     })
-    contract.listings.set(
-      listingKey,
-      new ListingValue({
-        deposited: new arc4.UintN64(10),
-        unitaryPrice: new arc4.UintN64(10),
-        bidder: new arc4.Address(ctx.defaultSender),
-        bid: new arc4.UintN64(10),
-        bidUnitaryPrice: new arc4.UintN64(10),
-      }),
-    )
+    contract.listings(listingKey).value = new ListingValue({
+      deposited: new arc4.UintN64(10),
+      unitaryPrice: new arc4.UintN64(10),
+      bidder: new arc4.Address(ctx.defaultSender),
+      bid: new arc4.UintN64(10),
+      bidUnitaryPrice: new arc4.UintN64(10),
+    })
 
     //  Act
     contract.setPrice(testAsset, testNonce, testUnitaryPrice)
@@ -121,16 +115,13 @@ describe('DigitalMarketplace', () => {
     const testBuyQuantity = ctx.any.arc4.uintN64(0, 1000000n)
 
     const listingKey = new ListingKey({ owner: testOwner, asset: new arc4.UintN64(testAsset.id), nonce: testNonce })
-    contract.listings.set(
-      listingKey,
-      new ListingValue({
-        deposited: initialDeposit,
-        unitaryPrice: testUnitaryPrice,
-        bidder: new arc4.Address(),
-        bid: new arc4.UintN64(0),
-        bidUnitaryPrice: new arc4.UintN64(0),
-      }),
-    )
+    contract.listings(listingKey).value = new ListingValue({
+      deposited: initialDeposit,
+      unitaryPrice: testUnitaryPrice,
+      bidder: new arc4.Address(),
+      bid: new arc4.UintN64(0),
+      bidUnitaryPrice: new arc4.UintN64(0),
+    })
 
     // Act
     contract.buy(
@@ -163,16 +154,13 @@ describe('DigitalMarketplace', () => {
     const listingsBoxMbr = contract.listingsBoxMbr()
 
     const listingKey = new ListingKey({ owner: testOwner, asset: new arc4.UintN64(testAsset.id), nonce: testNonce })
-    contract.listings.set(
-      listingKey,
-      new ListingValue({
-        deposited: initialDeposit,
-        unitaryPrice: testUnitaryPrice,
-        bidder: new arc4.Address(),
-        bid: new arc4.UintN64(0),
-        bidUnitaryPrice: new arc4.UintN64(0),
-      }),
-    )
+    contract.listings(listingKey).value = new ListingValue({
+      deposited: initialDeposit,
+      unitaryPrice: testUnitaryPrice,
+      bidder: new arc4.Address(),
+      bid: new arc4.UintN64(0),
+      bidUnitaryPrice: new arc4.UintN64(0),
+    })
 
     //  Act
     contract.withdraw(testAsset, testNonce)
@@ -203,16 +191,13 @@ describe('DigitalMarketplace', () => {
     const initialDeposit = ctx.any.arc4.uintN64(0, 1000000n)
 
     const listingKey = new ListingKey({ owner, asset: new arc4.UintN64(testAsset.id), nonce: testNonce })
-    contract.listings.set(
-      listingKey,
-      new ListingValue({
-        deposited: initialDeposit,
-        unitaryPrice: initialPrice,
-        bidder: new arc4.Address(),
-        bid: new arc4.UintN64(0),
-        bidUnitaryPrice: new arc4.UintN64(0),
-      }),
-    )
+    contract.listings(listingKey).value = new ListingValue({
+      deposited: initialDeposit,
+      unitaryPrice: initialPrice,
+      bidder: new arc4.Address(),
+      bid: new arc4.UintN64(0),
+      bidUnitaryPrice: new arc4.UintN64(0),
+    })
 
     const bidder = ctx.any.account()
     const bidQuantity = ctx.any.arc4.uintN64(0, BigInt(initialDeposit.native))
@@ -236,7 +221,7 @@ describe('DigitalMarketplace', () => {
     })
 
     // Assert
-    const updatedListing = contract.listings.get(listingKey)
+    const updatedListing = contract.listings(listingKey).value
     expect(updatedListing.bidder.native).toEqual(bidder)
     expect(updatedListing.bid.native).toEqual(bidQuantity.native)
     expect(updatedListing.bidUnitaryPrice.native).toEqual(bidPrice.native)
@@ -258,16 +243,13 @@ describe('DigitalMarketplace', () => {
       asset: new arc4.UintN64(testAsset.id),
       nonce: testNonce,
     })
-    contract.listings.set(
-      listingKey,
-      new ListingValue({
-        deposited: initialDeposit,
-        unitaryPrice: ctx.any.arc4.uintN64(),
-        bidder: new arc4.Address(bidder),
-        bid: bidQuantity,
-        bidUnitaryPrice: bidPrice,
-      }),
-    )
+    contract.listings(listingKey).value = new ListingValue({
+      deposited: initialDeposit,
+      unitaryPrice: ctx.any.arc4.uintN64(),
+      bidder: new arc4.Address(bidder),
+      bid: bidQuantity,
+      bidUnitaryPrice: bidPrice,
+    })
 
     const minQuantity = initialDeposit.native < bidQuantity.native ? initialDeposit.native : bidQuantity.native
     const expectedPayment = contract.quantityPrice(minQuantity, bidPrice.native, testAsset.decimals)
@@ -276,7 +258,7 @@ describe('DigitalMarketplace', () => {
     contract.acceptBid(testAsset, testNonce)
 
     // Assert
-    const updatedListing = contract.listings.get(listingKey)
+    const updatedListing = contract.listings(listingKey).value
     expect(updatedListing.deposited.native).toEqual(initialDeposit.native - minQuantity)
 
     expect(ctx.txn.lastGroup.itxnGroups.length).toEqual(2)
