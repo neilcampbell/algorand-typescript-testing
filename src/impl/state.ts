@@ -132,6 +132,7 @@ export function LocalState<ValueType>(options?: { key?: bytes | string }): Local
 export class BoxCls<TValue> {
   #key: bytes | undefined
   #app: Application
+  #valueType?: TypeInfo
 
   private readonly _type: string = BoxCls.name
 
@@ -139,14 +140,14 @@ export class BoxCls<TValue> {
     return x instanceof Object && '_type' in x && (x as { _type: string })['_type'] === BoxCls.name
   }
 
-  constructor(key?: StubBytesCompat) {
+  constructor(key?: StubBytesCompat, app?: Application, valueType?: TypeInfo) {
     this.#key = key ? asBytes(key) : undefined
-    this.#app = lazyContext.activeApplication
+    this.#app = app ?? lazyContext.activeApplication
+    this.#valueType = valueType
   }
 
   private get fromBytes() {
-    const typeInfo = getGenericTypeInfo(this)
-    const valueType = (typeInfo!.genericArgs! as TypeInfo[])[0]
+    const valueType = this.#valueType ?? (getGenericTypeInfo(this)!.genericArgs! as TypeInfo[])[0]
     return (val: Uint8Array) => getEncoder<TValue>(valueType)(val, valueType)
   }
 
@@ -203,7 +204,7 @@ export class BoxCls<TValue> {
 }
 
 export class BoxMapCls<TKey, TValue> {
-  #keyPrefix: bytes | undefined
+  private _keyPrefix: bytes | undefined
   #app: Application
 
   private readonly _type: string = BoxMapCls.name
@@ -212,60 +213,30 @@ export class BoxMapCls<TKey, TValue> {
     return x instanceof Object && '_type' in x && (x as { _type: string })['_type'] === BoxMapCls.name
   }
 
-  private get fromBytes() {
-    const typeInfo = getGenericTypeInfo(this)
-    const valueType = (typeInfo!.genericArgs! as TypeInfo[])[1]
-    return (val: Uint8Array) => getEncoder<TValue>(valueType)(val, valueType)
-  }
-
-  constructor(keyPrefix?: StubBytesCompat) {
-    this.#keyPrefix = keyPrefix ? asBytes(keyPrefix) : undefined
+  constructor() {
     this.#app = lazyContext.activeApplication
   }
 
   get hasKeyPrefix(): boolean {
-    return this.#keyPrefix !== undefined && this.#keyPrefix.length > 0
+    return this._keyPrefix !== undefined && this._keyPrefix.length > 0
   }
 
   get keyPrefix(): bytes {
-    if (this.#keyPrefix === undefined || this.#keyPrefix.length === 0) {
+    if (this._keyPrefix === undefined || this._keyPrefix.length === 0) {
       throw new InternalError('Box key prefix is empty')
     }
-    return this.#keyPrefix
+    return this._keyPrefix
   }
 
   set keyPrefix(keyPrefix: StubBytesCompat) {
-    this.#keyPrefix = asBytes(keyPrefix)
+    this._keyPrefix = asBytes(keyPrefix)
   }
 
-  get(key: TKey, options?: { default: TValue }): TValue {
-    const [value, exists] = this.maybe(key)
-    if (!exists && options === undefined) {
-      throw new InternalError('Box has not been created')
-    }
-    return exists ? value : options!.default
-  }
-
-  set(key: TKey, value: TValue): void {
-    lazyContext.ledger.setBox(this.#app, this.getFullKey(key), toBytes(value))
-  }
-
-  delete(key: TKey): boolean {
-    return lazyContext.ledger.deleteBox(this.#app, this.getFullKey(key))
-  }
-
-  has(key: TKey): boolean {
-    return lazyContext.ledger.boxExists(this.#app, this.getFullKey(key))
-  }
-
-  maybe(key: TKey): readonly [TValue, boolean] {
-    const fullKey = this.getFullKey(key)
-    const value = this.fromBytes(lazyContext.ledger.getBox(this.#app, fullKey))
-    return [value, lazyContext.ledger.boxExists(this.#app, fullKey)]
-  }
-
-  length(key: TKey): uint64 {
-    return toBytes(this.get(key)).length
+  call(key: TKey, proxy: (key: TKey) => BoxType<TValue>): BoxType<TValue> {
+    const typeInfo = getGenericTypeInfo(proxy)
+    const valueType = (typeInfo!.genericArgs! as TypeInfo[])[1]
+    const box = new BoxCls<TValue>(this.getFullKey(key), this.#app, valueType)
+    return box
   }
 
   private getFullKey(key: TKey): bytes {
@@ -447,7 +418,13 @@ export function Box<TValue>(options?: { key: bytes | string }): BoxType<TValue> 
 }
 
 export function BoxMap<TKey, TValue>(options?: { keyPrefix: bytes | string }): BoxMapType<TKey, TValue> {
-  return new BoxMapCls<TKey, TValue>(options?.keyPrefix)
+  const boxMap = new BoxMapCls<TKey, TValue>()
+  if (options?.keyPrefix !== undefined) {
+    boxMap.keyPrefix = options.keyPrefix
+  }
+
+  const x = (key: TKey): BoxType<TValue> => boxMap.call(key, x)
+  return Object.setPrototypeOf(x, boxMap)
 }
 
 export function BoxRef(options?: { key: bytes | string }): BoxRefType {

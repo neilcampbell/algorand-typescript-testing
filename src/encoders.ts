@@ -1,5 +1,4 @@
-import type { biguint, bytes, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
-import type { OnCompleteAction } from '@algorandfoundation/algorand-typescript/arc4'
+import type { biguint, bytes, OnCompleteAction, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
 import { ARC4Encoded } from '@algorandfoundation/algorand-typescript/arc4'
 import { encodingUtil } from '@algorandfoundation/puya-ts'
 import { InternalError } from './errors'

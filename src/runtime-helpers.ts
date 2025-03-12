@@ -12,7 +12,7 @@ import { nameOfType } from './util'
 export { attachAbiMetadata } from './abi-metadata'
 export { emitImpl } from './impl/emit'
 export * from './impl/encoded-types'
-export { decodeArc4Impl, encodeArc4Impl } from './impl/encoded-types'
+export { arc4EncodedLengthImpl, decodeArc4Impl, encodeArc4Impl } from './impl/encoded-types'
 
 export function switchableValue(x: unknown): bigint | string | boolean {
   if (typeof x === 'boolean') return x

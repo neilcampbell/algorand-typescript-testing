@@ -1,10 +1,10 @@
 import type {
   Account as AccountType,
   Application as ApplicationType,
-  arc4,
   Asset as AssetType,
   bytes,
   gtxn,
+  OnCompleteActionStr,
   uint64,
 } from '@algorandfoundation/algorand-typescript'
 import { TransactionType } from '@algorandfoundation/algorand-typescript'
@@ -279,7 +279,7 @@ export class ApplicationTransaction extends TransactionBase implements gtxn.Appl
     }
     return this.#appId
   }
-  readonly onCompletion: arc4.OnCompleteActionStr
+  readonly onCompletion: OnCompleteActionStr
   readonly globalNumUint: uint64
   readonly globalNumBytes: uint64
   readonly localNumUint: uint64

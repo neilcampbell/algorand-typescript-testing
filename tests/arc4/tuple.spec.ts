@@ -27,6 +27,29 @@ const otherAbiUint8 = new UintN<8>(42)
 
 const testData = [
   {
+    abiTypeString: '(bool[10],bool,bool)',
+    nativeValues() {
+      return [
+        [nativeBool, nativeBool, nativeBool, nativeBool, nativeBool, nativeBool, nativeBool, nativeBool, nativeBool, nativeBool],
+        nativeBool,
+        nativeBool,
+      ]
+    },
+    abiValues() {
+      return [
+        new StaticArray(abiBool, abiBool, abiBool, abiBool, abiBool, abiBool, abiBool, abiBool, abiBool, abiBool),
+        abiBool,
+        abiBool,
+      ] as readonly [StaticArray<Bool, 10>, Bool, Bool]
+    },
+    tuple() {
+      return new Tuple<[StaticArray<Bool, 10>, Bool, Bool]>(...this.abiValues())
+    },
+    create(value: StubBytesCompat) {
+      return interpretAsArc4<Tuple<[StaticArray<Bool, 10>, Bool, Bool]>>(asBytes(value))
+    },
+  },
+  {
     abiTypeString: '(uint8,bool,bool,address)',
     nativeValues() {
       return [nativeNumber, nativeBool, nativeBool, nativeAddress]

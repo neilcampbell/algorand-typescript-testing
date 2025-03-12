@@ -11,6 +11,7 @@ import {
   GlobalState,
   itxn,
   LocalState,
+  OnCompleteAction,
   op,
   OpUpFeeSource,
   TemplateVar,
@@ -88,7 +89,7 @@ export default class ZkWhitelistContract extends arc4.Contract {
         appId: appId,
         fee: 0,
         appArgs: [arc4.methodSelector('verify(byte[32][],byte[32][])bool'), proof.copy(), publicInputs.copy()],
-        onCompletion: arc4.OnCompleteAction.NoOp,
+        onCompletion: OnCompleteAction.NoOp,
       })
       .submit().lastLog
     return arc4.interpretAsArc4<arc4.Bool>(verified, 'log')

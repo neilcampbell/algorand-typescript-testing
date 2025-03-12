@@ -9,6 +9,7 @@ import {
   GlobalState,
   itxn,
   LocalState,
+  OnCompleteAction,
   op,
   TransactionType,
   Txn,
@@ -478,7 +479,7 @@ export class ITxnOpsContract extends arc4.Contract {
   public verify_itxn_ops() {
     op.ITxnCreate.begin()
     op.ITxnCreate.setTypeEnum(TransactionType.ApplicationCall)
-    op.ITxnCreate.setOnCompletion(arc4.OnCompleteAction.DeleteApplication)
+    op.ITxnCreate.setOnCompletion(OnCompleteAction.DeleteApplication)
     op.ITxnCreate.setApprovalProgram(Bytes.fromHex('068101'))
 
     // pages essentially appends
@@ -577,7 +578,7 @@ export class ItxnDemoContract extends BaseContract {
         approvalProgram: APPROVE,
         clearStateProgram: APPROVE,
         appArgs: args,
-        onCompletion: arc4.OnCompleteAction.NoOp,
+        onCompletion: OnCompleteAction.NoOp,
         note: 'with args param set',
       })
     } else {

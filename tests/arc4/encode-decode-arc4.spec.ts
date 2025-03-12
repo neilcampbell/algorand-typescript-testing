@@ -1,6 +1,17 @@
 import type { biguint, bytes, uint64 } from '@algorandfoundation/algorand-typescript'
 import { Bytes } from '@algorandfoundation/algorand-typescript'
-import { Bool, decodeArc4, DynamicBytes, encodeArc4, Str, Struct, Tuple, UintN } from '@algorandfoundation/algorand-typescript/arc4'
+import type { Address, StaticArray, StaticBytes, UFixedNxM, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
+import {
+  arc4EncodedLength,
+  Bool,
+  decodeArc4,
+  DynamicBytes,
+  encodeArc4,
+  Str,
+  Struct,
+  Tuple,
+  UintN,
+} from '@algorandfoundation/algorand-typescript/arc4'
 import { describe, expect, test } from 'vitest'
 import { MAX_UINT128 } from '../../src/constants'
 import type { StubBytesCompat } from '../../src/impl/primitives'
@@ -119,6 +130,27 @@ describe('encodeArc4', () => {
     const result = encodeArc4(nativeValues)
 
     expect(result).toEqual(arc4Value.bytes)
+  })
+})
+
+class StaticStruct extends Struct<{
+  a: UintN64
+  b: StaticArray<Bool, 10>
+  c: Bool
+  d: StaticBytes<32>
+  e: Address
+  f: StaticArray<UFixedNxM<256, 16>, 10>
+}> {}
+describe('arc4EncodedLength', () => {
+  test('should return the correct length', () => {
+    expect(arc4EncodedLength<uint64>()).toEqual(8)
+    expect(arc4EncodedLength<biguint>()).toEqual(64)
+    expect(arc4EncodedLength<boolean>()).toEqual(1)
+    expect(arc4EncodedLength<UintN<512>>()).toEqual(64)
+    expect(arc4EncodedLength<[uint64, uint64, boolean]>()).toEqual(17)
+    expect(arc4EncodedLength<[uint64, uint64, boolean, boolean]>()).toEqual(17)
+    expect(arc4EncodedLength<Tuple<[StaticArray<Bool, 10>, Bool]>>()).toEqual(3)
+    expect(arc4EncodedLength<StaticStruct>()).toEqual(395)
   })
 })
 

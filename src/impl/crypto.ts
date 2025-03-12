@@ -1,5 +1,5 @@
 import type { bytes, gtxn, MimcConfigurations, op, VrfVerify } from '@algorandfoundation/algorand-typescript'
-import { arc4, Ecdsa } from '@algorandfoundation/algorand-typescript'
+import { Ecdsa, OnCompleteAction } from '@algorandfoundation/algorand-typescript'
 import elliptic from 'elliptic'
 import js_sha256 from 'js-sha256'
 import js_sha3 from 'js-sha3'
@@ -50,7 +50,7 @@ export const ed25519verifyBare = (a: StubBytesCompat, b: StubBytesCompat, c: Stu
 export const ed25519verify = (a: StubBytesCompat, b: StubBytesCompat, c: StubBytesCompat): boolean => {
   const txn = lazyContext.activeGroup.activeTransaction as gtxn.ApplicationTxn
   const programBytes = asBytesCls(
-    txn.onCompletion == arc4.OnCompleteAction[arc4.OnCompleteAction.ClearState] ? txn.clearStateProgram : txn.approvalProgram,
+    txn.onCompletion == OnCompleteAction[OnCompleteAction.ClearState] ? txn.clearStateProgram : txn.approvalProgram,
   )
 
   const logicSig = conactUint8Arrays(asUint8Array(PROGRAM_TAG), programBytes.asUint8Array())

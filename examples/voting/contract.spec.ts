@@ -77,7 +77,7 @@ describe('VotingRoundApp', () => {
     ctx.txn.createScope([ctx.any.txn.applicationCall({ appId: app, sender: account })]).execute(() => {
       contract.vote(ctx.any.txn.payment({ receiver: app.address, amount: voteMinBalanceReq }), Bytes(signature), answerIds)
 
-      expect(contract.votesByAccount.get(account).bytes).toEqual(answerIds.bytes)
+      expect(contract.votesByAccount(account).value.bytes).toEqual(answerIds.bytes)
       expect(contract.voterCount.value).toEqual(13)
     })
   })

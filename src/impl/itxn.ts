@@ -1,5 +1,5 @@
 import type { Account, Application, Asset, bytes, itxn, op, TransactionType, uint64 } from '@algorandfoundation/algorand-typescript'
-import { arc4 } from '@algorandfoundation/algorand-typescript'
+import { OnCompleteAction } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asBytes, asBytesCls, asNumber, asUint64, asUint64Cls } from '../util'
 import { getApp } from './app-params'
@@ -101,7 +101,7 @@ export const GITxn: typeof op.GITxn = {
   },
   onCompletion: function (t: StubUint64Compat): uint64 {
     const onCompletionStr = lazyContext.activeGroup.getItxnGroup().getApplicationInnerTxn(t).onCompletion
-    return asUint64(arc4.OnCompleteAction[onCompletionStr])
+    return asUint64(OnCompleteAction[onCompletionStr])
   },
   applicationArgs: function (t: StubUint64Compat, a: StubUint64Compat): bytes {
     return lazyContext.activeGroup.getItxnGroup().getApplicationInnerTxn(t).appArgs(asUint64(a))
@@ -386,7 +386,7 @@ export const ITxn: typeof op.ITxn = {
    */
   get onCompletion(): uint64 {
     const onCompletionStr = lazyContext.activeGroup.getItxnGroup().getApplicationInnerTxn().onCompletion
-    return asUint64(arc4.OnCompleteAction[onCompletionStr])
+    return asUint64(OnCompleteAction[onCompletionStr])
   },
   /**
    * Arguments passed to the application in the ApplicationCall transaction

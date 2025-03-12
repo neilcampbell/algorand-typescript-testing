@@ -1,7 +1,7 @@
 import { AlgoAmount } from '@algorandfoundation/algokit-utils/types/amount'
 import type { AppClient } from '@algorandfoundation/algokit-utils/types/app-client'
 import type { bytes, uint64 } from '@algorandfoundation/algorand-typescript'
-import { Account, arc4, Bytes, Global, op, TransactionType, Uint64 } from '@algorandfoundation/algorand-typescript'
+import { Account, arc4, Bytes, Global, OnCompleteAction, op, TransactionType, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { DynamicBytes, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
 import { afterEach, beforeAll, describe, expect } from 'vitest'
 import { TestExecutionContext } from '../src'
@@ -420,7 +420,7 @@ describe('State op codes', async () => {
         .fill(0)
         .map((_, i) => [...asUint8Array(appItxn.approvalProgramPages(i))])
       expect(approvalPages).toEqual([[...asUint8Array(appItxn.approvalProgram)]])
-      expect(appItxn.onCompletion).toEqual(arc4.OnCompleteAction[arc4.OnCompleteAction['DeleteApplication']])
+      expect(appItxn.onCompletion).toEqual(OnCompleteAction[OnCompleteAction['DeleteApplication']])
       expect(asNumber(appItxn.fee)).toEqual(MIN_TXN_FEE)
       expect(appItxn.sender).toEqual(ctx.ledger.getApplicationForContract(contract).address)
       // NOTE: would implementing emulation for this behavior be useful

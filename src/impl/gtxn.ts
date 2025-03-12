@@ -1,5 +1,5 @@
 import type { Account, Application, Asset, bytes, op, uint64 } from '@algorandfoundation/algorand-typescript'
-import { arc4 } from '@algorandfoundation/algorand-typescript'
+import { OnCompleteAction } from '@algorandfoundation/algorand-typescript'
 import { lazyContext } from '../context-helpers/internal-context'
 import { asUint64, asUint64Cls } from '../util'
 import type { StubUint64Compat } from './primitives'
@@ -82,7 +82,7 @@ export const GTxn: typeof op.GTxn = {
   },
   onCompletion(t: StubUint64Compat): uint64 {
     const onCompletionStr = lazyContext.activeGroup.getApplicationTransaction(t).onCompletion
-    return asUint64(arc4.OnCompleteAction[onCompletionStr])
+    return asUint64(OnCompleteAction[onCompletionStr])
   },
   applicationArgs(a: StubUint64Compat, b: StubUint64Compat): bytes {
     return lazyContext.activeGroup.getApplicationTransaction(a).appArgs(asUint64(b))

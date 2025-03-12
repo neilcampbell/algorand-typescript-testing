@@ -1,4 +1,5 @@
-import type { CreateOptions, OnCompleteActionStr } from '@algorandfoundation/algorand-typescript/arc4'
+import type { OnCompleteActionStr } from '@algorandfoundation/algorand-typescript'
+import type { CreateOptions } from '@algorandfoundation/algorand-typescript/arc4'
 import js_sha512 from 'js-sha512'
 import type { TypeInfo } from './encoders'
 import { Arc4MethodConfigSymbol, Contract } from './impl/contract'
