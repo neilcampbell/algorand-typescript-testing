@@ -205,4 +205,28 @@ describe('Box', () => {
       }
     })
   })
+
+  it('can maintain the mutations to the box value', () => {
+    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
+      const box = Box<DynamicArray<UintN64>>({ key })
+      const value = new DynamicArray(new UintN64(100), new UintN64(200))
+      box.value = value
+      expect(box.value.length).toEqual(2)
+      expect(box.value.at(-1).native).toEqual(200)
+
+      // newly pushed value should be retained
+      box.value.push(new UintN64(300))
+      expect(box.value.length).toEqual(3)
+      expect(box.value.at(-1).native).toEqual(300)
+
+      // setting bytes value through op should be reflected in the box value.
+      const copy = box.value.copy()
+      copy[2] = new UintN64(400)
+      expect(box.value.at(-1).native).toEqual(300)
+
+      op.Box.put(key, toBytes(copy))
+      expect(box.value.length).toEqual(3)
+      expect(box.value.at(-1).native).toEqual(400)
+    })
+  })
 })

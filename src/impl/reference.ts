@@ -22,7 +22,7 @@ import {
 } from '../constants'
 import { lazyContext } from '../context-helpers/internal-context'
 import { AvmError, InternalError } from '../errors'
-import type { Mutable } from '../typescript-helpers'
+import type { DeliberateAny, Mutable } from '../typescript-helpers'
 import { asBigInt, asBytes, asUint64, asUint64Cls, asUint8Array, conactUint8Arrays } from '../util'
 import { BytesBackedCls, Uint64BackedCls } from './base'
 import type { StubUint64Compat } from './primitives'
@@ -136,6 +136,7 @@ export class ApplicationData {
     localStates: BytesMap<LocalState<unknown>>
     localStateMaps: BytesMap<AccountMap<LocalStateCls<unknown>>>
     boxes: BytesMap<Uint8Array>
+    materialisedBoxes: BytesMap<DeliberateAny>
   }
 
   isCreating: boolean = false
@@ -155,6 +156,7 @@ export class ApplicationData {
       localStates: new BytesMap(),
       localStateMaps: new BytesMap(),
       boxes: new BytesMap(),
+      materialisedBoxes: new BytesMap(),
     }
   }
 }
@@ -200,7 +202,11 @@ export class ApplicationCls extends Uint64BackedCls implements ApplicationType {
     return this.data.application.creator
   }
   get address(): AccountType {
-    return getApplicationAddress(this.id)
+    const result = getApplicationAddress(this.id)
+    if (!lazyContext.ledger.accountDataMap.has(result)) {
+      lazyContext.any.account({ address: result.bytes })
+    }
+    return result
   }
 }
 

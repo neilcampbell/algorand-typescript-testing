@@ -155,11 +155,18 @@ export class BoxCls<TValue> {
     if (!this.exists) {
       throw new InternalError('Box has not been created')
     }
-
-    return this.fromBytes(lazyContext.ledger.getBox(this.#app, this.key))
+    let materialised = lazyContext.ledger.getMaterialisedBox<TValue>(this.#app, this.key)
+    if (materialised !== undefined) {
+      return materialised
+    }
+    const original = lazyContext.ledger.getBox(this.#app, this.key)
+    materialised = this.fromBytes(original)
+    lazyContext.ledger.setMatrialisedBox(this.#app, this.key, materialised)
+    return materialised
   }
   set value(v: TValue) {
     lazyContext.ledger.setBox(this.#app, this.key, asUint8Array(toBytes(v)))
+    lazyContext.ledger.setMatrialisedBox(this.#app, this.key, v)
   }
 
   get hasKey(): boolean {
