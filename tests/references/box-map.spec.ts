@@ -2,7 +2,7 @@ import type { biguint, bytes, uint64 } from '@algorandfoundation/algorand-typesc
 import { BigUint, BoxMap, Bytes, op, Uint64 } from '@algorandfoundation/algorand-typescript'
 import { TestExecutionContext } from '@algorandfoundation/algorand-typescript-testing'
 import { ARC4Encoded, DynamicArray, interpretAsArc4, Str, UintN64 } from '@algorandfoundation/algorand-typescript/arc4'
-import { afterEach, describe, expect, test } from 'vitest'
+import { afterEach, describe, expect, it, test } from 'vitest'
 import { MAX_UINT64 } from '../../src/constants'
 import { toBytes } from '../../src/encoders'
 import { asBytes } from '../../src/util'
@@ -202,6 +202,32 @@ describe('BoxMap', () => {
       } else {
         expect(boxMap(key as never).value).toEqual(newValue)
       }
+    })
+  })
+
+  it('can maintain the mutations to the array box value', () => {
+    ctx.txn.createScope([ctx.any.txn.applicationCall()]).execute(() => {
+      const boxMap = BoxMap<Str, DynamicArray<UintN64>>({ keyPrefix })
+      const key = new Str('jkl')
+      const value = new DynamicArray(new UintN64(100), new UintN64(200))
+      boxMap(key).value = value
+      expect(boxMap(key).value.length).toEqual(2)
+      expect(boxMap(key).value.at(-1).native).toEqual(200)
+
+      // newly pushed value should be retained
+      boxMap(key).value.push(new UintN64(300))
+      expect(boxMap(key).value.length).toEqual(3)
+      expect(boxMap(key).value.at(-1).native).toEqual(300)
+
+      // setting bytes value through op should be reflected in the box value.
+      const copy = boxMap(key).value.copy()
+      copy[2] = new UintN64(400)
+      expect(boxMap(key).value.at(-1).native).toEqual(300)
+
+      const fullKey = keyPrefix.concat(toBytes(key))
+      op.Box.put(fullKey, toBytes(copy))
+      expect(boxMap(key).value.length).toEqual(3)
+      expect(boxMap(key).value.at(-1).native).toEqual(400)
     })
   })
 })

@@ -9,6 +9,7 @@ import type {
 } from '@algorandfoundation/algorand-typescript'
 import { AccountMap, Uint64Map } from '../collections/custom-key-map'
 import { MAX_UINT64 } from '../constants'
+import { toBytes } from '../encoders'
 import { InternalError } from '../errors'
 import { BlockData } from '../impl/block'
 import { GlobalData } from '../impl/global'
@@ -340,7 +341,24 @@ export class LedgerContext {
   getBox(app: ApplicationType | BaseContract, key: StubBytesCompat): Uint8Array {
     const appId = this.getAppId(app)
     const appData = this.applicationDataMap.getOrFail(appId)
+    const materialised = appData.application.materialisedBoxes.get(key)
+    if (materialised !== undefined) {
+      return asUint8Array(toBytes(materialised))
+    }
     return appData.application.boxes.get(key) ?? new Uint8Array()
+  }
+
+  /**
+   * Retrieves a materialised box for an application by key.
+   * @internal
+   * @param app - The application.
+   * @param key - The key.
+   * @returns The materialised box data if exists or undefined.
+   */
+  getMaterialisedBox<T>(app: ApplicationType | BaseContract, key: StubBytesCompat): T | undefined {
+    const appId = this.getAppId(app)
+    const appData = this.applicationDataMap.getOrFail(appId)
+    return appData.application.materialisedBoxes.get(key) as T | undefined
   }
 
   /**
@@ -354,6 +372,21 @@ export class LedgerContext {
     const appData = this.applicationDataMap.getOrFail(appId)
     const uint8ArrayValue = value instanceof Uint8Array ? value : asUint8Array(value)
     appData.application.boxes.set(key, uint8ArrayValue)
+    appData.application.materialisedBoxes.set(key, undefined)
+  }
+
+  /**
+
+ * Cache the materialised box for an application by key.
+* @internal
+ * @param app - The application.
+ * @param key - The key.
+ * @param value - The box data.
+ */
+  setMatrialisedBox<TValue>(app: ApplicationType | BaseContract, key: StubBytesCompat, value: TValue | undefined): void {
+    const appId = this.getAppId(app)
+    const appData = this.applicationDataMap.getOrFail(appId)
+    appData.application.materialisedBoxes.set(key, value)
   }
 
   /**
@@ -365,6 +398,7 @@ export class LedgerContext {
   deleteBox(app: ApplicationType | BaseContract, key: StubBytesCompat): boolean {
     const appId = this.getAppId(app)
     const appData = this.applicationDataMap.getOrFail(appId)
+    appData.application.materialisedBoxes.delete(key)
     return appData.application.boxes.delete(key)
   }
 
